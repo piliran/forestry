@@ -1,0 +1,115 @@
+<template>
+    <DocSectionText v-bind="$attrs">
+        <p>Settings per screen size is defined via the <i>responsiveOptions</i> property.</p>
+    </DocSectionText>
+    <div class="card">
+        <Galleria :value="images" :numVisible="5" :circular="true" containerStyle="max-width: 640px">
+            <template #item="slotProps">
+                <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" style="width: 100%; display: block" />
+            </template>
+            <template #thumbnail="slotProps">
+                <div class="justify-center">
+                    <img :src="slotProps.item.thumbnailImageSrc" :alt="slotProps.item.alt" style="width: 100%; display: block" />
+                </div>
+            </template>
+        </Galleria>
+    </div>
+    <DocSectionCode :code="code" :service="['PhotoService']" />
+</template>
+
+<script>
+import { PhotoService } from '@/service/PhotoService';
+
+export default {
+    data() {
+        return {
+            images: null,
+            code: {
+                basic: `
+<Galleria :value="images" :numVisible="5" :circular="true" containerStyle="max-width: 640px">
+    <template #item="slotProps">
+        <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" style="width: 100%; display: block" />
+    </template>
+    <template #thumbnail="slotProps">
+        <div class="justify-center">
+            <img :src="slotProps.item.thumbnailImageSrc" :alt="slotProps.item.alt" style="width: 100%; display: block" />
+        </div>
+    </template>
+</Galleria>
+`,
+                options: `
+<template>
+    <div class="card">
+        <Galleria :value="images" :numVisible="5" :circular="true" containerStyle="max-width: 640px">
+            <template #item="slotProps">
+                <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" style="width: 100%; display: block" />
+            </template>
+            <template #thumbnail="slotProps">
+                <div class="justify-center">
+                    <img :src="slotProps.item.thumbnailImageSrc" :alt="slotProps.item.alt" style="width: 100%; display: block" />
+                </div>
+            </template>
+        </Galleria>
+    </div>
+</template>
+
+<script>
+import { PhotoService } from '@/service/PhotoService';
+
+export default {
+    data() {
+        return {
+            images: null,
+        };
+    },
+    mounted() {
+        PhotoService.getImages().then((data) => (this.images = data));
+    }
+};
+<\/script>
+`,
+                composition: `
+<template>
+    <div class="card">
+        <Galleria :value="images" :numVisible="5" :circular="true" containerStyle="max-width: 640px">
+            <template #item="slotProps">
+                <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" style="width: 100%; display: block" />
+            </template>
+            <template #thumbnail="slotProps">
+                <div class="justify-center">
+                    <img :src="slotProps.item.thumbnailImageSrc" :alt="slotProps.item.alt" style="width: 100%; display: block" />
+                </div>
+            </template>
+        </Galleria>
+    </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from "vue";
+import { PhotoService } from '@/service/PhotoService';
+
+onMounted(() => {
+    PhotoService.getImages().then((data) => (images.value = data));
+});
+
+const images = ref();
+<\/script>
+`,
+                data: `
+/* PhotoService */
+{
+    itemImageSrc: 'https://primefaces.org/cdn/primevue/images/galleria/galleria1.jpg',
+    thumbnailImageSrc: 'https://primefaces.org/cdn/primevue/images/galleria/galleria1s.jpg',
+    alt: 'Description for Image 1',
+    title: 'Title 1'
+},
+...
+        `
+            }
+        };
+    },
+    mounted() {
+        PhotoService.getImages().then((data) => (this.images = data));
+    }
+};
+</script>
