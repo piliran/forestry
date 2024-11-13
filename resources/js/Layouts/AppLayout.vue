@@ -92,14 +92,14 @@ const logout = () => {
                                     class="group flex items-center cursor-pointer select-none"
                                 >
                                     <div
-                                        class="mr-1 text-gray-700 group-hover:text-green-600 focus:text-green-600 whitespace-nowrap"
+                                        class="mr-1 text-gray-700 group-hover:text-lime-800 focus:text-lime-900 whitespace-nowrap"
                                     >
                                         <span>{{
                                             $page.props.auth.user.name
                                         }}</span>
                                     </div>
                                     <icon
-                                        class="w-5 h-5 fill-gray-700 group-hover:fill-green-600 focus:fill-green-600"
+                                        class="w-5 h-5 fill-gray-700 group-hover:fill-lime-800 focus:fill-lime-900"
                                         name="cheveron-down"
                                     />
                                 </div>
@@ -109,7 +109,7 @@ const logout = () => {
                                     class="mt-2 py-2 text-sm bg-white rounded shadow-xl"
                                 >
                                     <Link
-                                        class="block px-6 py-2 hover:text-white hover:bg-green-500"
+                                        class="block px-6 py-2 hover:text-white hover:bg-lime-900"
                                         :href="route('profile.show')"
                                         >Profile</Link
                                     >
@@ -117,7 +117,7 @@ const logout = () => {
                                     <button
                                         type="submit"
                                         @click="logout"
-                                        class="block px-6 py-2 hover:text-white hover:bg-green-500 width-full"
+                                        class="block px-6 py-2 hover:text-white hover:bg-lime-900 width-full"
                                     >
                                         Log Out
                                     </button>
@@ -159,7 +159,8 @@ const logout = () => {
 }
 
 .hover\:bg-green-500:hover {
-    background-color: #4caf50;
+    /* background-color: #4caf50; */
+    background-color: linear-gradient(135deg, #273320, #3a5228);
 }
 .hover\:text-white:hover {
     color: #fff;

@@ -162,10 +162,7 @@ export default {
     color: #e0e0e0;
 }
 
-/* Add hover effect for bg-dark */
 .hover\:bg-dark:hover {
-    /* background-color: #314b21; */
-    /* background-color: #59873c;  */
     background: linear-gradient(135deg, #273320, #3a5228);
 }
 </style>
