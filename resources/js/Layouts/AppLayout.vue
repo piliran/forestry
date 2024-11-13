@@ -46,11 +46,8 @@ const logout = () => {
         <div class="md:flex md:flex-col min-h-screen bg-gray-100">
             <div class="md:flex md:flex-col md:h-screen">
                 <div class="md:flex md:flex-shrink-0">
-                    <!-- <div
-                        class="flex items-center justify-between px-6 py-4 bg-green-900 md:flex-shrink-0 md:justify-center md:w-56"
-                    > -->
                     <div
-                        class="flex items-center justify-between px-6 py-4 bg-dark md:flex-shrink-0 md:justify-center md:w-56"
+                        class="flex items-center justify-between px-6 py-1 bg-dark md:flex-shrink-0 md:w-56"
                     >
                         <Link class="mt-1 flex" href="/">
                             <logo class="fill-white" width="120" height="28" />
@@ -68,9 +65,6 @@ const logout = () => {
                                 </svg>
                             </template>
                             <template #dropdown>
-                                <!-- <div
-                                    class="mt-2 px-8 py-4 bg-green-800 rounded shadow-lg"
-                                > -->
                                 <div
                                     class="mt-2 px-8 py-4 bg-dark rounded shadow-lg"
                                 >
@@ -113,7 +107,6 @@ const logout = () => {
                                         :href="route('profile.show')"
                                         >Profile</Link
                                     >
-
                                     <button
                                         type="submit"
                                         @click="logout"
