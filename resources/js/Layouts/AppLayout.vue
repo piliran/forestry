@@ -12,6 +12,7 @@ import Dropdown from "@/Shared/Dropdown.vue";
 import Icon from "@/Shared/Icon.vue";
 import Logo from "@/Shared/Logo.vue";
 import FlashMessages from "@/Shared/FlashMessages.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
 
 defineProps({
     title: String,
@@ -46,7 +47,7 @@ const logout = () => {
             <div class="md:flex md:flex-col md:h-screen">
                 <div class="md:flex md:flex-shrink-0">
                     <!-- <div
-                        class="flex items-center justify-between px-6 py-4 bg-indigo-900 md:flex-shrink-0 md:justify-center md:w-56"
+                        class="flex items-center justify-between px-6 py-4 bg-green-900 md:flex-shrink-0 md:justify-center md:w-56"
                     > -->
                     <div
                         class="flex items-center justify-between px-6 py-4 bg-dark md:flex-shrink-0 md:justify-center md:w-56"
@@ -68,7 +69,7 @@ const logout = () => {
                             </template>
                             <template #dropdown>
                                 <!-- <div
-                                    class="mt-2 px-8 py-4 bg-indigo-800 rounded shadow-lg"
+                                    class="mt-2 px-8 py-4 bg-green-800 rounded shadow-lg"
                                 > -->
                                 <div
                                     class="mt-2 px-8 py-4 bg-dark rounded shadow-lg"
@@ -91,14 +92,14 @@ const logout = () => {
                                     class="group flex items-center cursor-pointer select-none"
                                 >
                                     <div
-                                        class="mr-1 text-gray-700 group-hover:text-indigo-600 focus:text-indigo-600 whitespace-nowrap"
+                                        class="mr-1 text-gray-700 group-hover:text-green-600 focus:text-green-600 whitespace-nowrap"
                                     >
                                         <span>{{
                                             $page.props.auth.user.name
                                         }}</span>
                                     </div>
                                     <icon
-                                        class="w-5 h-5 fill-gray-700 group-hover:fill-indigo-600 focus:fill-indigo-600"
+                                        class="w-5 h-5 fill-gray-700 group-hover:fill-green-600 focus:fill-green-600"
                                         name="cheveron-down"
                                     />
                                 </div>
@@ -108,21 +109,15 @@ const logout = () => {
                                     class="mt-2 py-2 text-sm bg-white rounded shadow-xl"
                                 >
                                     <Link
-                                        class="block px-6 py-2 hover:text-white hover:bg-indigo-500"
-                                        :href="`/users/${$page.props.auth.user.id}/edit`"
-                                        >My Profile</Link
+                                        class="block px-6 py-2 hover:text-white hover:bg-green-500"
+                                        :href="route('profile.show')"
+                                        >Profile</Link
                                     >
-                                    <Link
-                                        class="block px-6 py-2 hover:text-white hover:bg-indigo-500"
-                                        href="/users"
-                                        >Manage Users</Link
-                                    >
-                                    <!-- <Link class="block px-6 py-2 w-full text-left hover:text-white hover:bg-indigo-500" href="/logout" method="delete" as="button">Logout</Link> -->
 
                                     <button
                                         type="submit"
                                         @click="logout"
-                                        class="block px-6 py-2 hover:text-white hover:bg-indigo-500"
+                                        class="block px-6 py-2 hover:text-white hover:bg-green-500 width-full"
                                     >
                                         Log Out
                                     </button>
@@ -134,7 +129,7 @@ const logout = () => {
 
                 <div class="md:flex md:flex-grow md:overflow-hidden">
                     <!-- <main-menu
-                        class="hidden flex-shrink-0 p-12 w-56 bg-indigo-800 overflow-y-auto md:block"
+                        class="hidden flex-shrink-0 p-12 w-56 bg-green-800 overflow-y-auto md:block"
                     /> -->
                     <main-menu
                         class="hidden flex-shrink-0 py-4 px-4 w-56 bg-dark overflow-y-auto md:block"
@@ -163,7 +158,7 @@ const logout = () => {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.hover\:bg-indigo-500:hover {
+.hover\:bg-green-500:hover {
     background-color: #4caf50;
 }
 .hover\:text-white:hover {

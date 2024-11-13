@@ -8,6 +8,7 @@ import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 
 import PrimeVue from "primevue/config";
 import Lara from "@/primevue/presets/lara";
+import Aura from "@primevue/themes/aura";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -23,8 +24,11 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(PrimeVue, {
-                // unstyled: true,
-                pt: Lara, //apply preset
+                theme: {
+                    preset: Aura,
+                },
+                unstyled: false,
+                pt: Lara,
             })
             .mount(el);
     },
