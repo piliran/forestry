@@ -107,7 +107,7 @@
         <div class="mb-4">
             <Link
                 class="group flex items-center py-3 px-4"
-                :class="isUrl('reports') ? 'bg-dark' : 'hover:bg-dark'"
+                :class="isUrl('arrests') ? 'bg-dark' : 'hover:bg-dark'"
                 href="/arrests"
             >
                 <icon
