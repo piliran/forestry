@@ -30,7 +30,7 @@
             <Link
                 class="group flex items-center py-3 px-4"
                 :class="isUrl('districts') ? 'bg-dark' : 'hover:bg-dark'"
-                href="/lenders"
+                href="/districts"
             >
                 <icon
                     name="office"
@@ -163,6 +163,7 @@ export default {
 }
 
 .hover\:bg-dark:hover {
-    background: linear-gradient(135deg, #273320, #3a5228);
+    /* background: linear-gradient(135deg, #273320, #3a5228); */
+    background: linear-gradient(135deg, #1c3d19, #2b5c23);
 }
 </style>

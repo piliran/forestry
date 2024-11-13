@@ -22,6 +22,22 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/districts', function () {
+    return Inertia::render('Department/Districts');
+});
+
+Route::get('/crimes', function () {
+    return Inertia::render('Department/Crimes');
+});
+
+Route::get('/arrests', function () {
+    return Inertia::render('Department/Arrests');
+});
+
+Route::get('/stations', function () {
+    return Inertia::render('Department/Stations');
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

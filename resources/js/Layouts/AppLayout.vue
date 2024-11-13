@@ -147,7 +147,8 @@ const logout = () => {
 </template>
 <style>
 .bg-dark {
-    background: linear-gradient(135deg, #273320, #3a5228);
+    /* background: linear-gradient(135deg, #273320, #3a5228); */
+    background: linear-gradient(135deg, #1c3d19, #2b5c23);
 }
 
 .text-gray-900 {
