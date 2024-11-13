@@ -1,5 +1,31 @@
 <template>
     <AppLayout title="Dashboard">
+        <div class="md:flex md:flex-grow gap-8 xl:flex-row">
+            <div
+                class="py-8 w-full mt-6 px-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
+            >
+                50
+            </div>
+
+            <div
+                class="py-8 w-full mt-6 px-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
+            >
+                50
+            </div>
+
+            <div
+                class="py-8 w-full mt-6 px-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
+            >
+                50
+            </div>
+
+            <div
+                class="py-8 w-full mt-6 px-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
+            >
+                50
+            </div>
+        </div>
+
         <div
             class="py-8 w-full mt-6 px-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
         >
@@ -28,6 +54,7 @@
 import { ref, onMounted } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Chart from "primevue/chart";
+import Card from "primevue/card";
 
 onMounted(() => {
     chartData.value = setChartData();
