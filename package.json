@@ -23,6 +23,7 @@
     "dependencies": {
         "@popperjs/core": "^2.11.8",
         "@primevue/themes": "^4.2.1",
+        "chart.js": "^4.4.6",
         "primevue": "^4.2.1"
     }
 }
