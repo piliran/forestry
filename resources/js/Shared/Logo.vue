@@ -6,6 +6,6 @@
     />
 
     <span class="self-center text-md font-semibold text-white"
-        >Department Of Forestry</span
+        >DoF(LE-SVTP)</span
     >
 </template>

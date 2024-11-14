@@ -38,6 +38,14 @@ Route::get('/stations', function () {
     return Inertia::render('Department/Stations');
 });
 
+Route::get('/encroached-areas', function () {
+    return Inertia::render('Department/EncroachedAreas');
+});
+
+Route::get('/confiscicates', function () {
+    return Inertia::render('Department/Confiscicates');
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

@@ -130,6 +130,60 @@
                 </div>
             </Link>
         </div>
+
+        <div class="mb-4">
+            <Link
+                class="group flex items-center py-3 px-4"
+                :class="isUrl('confiscicates') ? 'bg-dark' : 'hover:bg-dark'"
+                href="/confiscicates"
+            >
+                <icon
+                    name="printer"
+                    class="mr-2 w-4 h-4"
+                    :class="
+                        isUrl('confiscicates')
+                            ? 'fill-white'
+                            : 'fill-neutral-400 group-hover:fill-white'
+                    "
+                />
+                <div
+                    :class="
+                        isUrl('confiscicates')
+                            ? 'text-white'
+                            : 'text-neutral-300 group-hover:text-white'
+                    "
+                >
+                    Confiscicates
+                </div>
+            </Link>
+        </div>
+
+        <div class="mb-4">
+            <Link
+                class="group flex items-center py-3 px-4"
+                :class="isUrl('encroached-areas') ? 'bg-dark' : 'hover:bg-dark'"
+                href="/encroached-areas"
+            >
+                <icon
+                    name="printer"
+                    class="mr-2 w-4 h-4"
+                    :class="
+                        isUrl('encroached-areas')
+                            ? 'fill-white'
+                            : 'fill-neutral-400 group-hover:fill-white'
+                    "
+                />
+                <div
+                    :class="
+                        isUrl('encroached-areas')
+                            ? 'text-white'
+                            : 'text-neutral-300 group-hover:text-white'
+                    "
+                >
+                    Ancroached Areas
+                </div>
+            </Link>
+        </div>
     </div>
 </template>
 
