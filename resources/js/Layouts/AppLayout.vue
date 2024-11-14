@@ -159,7 +159,7 @@ const logout = () => {
 }
 
 .hover\:bg-green-500:hover {
-    /* background-color: #4caf50; */
+    /* background-color: #ebe300; */
     background-color: linear-gradient(135deg, #273320, #3a5228);
 }
 .hover\:text-white:hover {
