@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import ApplicationMark from "@/Components/ApplicationMark.vue";
 import Banner from "@/Components/Banner.vue";
+import Divider from "primevue/divider";
 
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
@@ -48,9 +49,13 @@ const logout = () => {
                     <div
                         class="flex items-center justify-between px-6 py-1 bg-dark md:flex-shrink-0 md:w-56"
                     >
-                        <Link class="mt-1 py-1 flex" href="/">
-                            <logo />
-                        </Link>
+                        <div class="block">
+                            <Link class="mt-1 py-1 flex" href="/">
+                                <logo />
+                            </Link>
+                            <!-- <Divider /> -->
+                        </div>
+
                         <dropdown class="md:hidden" placement="bottom-end">
                             <template #default>
                                 <svg
