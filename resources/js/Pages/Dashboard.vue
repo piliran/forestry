@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Dashboard">
         <div
-            class="bg-surface-50 dark:bg-surface-950 px-6 py-2 md:px-12 lg:px-6"
+            class="bg-surface-50 dark:bg-surface-950 px-6 py-2 md:px-6 lg:px-6"
         >
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-white">
@@ -24,7 +24,7 @@
                                 class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/30 rounded-border w-10 h-10"
                             >
                                 <i
-                                    class="pi pi-shopping-cart text-blue-500 dark:text-blue-200 !text-xl"
+                                    class="pi pi-address-book text-blue-500 dark:text-blue-200 !text-xl"
                                 />
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                                 class="flex items-center justify-center bg-orange-100 dark:bg-orange-400/30 rounded-border w-10 h-10"
                             >
                                 <i
-                                    class="pi pi-map-marker text-orange-500 dark:text-orange-200 !text-xl"
+                                    class="pi pi-car text-orange-500 dark:text-orange-200 !text-xl"
                                 />
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                                 class="w-10 h-10 flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/30 rounded-border"
                             >
                                 <i
-                                    class="pi pi-inbox text-cyan-500 dark:text-cyan-200 !text-xl"
+                                    class="pi pi-map-marker text-cyan-500 dark:text-cyan-200 !text-xl"
                                 />
                             </div>
                         </div>
@@ -114,7 +114,7 @@
                                 class="w-10 h-10 flex items-center justify-center bg-purple-100 dark:bg-purple-400/30 rounded-border"
                             >
                                 <i
-                                    class="pi pi-comment text-purple-500 dark:text-purple-200 !text-xl"
+                                    class="pi pi-ban text-red-500 dark:text-purple-200 !text-xl"
                                 />
                             </div>
                         </div>

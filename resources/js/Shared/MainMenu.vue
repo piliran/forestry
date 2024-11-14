@@ -2,8 +2,10 @@
     <div>
         <div class="mb-4">
             <Link
-                class="group flex items-center py-3 px-4"
-                :class="isUrl('dashboard') ? 'bg-dark' : 'hover:bg-dark'"
+                class="group flex items-center py-2 px-4"
+                :class="
+                    isUrl('dashboard') ? 'bg-white rounded-xl' : 'hover:bg-dark'
+                "
                 href="/dashboard"
             >
                 <icon
@@ -11,15 +13,15 @@
                     class="mr-2 w-4 h-4"
                     :class="
                         isUrl('dashboard')
-                            ? 'fill-white'
-                            : 'fill-neutral-400 group-hover:fill-white'
+                            ? 'fill-green-900'
+                            : 'fill-white group-hover:fill-green-900'
                     "
                 />
                 <div
                     :class="
                         isUrl('dashboard')
-                            ? 'text-white'
-                            : 'text-neutral-300 group-hover:text-white'
+                            ? 'text-green-900'
+                            : 'text-white group-hover:text-green-900'
                     "
                 >
                     Dashboard
@@ -28,8 +30,10 @@
         </div>
         <div class="mb-4">
             <Link
-                class="group flex items-center py-3 px-4"
-                :class="isUrl('districts') ? 'bg-dark' : 'hover:bg-dark'"
+                class="group flex items-center py-2 px-4"
+                :class="
+                    isUrl('districts') ? 'bg-white rounded-xl' : 'hover:bg-dark'
+                "
                 href="/districts"
             >
                 <icon
@@ -37,15 +41,15 @@
                     class="mr-2 w-4 h-4"
                     :class="
                         isUrl('districts')
-                            ? 'fill-white'
-                            : 'fill-neutral-400 group-hover:fill-white'
+                            ? 'fill-green-900'
+                            : 'fill-white group-hover:fill-green-900'
                     "
                 />
                 <div
                     :class="
                         isUrl('districts')
-                            ? 'text-white'
-                            : 'text-neutral-300 group-hover:text-white'
+                            ? 'text-green-900'
+                            : 'text-white group-hover:text-green-900'
                     "
                 >
                     Districts
@@ -54,8 +58,10 @@
         </div>
         <div class="mb-4">
             <Link
-                class="group flex items-center py-3 px-4"
-                :class="isUrl('stations') ? 'bg-dark' : 'hover:bg-dark'"
+                class="group flex items-center py-2 px-4"
+                :class="
+                    isUrl('stations') ? 'bg-white rounded-xl' : 'hover:bg-dark'
+                "
                 href="/stations"
             >
                 <icon
@@ -63,15 +69,15 @@
                     class="mr-2 w-4 h-4"
                     :class="
                         isUrl('stations')
-                            ? 'fill-white'
-                            : 'fill-neutral-400 group-hover:fill-white'
+                            ? 'fill-green-900'
+                            : 'fill-white group-hover:fill-green-900'
                     "
                 />
                 <div
                     :class="
                         isUrl('stations')
-                            ? 'text-white'
-                            : 'text-neutral-300 group-hover:text-white'
+                            ? 'text-green-900'
+                            : 'text-white group-hover:text-green-900'
                     "
                 >
                     Stations
@@ -80,8 +86,10 @@
         </div>
         <div class="mb-4">
             <Link
-                class="group flex items-center py-3 px-4"
-                :class="isUrl('crimes') ? 'bg-dark' : 'hover:bg-dark'"
+                class="group flex items-center py-2 px-4"
+                :class="
+                    isUrl('crimes') ? 'bg-white rounded-xl' : 'hover:bg-dark'
+                "
                 href="/crimes"
             >
                 <icon
@@ -89,15 +97,15 @@
                     class="mr-2 w-4 h-4"
                     :class="
                         isUrl('crimes')
-                            ? 'fill-white'
-                            : 'fill-neutral-400 group-hover:fill-white'
+                            ? 'fill-green-900'
+                            : 'fill-white group-hover:fill-green-900'
                     "
                 />
                 <div
                     :class="
                         isUrl('crimes')
-                            ? 'text-white'
-                            : 'text-neutral-300 group-hover:text-white'
+                            ? 'text-green-900'
+                            : 'text-white group-hover:text-green-900'
                     "
                 >
                     Crimes
@@ -106,8 +114,10 @@
         </div>
         <div class="mb-4">
             <Link
-                class="group flex items-center py-3 px-4"
-                :class="isUrl('arrests') ? 'bg-dark' : 'hover:bg-dark'"
+                class="group flex items-center py-2 px-4"
+                :class="
+                    isUrl('arrests') ? 'bg-white rounded-xl' : 'hover:bg-dark'
+                "
                 href="/arrests"
             >
                 <icon
@@ -115,15 +125,15 @@
                     class="mr-2 w-4 h-4"
                     :class="
                         isUrl('arrests')
-                            ? 'fill-white'
-                            : 'fill-neutral-400 group-hover:fill-white'
+                            ? 'fill-green-900'
+                            : 'fill-white group-hover:fill-green-900'
                     "
                 />
                 <div
                     :class="
                         isUrl('arrests')
-                            ? 'text-white'
-                            : 'text-neutral-300 group-hover:text-white'
+                            ? 'text-green-900'
+                            : 'text-white group-hover:text-green-900'
                     "
                 >
                     Arrests
@@ -133,8 +143,12 @@
 
         <div class="mb-4">
             <Link
-                class="group flex items-center py-3 px-4"
-                :class="isUrl('confiscicates') ? 'bg-dark' : 'hover:bg-dark'"
+                class="group flex items-center py-2 px-4"
+                :class="
+                    isUrl('confiscicates')
+                        ? 'bg-white rounded-xl'
+                        : 'hover:bg-dark'
+                "
                 href="/confiscicates"
             >
                 <icon
@@ -142,15 +156,15 @@
                     class="mr-2 w-4 h-4"
                     :class="
                         isUrl('confiscicates')
-                            ? 'fill-white'
-                            : 'fill-neutral-400 group-hover:fill-white'
+                            ? 'fill-green-900'
+                            : 'fill-white group-hover:fill-green-900'
                     "
                 />
                 <div
                     :class="
                         isUrl('confiscicates')
-                            ? 'text-white'
-                            : 'text-neutral-300 group-hover:text-white'
+                            ? 'text-green-900'
+                            : 'text-white group-hover:text-green-900'
                     "
                 >
                     Confiscicates
@@ -160,8 +174,12 @@
 
         <div class="mb-4">
             <Link
-                class="group flex items-center py-3 px-4"
-                :class="isUrl('encroached-areas') ? 'bg-dark' : 'hover:bg-dark'"
+                class="group flex items-center py-2 px-4"
+                :class="
+                    isUrl('encroached-areas')
+                        ? 'bg-white rounded-xl'
+                        : 'hover:bg-dark'
+                "
                 href="/encroached-areas"
             >
                 <icon
@@ -169,15 +187,15 @@
                     class="mr-2 w-4 h-4"
                     :class="
                         isUrl('encroached-areas')
-                            ? 'fill-white'
-                            : 'fill-neutral-400 group-hover:fill-white'
+                            ? 'fill-green-900'
+                            : 'fill-white group-hover:fill-green-900'
                     "
                 />
                 <div
                     :class="
                         isUrl('encroached-areas')
-                            ? 'text-white'
-                            : 'text-neutral-300 group-hover:text-white'
+                            ? 'text-green-900'
+                            : 'text-white group-hover:text-green-900'
                     "
                 >
                     Ancroached Areas
@@ -209,7 +227,7 @@ export default {
 </script>
 <style>
 .bg-dark {
-    background-color: #59873c;
+    background-color: #ffffff;
 }
 
 .text-gray-900 {
@@ -218,6 +236,8 @@ export default {
 
 .hover\:bg-dark:hover {
     /* background: linear-gradient(135deg, #273320, #3a5228); */
-    background: linear-gradient(135deg, #1c3d19, #2b5c23);
+    /* background: linear-gradient(135deg, #1c3d19, #b8d9b3); */
+    background: #ffffff;
+    border-radius: 10px;
 }
 </style>

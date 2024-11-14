@@ -12,7 +12,7 @@ import Icon from "@/Shared/Icon.vue";
 import Logo from "@/Shared/Logo.vue";
 import FlashMessages from "@/Shared/FlashMessages.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
-
+import Breadcrumb from "@/Components/Breadcrumb.vue";
 defineProps({
     title: String,
 });
@@ -78,6 +78,7 @@ const logout = () => {
                     >
                         <div class="mr-4 mt-1">
                             <!-- {{ $page.props.auth.user.name }} -->
+                            <!-- <Breadcrumb /> -->
                         </div>
                         <Dropdown class="mt-1" placement="bottom-end">
                             <template #default>
@@ -139,8 +140,9 @@ const logout = () => {
 </template>
 <style>
 .bg-dark {
-    /* background: linear-gradient(135deg, #273320, #3a5228); */
-    background: linear-gradient(135deg, #1c3d19, #2b5c23);
+    /* background: linear-gradient(135deg, #007e4e, rgb(0, 0, 0)); */
+    /* background: linear-gradient(135deg, #1c3d19, #2b5c23); */
+    background: #007e4e;
 }
 
 .text-gray-900 {

@@ -10,6 +10,10 @@ import PrimeVue from "primevue/config";
 import Lara from "@/primevue/presets/lara";
 import Aura from "@primevue/themes/aura";
 
+import ToastService from "primevue/toastservice";
+
+import "primeicons/primeicons.css";
+
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({
@@ -30,6 +34,8 @@ createInertiaApp({
                 unstyled: false,
                 pt: Lara,
             })
+
+            .use(ToastService)
             .mount(el);
     },
     progress: {
