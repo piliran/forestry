@@ -14,11 +14,13 @@ import Logo from "@/Shared/Logo.vue";
 import FlashMessages from "@/Shared/FlashMessages.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import Breadcrumb from "@/Components/Breadcrumb.vue";
+
 defineProps({
     title: String,
 });
 
 const showingNavigationDropdown = ref(false);
+const isSidebarVisible = ref(true); // State to track sidebar visibility
 
 const switchToTeam = (team) => {
     router.put(
@@ -35,6 +37,11 @@ const switchToTeam = (team) => {
 const logout = () => {
     router.post(route("logout"));
 };
+
+// Function to toggle sidebar visibility
+const toggleSidebar = () => {
+    isSidebarVisible.value = !isSidebarVisible.value;
+};
 </script>
 
 <template>
@@ -47,16 +54,9 @@ const logout = () => {
             <div class="md:flex md:flex-col md:h-screen">
                 <div class="md:flex md:flex-shrink-0">
                     <div
-                        class="flex items-center justify-between px-0 py-1 bg-dark md:flex-shrink-0 md:w-56"
+                        v-show="isSidebarVisible"
+                        class="flex items-center border-b-2 border-transparent lg:border-white md:border-white justify-between px-0 py-1 bg-dark md:flex-shrink-0 md:w-56"
                     >
-                        <!-- <div
-                            class="block border-b-2 border-transparent lg:border-white md:border-white w-full px-6"
-                        >
-                            <Link class="mb-1 py-1 flex" href="/">
-                                <logo />
-                            </Link>
-                        </div> -->
-
                         <div class="block w-full px-6">
                             <Link class="mb-1 py-1 flex" href="/">
                                 <logo />
@@ -66,7 +66,7 @@ const logout = () => {
                         <dropdown class="md:hidden px-6" placement="bottom-end">
                             <template #default>
                                 <svg
-                                    class="w-6 h-6 fill-white"
+                                    class="w-6 h-6 fill-white cursor-pointer"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                 >
@@ -83,14 +83,55 @@ const logout = () => {
                                 </div>
                             </template>
                         </dropdown>
+
+                        <dropdown class="md:hidden px-6" placement="bottom-end">
+                            <template #default>
+                                <svg
+                                    class="w-6 h-6 fill-white cursor-pointer"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        d="M10 10c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.333 0-10 1.667-10 5v3h20v-3c0-3.333-6.667-5-10-5z"
+                                    />
+                                </svg>
+                            </template>
+                            <template #dropdown>
+                                <div
+                                    class="mt-2 py-2 text-sm bg-white rounded shadow-xl"
+                                >
+                                    <Link
+                                        class="block px-6 py-2 hover:text-white hover:bg-green-900"
+                                        :href="route('profile.show')"
+                                        >Profile</Link
+                                    >
+                                    <button
+                                        type="submit"
+                                        @click="logout"
+                                        class="block px-6 py-2 hover:text-white hover:bg-green-900 width-full"
+                                    >
+                                        Log Out
+                                    </button>
+                                </div>
+                            </template>
+                        </dropdown>
                     </div>
 
                     <div
-                        class="md:text-md flex items-center justify-between p-4 w-full text-sm bg-white border-b md:px-12 md:py-0"
+                        class="hidden md:text-md md:flex items-center justify-between p-2 w-full text-sm bg-white border-b md:px-12 md:py-3 min-h-12"
                     >
-                        <div class="mr-4 mt-1">
-                            <!-- {{ $page.props.auth.user.name }} -->
-                            <!-- <Breadcrumb /> -->
+                        <div class="mr-4 my-2">
+                            <!-- Icon for toggling sidebar on medium and large devices -->
+                            <button
+                                class="hidden md:block px-0 text-gray-900"
+                                @click="toggleSidebar"
+                                aria-label="Toggle Sidebar"
+                            >
+                                <icon
+                                    :name="isSidebarVisible ? 'menu' : 'menu'"
+                                    class="w-6 h-6"
+                                />
+                            </button>
                         </div>
                         <Dropdown class="mt-1" placement="bottom-end">
                             <template #default>
@@ -134,11 +175,12 @@ const logout = () => {
 
                 <div class="md:flex md:flex-grow md:overflow-hidden">
                     <main-menu
+                        v-show="isSidebarVisible"
                         class="hidden flex-shrink-0 py-4 px-4 w-56 bg-dark overflow-y-auto md:block"
                     />
 
                     <div
-                        class="px-4 py-8 md:flex-1 md:p-12 md:overflow-y-auto"
+                        class="px-0 py-8 md:flex-1 md:p-6 md:overflow-y-auto"
                         scroll-region
                     >
                         <slot />
@@ -148,6 +190,7 @@ const logout = () => {
         </div>
     </div>
 </template>
+
 <style>
 .bg-dark {
     /* background: linear-gradient(135deg, #007e4e, rgb(0, 0, 0)); */

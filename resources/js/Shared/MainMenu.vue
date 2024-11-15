@@ -216,33 +216,6 @@ const items = ref([
     },
 ]);
 
-const activeMainLinkIndex = ref(null);
-
-// const dropdownVisibility = ref({});
-
-// Update dropdown visibility state
-// const toggleDropdown = (index, item) => {
-//     if (item.items && item.items.length > 0) {
-//         dropdownVisibility.value[index] = !dropdownVisibility.value[index];
-
-//         sessionStorage.setItem(
-//             "dropdownVisibility",
-//             JSON.stringify(dropdownVisibility.value)
-//         );
-//     } else {
-//         router.visit(item.route);
-//     }
-// };
-
-// onMounted(() => {
-//     const savedVisibility = JSON.parse(
-//         sessionStorage.getItem("dropdownVisibility")
-//     );
-//     if (savedVisibility) {
-//         dropdownVisibility.value = savedVisibility;
-//     }
-// });
-
 const dropdownVisibility = ref([]);
 
 const toggleDropdown = (index, item) => {

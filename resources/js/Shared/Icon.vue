@@ -277,6 +277,24 @@
     >
         <circle cx="10" cy="10" r="5" />
     </svg>
+
+    <svg
+        v-else-if="name === 'menu'"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+    >
+        <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+    </svg>
+
+    <svg
+        v-else-if="name === 'user-profile'"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+    >
+        <path
+            d="M10 10c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.333 0-10 1.667-10 5v3h20v-3c0-3.333-6.667-5-10-5z"
+        />
+    </svg>
 </template>
 
 <script>
