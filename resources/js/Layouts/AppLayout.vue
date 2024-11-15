@@ -47,16 +47,23 @@ const logout = () => {
             <div class="md:flex md:flex-col md:h-screen">
                 <div class="md:flex md:flex-shrink-0">
                     <div
-                        class="flex items-center justify-between px-6 py-1 bg-dark md:flex-shrink-0 md:w-56"
+                        class="flex items-center justify-between px-0 py-1 bg-dark md:flex-shrink-0 md:w-56"
                     >
-                        <div class="block">
-                            <Link class="mt-1 py-1 flex" href="/">
+                        <!-- <div
+                            class="block border-b-2 border-transparent lg:border-white md:border-white w-full px-6"
+                        >
+                            <Link class="mb-1 py-1 flex" href="/">
                                 <logo />
                             </Link>
-                            <!-- <Divider /> -->
+                        </div> -->
+
+                        <div class="block w-full px-6">
+                            <Link class="mb-1 py-1 flex" href="/">
+                                <logo />
+                            </Link>
                         </div>
 
-                        <dropdown class="md:hidden" placement="bottom-end">
+                        <dropdown class="md:hidden px-6" placement="bottom-end">
                             <template #default>
                                 <svg
                                     class="w-6 h-6 fill-white"
@@ -72,7 +79,9 @@ const logout = () => {
                                 <div
                                     class="mt-2 px-8 py-4 bg-dark rounded shadow-lg"
                                 >
-                                    <main-menu />
+                                    <KeepAlive>
+                                        <main-menu />
+                                    </KeepAlive>
                                 </div>
                             </template>
                         </dropdown>
@@ -108,14 +117,14 @@ const logout = () => {
                                     class="mt-2 py-2 text-sm bg-white rounded shadow-xl"
                                 >
                                     <Link
-                                        class="block px-6 py-2 hover:text-white hover:bg-lime-900"
+                                        class="block px-6 py-2 hover:text-white hover:bg-green-900"
                                         :href="route('profile.show')"
                                         >Profile</Link
                                     >
                                     <button
                                         type="submit"
                                         @click="logout"
-                                        class="block px-6 py-2 hover:text-white hover:bg-lime-900 width-full"
+                                        class="block px-6 py-2 hover:text-white hover:bg-green-900 width-full"
                                     >
                                         Log Out
                                     </button>
@@ -126,12 +135,12 @@ const logout = () => {
                 </div>
 
                 <div class="md:flex md:flex-grow md:overflow-hidden">
-                    <!-- <main-menu
-                        class="hidden flex-shrink-0 p-12 w-56 bg-green-800 overflow-y-auto md:block"
-                    /> -->
-                    <main-menu
-                        class="hidden flex-shrink-0 py-4 px-4 w-56 bg-dark overflow-y-auto md:block"
-                    />
+                    <KeepAlive>
+                        <main-menu
+                            class="hidden flex-shrink-0 py-4 px-4 w-56 bg-dark overflow-y-auto md:block"
+                        />
+                    </KeepAlive>
+
                     <div
                         class="px-4 py-8 md:flex-1 md:p-12 md:overflow-y-auto"
                         scroll-region

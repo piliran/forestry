@@ -42,9 +42,41 @@ Route::get('/encroached-areas', function () {
     return Inertia::render('Department/EncroachedAreas');
 });
 
-Route::get('/confiscicates', function () {
-    return Inertia::render('Department/Confiscicates');
+Route::get('/confiscates', function () {
+    return Inertia::render('Department/Confiscates');
 });
+
+Route::get('/route-list', function () {
+    return Inertia::render('Department/RouteList');
+});
+
+Route::get('/route-types', function () {
+    return Inertia::render('Department/RouteTypes');
+});
+
+Route::get('/species-list', function () {
+    return Inertia::render('Department/SpeciesList');
+});
+
+Route::get('/species-types', function () {
+    return Inertia::render('Department/SpeciesTypes');
+});
+
+
+Route::get('/users-list', function () {
+    return Inertia::render('User/UserList');
+});
+Route::get('/user-roles', function () {
+    return Inertia::render('User/UserRoles');
+});
+Route::get('/roles', function () {
+    return Inertia::render('User/Roles');
+});
+Route::get('/permissions', function () {
+    return Inertia::render('User/Permissions');
+});
+
+
 
 Route::middleware([
     'auth:sanctum',

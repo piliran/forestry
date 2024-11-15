@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Confiscicates"> </AppLayout>
+    <AppLayout title="Confiscates"> </AppLayout>
 </template>
 
 <script setup>

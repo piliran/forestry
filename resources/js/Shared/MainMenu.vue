@@ -1,228 +1,269 @@
 <template>
     <div>
-        <div class="mb-4">
-            <Link
-                class="group flex items-center py-2 px-4"
-                :class="
-                    isUrl('dashboard') ? 'bg-white rounded-xl' : 'hover:bg-dark'
-                "
-                href="/dashboard"
+        <div v-for="(item, index) in items" :key="index" class="mb-4">
+            <!-- Main Link -->
+            <div
+                class="group flex items-center py-2 px-4 cursor-pointer"
+                :class="[
+                    isUrl(item.route) ? 'bg-white rounded-xl' : 'hover:bg-dark',
+                    item.class,
+                ]"
+                @click="toggleDropdown(index, item)"
             >
-                <icon
-                    name="dashboard"
+                <Icon
+                    :name="item.icon"
                     class="mr-2 w-4 h-4"
                     :class="
-                        isUrl('dashboard')
+                        isUrl(item.route)
                             ? 'fill-green-900'
                             : 'fill-white group-hover:fill-green-900'
                     "
                 />
                 <div
                     :class="
-                        isUrl('dashboard')
+                        isUrl(item.route)
                             ? 'text-green-900'
                             : 'text-white group-hover:text-green-900'
                     "
                 >
-                    Dashboard
+                    {{ item.label }}
                 </div>
-            </Link>
-        </div>
-        <div class="mb-4">
-            <Link
-                class="group flex items-center py-2 px-4"
-                :class="
-                    isUrl('districts') ? 'bg-white rounded-xl' : 'hover:bg-dark'
-                "
-                href="/districts"
-            >
-                <icon
-                    name="office"
-                    class="mr-2 w-4 h-4"
-                    :class="
-                        isUrl('districts')
-                            ? 'fill-green-900'
-                            : 'fill-white group-hover:fill-green-900'
-                    "
-                />
-                <div
-                    :class="
-                        isUrl('districts')
-                            ? 'text-green-900'
-                            : 'text-white group-hover:text-green-900'
-                    "
-                >
-                    Districts
-                </div>
-            </Link>
-        </div>
-        <div class="mb-4">
-            <Link
-                class="group flex items-center py-2 px-4"
-                :class="
-                    isUrl('stations') ? 'bg-white rounded-xl' : 'hover:bg-dark'
-                "
-                href="/stations"
-            >
-                <icon
-                    name="users"
-                    class="mr-2 w-4 h-4"
-                    :class="
-                        isUrl('stations')
-                            ? 'fill-green-900'
-                            : 'fill-white group-hover:fill-green-900'
-                    "
-                />
-                <div
-                    :class="
-                        isUrl('stations')
-                            ? 'text-green-900'
-                            : 'text-white group-hover:text-green-900'
-                    "
-                >
-                    Stations
-                </div>
-            </Link>
-        </div>
-        <div class="mb-4">
-            <Link
-                class="group flex items-center py-2 px-4"
-                :class="
-                    isUrl('crimes') ? 'bg-white rounded-xl' : 'hover:bg-dark'
-                "
-                href="/crimes"
-            >
-                <icon
-                    name="printer"
-                    class="mr-2 w-4 h-4"
-                    :class="
-                        isUrl('crimes')
-                            ? 'fill-green-900'
-                            : 'fill-white group-hover:fill-green-900'
-                    "
-                />
-                <div
-                    :class="
-                        isUrl('crimes')
-                            ? 'text-green-900'
-                            : 'text-white group-hover:text-green-900'
-                    "
-                >
-                    Crimes
-                </div>
-            </Link>
-        </div>
-        <div class="mb-4">
-            <Link
-                class="group flex items-center py-2 px-4"
-                :class="
-                    isUrl('arrests') ? 'bg-white rounded-xl' : 'hover:bg-dark'
-                "
-                href="/arrests"
-            >
-                <icon
-                    name="printer"
-                    class="mr-2 w-4 h-4"
-                    :class="
-                        isUrl('arrests')
-                            ? 'fill-green-900'
-                            : 'fill-white group-hover:fill-green-900'
-                    "
-                />
-                <div
-                    :class="
-                        isUrl('arrests')
-                            ? 'text-green-900'
-                            : 'text-white group-hover:text-green-900'
-                    "
-                >
-                    Arrests
-                </div>
-            </Link>
-        </div>
 
-        <div class="mb-4">
-            <Link
-                class="group flex items-center py-2 px-4"
-                :class="
-                    isUrl('confiscicates')
-                        ? 'bg-white rounded-xl'
-                        : 'hover:bg-dark'
-                "
-                href="/confiscicates"
-            >
-                <icon
-                    name="printer"
-                    class="mr-2 w-4 h-4"
+                <Icon
+                    v-if="item.forwardIcon"
+                    :name="
+                        isDropdownVisible(index)
+                            ? 'cheveron-down'
+                            : 'cheveron-right'
+                    "
+                    class="mr-2 w-4 h-4 ml-2"
                     :class="
-                        isUrl('confiscicates')
+                        isUrl(item.route)
                             ? 'fill-green-900'
                             : 'fill-white group-hover:fill-green-900'
                     "
                 />
-                <div
-                    :class="
-                        isUrl('confiscicates')
-                            ? 'text-green-900'
-                            : 'text-white group-hover:text-green-900'
-                    "
-                >
-                    Confiscicates
-                </div>
-            </Link>
-        </div>
+            </div>
 
-        <div class="mb-4">
-            <Link
-                class="group flex items-center py-2 px-4"
-                :class="
-                    isUrl('encroached-areas')
-                        ? 'bg-white rounded-xl'
-                        : 'hover:bg-dark'
-                "
-                href="/encroached-areas"
-            >
-                <icon
-                    name="printer"
-                    class="mr-2 w-4 h-4"
-                    :class="
-                        isUrl('encroached-areas')
-                            ? 'fill-green-900'
-                            : 'fill-white group-hover:fill-green-900'
-                    "
-                />
-                <div
-                    :class="
-                        isUrl('encroached-areas')
-                            ? 'text-green-900'
-                            : 'text-white group-hover:text-green-900'
-                    "
-                >
-                    Ancroached Areas
+            <!-- Sublinks -->
+            <div v-if="isDropdownVisible(index)" class="ml-6">
+                <div v-for="(subItem, subIndex) in item.items" :key="subIndex">
+                    <Link
+                        v-if="subItem.route"
+                        :href="subItem.route"
+                        class="group flex items-center my-3 py-2 px-4"
+                        :class="
+                            isUrl(subItem.route)
+                                ? 'bg-white rounded-xl'
+                                : 'hover:bg-dark'
+                        "
+                        @click.stop="navigateSubLink(subItem)"
+                    >
+                        <Icon
+                            :name="subItem.icon"
+                            class="mr-2 w-4 h-4"
+                            :class="
+                                isUrl(subItem.route)
+                                    ? 'fill-green-900'
+                                    : 'fill-white group-hover:fill-green-900'
+                            "
+                        />
+                        <div
+                            :class="
+                                isUrl(subItem.route)
+                                    ? 'text-green-900'
+                                    : 'text-white group-hover:text-green-900'
+                            "
+                        >
+                            {{ subItem.label }}
+                        </div>
+                    </Link>
                 </div>
-            </Link>
+            </div>
         </div>
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from "vue";
+import { usePage } from "@inertiajs/vue3";
 import { Link } from "@inertiajs/vue3";
 import Icon from "@/Shared/Icon.vue";
+import { router } from "@inertiajs/vue3";
 
-export default {
-    components: {
-        Icon,
-        Link,
+const page = usePage();
+const items = ref([
+    {
+        label: "Dashboard",
+        icon: "dashboard",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "dashboard",
     },
-    methods: {
-        isUrl(...urls) {
-            let currentUrl = this.$page.url.substr(1);
-            if (urls[0] === "") {
-                return currentUrl === "";
-            }
-            return urls.filter((url) => currentUrl.startsWith(url)).length;
-        },
+    {
+        label: "Users",
+        icon: "users",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
+
+        items: [
+            {
+                label: "Users List",
+                icon: "dot",
+                route: "users-list",
+            },
+            {
+                label: "Roles",
+                icon: "dot",
+                route: "roles",
+            },
+            {
+                label: "User Roles",
+                icon: "dot",
+                route: "user-roles",
+            },
+            {
+                label: "Permissions",
+                icon: "dot",
+                route: "permissions",
+            },
+        ],
     },
+    {
+        label: "Districts",
+        icon: "districts",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        route: "districts",
+    },
+    {
+        label: "Stations",
+        icon: "stations",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "stations",
+    },
+    {
+        label: "Crimes",
+        icon: "crimes",
+        forwardIcon: false,
+        class: "parent-link-with-no-sublinks",
+
+        route: "crimes",
+    },
+    {
+        label: "Arrests",
+        icon: "arrests",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        route: "arrests",
+    },
+    {
+        label: "Confiscates",
+        icon: "confiscated-items",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        route: "confiscates",
+    },
+    {
+        label: "Encroached Areas",
+        icon: "encroached-areas",
+        class: "parent-link-with-no-sublinks",
+
+        route: "encroached-areas",
+    },
+    {
+        label: "Routes",
+        icon: "road",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
+
+        items: [
+            {
+                label: "Route List",
+                icon: "dot",
+                route: "route-list",
+            },
+            {
+                label: "Route Types",
+                icon: "dot",
+                route: "route-types",
+            },
+        ],
+    },
+
+    {
+        label: "Species",
+        icon: "road",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
+
+        items: [
+            {
+                label: "Species List",
+                icon: "dot",
+                route: "species-list",
+            },
+            {
+                label: "Species Category",
+                icon: "dot",
+                route: "species-types",
+            },
+        ],
+    },
+]);
+
+const activeMainLinkIndex = ref(null);
+
+const dropdownVisibility = ref({});
+
+// const toggleDropdown = (index, item) => {
+//     if (item.items && item.items.length > 0) {
+
+//         dropdownVisibility.value[index] = !dropdownVisibility.value[index];
+//     } else {
+
+//         router.visit(item.route);
+//     }
+// };
+
+// Update dropdown visibility state
+const toggleDropdown = (index, item) => {
+    if (item.items && item.items.length > 0) {
+        dropdownVisibility.value[index] = !dropdownVisibility.value[index];
+
+        sessionStorage.setItem(
+            "dropdownVisibility",
+            JSON.stringify(dropdownVisibility.value)
+        );
+    } else {
+        router.visit(item.route);
+    }
+};
+
+onMounted(() => {
+    const savedVisibility = JSON.parse(
+        sessionStorage.getItem("dropdownVisibility")
+    );
+    if (savedVisibility) {
+        dropdownVisibility.value = savedVisibility;
+    }
+});
+
+const navigateSubLink = (subItem) => {
+    router.visit(subItem.route);
+};
+
+const isUrl = (route) => {
+    let currentUrl = page.url.substr(1);
+    return route && currentUrl.startsWith(route);
+};
+
+const isDropdownVisible = (index) => {
+    return dropdownVisibility.value[index] || false;
 };
 </script>
 <style>
@@ -235,8 +276,6 @@ export default {
 }
 
 .hover\:bg-dark:hover {
-    /* background: linear-gradient(135deg, #273320, #3a5228); */
-    /* background: linear-gradient(135deg, #1c3d19, #b8d9b3); */
     background: #ffffff;
     border-radius: 10px;
 }
