@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Dashboard">
         <div
-            class="bg-surface-50 dark:bg-surface-950 px-6 py-2 md:px-6 lg:px-6"
+            class="bg-surface-50 dark:bg-surface-950 px-6 py-2 md:px-0 lg:px-0"
         >
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-white">
@@ -128,7 +128,7 @@
         </div>
 
         <div
-            class="px-6 py-8 md:px-12 lg:px-6 mx-6 mt-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
+            class="px-6 py-8 md:px-12 lg:px-6 mt-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
         >
             <Chart
                 type="line"
@@ -139,7 +139,7 @@
         </div>
 
         <div
-            class="px-6 py-8 md:px-12 lg:px-6 mx-6 my-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
+            class="px-6 py-8 md:px-12 lg:px-6 my-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
         >
             <Chart
                 type="bar"

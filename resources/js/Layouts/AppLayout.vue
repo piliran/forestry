@@ -118,7 +118,7 @@ const toggleSidebar = () => {
                     </div>
 
                     <div
-                        class="hidden md:text-md md:flex items-center justify-between p-2 w-full text-sm bg-white border-b md:px-12 md:py-3 min-h-12"
+                        class="hidden md:text-md md:flex items-center justify-between p-1 w-full text-sm bg-white border-b md:px-12 md:py-3 min-h-12"
                     >
                         <div class="mr-4 my-2">
                             <!-- Icon for toggling sidebar on medium and large devices -->
@@ -180,7 +180,7 @@ const toggleSidebar = () => {
                     />
 
                     <div
-                        class="px-0 py-8 md:flex-1 md:p-6 md:overflow-y-auto"
+                        class="px-0 py-8 mx-4 md:flex-1 md:p-10 md:overflow-y-auto"
                         scroll-region
                     >
                         <slot />
