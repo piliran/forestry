@@ -8,7 +8,7 @@
                     isUrl(item.route) ? 'bg-white rounded-xl' : 'hover:bg-dark',
                     item.class,
                 ]"
-                @click="toggleDropdown(index, item)"
+                @click.stop="toggleDropdown(index, item)"
             >
                 <Icon
                     :name="item.icon"
@@ -218,29 +218,62 @@ const items = ref([
 
 const activeMainLinkIndex = ref(null);
 
-const dropdownVisibility = ref({});
+// const dropdownVisibility = ref({});
 
+// Update dropdown visibility state
 // const toggleDropdown = (index, item) => {
 //     if (item.items && item.items.length > 0) {
-
 //         dropdownVisibility.value[index] = !dropdownVisibility.value[index];
-//     } else {
 
+//         sessionStorage.setItem(
+//             "dropdownVisibility",
+//             JSON.stringify(dropdownVisibility.value)
+//         );
+//     } else {
 //         router.visit(item.route);
 //     }
 // };
 
-// Update dropdown visibility state
+// onMounted(() => {
+//     const savedVisibility = JSON.parse(
+//         sessionStorage.getItem("dropdownVisibility")
+//     );
+//     if (savedVisibility) {
+//         dropdownVisibility.value = savedVisibility;
+//     }
+// });
+
+const dropdownVisibility = ref([]);
+
 const toggleDropdown = (index, item) => {
     if (item.items && item.items.length > 0) {
-        dropdownVisibility.value[index] = !dropdownVisibility.value[index];
+        // Ensure the dropdownVisibility array has enough entries
+        if (dropdownVisibility.value.length <= index) {
+            dropdownVisibility.value = Array.from(
+                { length: items.value.length },
+                () => false
+            );
+        }
+
+        // Toggle the clicked dropdown while closing others
+        dropdownVisibility.value = dropdownVisibility.value.map((visible, i) =>
+            i === index ? !visible : false
+        );
 
         sessionStorage.setItem(
             "dropdownVisibility",
             JSON.stringify(dropdownVisibility.value)
         );
     } else {
-        router.visit(item.route);
+        // For links without sublinks, close all dropdowns
+        dropdownVisibility.value = dropdownVisibility.value.map(() => false);
+
+        sessionStorage.setItem(
+            "dropdownVisibility",
+            JSON.stringify(dropdownVisibility.value)
+        );
+
+        router.visit(item.route); // Navigate to the link
     }
 };
 
@@ -248,8 +281,17 @@ onMounted(() => {
     const savedVisibility = JSON.parse(
         sessionStorage.getItem("dropdownVisibility")
     );
-    if (savedVisibility) {
+    if (
+        Array.isArray(savedVisibility) &&
+        savedVisibility.length === items.value.length
+    ) {
         dropdownVisibility.value = savedVisibility;
+    } else {
+        // Reset the dropdownVisibility to match items length
+        dropdownVisibility.value = Array.from(
+            { length: items.value.length },
+            () => false
+        );
     }
 });
 
