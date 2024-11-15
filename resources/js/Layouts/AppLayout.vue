@@ -79,9 +79,7 @@ const logout = () => {
                                 <div
                                     class="mt-2 px-8 py-4 bg-dark rounded shadow-lg"
                                 >
-                                    <KeepAlive>
-                                        <main-menu />
-                                    </KeepAlive>
+                                    <main-menu />
                                 </div>
                             </template>
                         </dropdown>
@@ -135,11 +133,9 @@ const logout = () => {
                 </div>
 
                 <div class="md:flex md:flex-grow md:overflow-hidden">
-                    <KeepAlive>
-                        <main-menu
-                            class="hidden flex-shrink-0 py-4 px-4 w-56 bg-dark overflow-y-auto md:block"
-                        />
-                    </KeepAlive>
+                    <main-menu
+                        class="hidden flex-shrink-0 py-4 px-4 w-56 bg-dark overflow-y-auto md:block"
+                    />
 
                     <div
                         class="px-4 py-8 md:flex-1 md:p-12 md:overflow-y-auto"

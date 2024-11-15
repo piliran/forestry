@@ -98,7 +98,7 @@ const items = ref([
         icon: "dashboard",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
-        route: "dashboard",
+        route: "/dashboard",
     },
     {
         label: "Users",
@@ -110,22 +110,22 @@ const items = ref([
             {
                 label: "Users List",
                 icon: "dot",
-                route: "users-list",
+                route: "/users-list",
             },
             {
                 label: "Roles",
                 icon: "dot",
-                route: "roles",
+                route: "/roles",
             },
             {
                 label: "User Roles",
                 icon: "dot",
-                route: "user-roles",
+                route: "/user-roles",
             },
             {
                 label: "Permissions",
                 icon: "dot",
-                route: "permissions",
+                route: "/permissions",
             },
         ],
     },
@@ -135,14 +135,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
 
-        route: "districts",
+        route: "/districts",
     },
     {
         label: "Stations",
         icon: "stations",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
-        route: "stations",
+        route: "/stations",
     },
     {
         label: "Crimes",
@@ -150,7 +150,7 @@ const items = ref([
         forwardIcon: false,
         class: "parent-link-with-no-sublinks",
 
-        route: "crimes",
+        route: "/crimes",
     },
     {
         label: "Arrests",
@@ -158,7 +158,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
 
-        route: "arrests",
+        route: "/arrests",
     },
     {
         label: "Confiscates",
@@ -166,14 +166,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
 
-        route: "confiscates",
+        route: "/confiscates",
     },
     {
         label: "Encroached Areas",
         icon: "encroached-areas",
         class: "parent-link-with-no-sublinks",
 
-        route: "encroached-areas",
+        route: "/encroached-areas",
     },
     {
         label: "Routes",
@@ -185,12 +185,12 @@ const items = ref([
             {
                 label: "Route List",
                 icon: "dot",
-                route: "route-list",
+                route: "/route-list",
             },
             {
                 label: "Route Types",
                 icon: "dot",
-                route: "route-types",
+                route: "/route-types",
             },
         ],
     },
@@ -205,12 +205,12 @@ const items = ref([
             {
                 label: "Species List",
                 icon: "dot",
-                route: "species-list",
+                route: "/species-list",
             },
             {
                 label: "Species Category",
                 icon: "dot",
-                route: "species-types",
+                route: "/species-types",
             },
         ],
     },
@@ -258,8 +258,9 @@ const navigateSubLink = (subItem) => {
 };
 
 const isUrl = (route) => {
-    let currentUrl = page.url.substr(1);
-    return route && currentUrl.startsWith(route);
+    let currentUrl = window.location.pathname;
+
+    return currentUrl === `${route}`;
 };
 
 const isDropdownVisible = (index) => {
