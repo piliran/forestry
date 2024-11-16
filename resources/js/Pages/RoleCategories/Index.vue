@@ -140,11 +140,22 @@
                         text
                         @click="hideDialog"
                     />
-                    <Button
-                        label="Save"
-                        icon="pi pi-check"
-                        @click="saveCategory"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Save"
+                            icon="pi pi-check"
+                            @click="saveCategory"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
@@ -223,6 +234,7 @@ import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
+import ProgressSpinner from "primevue/progressspinner";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
@@ -232,6 +244,7 @@ const dt = ref();
 // const categories = ref([]);
 const categoryDialog = ref(false);
 const editDialog = ref(false);
+const loading = ref(false);
 const deleteCategoryDialog = ref(false);
 const deleteCategoriesDialog = ref(false);
 const category = ref({});
@@ -276,6 +289,8 @@ const saveCategory = async () => {
     submitted.value = true;
 
     if (category?.value.name?.trim()) {
+        loading.value = true;
+
         try {
             if (category.value.id) {
                 // Update category
@@ -321,6 +336,8 @@ const saveCategory = async () => {
                 detail: "Failed to save category.",
                 life: 3000,
             });
+        } finally {
+            loading.value = false;
         }
     }
 };
