@@ -109,7 +109,7 @@
             <Dialog
                 v-model:visible="categoryDialog"
                 :style="{ width: '450px' }"
-                header="Role Category"
+                :header="editDialog ? 'Edit Category' : 'Add New Category'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
@@ -231,6 +231,7 @@ const toast = useToast();
 const dt = ref();
 // const categories = ref([]);
 const categoryDialog = ref(false);
+const editDialog = ref(false);
 const deleteCategoryDialog = ref(false);
 const deleteCategoriesDialog = ref(false);
 const category = ref({});
@@ -261,6 +262,8 @@ const categories = ref(props.roleCategories);
 // });
 
 const openNew = () => {
+    editDialog.value = false;
+
     category.value = {};
     submitted.value = false;
     categoryDialog.value = true;
@@ -323,6 +326,8 @@ const saveCategory = async () => {
 };
 
 const editCategory = (cat) => {
+    editDialog.value = true;
+
     category.value = { ...cat };
     categoryDialog.value = true;
 };
