@@ -180,11 +180,23 @@
                         text
                         @click="deleteCategoryDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        @click="deleteCategory"
-                    />
+
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            @click="deleteCategory"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
@@ -208,12 +220,24 @@
                         text
                         @click="deleteCategoriesDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        text
-                        @click="deleteSelectedCategories"
-                    />
+
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            text
+                            @click="deleteSelectedCategories"
+                        />
+                    </div>
                 </template>
             </Dialog>
         </div>
@@ -353,6 +377,8 @@ const confirmDeleteCategory = (cat) => {
     deleteCategoryDialog.value = true;
 };
 const deleteCategory = async () => {
+    loading.value = true;
+
     try {
         await axios.delete(`/role-categories/${category.value.id}`);
         categories.value = categories.value.filter(
@@ -373,12 +399,16 @@ const deleteCategory = async () => {
             detail: "Failed to delete category.",
             life: 3000,
         });
+    } finally {
+        loading.value = false;
     }
 };
 const confirmDeleteSelected = () => {
     deleteCategoriesDialog.value = true;
 };
 const deleteSelectedCategories = async () => {
+    loading.value = true;
+
     try {
         const idsToDelete = selectedCategories.value.map((cat) => cat.id);
         await axios.post(`/role-categories/bulk-delete`, { ids: idsToDelete });
@@ -400,6 +430,8 @@ const deleteSelectedCategories = async () => {
             detail: "Failed to delete selected categories.",
             life: 3000,
         });
+    } finally {
+        loading.value = false;
     }
 };
 const exportCSV = () => {
