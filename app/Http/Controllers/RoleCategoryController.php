@@ -15,7 +15,7 @@ class RoleCategoryController extends Controller
     {
         //
         $roleCategories = RoleCategory::all();
-        return Inertia::render('roleCategories/Index',[
+        return Inertia::render('RoleCategories/Index',[
             'roleCategories' => $roleCategories]);
     }
 
@@ -32,15 +32,14 @@ class RoleCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
-
-        RoleCategory::create($request->all());
-        return redirect()->route('role-categories.index')->with('success', 'Role Category created successfully.');
+    
+        $category = RoleCategory::create($request->all());
+    
+        return response()->json($category, 201);  // Return the created category
     }
-
     /**
      * Display the specified resource.
      */
@@ -64,16 +63,15 @@ class RoleCategoryController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, RoleCategory $roleCategory)
-    {
-        //
-        $request->validate([
-            'name' => 'required|string|max:255'
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255'
+    ]);
 
-        $roleCategory->update($request->all());
-        return redirect()->route('role-categories.index')->with('success', 'Role Category updated successfully.');
-    }
+    $roleCategory->update($request->all());
 
+    return response()->json($roleCategory);  // Return the updated category
+}
     /**
      * Remove the specified resource from storage.
      */
@@ -81,6 +79,25 @@ class RoleCategoryController extends Controller
     {
         //
         $roleCategory->delete();
-        return redirect()->route('role-categories.index')->with('success', 'Role Category deleted successfully.');
+
+        return response()->json('Role Category deleted successfully.');
+        // return redirect()->route('role-categories.index')->with('success', 'Role Category deleted successfully.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        // Validate the incoming request to ensure 'ids' is an array of integers
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:role_categories,id', // Ensure each id exists in the database
+        ]);
+
+        // Delete the categories by their IDs
+        RoleCategory::whereIn('id', $request->ids)->delete();
+
+        // Return a response indicating successful deletion
+        return response()->json([
+            'message' => 'Selected categories deleted successfully.'
+        ]);
     }
 }

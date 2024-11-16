@@ -3,6 +3,17 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\RoleCategoryController;
+
+use App\Http\Requests\StoreUserRequest;
+use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
+ 
+
+
+Route::post('/role-categories/bulk-delete', [RoleCategoryController::class, 'bulkDelete']);
+
+
+Route::resource('role-categories', RoleCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [

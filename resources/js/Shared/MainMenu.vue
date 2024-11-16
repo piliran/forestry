@@ -113,6 +113,12 @@ const items = ref([
                 route: "/users-list",
             },
             {
+                label: "Role Categories",
+                icon: "dot",
+
+                route: "/role-categories",
+            },
+            {
                 label: "Roles",
                 icon: "dot",
                 route: "/roles",
