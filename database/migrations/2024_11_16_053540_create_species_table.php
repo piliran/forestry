@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('matured_specie_count');
-            $table->string('matured_specie_count');
+   
             $table->string('planted_seedlings_count');
             $table->string('unplanted_seedlings_count');
 
