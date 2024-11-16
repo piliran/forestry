@@ -12,6 +12,7 @@ use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 
 Route::post('/role-categories/bulk-delete', [RoleCategoryController::class, 'bulkDelete']);
+Route::post('/roles/bulk-delete', [RoleController::class, 'batchDelete']);
 
 
 Route::resource('role-categories', RoleCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);

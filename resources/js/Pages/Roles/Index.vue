@@ -388,7 +388,7 @@ const deleteSelectedRoles = async () => {
     const ids = selectedRoles.value.map((role) => role.id);
     loading.value = true;
     try {
-        await axios.post("/roles/batch-delete", { ids });
+        await axios.post("/roles/bulk-delete", { ids });
         roles.value = roles.value.filter((r) => !ids.includes(r.id));
         toast.add({
             severity: "success",
