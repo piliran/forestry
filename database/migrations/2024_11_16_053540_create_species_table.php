@@ -17,11 +17,9 @@ return new class extends Migration
             $table->foreign('specie_cat_id')->references('id')->on('specie_categories')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
             $table->string('description');
-            $table->string('matured_specie_count');
-            $table->string('unmatured_specie_count');
+            $table->string('matured_specie_count');   
             $table->string('planted_seedlings_count');
             $table->string('unplanted_seedlings_count');
-
             $table->timestamps();
         });
     }
