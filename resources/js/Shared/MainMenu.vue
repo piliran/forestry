@@ -103,37 +103,38 @@ const items = ref([
     {
         label: "Users",
         icon: "users",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/users-list",
+    },
+
+    {
+        label: "Roles",
+        icon: "roles",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
 
         items: [
             {
-                label: "Users List",
-                icon: "dot",
-                route: "/users-list",
-            },
-            {
-                label: "Role Categories",
+                label: "Categories",
                 icon: "dot",
 
                 route: "/role-categories",
             },
             {
-                label: "Roles",
+                label: "Roles List",
                 icon: "dot",
                 route: "/roles",
             },
-            {
-                label: "User Roles",
-                icon: "dot",
-                route: "/user-roles",
-            },
-            {
-                label: "Permissions",
-                icon: "dot",
-                route: "/permissions",
-            },
         ],
+    },
+    {
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        label: "Permissions",
+        icon: "permissions",
+        route: "/permissions",
     },
     {
         label: "Districts",
@@ -189,14 +190,14 @@ const items = ref([
 
         items: [
             {
+                label: "Types",
+                icon: "dot",
+                route: "/route-types",
+            },
+            {
                 label: "Route List",
                 icon: "dot",
                 route: "/route-list",
-            },
-            {
-                label: "Route Types",
-                icon: "dot",
-                route: "/route-types",
             },
         ],
     },
@@ -209,14 +210,14 @@ const items = ref([
 
         items: [
             {
+                label: "Categories",
+                icon: "dot",
+                route: "/species-types",
+            },
+            {
                 label: "Species List",
                 icon: "dot",
                 route: "/species-list",
-            },
-            {
-                label: "Species Category",
-                icon: "dot",
-                route: "/species-types",
             },
         ],
     },

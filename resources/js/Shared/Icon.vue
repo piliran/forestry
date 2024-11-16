@@ -295,6 +295,26 @@
             d="M10 10c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.333 0-10 1.667-10 5v3h20v-3c0-3.333-6.667-5-10-5z"
         />
     </svg>
+
+    <svg
+        v-else-if="name === 'roles'"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+    >
+        <path
+            d="M2 2h16v2H2V2zm0 4h16v2H2V6zm0 4h16v2H2v-2zm0 4h16v2H2v-2zm0 4h16v2H2v-2z"
+        />
+    </svg>
+
+    <svg
+        v-else-if="name === 'permissions'"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+    >
+        <path
+            d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zM10 14c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"
+        />
+    </svg>
 </template>
 
 <script>
