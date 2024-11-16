@@ -9,3 +9,7 @@
         >DoF(LE-SVTP)</span
     >
 </template>
+
+<script setup>
+import Divider from "primevue/divider";
+</script>
