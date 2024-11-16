@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Role;
@@ -9,69 +8,53 @@ use Inertia\Inertia;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $roles = Role::with('category')->get();
+        $roleCategories = RoleCategory::all();
 
         return Inertia::render('Roles/Index', [
             'roles' => $roles,
+            'roleCategories' => $roleCategories,
         ]);
     }
 
-    // Show the form for creating a new resource
-    public function create()
-    {
-        
-    }
-
-    // Store a newly created resource in storage
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'role_category_id' => 'required|exists:role_categories,id',
         ]);
 
-        Role::create($request->all());
+        $role = Role::create($validated);
 
-        return redirect()->route('roles.index')->with('success', 'Role created successfully.');
+        return response()->json($role, 201);
     }
 
-    // Display the specified resource
-    public function show(Role $role)
-    {
-        return Inertia::render('Roles/Show', [
-            'role' => $role->load('category'),
-        ]);
-    }
-
-    // Show the form for editing the specified resource
-    public function edit(Role $role)
-    {
-        
-    }
-
-    // Update the specified resource in storage
     public function update(Request $request, Role $role)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'role_category_id' => 'required|exists:role_categories,id',
         ]);
 
-        $role->update($request->all());
+        $role->update($validated);
 
-        return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
+        return response()->json($role, 200);
     }
 
-    // Remove the specified resource from storage
     public function destroy(Role $role)
     {
         $role->delete();
 
-        return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
+        return response()->json(['message' => 'Role deleted'], 200);
+    }
+
+    public function batchDelete(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        Role::whereIn('id', $validated['ids'])->delete();
+
+        return response()->json(['message' => 'Roles deleted'], 200);
     }
 }

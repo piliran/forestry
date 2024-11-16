@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RoleCategoryController;
+use App\Http\Controllers\RoleController;
 
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
@@ -14,6 +15,7 @@ Route::post('/role-categories/bulk-delete', [RoleCategoryController::class, 'bul
 
 
 Route::resource('role-categories', RoleCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::resource('roles', RoleController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -80,9 +82,9 @@ Route::get('/users-list', function () {
 Route::get('/user-roles', function () {
     return Inertia::render('User/UserRoles');
 });
-Route::get('/roles', function () {
-    return Inertia::render('User/Roles');
-});
+// Route::get('/roles', function () {
+//     return Inertia::render('User/Roles');
+// });
 Route::get('/permissions', function () {
     return Inertia::render('User/Permissions');
 });
