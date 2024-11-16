@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('arrests', function (Blueprint $table) {
             $table->id();
+            $table->string('description');
+            $table->date('date');
+            $table->string('location');
+            $table->string('proof');
+            $table->unsignedBigInteger('confiscate_id');
+            $table->foreign('confiscate_id')->references('id')->on('confiscates')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

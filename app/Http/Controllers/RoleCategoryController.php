@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RoleCategory;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class RoleCategoryController extends Controller
 {
@@ -13,6 +14,9 @@ class RoleCategoryController extends Controller
     public function index()
     {
         //
+        $roleCategories = RoleCategory::all();
+        return Inertia::render('roleCategories/Index',[
+            'roleCategories' => $roleCategories]);
     }
 
     /**
@@ -29,6 +33,12 @@ class RoleCategoryController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'name' => 'required|string|max:255'
+        ]);
+
+        RoleCategory::create($request->all());
+        return redirect()->route('role-categories.index')->with('success', 'Role Category created successfully.');
     }
 
     /**
@@ -37,6 +47,9 @@ class RoleCategoryController extends Controller
     public function show(RoleCategory $roleCategory)
     {
         //
+        return Inertia::render('RoleCategories/Show',[
+            'roleCategory' => $roleCategory
+        ]);
     }
 
     /**
@@ -53,6 +66,12 @@ class RoleCategoryController extends Controller
     public function update(Request $request, RoleCategory $roleCategory)
     {
         //
+        $request->validate([
+            'name' => 'required|string|max:255'
+        ]);
+
+        $roleCategory->update($request->all());
+        return redirect()->route('role-categories.index')->with('success', 'Role Category updated successfully.');
     }
 
     /**
@@ -61,5 +80,7 @@ class RoleCategoryController extends Controller
     public function destroy(RoleCategory $roleCategory)
     {
         //
+        $roleCategory->delete();
+        return redirect()->route('role-categories.index')->with('success', 'Role Category deleted successfully.');
     }
 }
