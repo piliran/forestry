@@ -328,6 +328,7 @@ const saveRole = async () => {
                     `/roles/${role.value.id}`,
                     role.value
                 );
+
                 updateRole(response.data);
                 toast.add({
                     severity: "success",
@@ -337,6 +338,7 @@ const saveRole = async () => {
                 });
             } else {
                 const response = await axios.post("/roles", role.value);
+
                 roles.value.push(response.data);
                 toast.add({
                     severity: "success",

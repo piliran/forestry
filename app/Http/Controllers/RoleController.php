@@ -28,6 +28,9 @@ class RoleController extends Controller
 
         $role = Role::create($validated);
 
+    
+        $role->load('category');
+
         return response()->json($role, 201);
     }
 
@@ -39,6 +42,8 @@ class RoleController extends Controller
         ]);
 
         $role->update($validated);
+
+        $role->load('category');
 
         return response()->json($role, 200);
     }
