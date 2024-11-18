@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Arrests">
+    <AppLayout title="Species Types">
         <div>
             <div class="card">
                 <Toolbar class="mb-6">
@@ -17,23 +17,13 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedProducts || !selectedProducts.length
+                                !selectedTypes ||
+                                !selectedTypes.length
                             "
                         />
                     </template>
 
                     <template #end>
-                        <FileUpload
-                            mode="basic"
-                            accept="image/*"
-                            :maxFileSize="1000000"
-                            label="Import"
-                            customUpload
-                            chooseLabel="Import"
-                            class="mr-2"
-                            auto
-                            :chooseButtonProps="{ severity: 'secondary' }"
-                        />
                         <Button
                             label="Export"
                             icon="pi pi-upload"
@@ -46,22 +36,23 @@
                 <Toast />
 
                 <DataTable
+                    v-if="types.length > 0"
                     ref="dt"
-                    v-model:selection="selectedProducts"
-                    :value="products"
+                    v-model:selection="selectedTypes"
+                    :value="types"
                     dataKey="id"
                     :paginator="true"
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Specie Type"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Products</h4>
+                            <h4 class="m-0">Manage Species Types</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -79,222 +70,72 @@
                         style="width: 3rem"
                         :exportable="false"
                     ></Column>
-                    <Column
-                        field="code"
-                        header="Code"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
+
                     <Column
                         field="name"
-                        header="Name"
-                        sortable
-                        style="min-width: 16rem"
-                    ></Column>
-                    <Column header="Image">
-                        <template #body="slotProps">
-                            <img
-                                :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`"
-                                :alt="slotProps.data.image"
-                                class="rounded"
-                                style="width: 64px"
-                            />
-                        </template>
-                    </Column>
-                    <Column
-                        field="price"
-                        header="Price"
-                        sortable
-                        style="min-width: 8rem"
-                    >
-                        <template #body="slotProps">
-                            {{ formatCurrency(slotProps.data.price) }}
-                        </template>
-                    </Column>
-                    <Column
-                        field="category"
-                        header="Category"
+                        header="Specie Type Name"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="rating"
-                        header="Reviews"
+                        field="description"
+                        header="Description"
                         sortable
-                        style="min-width: 12rem"
-                    >
-                        <template #body="slotProps">
-                            <Rating
-                                :modelValue="slotProps.data.rating"
-                                :readonly="true"
-                            />
-                        </template>
-                    </Column>
+                        style="min-width: 10rem"
+                    ></Column>
+
                     <Column
-                        field="inventoryStatus"
-                        header="Status"
-                        sortable
+                        header="Action"
+                        :exportable="false"
                         style="min-width: 12rem"
                     >
-                        <template #body="slotProps">
-                            <Tag
-                                :value="slotProps.data.inventoryStatus"
-                                :severity="
-                                    getStatusLabel(
-                                        slotProps.data.inventoryStatus
-                                    )
-                                "
-                            />
-                        </template>
-                    </Column>
-                    <Column :exportable="false" style="min-width: 12rem">
                         <template #body="slotProps">
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editProduct(slotProps.data)"
+                                @click="editType(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteProduct(slotProps.data)"
+                                @click="confirmDeleteType(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
+                <div v-else class="flex items-center justify-center">
+                    <h2>No Species Types Found</h2>
+                </div>
             </div>
 
             <Dialog
-                v-model:visible="productDialog"
+                v-model:visible="typeDialog"
                 :style="{ width: '450px' }"
-                header="Product Details"
+                :header="editDialog ? 'Edit Type' : 'Add New Type'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
-                    <img
-                        v-if="product.image"
-                        :src="`https://primefaces.org/cdn/primevue/images/product/${product.image}`"
-                        :alt="product.image"
-                        class="block m-auto pb-4"
-                    />
                     <div>
                         <label for="name" class="block font-bold mb-3"
-                            >Name</label
+                            >Specie Type Name</label
                         >
                         <InputText
                             id="name"
-                            v-model.trim="product.name"
+                            v-model.trim="type.name"
                             required="true"
                             autofocus
-                            :invalid="submitted && !product.name"
+                            :invalid="submitted && !type.name"
                             fluid
                         />
                         <small
-                            v-if="submitted && !product.name"
+                            v-if="submitted && !type.name"
                             class="text-red-500"
-                            >Name is required.</small
+                            >Species Type Name is required.</small
                         >
-                    </div>
-                    <div>
-                        <label for="description" class="block font-bold mb-3"
-                            >Description</label
-                        >
-                        <Textarea
-                            id="description"
-                            v-model="product.description"
-                            required="true"
-                            rows="3"
-                            cols="20"
-                            fluid
-                        />
-                    </div>
-                    <div>
-                        <label
-                            for="inventoryStatus"
-                            class="block font-bold mb-3"
-                            >Inventory Status</label
-                        >
-                        <Select
-                            id="inventoryStatus"
-                            v-model="product.inventoryStatus"
-                            :options="statuses"
-                            optionLabel="label"
-                            placeholder="Select a Status"
-                            fluid
-                        ></Select>
-                    </div>
-
-                    <div>
-                        <span class="block font-bold mb-4">Category</span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category1"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Accessories"
-                                />
-                                <label for="category1">Accessories</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category2"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Clothing"
-                                />
-                                <label for="category2">Clothing</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category3"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Electronics"
-                                />
-                                <label for="category3">Electronics</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category4"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Fitness"
-                                />
-                                <label for="category4">Fitness</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-12 gap-4">
-                        <div class="col-span-6">
-                            <label for="price" class="block font-bold mb-3"
-                                >Price</label
-                            >
-                            <InputNumber
-                                id="price"
-                                v-model="product.price"
-                                mode="currency"
-                                currency="USD"
-                                locale="en-US"
-                                fluid
-                            />
-                        </div>
-                        <div class="col-span-6">
-                            <label for="quantity" class="block font-bold mb-3"
-                                >Quantity</label
-                            >
-                            <InputNumber
-                                id="quantity"
-                                v-model="product.quantity"
-                                integeronly
-                                fluid
-                            />
-                        </div>
                     </div>
                 </div>
 
@@ -305,25 +146,36 @@
                         text
                         @click="hideDialog"
                     />
-                    <Button
-                        label="Save"
-                        icon="pi pi-check"
-                        @click="saveProduct"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Save"
+                            icon="pi pi-check"
+                            @click="saveType"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
             <Dialog
-                v-model:visible="deleteProductDialog"
+                v-model:visible="deleteTypeDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="product"
+                    <span v-if="type"
                         >Are you sure you want to delete
-                        <b>{{ product.name }}</b
+                        <b>{{ type.name }}</b
                         >?</span
                     >
                 </div>
@@ -332,27 +184,39 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteProductDialog = false"
+                        @click="deleteTypeDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        @click="deleteProduct"
-                    />
+
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            @click="deleteType"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
             <Dialog
-                v-model:visible="deleteProductsDialog"
+                v-model:visible="deleteTypesDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="product"
+                    <span v-if="type"
                         >Are you sure you want to delete the selected
-                        products?</span
+                        types?</span
                     >
                 </div>
                 <template #footer>
@@ -360,14 +224,26 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteProductsDialog = false"
+                        @click="deleteTypesDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        text
-                        @click="deleteSelectedProducts"
-                    />
+
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            text
+                            @click="deleteSelectedTypes"
+                        />
+                    </div>
                 </template>
             </Dialog>
         </div>
@@ -378,180 +254,193 @@
 import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
-
 import { useToast } from "primevue/usetoast";
-import { ProductService } from "@/primevue/service/ProductService";
 
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-
 import Button from "primevue/button";
-import FileUpload from "primevue/fileupload";
 import Toolbar from "primevue/toolbar";
-import Rating from "primevue/rating";
-import Textarea from "primevue/textarea";
-import RadioButton from "primevue/radiobutton";
-import InputNumber from "primevue/inputnumber";
 import Dialog from "primevue/dialog";
-
 import InputIcon from "primevue/inputicon";
-import Select from "primevue/select";
-import IconField from "primevue/iconfield";
-
 import InputText from "primevue/inputtext";
-import Tag from "primevue/tag";
+import IconField from "primevue/iconfield";
+import ProgressSpinner from "primevue/progressspinner";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
-
-onMounted(() => {
-    ProductService.getProducts().then((data) => (products.value = data));
-});
+import axios from "axios";
 
 const toast = useToast();
 const dt = ref();
-const products = ref();
-const productDialog = ref(false);
-const deleteProductDialog = ref(false);
-const deleteProductsDialog = ref(false);
-const product = ref({});
-const selectedProducts = ref();
+// const categories = ref([]);
+const typeDialog = ref(false);
+const editDialog = ref(false);
+const loading = ref(false);
+const deleteTypeDialog = ref(false);
+const deleteTypesDialog = ref(false);
+const types = ref({});
+const selectedTypes = ref();
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
-
 const submitted = ref(false);
-const statuses = ref([
-    { label: "INSTOCK", value: "instock" },
-    { label: "LOWSTOCK", value: "lowstock" },
-    { label: "OUTOFSTOCK", value: "outofstock" },
-]);
 
-const formatCurrency = (value) => {
-    if (value)
-        return value.toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-        });
-    return;
-};
+const props = defineProps({
+    specieTypes: Array,
+});
+
+const categories = ref(props.specieTypes);
+
+// onMounted(async () => {
+//     try {
+//         const response = await axios.get("/role-categories");
+//         categories.value = response.data.roleCategories;
+//     } catch (error) {
+//         toast.add({
+//             severity: "error",
+//             summary: "Error",
+//             detail: "Failed to load role categories.",
+//             life: 3000,
+//         });
+//     }
+// });
+
 const openNew = () => {
-    product.value = {};
+    editDialog.value = false;
+
+    type.value = {};
     submitted.value = false;
-    productDialog.value = true;
+    typeDialog.value = true;
 };
 const hideDialog = () => {
-    productDialog.value = false;
+    typeDialog.value = false;
     submitted.value = false;
 };
-const saveProduct = () => {
+const saveType = async () => {
     submitted.value = true;
 
-    if (product?.value.name?.trim()) {
-        if (product.value.id) {
-            product.value.inventoryStatus = product.value.inventoryStatus.value
-                ? product.value.inventoryStatus.value
-                : product.value.inventoryStatus;
-            products.value[findIndexById(product.value.id)] = product.value;
+    if (type?.value.name?.trim()) {
+        loading.value = true;
+
+        try {
+            if (type.value.id) {
+                // Update types
+                const response = await axios.put(
+                    `/specie-types/${type.value.id}`,
+                    type.value
+                );
+
+                // Find the index of the specie type to update
+                const index = types.value.findIndex(
+                    (typ) => typ.id === type.value.id
+                );
+                if (index !== -1) {
+                    types.value[index] = response.data; // Update the specie type in the array
+                }
+
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Specie Type Updated",
+                    life: 3000,
+                });
+            } else {
+                // Create new specie type
+                const response = await axios.post(
+                    "/specie-types",
+                    type.value
+                );
+                types.value.push(response.data);
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Specie Type Created",
+                    life: 3000,
+                });
+            }
+            typeDialog.value = false;
+            type.value = {}; // Reset form after saving
+        } catch (error) {
             toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Updated",
+                severity: "error",
+                summary: "Error",
+                detail: "Failed to save specie type.",
                 life: 3000,
             });
-        } else {
-            product.value.id = createId();
-            product.value.code = createId();
-            product.value.image = "product-placeholder.svg";
-            product.value.inventoryStatus = product.value.inventoryStatus
-                ? product.value.inventoryStatus.value
-                : "INSTOCK";
-            products.value.push(product.value);
-            toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Created",
-                life: 3000,
-            });
-        }
-
-        productDialog.value = false;
-        product.value = {};
-    }
-};
-const editProduct = (prod) => {
-    product.value = { ...prod };
-    productDialog.value = true;
-};
-const confirmDeleteProduct = (prod) => {
-    product.value = prod;
-    deleteProductDialog.value = true;
-};
-const deleteProduct = () => {
-    products.value = products.value.filter(
-        (val) => val.id !== product.value.id
-    );
-    deleteProductDialog.value = false;
-    product.value = {};
-    toast.add({
-        severity: "success",
-        summary: "Successful",
-        detail: "Product Deleted",
-        life: 3000,
-    });
-};
-const findIndexById = (id) => {
-    let index = -1;
-    for (let i = 0; i < products.value.length; i++) {
-        if (products.value[i].id === id) {
-            index = i;
-            break;
+        } finally {
+            loading.value = false;
         }
     }
-
-    return index;
 };
-const createId = () => {
-    let id = "";
-    var chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < 5; i++) {
-        id += chars.charAt(Math.floor(Math.random() * chars.length));
+
+const editType = (typ) => {
+    editDialog.value = true;
+
+    type.value = { ...typ };
+    typeDialog.value = true;
+};
+const confirmDeleteType = (cat) => {
+    type.value = cat;
+    deleteTypeDialog.value = true;
+};
+const deleteType = async () => {
+    loading.value = true;
+
+    try {
+        await axios.delete(`/specie-types/${type.value.id}`);
+        types.value = types.value.filter(
+            (val) => val.id !== type.value.id
+        );
+        deleteTypeDialog.value = false;
+        type.value = {};
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Specie Type Deleted",
+            life: 3000,
+        });
+    } catch (error) {
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Failed to delete Specie Type.",
+            life: 3000,
+        });
+    } finally {
+        loading.value = false;
     }
-    return id;
+};
+const confirmDeleteSelected = () => {
+    deleteTypesDialog.value = true;
+};
+const deleteSelectedTypes = async () => {
+    loading.value = true;
+
+    try {
+        const idsToDelete = selectedTypes.value.map((typ) => typ.id);
+        await axios.post(`/specie-types/bulk-delete`, { ids: idsToDelete });
+        types.value = types.value.filter(
+            (val) => !selectedTypes.value.includes(val)
+        );
+        deleteTypesDialog.value = false;
+        selectedTypes.value = null;
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Selected Specie Types Deleted",
+            life: 3000,
+        });
+    } catch (error) {
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Failed to delete selected Specie Types.",
+            life: 3000,
+        });
+    } finally {
+        loading.value = false;
+    }
 };
 const exportCSV = () => {
     dt.value.exportCSV();
-};
-const confirmDeleteSelected = () => {
-    deleteProductsDialog.value = true;
-};
-const deleteSelectedProducts = () => {
-    products.value = products.value.filter(
-        (val) => !selectedProducts.value.includes(val)
-    );
-    deleteProductsDialog.value = false;
-    selectedProducts.value = null;
-    toast.add({
-        severity: "success",
-        summary: "Successful",
-        detail: "Products Deleted",
-        life: 3000,
-    });
-};
-
-const getStatusLabel = (status) => {
-    switch (status) {
-        case "INSTOCK":
-            return "success";
-
-        case "LOWSTOCK":
-            return "warn";
-
-        case "OUTOFSTOCK":
-            return "danger";
-
-        default:
-            return null;
-    }
 };
 </script>
