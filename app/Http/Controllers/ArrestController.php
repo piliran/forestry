@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Arrest;
+use App\Models\Confiscate;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ArrestController extends Controller
 {
@@ -12,7 +14,10 @@ class ArrestController extends Controller
      */
     public function index()
     {
-        //
+        $arrests = Arrest::with('confiscate')->get();
+        return Inertia::render('Arrests/Index', [
+            'arrests' => $arrests,
+        ]);
     }
 
     /**
@@ -20,7 +25,10 @@ class ArrestController extends Controller
      */
     public function create()
     {
-        //
+        $confiscates = Confiscate::all();
+        return Inertia::render('Arrests/Create', [
+            'confiscates' => $confiscates,
+        ]);
     }
 
     /**
@@ -28,7 +36,17 @@ class ArrestController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'description' => 'required|string|max:255',
+            'date' => 'required|date',
+            'location' => 'required|string|max:255',
+            'proof' => 'required|string|max:255',
+            'confiscate_id' => 'required|exists:confiscates,id',
+        ]);
+
+        $arrest = Arrest::create($request->all());
+
+        return response()->json($arrest, 201); // Return the created arrest
     }
 
     /**
@@ -36,7 +54,9 @@ class ArrestController extends Controller
      */
     public function show(Arrest $arrest)
     {
-        //
+        return Inertia::render('Arrests/Show', [
+            'arrest' => $arrest->load('confiscate'),
+        ]);
     }
 
     /**
@@ -44,7 +64,11 @@ class ArrestController extends Controller
      */
     public function edit(Arrest $arrest)
     {
-        //
+        $confiscates = Confiscate::all();
+        return Inertia::render('Arrests/Edit', [
+            'arrest' => $arrest,
+            'confiscates' => $confiscates,
+        ]);
     }
 
     /**
@@ -52,7 +76,17 @@ class ArrestController extends Controller
      */
     public function update(Request $request, Arrest $arrest)
     {
-        //
+        $request->validate([
+            'description' => 'required|string|max:255',
+            'date' => 'required|date',
+            'location' => 'required|string|max:255',
+            'proof' => 'required|string|max:255',
+            'confiscate_id' => 'required|exists:confiscates,id',
+        ]);
+
+        $arrest->update($request->all());
+
+        return response()->json($arrest); // Return the updated arrest
     }
 
     /**
@@ -60,6 +94,25 @@ class ArrestController extends Controller
      */
     public function destroy(Arrest $arrest)
     {
-        //
+        $arrest->delete();
+
+        return response()->json('Arrest deleted successfully.');
     }
-}
+
+    /**
+     * Bulk delete selected arrests.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:arrests,id',
+        ]);
+
+        Arrest::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Selected arrests deleted successfully.',
+        ]);
+    }
+};

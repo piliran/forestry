@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\District;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DistrictController extends Controller
 {
@@ -12,7 +13,10 @@ class DistrictController extends Controller
      */
     public function index()
     {
-        //
+        $districts = District::all();
+        return Inertia::render('Districts/Index', [
+            'districts' => $districts,
+        ]);
     }
 
     /**
@@ -20,7 +24,7 @@ class DistrictController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Districts/Create');
     }
 
     /**
@@ -28,7 +32,17 @@ class DistrictController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'email' => 'required|email|max:255',
+            'chairperson' => 'required|string|max:255',
+        ]);
+
+        $district = District::create($request->all());
+
+        return response()->json($district, 201); // Return the created district
     }
 
     /**
@@ -36,7 +50,9 @@ class DistrictController extends Controller
      */
     public function show(District $district)
     {
-        //
+        return Inertia::render('Districts/Show', [
+            'district' => $district,
+        ]);
     }
 
     /**
@@ -44,7 +60,9 @@ class DistrictController extends Controller
      */
     public function edit(District $district)
     {
-        //
+        return Inertia::render('Districts/Edit', [
+            'district' => $district,
+        ]);
     }
 
     /**
@@ -52,7 +70,17 @@ class DistrictController extends Controller
      */
     public function update(Request $request, District $district)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'email' => 'required|email|max:255',
+            'chairperson' => 'required|string|max:255',
+        ]);
+
+        $district->update($request->all());
+
+        return response()->json($district); // Return the updated district
     }
 
     /**
@@ -60,6 +88,25 @@ class DistrictController extends Controller
      */
     public function destroy(District $district)
     {
-        //
+        $district->delete();
+
+        return response()->json('District deleted successfully.');
+    }
+
+    /**
+     * Bulk delete selected districts.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:districts,id',
+        ]);
+
+        District::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Selected districts deleted successfully.',
+        ]);
     }
 }

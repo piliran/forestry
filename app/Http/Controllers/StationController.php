@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Station;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class StationController extends Controller
 {
-    /**
+ /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $stations = Station::all();
+        return Inertia::render('Stations/Index', [
+            'stations' => $stations,
+        ]);
     }
 
     /**
@@ -20,7 +24,7 @@ class StationController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Stations/Create');
     }
 
     /**
@@ -28,7 +32,16 @@ class StationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'chairperson' => 'required|string|max:255',
+        ]);
+
+        $station = Station::create($request->all());
+
+        return response()->json($station, 201); // Return the created station
     }
 
     /**
@@ -36,7 +49,9 @@ class StationController extends Controller
      */
     public function show(Station $station)
     {
-        //
+        return Inertia::render('Stations/Show', [
+            'station' => $station,
+        ]);
     }
 
     /**
@@ -44,7 +59,9 @@ class StationController extends Controller
      */
     public function edit(Station $station)
     {
-        //
+        return Inertia::render('Stations/Edit', [
+            'station' => $station,
+        ]);
     }
 
     /**
@@ -52,7 +69,16 @@ class StationController extends Controller
      */
     public function update(Request $request, Station $station)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'chairperson' => 'required|string|max:255',
+        ]);
+
+        $station->update($request->all());
+
+        return response()->json($station); // Return the updated station
     }
 
     /**
@@ -60,6 +86,25 @@ class StationController extends Controller
      */
     public function destroy(Station $station)
     {
-        //
+        $station->delete();
+
+        return response()->json('Station deleted successfully.');
+    }
+
+    /**
+     * Bulk delete selected stations.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:stations,id',
+        ]);
+
+        Station::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Selected stations deleted successfully.',
+        ]);
     }
 }
