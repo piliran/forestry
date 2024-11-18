@@ -445,7 +445,7 @@ const confirmDeleteStation = (stationData) => {
 };
 
 const deleteSelectedStations = async () => {
-    const ids = selectedStations.value.map((stations) => station.id);
+    const ids = selectedStations.value.map((station) => station.id);
     loading.value = true;
     try {
         await axios.post("/stations/bulk-delete", { ids });

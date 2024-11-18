@@ -17,7 +17,9 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="!selectedCrimes || !selectedCrimes.length"
+                            :disabled="
+                                !selectedCrimes || !selectedCrimes.length
+                            "
                         />
                     </template>
                     <template #end>
@@ -179,7 +181,6 @@
                             Penalty is required.
                         </small>
                     </div>
-                    
                 </div>
                 <template #footer>
                     <Button
@@ -330,7 +331,7 @@ const props = defineProps({
 });
 
 onMounted(async () => {
-    console.log(crimes)
+    console.log(crimes);
 });
 
 const crimes = ref(props.crimes);
@@ -429,7 +430,7 @@ const deleteSelectedCrimes = async () => {
     } catch (err) {
         console.error(err);
     } finally {
-        deleteCrimeDialog.value = false;
+        deleteCrimesDialog.value = false;
         loading.value = false;
     }
 };
