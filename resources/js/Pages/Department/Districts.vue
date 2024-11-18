@@ -483,7 +483,7 @@ const deleteSelectedDistricts = async () => {
     } catch (err) {
         console.error(err);
     } finally {
-        deleteDistrictDialog.value = false;
+        deleteDistrictsDialog.value = false;
         loading.value = false;
     }
 };

@@ -309,7 +309,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteselectedStations"
+                            @click="deleteSelectedStations"
                         />
                     </div>
                 </template>
