@@ -176,11 +176,43 @@ const items = ref([
         route: "/confiscates",
     },
     {
-        label: "Encroached Areas",
-        icon: "encroached-areas",
-        class: "parent-link-with-no-sublinks",
+        label: "Operations",
+        icon: "operations",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
 
-        route: "/encroached-areas",
+        items: [
+            {
+                label: "Types",
+                icon: "dot",
+                route: "/operations-types",
+            },
+            {
+                label: "List",
+                icon: "dot",
+                route: "/operations-list",
+            },
+        ],
+    },
+
+    {
+        label: "Areas",
+        icon: "location",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
+
+        items: [
+            {
+                label: "List",
+                icon: "dot",
+                route: "/area-list",
+            },
+            {
+                label: "Encroached",
+                icon: "dot",
+                route: "/encroached-areas",
+            },
+        ],
     },
     {
         label: "Routes",
