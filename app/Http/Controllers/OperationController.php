@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Operation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class OperationController extends Controller
 {
@@ -12,7 +13,10 @@ class OperationController extends Controller
      */
     public function index()
     {
-        //
+        $operations = Operation::all();
+        return Inertia::render('Operations/Index', [
+            'operations' => $operations,
+        ]);
     }
 
     /**
@@ -20,7 +24,7 @@ class OperationController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Operations/Create');
     }
 
     /**
@@ -28,7 +32,14 @@ class OperationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $operation = Operation::create($request->all());
+
+        return response()->json($operation, 201); // Return the created operation
     }
 
     /**
@@ -36,7 +47,9 @@ class OperationController extends Controller
      */
     public function show(Operation $operation)
     {
-        //
+        return Inertia::render('Operations/Show', [
+            'operation' => $operation,
+        ]);
     }
 
     /**
@@ -44,7 +57,9 @@ class OperationController extends Controller
      */
     public function edit(Operation $operation)
     {
-        //
+        return Inertia::render('Operations/Edit', [
+            'operation' => $operation,
+        ]);
     }
 
     /**
@@ -52,7 +67,14 @@ class OperationController extends Controller
      */
     public function update(Request $request, Operation $operation)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $operation->update($request->all());
+
+        return response()->json($operation); // Return the updated operation
     }
 
     /**
@@ -60,6 +82,25 @@ class OperationController extends Controller
      */
     public function destroy(Operation $operation)
     {
-        //
+        $operation->delete();
+
+        return response()->json('Operation deleted successfully.');
+    }
+
+    /**
+     * Bulk delete selected operations.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:operations,id', // Ensure each id exists in the database
+        ]);
+
+        Operation::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Selected operations deleted successfully.',
+        ]);
     }
 }
