@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SpecieCategory;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SpecieCategoryController extends Controller
 {
@@ -12,7 +13,10 @@ class SpecieCategoryController extends Controller
      */
     public function index()
     {
-        //
+        $specieCategories = SpecieCategory::all();
+        return Inertia::render('SpecieCategories/Index', [
+            'specieCategories' => $specieCategories,
+        ]);
     }
 
     /**
@@ -20,7 +24,7 @@ class SpecieCategoryController extends Controller
      */
     public function create()
     {
-        //
+        //    
     }
 
     /**
@@ -28,7 +32,14 @@ class SpecieCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $specieCategory = SpecieCategory::create($request->all());
+
+        return response()->json($specieCategory, 201);
     }
 
     /**
@@ -36,7 +47,9 @@ class SpecieCategoryController extends Controller
      */
     public function show(SpecieCategory $specieCategory)
     {
-        //
+        return Inertia::render('SpecieCategories/Show', [
+            'specieCategory' => $specieCategory,
+        ]);
     }
 
     /**
@@ -52,7 +65,14 @@ class SpecieCategoryController extends Controller
      */
     public function update(Request $request, SpecieCategory $specieCategory)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $specieCategory->update($request->all());
+
+        return response()->json($specieCategory);
     }
 
     /**
@@ -60,6 +80,25 @@ class SpecieCategoryController extends Controller
      */
     public function destroy(SpecieCategory $specieCategory)
     {
-        //
+        $specieCategory->delete();
+
+        return response()->json('Specie Category deleted successfully.');
+    }
+
+    /**
+     * Bulk delete selected categories.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:specie_categories,id',
+        ]);
+
+        SpecieCategory::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Selected categories deleted successfully.',
+        ]);
     }
 }

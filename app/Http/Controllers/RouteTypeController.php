@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\RouteType;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class RouteTypeController extends Controller
 {
@@ -12,7 +12,10 @@ class RouteTypeController extends Controller
      */
     public function index()
     {
-        //
+        $routeTypes = RouteType::all();
+        return Inertia::render('RouteTypes/Index', [
+            'routeTypes' => $routeTypes,
+        ]);
     }
 
     /**
@@ -20,7 +23,7 @@ class RouteTypeController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('RouteTypes/Create');
     }
 
     /**
@@ -28,7 +31,14 @@ class RouteTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
+        ]);
+
+        $routeType = RouteType::create($request->all());
+
+        return response()->json($routeType, 201); // Return the created route type
     }
 
     /**
@@ -36,7 +46,9 @@ class RouteTypeController extends Controller
      */
     public function show(RouteType $routeType)
     {
-        //
+        return Inertia::render('RouteTypes/Show', [
+            'routeType' => $routeType,
+        ]);
     }
 
     /**
@@ -44,7 +56,9 @@ class RouteTypeController extends Controller
      */
     public function edit(RouteType $routeType)
     {
-        //
+        return Inertia::render('RouteTypes/Edit', [
+            'routeType' => $routeType,
+        ]);
     }
 
     /**
@@ -52,7 +66,14 @@ class RouteTypeController extends Controller
      */
     public function update(Request $request, RouteType $routeType)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
+        ]);
+
+        $routeType->update($request->all());
+
+        return response()->json($routeType); // Return the updated route type
     }
 
     /**
@@ -60,6 +81,25 @@ class RouteTypeController extends Controller
      */
     public function destroy(RouteType $routeType)
     {
-        //
+        $routeType->delete();
+
+        return response()->json('Route Type deleted successfully.');
+    }
+
+    /**
+     * Bulk delete selected route types.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:route_types,id',
+        ]);
+
+        RouteType::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Selected route types deleted successfully.',
+        ]);
     }
 }

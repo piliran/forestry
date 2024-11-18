@@ -1,9 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Route;
+use App\Models\Area;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class RouteController extends Controller
 {
@@ -12,7 +13,10 @@ class RouteController extends Controller
      */
     public function index()
     {
-        //
+        $routes = Route::with('area')->get();
+        return Inertia::render('Routes/Index', [
+            'routes' => $routes,
+        ]);
     }
 
     /**
@@ -20,7 +24,10 @@ class RouteController extends Controller
      */
     public function create()
     {
-        //
+        $areas = Area::all();
+        return Inertia::render('Routes/Create', [
+            'areas' => $areas,
+        ]);
     }
 
     /**
@@ -28,7 +35,17 @@ class RouteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'area_id' => 'required|exists:areas,id',
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|max:100',
+            'location' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+        ]);
+
+        $route = Route::create($request->all());
+
+        return response()->json($route, 201); // Return the created route
     }
 
     /**
@@ -36,7 +53,9 @@ class RouteController extends Controller
      */
     public function show(Route $route)
     {
-        //
+        return Inertia::render('Routes/Show', [
+            'route' => $route->load('area'),
+        ]);
     }
 
     /**
@@ -44,7 +63,11 @@ class RouteController extends Controller
      */
     public function edit(Route $route)
     {
-        //
+        $areas = Area::all();
+        return Inertia::render('Routes/Edit', [
+            'route' => $route,
+            'areas' => $areas,
+        ]);
     }
 
     /**
@@ -52,7 +75,17 @@ class RouteController extends Controller
      */
     public function update(Request $request, Route $route)
     {
-        //
+        $request->validate([
+            'area_id' => 'required|exists:areas,id',
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|max:100',
+            'location' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+        ]);
+
+        $route->update($request->all());
+
+        return response()->json($route); // Return the updated route
     }
 
     /**
@@ -60,6 +93,25 @@ class RouteController extends Controller
      */
     public function destroy(Route $route)
     {
-        //
+        $route->delete();
+
+        return response()->json('Route deleted successfully.');
+    }
+
+    /**
+     * Bulk delete selected routes.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:routes,id',
+        ]);
+
+        Route::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Selected routes deleted successfully.',
+        ]);
     }
 }

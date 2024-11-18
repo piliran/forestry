@@ -25,10 +25,7 @@ class ArrestController extends Controller
      */
     public function create()
     {
-        $confiscates = Confiscate::all();
-        return Inertia::render('Arrests/Create', [
-            'confiscates' => $confiscates,
-        ]);
+        //
     }
 
     /**
