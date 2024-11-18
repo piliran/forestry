@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\District;
@@ -8,105 +7,57 @@ use Inertia\Inertia;
 
 class DistrictController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $districts = District::all();
-        return Inertia::render('Districts/Index', [
+
+        return Inertia::render('Department/Districts', [
             'districts' => $districts,
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return Inertia::render('Districts/Create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'chairperson' => 'required|string|max:255',
         ]);
 
-        $district = District::create($request->all());
+        $district = District::create($validated);
 
-        return response()->json($district, 201); // Return the created district
+        return response()->json($district, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(District $district)
-    {
-        return Inertia::render('Districts/Show', [
-            'district' => $district,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(District $district)
-    {
-        return Inertia::render('Districts/Edit', [
-            'district' => $district,
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, District $district)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'chairperson' => 'required|string|max:255',
         ]);
 
-        $district->update($request->all());
+        $district->update($validated);
 
-        return response()->json($district); // Return the updated district
+        return response()->json($district, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(District $district)
     {
         $district->delete();
 
-        return response()->json('District deleted successfully.');
+        return response()->json(['message' => 'District deleted'], 200);
     }
 
-    /**
-     * Bulk delete selected districts.
-     */
-    public function bulkDelete(Request $request)
+    public function batchDelete(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:districts,id',
-        ]);
+        $validated = $request->validate(['ids' => 'required|array']);
+        District::whereIn('id', $validated['ids'])->delete();
 
-        District::whereIn('id', $request->ids)->delete();
-
-        return response()->json([
-            'message' => 'Selected districts deleted successfully.',
-        ]);
+        return response()->json(['message' => 'Districts deleted'], 200);
     }
 }

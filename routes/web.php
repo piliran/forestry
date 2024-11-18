@@ -5,27 +5,30 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RoleCategoryController;
 use App\Http\Controllers\RoleController;
-
+use App\Http\Controllers\CrimeController;
+use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\StationController;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
- 
+
 
 
 Route::post('/role-categories/bulk-delete', [RoleCategoryController::class, 'bulkDelete']);
 Route::post('/roles/bulk-delete', [RoleController::class, 'batchDelete']);
 
-
 Route::resource('role-categories', RoleCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::resource('roles', RoleController::class)->middleware([HandlePrecognitiveRequests::class]);
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
+
+Route::resource('crimes', CrimeController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/crimes/bulk-delete', [CrimeController::class, 'batchDelete']);
+
+Route::resource('districts', DistrictController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/districts/bulk-delete', [DistrictController::class, 'batchDelete']);
+
+
+Route::resource('stations', StationController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/stations/bulk-delete', [StationController::class, 'batchDelete']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -36,21 +39,21 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/districts', function () {
-    return Inertia::render('Department/Districts');
-});
+// Route::get('/districts', function () {
+//     return Inertia::render('Department/Districts');
+// });
 
-Route::get('/crimes', function () {
-    return Inertia::render('Department/Crimes');
-});
+// Route::get('/crimes', function () {
+//     return Inertia::render('Department/Crimes');
+// });
 
 Route::get('/arrests', function () {
     return Inertia::render('Department/Arrests');
 });
 
-Route::get('/stations', function () {
-    return Inertia::render('Department/Stations');
-});
+// Route::get('/stations', function () {
+//     return Inertia::render('Department/Stations');
+// });
 
 Route::get('/encroached-areas', function () {
     return Inertia::render('Department/EncroachedAreas');

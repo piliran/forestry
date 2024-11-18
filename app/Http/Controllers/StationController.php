@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Station;
@@ -8,103 +7,55 @@ use Inertia\Inertia;
 
 class StationController extends Controller
 {
- /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $stations = Station::all();
-        return Inertia::render('Stations/Index', [
+
+        return Inertia::render('Department/Stations', [
             'stations' => $stations,
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return Inertia::render('Stations/Create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'chairperson' => 'required|string|max:255',
         ]);
 
-        $station = Station::create($request->all());
+        $station = Station::create($validated);
 
-        return response()->json($station, 201); // Return the created station
+        return response()->json($station, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Station $station)
-    {
-        return Inertia::render('Stations/Show', [
-            'station' => $station,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Station $station)
-    {
-        return Inertia::render('Stations/Edit', [
-            'station' => $station,
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Station $station)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'chairperson' => 'required|string|max:255',
         ]);
 
-        $station->update($request->all());
+        $station->update($validated);
 
-        return response()->json($station); // Return the updated station
+        return response()->json($station, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Station $station)
     {
         $station->delete();
 
-        return response()->json('Station deleted successfully.');
+        return response()->json(['message' => 'Station deleted'], 200);
     }
 
-    /**
-     * Bulk delete selected stations.
-     */
-    public function bulkDelete(Request $request)
+    public function batchDelete(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:stations,id',
-        ]);
+        $validated = $request->validate(['ids' => 'required|array']);
+        Station::whereIn('id', $validated['ids'])->delete();
 
-        Station::whereIn('id', $request->ids)->delete();
-
-        return response()->json([
-            'message' => 'Selected stations deleted successfully.',
-        ]);
+        return response()->json(['message' => 'Stations deleted'], 200);
     }
 }

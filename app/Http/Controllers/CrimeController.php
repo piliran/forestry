@@ -1,65 +1,59 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Crime;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CrimeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $crimes = Crime::all();
+
+        return Inertia::render('Department/Crimes', [
+            'crimes' => $crimes,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'penalty' => 'required|string|max:255',
+        ]);
+
+        $crime = Crime::create($validated);
+
+        return response()->json($crime, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Crime $crime)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Crime $crime)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Crime $crime)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'penalty' => 'required|string|max:255',
+        ]);
+
+        $crime->update($validated);
+
+        return response()->json($crime, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Crime $crime)
     {
-        //
+        $crime->delete();
+
+        return response()->json(['message' => 'Crime deleted'], 200);
+    }
+
+    public function batchDelete(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        Crime::whereIn('id', $validated['ids'])->delete();
+
+        return response()->json(['message' => 'Crimes deleted'], 200);
     }
 }
