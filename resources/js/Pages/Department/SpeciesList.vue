@@ -1,6 +1,7 @@
 <template>
-    <AppLayout title="Arrests">
+    <AppLayout title="Species">
         <div>
+            <!-- Toolbar -->
             <div class="card">
                 <Toolbar class="mb-6">
                     <template #start>
@@ -16,24 +17,10 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="
-                                !selectedProducts || !selectedProducts.length
-                            "
+                            :disabled="!selectedSpecies || !selectedSpecies.length"
                         />
                     </template>
-
                     <template #end>
-                        <FileUpload
-                            mode="basic"
-                            accept="image/*"
-                            :maxFileSize="1000000"
-                            label="Import"
-                            customUpload
-                            chooseLabel="Import"
-                            class="mr-2"
-                            auto
-                            :chooseButtonProps="{ severity: 'secondary' }"
-                        />
                         <Button
                             label="Export"
                             icon="pi pi-upload"
@@ -43,25 +30,28 @@
                     </template>
                 </Toolbar>
 
+                <!-- Toast Notifications -->
                 <Toast />
 
+                <!-- Data Table -->
                 <DataTable
+                    v-if="species.length > 0"
                     ref="dt"
-                    v-model:selection="selectedProducts"
-                    :value="products"
+                    v-model:selection="selectedSpecies"
+                    :value="species"
                     dataKey="id"
                     :paginator="true"
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} roles"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Products</h4>
+                            <h4 class="m-0">Manage Species</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -73,231 +63,126 @@
                             </IconField>
                         </div>
                     </template>
-
                     <Column
                         selectionMode="multiple"
                         style="width: 3rem"
                         :exportable="false"
                     ></Column>
                     <Column
-                        field="code"
-                        header="Code"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
-                    <Column
                         field="name"
-                        header="Name"
-                        sortable
-                        style="min-width: 16rem"
-                    ></Column>
-                    <Column header="Image">
-                        <template #body="slotProps">
-                            <img
-                                :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`"
-                                :alt="slotProps.data.image"
-                                class="rounded"
-                                style="width: 64px"
-                            />
-                        </template>
-                    </Column>
-                    <Column
-                        field="price"
-                        header="Price"
-                        sortable
-                        style="min-width: 8rem"
-                    >
-                        <template #body="slotProps">
-                            {{ formatCurrency(slotProps.data.price) }}
-                        </template>
-                    </Column>
-                    <Column
-                        field="category"
-                        header="Category"
+                        header="Species Name"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="rating"
-                        header="Reviews"
+                        header="Species Type Name"
+                        field="type.name"
                         sortable
                         style="min-width: 12rem"
-                    >
-                        <template #body="slotProps">
-                            <Rating
-                                :modelValue="slotProps.data.rating"
-                                :readonly="true"
-                            />
-                        </template>
-                    </Column>
+                    ></Column>
                     <Column
-                        field="inventoryStatus"
-                        header="Status"
+                        field="description"
+                        header="Description"
                         sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="matured_specie_count"
+                        header="Matured Specie Count"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="umatured_specie_count"
+                        header="Unmatured Specie Count"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="planted_seedlings_count"
+                        header="Planted Seedlings Count"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="unplanted_seedlings_count"
+                        header="Unplanted Seedlings Count"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        header="Action"
+                        :exportable="false"
                         style="min-width: 12rem"
                     >
-                        <template #body="slotProps">
-                            <Tag
-                                :value="slotProps.data.inventoryStatus"
-                                :severity="
-                                    getStatusLabel(
-                                        slotProps.data.inventoryStatus
-                                    )
-                                "
-                            />
-                        </template>
-                    </Column>
-                    <Column :exportable="false" style="min-width: 12rem">
                         <template #body="slotProps">
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editProduct(slotProps.data)"
+                                @click="editSpecie(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteProduct(slotProps.data)"
+                                @click="confirmDeleteSpecie(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
+                <div v-else class="flex items-center justify-center">
+                    <h2>No Species Found</h2>
+                </div>
             </div>
 
+            <!-- Add/Edit Role Dialog -->
             <Dialog
-                v-model:visible="productDialog"
+                v-model:visible="specieDialog"
                 :style="{ width: '450px' }"
-                header="Product Details"
+                :header="editDialog ? 'Edit Specie' : 'Add New Specie'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
-                    <img
-                        v-if="product.image"
-                        :src="`https://primefaces.org/cdn/primevue/images/product/${product.image}`"
-                        :alt="product.image"
-                        class="block m-auto pb-4"
-                    />
                     <div>
-                        <label for="name" class="block font-bold mb-3"
-                            >Name</label
-                        >
+                        <label for="name" class="block font-bold mb-3">
+                            Specie 
+                        </label>
                         <InputText
                             id="name"
-                            v-model.trim="product.name"
+                            v-model.trim="specie.name"
                             required="true"
                             autofocus
-                            :invalid="submitted && !product.name"
+                            :invalid="submitted && !specie.name"
                             fluid
                         />
                         <small
-                            v-if="submitted && !product.name"
+                            v-if="submitted && !specie.name"
                             class="text-red-500"
-                            >Name is required.</small
                         >
-                    </div>
-                    <div>
-                        <label for="description" class="block font-bold mb-3"
-                            >Description</label
-                        >
-                        <Textarea
-                            id="description"
-                            v-model="product.description"
-                            required="true"
-                            rows="3"
-                            cols="20"
-                            fluid
-                        />
+                            Specie Name is required.
+                        </small>
                     </div>
                     <div>
                         <label
                             for="inventoryStatus"
                             class="block font-bold mb-3"
-                            >Inventory Status</label
                         >
+                            Specie Type
+                        </label>
                         <Select
                             id="inventoryStatus"
-                            v-model="product.inventoryStatus"
-                            :options="statuses"
-                            optionLabel="label"
-                            placeholder="Select a Status"
+                            v-model="specie.specie_cat_id"
+                            :options="specieTypes"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select a Specie Type"
                             fluid
-                        ></Select>
-                    </div>
-
-                    <div>
-                        <span class="block font-bold mb-4">Category</span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category1"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Accessories"
-                                />
-                                <label for="category1">Accessories</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category2"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Clothing"
-                                />
-                                <label for="category2">Clothing</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category3"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Electronics"
-                                />
-                                <label for="category3">Electronics</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category4"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Fitness"
-                                />
-                                <label for="category4">Fitness</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-12 gap-4">
-                        <div class="col-span-6">
-                            <label for="price" class="block font-bold mb-3"
-                                >Price</label
-                            >
-                            <InputNumber
-                                id="price"
-                                v-model="product.price"
-                                mode="currency"
-                                currency="USD"
-                                locale="en-US"
-                                fluid
-                            />
-                        </div>
-                        <div class="col-span-6">
-                            <label for="quantity" class="block font-bold mb-3"
-                                >Quantity</label
-                            >
-                            <InputNumber
-                                id="quantity"
-                                v-model="product.quantity"
-                                integeronly
-                                fluid
-                            />
-                        </div>
+                        />
                     </div>
                 </div>
-
                 <template #footer>
                     <Button
                         label="Cancel"
@@ -305,253 +190,264 @@
                         text
                         @click="hideDialog"
                     />
-                    <Button
-                        label="Save"
-                        icon="pi pi-check"
-                        @click="saveProduct"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Save"
+                            icon="pi pi-check"
+                            @click="saveSpecie"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
+            <!-- Delete Single Role Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteProductDialog"
+                v-model:visible="deleteSpecieDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="product"
-                        >Are you sure you want to delete
-                        <b>{{ product.name }}</b
-                        >?</span
-                    >
+                    <span v-if="role">
+                        Are you sure you want to delete <b>{{ specie.name }}</b
+                        >?
+                    </span>
                 </div>
                 <template #footer>
                     <Button
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteProductDialog = false"
+                        @click="deleteSpecieDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        @click="deleteProduct"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            @click="deleteSpecie"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
+            <!-- Delete Multiple Roles Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteProductsDialog"
+                v-model:visible="deleteSpeciesDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="product"
-                        >Are you sure you want to delete the selected
-                        products?</span
-                    >
+                    <span>
+                        Are you sure you want to delete the selected species?
+                    </span>
                 </div>
                 <template #footer>
                     <Button
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteProductsDialog = false"
+                        @click="deleteSpeciesDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        text
-                        @click="deleteSelectedProducts"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            text
+                            @click="deleteSelectedSpecies"
+                        />
+                    </div>
                 </template>
             </Dialog>
         </div>
     </AppLayout>
 </template>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
-
 import { useToast } from "primevue/usetoast";
-import { ProductService } from "@/primevue/service/ProductService";
 
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-
 import Button from "primevue/button";
-import FileUpload from "primevue/fileupload";
 import Toolbar from "primevue/toolbar";
-import Rating from "primevue/rating";
-import Textarea from "primevue/textarea";
-import RadioButton from "primevue/radiobutton";
-import InputNumber from "primevue/inputnumber";
 import Dialog from "primevue/dialog";
-
 import InputIcon from "primevue/inputicon";
-import Select from "primevue/select";
-import IconField from "primevue/iconfield";
-
 import InputText from "primevue/inputtext";
-import Tag from "primevue/tag";
+import IconField from "primevue/iconfield";
+import Select from "primevue/select";
+import ProgressSpinner from "primevue/progressspinner";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
-
-onMounted(() => {
-    ProductService.getProducts().then((data) => (products.value = data));
-});
+import axios from "axios";
 
 const toast = useToast();
+
+// Reactive State Variables
 const dt = ref();
-const products = ref();
-const productDialog = ref(false);
-const deleteProductDialog = ref(false);
-const deleteProductsDialog = ref(false);
-const product = ref({});
-const selectedProducts = ref();
+const specieDialog = ref(false);
+const editDialog = ref(false);
+const loading = ref(false);
+const deleteSpecieDialog = ref(false);
+const deleteSpeciesDialog = ref(false);
+const role = ref({});
+const selectedSpecies = ref([]);
+const submitted = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const submitted = ref(false);
-const statuses = ref([
-    { label: "INSTOCK", value: "instock" },
-    { label: "LOWSTOCK", value: "lowstock" },
-    { label: "OUTOFSTOCK", value: "outofstock" },
-]);
+const props = defineProps({
+    species: Array,
+    specieTypes: Array,
+});
 
-const formatCurrency = (value) => {
-    if (value)
-        return value.toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-        });
-    return;
-};
+const species = ref(props.species);
+const specieTypes = ref(props.specieTypes);
+
+// CRUD Methods
 const openNew = () => {
-    product.value = {};
+    editDialog.value = false;
+    specie.value = {};
     submitted.value = false;
-    productDialog.value = true;
+    specieDialog.value = true;
 };
+
 const hideDialog = () => {
-    productDialog.value = false;
+    specieDialog.value = false;
     submitted.value = false;
 };
-const saveProduct = () => {
+
+const saveSpecie = async () => {
     submitted.value = true;
+    if (specie?.value?.name?.trim()) {
+        loading.value = true;
+        try {
+            if (specie.value.id) {
+                const response = await axios.put(
+                    `/species/${specie.value.id}`,
+                    specie.value
+                );
 
-    if (product?.value.name?.trim()) {
-        if (product.value.id) {
-            product.value.inventoryStatus = product.value.inventoryStatus.value
-                ? product.value.inventoryStatus.value
-                : product.value.inventoryStatus;
-            products.value[findIndexById(product.value.id)] = product.value;
-            toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Updated",
-                life: 3000,
-            });
-        } else {
-            product.value.id = createId();
-            product.value.code = createId();
-            product.value.image = "product-placeholder.svg";
-            product.value.inventoryStatus = product.value.inventoryStatus
-                ? product.value.inventoryStatus.value
-                : "INSTOCK";
-            products.value.push(product.value);
-            toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Created",
-                life: 3000,
-            });
-        }
+                updateSpecie(response.data);
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Specie Updated",
+                    life: 3000,
+                });
+            } else {
+                const response = await axios.post("/species", role.value);
 
-        productDialog.value = false;
-        product.value = {};
-    }
-};
-const editProduct = (prod) => {
-    product.value = { ...prod };
-    productDialog.value = true;
-};
-const confirmDeleteProduct = (prod) => {
-    product.value = prod;
-    deleteProductDialog.value = true;
-};
-const deleteProduct = () => {
-    products.value = products.value.filter(
-        (val) => val.id !== product.value.id
-    );
-    deleteProductDialog.value = false;
-    product.value = {};
-    toast.add({
-        severity: "success",
-        summary: "Successful",
-        detail: "Product Deleted",
-        life: 3000,
-    });
-};
-const findIndexById = (id) => {
-    let index = -1;
-    for (let i = 0; i < products.value.length; i++) {
-        if (products.value[i].id === id) {
-            index = i;
-            break;
+                species.value.push(response.data);
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Species Created",
+                    life: 3000,
+                });
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            loading.value = false;
+            specieDialog.value = false;
         }
     }
+};
 
-    return index;
+const editSpecie = (specieData) => {
+    editDialog.value = true;
+    specie.value = { ...specieData };
+    specieDialog.value = true;
 };
-const createId = () => {
-    let id = "";
-    var chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < 5; i++) {
-        id += chars.charAt(Math.floor(Math.random() * chars.length));
+
+const deleteSpecie = async () => {
+    loading.value = true;
+    try {
+        await axios.delete(`/species/${specie.value.id}`);
+        species.value = species.value.filter((r) => r.id !== specie.value.id);
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Specie Deleted",
+            life: 3000,
+        });
+    } catch (err) {
+        console.error(err);
+    } finally {
+        deleteSpecieDialog.value = false;
+        loading.value = false;
     }
-    return id;
 };
-const exportCSV = () => {
-    dt.value.exportCSV();
+
+const confirmDeleteSpecie = (specieData) => {
+    specie.value = specieData;
+    deleteSpecieDialog.value = true;
 };
+
+const deleteSelectedSpecies = async () => {
+    const ids = selectedSpecies.value.map((specie) => specie.id);
+    loading.value = true;
+    try {
+        await axios.post("/species/bulk-delete", { ids });
+        species.value = species.value.filter((r) => !ids.includes(r.id));
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Selected Roles Deleted",
+            life: 3000,
+        });
+    } catch (err) {
+        console.error(err);
+    } finally {
+        deleteSpeciesDialog.value = false;
+        loading.value = false;
+    }
+};
+
 const confirmDeleteSelected = () => {
-    deleteProductsDialog.value = true;
-};
-const deleteSelectedProducts = () => {
-    products.value = products.value.filter(
-        (val) => !selectedProducts.value.includes(val)
-    );
-    deleteProductsDialog.value = false;
-    selectedProducts.value = null;
-    toast.add({
-        severity: "success",
-        summary: "Successful",
-        detail: "Products Deleted",
-        life: 3000,
-    });
+    deleteSpeciesDialog.value = true;
 };
 
-const getStatusLabel = (status) => {
-    switch (status) {
-        case "INSTOCK":
-            return "success";
-
-        case "LOWSTOCK":
-            return "warn";
-
-        case "OUTOFSTOCK":
-            return "danger";
-
-        default:
-            return null;
+const updateSpecies = (updatedSpecies) => {
+    const index = species.value.findIndex((r) => r.id === updatedSpecies.id);
+    if (index !== -1) {
+        species.value[index] = updatedSpecies;
     }
+};
+
+const exportCSV = () => {
+    dt.value?.exportCSV();
 };
 </script>

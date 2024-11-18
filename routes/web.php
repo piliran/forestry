@@ -6,6 +6,9 @@ use Inertia\Inertia;
 use App\Http\Controllers\RoleCategoryController;
 use App\Http\Controllers\RoleController;
 
+use App\Http\Controllers\SpecieTypesController;
+use App\Http\Controllers\SpecieController;
+
 use App\Http\Controllers\CrimeController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\StationController;
@@ -16,11 +19,13 @@ use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 
 
+
 Route::post('/role-categories/bulk-delete', [RoleCategoryController::class, 'bulkDelete']);
 Route::post('/roles/bulk-delete', [RoleController::class, 'batchDelete']);
 
 Route::resource('role-categories', RoleCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::resource('roles', RoleController::class)->middleware([HandlePrecognitiveRequests::class]);
+
 Route::resource('users', UserController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 
