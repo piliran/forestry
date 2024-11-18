@@ -7,4 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Crime extends Model
 {
     //
+    protected $fillable = [
+        'name',
+        'description',
+        'penalty'
+    ];
+
 }
