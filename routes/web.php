@@ -5,10 +5,13 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RoleCategoryController;
 use App\Http\Controllers\RoleController;
+
 use App\Http\Controllers\CrimeController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\StationController;
-use App\Http\Requests\StoreUserRequest;
+
+use App\Http\Controllers\UserController;
+
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 
@@ -18,6 +21,7 @@ Route::post('/roles/bulk-delete', [RoleController::class, 'batchDelete']);
 
 Route::resource('role-categories', RoleCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::resource('roles', RoleController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::resource('users', UserController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 
 Route::resource('crimes', CrimeController::class)->middleware([HandlePrecognitiveRequests::class]);
