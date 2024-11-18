@@ -44,6 +44,7 @@ class User extends Authenticatable
         'password',
         'current_team_id',
         'profile_photo_path',
+        'role_id'
     ];
 
     /**
@@ -79,4 +80,5 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
 }

@@ -105,7 +105,7 @@ const items = ref([
         icon: "users",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
-        route: "/users-list",
+        route: "/users",
     },
 
     {
