@@ -16,9 +16,27 @@ class Confiscate extends Model
         'national_id',
         'village',
         'TA',
-        'district',
-        'country',
-        'coordinates',
+        'district_id',
+        'encroached_area_id',
+        'suspect_id',
+   
         'proof',
     ];
+
+
+
+    public function District()
+    {
+        return $this->belongsTo(District::class, 'district_id');
+    }
+
+    public function Suspect()
+    {
+        return $this->belongsTo(Suspect::class, 'suspect_id');
+    }
+
+    public function Encroached()
+    {
+        return $this->belongsTo(Encroached::class, 'encroached_area_id');
+    }
 }

@@ -1,0 +1,105 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Species;
+use App\Models\SpeciesCategory;
+
+use Illuminate\Http\Request;
+
+class SpeciesController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $species = Species::with('SpeciesCategory')->get();
+        $speciesCategory = SpeciesCategory::all();
+
+        return Inertia::render('Department/Species', [
+            'species' => $species,
+            'speciesCategory' => $speciesCategory,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'specie_cat_id' => 'required|exists:specie_categories,id',
+       
+        ]);
+
+        $species = Species::create($request->all());
+
+        return response()->json($species, 201);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Species $species)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Species $species)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Species $species)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'specie_cat_id' => 'required|exists:specie_categories,id',
+       
+        ]);
+
+       
+
+        $species->update($request->all());
+
+        return response()->json($species); 
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+
+
+    public function destroy(Species $species)
+    {
+        $species->delete();
+
+        return response()->json(['message' => 'species deleted'], 200);
+    }
+
+    public function batchDelete(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        Species::whereIn('id', $validated['ids'])->delete();
+
+        return response()->json(['message' => 'species deleted'], 200);
+    }
+}
