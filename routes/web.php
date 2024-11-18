@@ -9,6 +9,12 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SpecieTypesController;
 use App\Http\Controllers\SpecieController;
 
+use App\Http\Controllers\ZoneController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\DepartmentController;
+
+
+
 use App\Http\Controllers\CrimeController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\StationController;
@@ -38,6 +44,15 @@ Route::post('/districts/bulk-delete', [DistrictController::class, 'batchDelete']
 
 Route::resource('stations', StationController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/stations/bulk-delete', [StationController::class, 'batchDelete']);
+
+Route::resource('zones', ZoneController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/zones/bulk-delete', [ZoneController::class, 'batchDelete']);
+
+Route::resource('countries', CountryController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/countries/bulk-delete', [CountryController::class, 'batchDelete']);
+
+Route::resource('department', DepartmentController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/department/bulk-delete', [DepartmentController::class, 'batchDelete']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [

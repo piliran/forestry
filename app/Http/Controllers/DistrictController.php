@@ -11,7 +11,7 @@ class DistrictController extends Controller
     {
         $districts = District::all();
 
-        return Inertia::render('Department/Districts', [
+        return Inertia::render('Admin/District', [
             'districts' => $districts,
         ]);
     }

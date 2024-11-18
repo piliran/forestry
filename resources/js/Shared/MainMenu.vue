@@ -101,6 +101,27 @@ const items = ref([
         route: "/dashboard",
     },
     {
+        label: "Countries",
+        icon: "countries",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/countries",
+    },
+    {
+        label: "Department",
+        icon: "department",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/department",
+    },
+    {
+        label: "Zones",
+        icon: "zones",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/zones",
+    },
+    {
         label: "Users",
         icon: "users",
         class: "parent-link-with-no-sublinks",
