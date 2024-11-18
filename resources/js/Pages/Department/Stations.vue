@@ -17,7 +17,9 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="!selectedStations || !selectedStations.length"
+                            :disabled="
+                                !selectedStations || !selectedStations.length
+                            "
                         />
                     </template>
                     <template #end>
@@ -80,7 +82,7 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                    
+
                     <Column
                         field="email"
                         header="Email"
@@ -167,7 +169,7 @@
                             Location is required.
                         </small>
                     </div>
-                    
+
                     <div>
                         <label for="email" class="block font-bold mb-3">
                             Email
@@ -186,8 +188,6 @@
                         >
                             Email is required.
                         </small>
-                        
-
                     </div>
                     <div>
                         <label for="chairperson" class="block font-bold mb-3">
@@ -207,11 +207,7 @@
                         >
                             Chairperson is required.
                         </small>
-                        
-
                     </div>
-
-                    
                 </div>
                 <template #footer>
                     <Button
@@ -362,7 +358,7 @@ const props = defineProps({
 });
 
 onMounted(async () => {
-    console.log(stations)
+    console.log(stations);
 });
 
 const stations = ref(props.stations);
@@ -387,7 +383,7 @@ const saveStation = async () => {
         try {
             if (station.value.id) {
                 const response = await axios.put(
-                    "/stations/${station.value.id}",
+                    `/stations/${station.value.id}`,
                     station.value
                 );
                 updateStation(response.data);
@@ -411,7 +407,7 @@ const saveStation = async () => {
             console.error(err);
         } finally {
             loading.value = false;
-            stationsDialog.value = false;
+            stationDialog.value = false;
         }
     }
 };
@@ -426,7 +422,9 @@ const deleteStation = async () => {
     loading.value = true;
     try {
         await axios.delete(`/stations/${station.value.id}`);
-        stations.value = stations.value.filter((r) => r.id !== station.value.id);
+        stations.value = stations.value.filter(
+            (r) => r.id !== station.value.id
+        );
         toast.add({
             severity: "success",
             summary: "Successful",

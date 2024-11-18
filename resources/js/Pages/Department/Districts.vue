@@ -17,7 +17,9 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="!selectedDistricts || !selectedDistricts.length"
+                            :disabled="
+                                !selectedDistricts || !selectedDistricts.length
+                            "
                         />
                     </template>
                     <template #end>
@@ -209,8 +211,6 @@
                         >
                             Email is required.
                         </small>
-                        
-
                     </div>
                     <div>
                         <label for="chairperson" class="block font-bold mb-3">
@@ -230,11 +230,7 @@
                         >
                             Chairperson is required.
                         </small>
-                        
-
                     </div>
-
-                    
                 </div>
                 <template #footer>
                     <Button
@@ -272,7 +268,8 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span v-if="district">
-                        Are you sure you want to delete <b>{{ district.name }}</b
+                        Are you sure you want to delete
+                        <b>{{ district.name }}</b
                         >?
                     </span>
                 </div>
@@ -385,7 +382,7 @@ const props = defineProps({
 });
 
 onMounted(async () => {
-    console.log(districts)
+    console.log(districts);
 });
 
 const districts = ref(props.districts);
@@ -410,7 +407,7 @@ const saveDistrict = async () => {
         try {
             if (district.value.id) {
                 const response = await axios.put(
-                    "/districts/${district.value.id}",
+                    `/districts/${district.value.id}`,
                     district.value
                 );
                 updateDistrict(response.data);
@@ -449,7 +446,9 @@ const deleteDistrict = async () => {
     loading.value = true;
     try {
         await axios.delete(`/districts/${district.value.id}`);
-        districts.value = districts.value.filter((r) => r.id !== district.value.id);
+        districts.value = districts.value.filter(
+            (r) => r.id !== district.value.id
+        );
         toast.add({
             severity: "success",
             summary: "Successful",
