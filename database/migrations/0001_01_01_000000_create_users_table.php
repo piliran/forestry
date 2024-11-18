@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('email');
             $table->string('gender')->nullable();
             $table->string('DOB')->nullable();
-            $table->string('district')->nullable();
-            $table->string('city')->nullable();
-            $table->string('country')->nullable();
+            
+            $table->unsignedBigInteger('district_id')->nullable();
+            $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
             $table->string('age')->nullable();
             $table->string('position')->nullable();
             $table->string('national_id')->nullable();

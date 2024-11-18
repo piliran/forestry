@@ -4,14 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Zone extends Model
+class Country extends Model
 {
     protected $fillable = [
-        
         'name',
-        'phone',
-        'location',
-        'website',
-     
     ];
 }

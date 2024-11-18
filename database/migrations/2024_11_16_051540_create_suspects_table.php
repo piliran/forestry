@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('confiscates', function (Blueprint $table) {
+        Schema::create('suspects', function (Blueprint $table) {
             $table->id();
-            $table->string('item');
-            $table->string('quantity');
+            $table->string('name');
+            $table->string('national_id');
+            $table->unsignedBigInteger('country_id');
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('district_id');
             $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('suspect_id');
-            $table->foreign('suspect_id')->references('id')->on('suspects')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('encroached_area_id');
-            $table->foreign('encroached_area_id')->references('id')->on('encroacheds')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('proof');
+            $table->string('village');
+            $table->string('TA');
+            $table->string('suspect_photo_path', 2048)->nullable();          
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('confiscates');
+        Schema::dropIfExists('suspects');
     }
 };

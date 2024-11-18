@@ -15,11 +15,16 @@ class Route extends Model
         'name',
         'code',
         'location',
-        'type',
+        'route_type_id',
     ];
 
     public function area()
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(Area::class, 'zone_id');
+    }
+
+    public function RouteType()
+    {
+        return $this->belongsTo(RouteType::class, 'route_type_id');
     }
 }
