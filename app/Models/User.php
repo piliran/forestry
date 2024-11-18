@@ -25,10 +25,25 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    use HasFactory;
+
     protected $fillable = [
+        'title',
         'name',
         'email',
+        'gender',
+        'DOB',
+        'district',
+        'city',
+        'country',
+        'position',
+        'national_id',
+        'phone',
+        'account_status',
+        'marital_status',
         'password',
+        'current_team_id',
+        'profile_photo_path',
     ];
 
     /**
