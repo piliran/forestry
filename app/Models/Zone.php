@@ -14,4 +14,6 @@ class Zone extends Model
         'website',
     
     ];
+
+    
 }

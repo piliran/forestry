@@ -12,7 +12,7 @@ use App\Http\Controllers\SpecieController;
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DepartmentController;
-
+use App\Http\Controllers\AreaController;
 
 
 use App\Http\Controllers\CrimeController;
@@ -32,6 +32,13 @@ Route::post('/department/bulk-delete', [DepartmentController::class, 'batchDelet
 
 Route::post('/countries/bulk-delete', [CountryController::class, 'batchDelete']);
 Route::resource('countries', CountryController::class)->middleware([HandlePrecognitiveRequests::class]);
+
+
+Route::post('/area-list/bulk-delete', [AreaController::class, 'batchDelete']);
+Route::resource('area-list', AreaController::class)->middleware([HandlePrecognitiveRequests::class]);
+
+
+
 
 Route::post('/role-categories/bulk-delete', [RoleCategoryController::class, 'bulkDelete']);
 Route::post('/roles/bulk-delete', [RoleController::class, 'batchDelete']);
