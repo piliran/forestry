@@ -33,7 +33,14 @@ class CountryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        
+        ]);
+
+        $country = Country::create($validated);
+
+        return response()->json($country, 201);
     }
 
     /**
@@ -57,7 +64,13 @@ class CountryController extends Controller
      */
     public function update(Request $request, Country $country)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $country->update($validated);
+
+        return response()->json($country, 200);
     }
 
     /**
@@ -65,6 +78,16 @@ class CountryController extends Controller
      */
     public function destroy(Country $country)
     {
-        //
+        $country->delete();
+
+        return response()->json(['message' => 'Country deleted'], 200);
+    }
+
+    public function batchDelete(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        Country::whereIn('id', $validated['ids'])->delete();
+
+        return response()->json(['message' => 'Selected Countries deleted'], 200);
     }
 }
