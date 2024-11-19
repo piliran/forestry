@@ -83,8 +83,29 @@ class ZoneController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+  
+
     public function destroy(Zone $zone)
     {
-        //
+        $zone->delete();
+
+        return response()->json('zone deleted successfully.');
+    }
+
+    /**
+     * Bulk delete selected users.
+     */
+    public function batchDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:users,id',
+        ]);
+
+        Zone::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Selected zones deleted successfully.',
+        ]);
     }
 }
