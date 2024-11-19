@@ -36,6 +36,22 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            'can' => auth()->check() ? $this->getUserPermissions() : [],
         ];
+    }
+
+    /**
+     * Get the user's permissions as a flattened array.
+     *
+     * @return array
+     */
+    protected function getUserPermissions(): array
+    {
+        return auth()->user()
+            ->loadMissing('roles.permissions') // Eager load roles and permissions
+            ->roles
+            ->flatMap(fn ($role) => $role->permissions) // Combine all permissions
+            ->mapWithKeys(fn ($permission) => [$permission->name => true]) // Flatten to key-value pairs
+            ->toArray();
     }
 }

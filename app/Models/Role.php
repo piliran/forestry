@@ -20,4 +20,10 @@ class Role extends Model
     {
         return $this->belongsTo(RoleCategory::class, 'role_category_id');
     }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'role_to_permissions');
+    }
+
 }

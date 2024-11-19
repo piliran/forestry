@@ -300,6 +300,7 @@ const filters = ref({
 const props = defineProps({
     roles: Array,
     roleCategories: Array,
+    permissions: Array,
 });
 
 const roles = ref(props.roles);

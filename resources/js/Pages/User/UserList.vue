@@ -105,7 +105,12 @@
                         style="min-width: 8rem"
                     >
                         <template #body="slotProps">
-                            <Button icon="pi pi-eye" outlined severity="info" />
+                            <Button
+                                @click="assignAndEditRoles(slotProps.data)"
+                                icon="pi pi-eye"
+                                outlined
+                                severity="info"
+                            />
                         </template>
                     </Column>
                     <Column
@@ -414,6 +419,64 @@
                     </div>
                 </template>
             </Dialog>
+
+            <Dialog
+                v-model:visible="roleAssignmentDialog"
+                :style="{ width: '500px' }"
+                header="Assign Roles"
+                :modal="true"
+            >
+                <div class="grid gap-4">
+                    <!-- User Information -->
+                    <div class="col-12">
+                        <h4 class="font-bold">User: {{ user.name }}</h4>
+                        <p>Email: {{ user.email }}</p>
+                    </div>
+
+                    <!-- Roles Selection -->
+                    <div class="col-12">
+                        <h5 class="font-bold mb-2">Assign Roles:</h5>
+                        <div
+                            v-for="role in roles"
+                            :key="role.id"
+                            class="flex items-center mb-2"
+                        >
+                            <Checkbox
+                                :value="role.id"
+                                inputId="`role_${role.id}`"
+                            />
+                            <label :for="`role_${role.id}`" class="ml-2">{{
+                                role.name
+                            }}</label>
+                        </div>
+                    </div>
+                </div>
+
+                <template #footer>
+                    <Button
+                        label="Cancel"
+                        icon="pi pi-times"
+                        text
+                        @click="hideDialog"
+                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Save"
+                            icon="pi pi-check"
+                            @click="saveAssignedRoles"
+                        />
+                    </div>
+                </template>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
@@ -426,6 +489,7 @@ import { useToast } from "primevue/usetoast";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
+import Checkbox from "primevue/checkbox";
 import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
@@ -444,6 +508,7 @@ const toast = useToast();
 // Reactive State Variables
 const dt = ref();
 const userRolesDialog = ref(false);
+const roleAssignmentDialog = ref(false);
 const editDialog = ref(false);
 const loading = ref(false);
 const deletUserDialog = ref(false);
@@ -479,6 +544,7 @@ const openNew = () => {
 
 const hideDialog = () => {
     userRolesDialog.value = false;
+    roleAssignmentDialog.value = false;
     submitted.value = false;
 };
 
@@ -553,6 +619,41 @@ const editUser = (userData) => {
     editDialog.value = true;
     user.value = { ...userData };
     userRolesDialog.value = true;
+};
+
+const assignAndEditRoles = (userData) => {
+    user.value = { ...userData };
+    roleAssignmentDialog.value = true;
+};
+
+const saveAssignedRoles = async () => {
+    loading.value = true;
+    try {
+        // Send assigned roles to the backend
+        await axios.post(`/users/${props.user.id}/roles`, {
+            // roles: assignedRoles.value,
+        });
+
+        // Notify success
+        toast.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Roles updated successfully.",
+            life: 3000,
+        });
+
+        hideDialog();
+    } catch (error) {
+        console.error(error);
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Failed to update roles.",
+            life: 3000,
+        });
+    } finally {
+        loading.value = false;
+    }
 };
 
 const deleteUser = async () => {

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Permission;
 use App\Models\RoleCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,11 +12,13 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::with('category')->get();
+        $permissions = Permission::all();
         $roleCategories = RoleCategory::all();
 
         return Inertia::render('Roles/Index', [
             'roles' => $roles,
             'roleCategories' => $roleCategories,
+            'permissions' => $permissions,
         ]);
     }
 
@@ -33,6 +36,23 @@ class RoleController extends Controller
 
         return response()->json($role, 201);
     }
+
+//     public function store(Request $request)
+// {
+//     $data = $request->validate([
+//         'name' => 'required|string|unique:roles,name',
+//         'permissions' => 'array',
+//     ]);
+
+//     $role = Role::create(['name' => $data['name']]);
+
+//     if (!empty($data['permissions'])) {
+//         $role->permissions()->sync($data['permissions']);
+//     }
+
+//     return redirect()->back()->with('success', 'Role created successfully.');
+// }
+
 
     public function update(Request $request, Role $role)
     {
