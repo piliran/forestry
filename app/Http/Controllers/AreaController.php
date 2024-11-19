@@ -14,7 +14,7 @@ class AreaController extends Controller
     public function index()
     {
         $areas = Area::with('station')->get();
-        return Inertia::render('Areas/Index', [
+        return Inertia::render('Admin/Area', [
             'areas' => $areas,
         ]);
     }
