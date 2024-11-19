@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('zones', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone');
-            $table->string('location');
-            $table->string('website');
+            $table->string('phone')->nullable();
+            $table->string('location')->nullable();
+            $table->string('website')->nullable();
             $table->timestamps();
         });
     }

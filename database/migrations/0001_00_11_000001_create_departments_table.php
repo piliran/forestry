@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('code');
-            $table->string('location');
-            $table->string('chairperson');
-            $table->string('phone');
-            $table->string('email');
-            $table->string('website');
+            $table->string('code')->nullable();
+            $table->string('location')->nullable();
+            $table->string('chairperson')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->string('website')->nullable();
             $table->timestamps();
         });
     }

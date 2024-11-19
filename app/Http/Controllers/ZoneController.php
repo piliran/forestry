@@ -33,7 +33,17 @@ class ZoneController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'website' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+        
+        ]);
+
+        $zones = Zone::create($validated);
+
+        return response()->json($zones, 201);
     }
 
     /**
@@ -57,7 +67,17 @@ class ZoneController extends Controller
      */
     public function update(Request $request, Zone $zone)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'website' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+        
+        ]);
+
+        $zone->update($request->all());
+
+        return response()->json($zone);
     }
 
     /**
