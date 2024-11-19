@@ -33,7 +33,7 @@ class User extends Authenticatable
         'email',
         'gender',
         'DOB',
-        'district',
+        'district_id',
         'city',
         'country',
         'position',
@@ -82,6 +82,9 @@ class User extends Authenticatable
     }
 
 
-    
+    public function district()
+    {
+        return $this->belongsTo(District::class,'district_id');
+    }
 
 }

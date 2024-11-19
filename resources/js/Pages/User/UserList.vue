@@ -69,17 +69,18 @@
                         :exportable="false"
                     ></Column>
                     <Column
+                        header="Title"
+                        field="title"
+                        sortable
+                        style="min-width: 4rem"
+                    ></Column>
+                    <Column
                         field="name"
                         header="Name"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                    <Column
-                        header="Title"
-                        field="title"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
+
                     <Column
                         header="Gender"
                         field="gender"
@@ -94,10 +95,28 @@
                     ></Column>
                     <Column
                         header="District"
-                        field="district"
+                        field="district.name"
                         sortable
                         style="min-width: 12rem"
                     ></Column>
+                    <Column
+                        header="Role"
+                        :exportable="false"
+                        style="min-width: 8rem"
+                    >
+                        <template #body="slotProps">
+                            <Button icon="pi pi-eye" outlined severity="info" />
+                        </template>
+                    </Column>
+                    <Column
+                        header="Permissions"
+                        :exportable="false"
+                        style="min-width: 8rem"
+                    >
+                        <template #body="slotProps">
+                            <Button icon="pi pi-eye" outlined severity="info" />
+                        </template>
+                    </Column>
                     <Column
                         header="Action"
                         :exportable="false"
@@ -109,14 +128,14 @@
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editRole(slotProps.data)"
+                                @click="editUser(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteRole(slotProps.data)"
+                                @click="confirmDeleteUser(slotProps.data)"
                             />
                         </template>
                     </Column>
@@ -126,51 +145,170 @@
                 </div>
             </div>
 
-            <!-- Add/Edit Role Dialog -->
             <Dialog
-                v-model:visible="roleDialog"
+                v-model:visible="userRolesDialog"
                 :style="{ width: '450px' }"
-                :header="editDialog ? 'Edit Role' : 'Add New Role'"
+                :header="editDialog ? 'Edit user' : 'Add New user'"
                 :modal="true"
             >
-                <div class="flex flex-col gap-6">
-                    <div>
-                        <label for="name" class="block font-bold mb-3">
-                            Role Name
-                        </label>
+                <div class="grid gap-4">
+                    <!-- Title -->
+                    <div class="col-12 md:col-6">
+                        <label for="title" class="block font-bold mb-2"
+                            >Title</label
+                        >
+                        <Select
+                            id="title"
+                            v-model="user.title"
+                            :options="titleOptions"
+                            placeholder="Select title"
+                            fluid
+                        />
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="col-12 md:col-6">
+                        <label for="name" class="block font-bold mb-2"
+                            >Full Name</label
+                        >
                         <InputText
                             id="name"
-                            v-model.trim="role.name"
-                            required="true"
+                            v-model.trim="user.name"
+                            required
                             autofocus
-                            :invalid="submitted && !role.name"
+                            :invalid="submitted && !user.name"
                             fluid
                         />
                         <small
-                            v-if="submitted && !role.name"
+                            v-if="submitted && !user.name"
                             class="text-red-500"
                         >
-                            Role Name is required.
+                            Name is required.
                         </small>
                     </div>
-                    <div>
-                        <label
-                            for="inventoryStatus"
-                            class="block font-bold mb-3"
+
+                    <!-- Date of Birth -->
+                    <div class="col-12 md:col-6">
+                        <label for="dob" class="block font-bold mb-2"
+                            >Date of Birth</label
                         >
-                            Role Category
-                        </label>
+
+                        <DatePicker
+                            fluid
+                            v-model="user.DOB"
+                            dateFormat="dd/mm/yy"
+                            placeholder="YYYY-MM-DD"
+                        />
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-12 md:col-6">
+                        <label for="gender" class="block font-bold mb-2"
+                            >Gender</label
+                        >
                         <Select
-                            id="inventoryStatus"
-                            v-model="role.role_category_id"
-                            :options="roles"
+                            id="gender"
+                            v-model="user.gender"
+                            :options="genderOptions"
+                            placeholder="Select gender"
+                            fluid
+                        />
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-12 md:col-6">
+                        <label for="email" class="block font-bold mb-2"
+                            >Email</label
+                        >
+                        <InputText
+                            id="email"
+                            type="email"
+                            v-model.trim="user.email"
+                            required
+                            :invalid="submitted && !user.email"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !user.email"
+                            class="text-red-500"
+                        >
+                            Email is required.
+                        </small>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="col-12 md:col-6">
+                        <label for="phone" class="block font-bold mb-2"
+                            >Phone Number</label
+                        >
+                        <InputText
+                            id="phone"
+                            type="tel"
+                            v-model.trim="user.phone"
+                            placeholder="Enter phone number"
+                            fluid
+                        />
+                    </div>
+
+                    <!-- Village -->
+                    <div class="col-12 md:col-6">
+                        <label for="village" class="block font-bold mb-2"
+                            >Village</label
+                        >
+                        <InputText
+                            id="village"
+                            v-model.trim="user.village"
+                            placeholder="Enter village name"
+                            fluid
+                        />
+                    </div>
+
+                    <!-- National ID -->
+                    <div class="col-12 md:col-6">
+                        <label for="nid" class="block font-bold mb-2"
+                            >National ID</label
+                        >
+                        <InputText
+                            id="nid"
+                            v-model.trim="user.national_id"
+                            placeholder="Enter National ID"
+                            fluid
+                        />
+                    </div>
+
+                    <!-- Traditional Authority -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="traditional_authority"
+                            class="block font-bold mb-2"
+                        >
+                            Traditional Authority
+                        </label>
+                        <InputText
+                            id="traditional_authority"
+                            v-model.trim="user.traditional_authority"
+                            placeholder="Enter Traditional Authority"
+                            fluid
+                        />
+                    </div>
+
+                    <!-- District -->
+                    <div class="col-12 md:col-6">
+                        <label for="district" class="block font-bold mb-2"
+                            >District</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="user.district_id"
+                            :options="districts"
                             optionLabel="name"
                             optionValue="id"
-                            placeholder="Select a Role Category"
+                            placeholder="Select district"
                             fluid
                         />
                     </div>
                 </div>
+
                 <template #footer>
                     <Button
                         label="Cancel"
@@ -191,23 +329,23 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveRole"
+                            @click="saveUser"
                         />
                     </div>
                 </template>
             </Dialog>
 
-            <!-- Delete Single Role Confirmation Dialog -->
+            <!-- Delete Single user Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteRoleDialog"
+                v-model:visible="deletUserDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="role">
-                        Are you sure you want to delete <b>{{ role.name }}</b
+                    <span v-if="user">
+                        Are you sure you want to delete <b>{{ user.name }}</b
                         >?
                     </span>
                 </div>
@@ -216,7 +354,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteRoleDialog = false"
+                        @click="deletUserDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -231,7 +369,7 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="deleteRole"
+                            @click="deleteUser"
                         />
                     </div>
                 </template>
@@ -239,7 +377,7 @@
 
             <!-- Delete Multiple users Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteRolesDialog"
+                v-model:visible="deleteUsersDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
@@ -255,7 +393,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteRolesDialog = false"
+                        @click="deleteUsersDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -271,7 +409,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedRoles"
+                            @click="deleteSelectedUsers"
                         />
                     </div>
                 </template>
@@ -296,6 +434,8 @@ import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 
+import DatePicker from "primevue/datepicker";
+
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
@@ -303,12 +443,12 @@ const toast = useToast();
 
 // Reactive State Variables
 const dt = ref();
-const roleDialog = ref(false);
+const userRolesDialog = ref(false);
 const editDialog = ref(false);
 const loading = ref(false);
-const deleteRoleDialog = ref(false);
-const deleteRolesDialog = ref(false);
-const role = ref({});
+const deletUserDialog = ref(false);
+const deleteUsersDialog = ref(false);
+const user = ref({});
 const selectedRoles = ref([]);
 const submitted = ref(false);
 const filters = ref({
@@ -318,94 +458,144 @@ const filters = ref({
 const props = defineProps({
     users: Array,
     roles: Array,
+    userRoles: Array,
+    districts: Array,
 });
 
 const users = ref(props.users);
 const roles = ref(props.roles);
+const districts = ref(props.districts);
+const userRoles = ref(props.userRoles);
 
+onMounted(() => {
+    console.log(users);
+});
+
+const titleOptions = ["Mr.", "Mrs.", "Miss", "Dr.", "Prof."];
+const genderOptions = ["Male", "Female", "Other"];
 // CRUD Methods
 const openNew = () => {
     editDialog.value = false;
-    role.value = {};
+    user.value = {};
     submitted.value = false;
-    roleDialog.value = true;
+    userRolesDialog.value = true;
 };
 
 const hideDialog = () => {
-    roleDialog.value = false;
+    userRolesDialog.value = false;
     submitted.value = false;
 };
 
-const saveRole = async () => {
+const saveUser = async () => {
     submitted.value = true;
-    if (role?.value?.name?.trim()) {
+    if (user?.value?.name?.trim()) {
         loading.value = true;
         try {
-            if (role.value.id) {
+            if (user.value.id) {
                 const response = await axios.put(
-                    `/users/${role.value.id}`,
-                    role.value
+                    `/users/${user.value.id}`,
+                    user.value
                 );
 
-                updateRole(response.data);
+                updateUser(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Role Updated",
+                    detail: "User Updated",
                     life: 3000,
                 });
             } else {
-                const response = await axios.post("/users", role.value);
+                const response = await axios.post("/users", user.value);
 
                 users.value.push(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Role Created",
+                    detail: "User Created",
                     life: 3000,
                 });
             }
         } catch (err) {
-            console.error(err);
+            if (err.response && err.response.status === 422) {
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                console.error(err);
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
-            roleDialog.value = false;
+            userRolesDialog.value = false;
         }
     }
 };
 
-const editRole = (roleData) => {
+const editUser = (userData) => {
     editDialog.value = true;
-    role.value = { ...roleData };
-    roleDialog.value = true;
+    user.value = { ...userData };
+    userRolesDialog.value = true;
 };
 
-const deleteRole = async () => {
+const deleteUser = async () => {
     loading.value = true;
     try {
-        await axios.delete(`/users/${role.value.id}`);
-        users.value = users.value.filter((r) => r.id !== role.value.id);
+        await axios.delete(`/users/${user.value.id}`);
+        users.value = users.value.filter((r) => r.id !== user.value.id);
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Role Deleted",
+            detail: "user Deleted",
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            console.error(err);
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
-        deleteRoleDialog.value = false;
+        deletUserDialog.value = false;
         loading.value = false;
     }
 };
 
-const confirmDeleteRole = (roleData) => {
-    role.value = roleData;
-    deleteRoleDialog.value = true;
+const confirmDeleteUser = (userData) => {
+    user.value = userData;
+    deletUserDialog.value = true;
 };
 
-const deleteSelectedRoles = async () => {
-    const ids = selectedRoles.value.map((role) => role.id);
+const deleteSelectedUsers = async () => {
+    const ids = selectedRoles.value.map((user) => user.id);
     loading.value = true;
     try {
         await axios.post("/users/bulk-delete", { ids });
@@ -417,18 +607,38 @@ const deleteSelectedRoles = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            console.error(err);
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
-        deleteRolesDialog.value = false;
+        deleteUsersDialog.value = false;
         loading.value = false;
     }
 };
 
 const confirmDeleteSelected = () => {
-    deleteRolesDialog.value = true;
+    deleteUsersDialog.value = true;
 };
 
-const updateRole = (updatedRole) => {
+const updateUser = (updatedRole) => {
     const index = users.value.findIndex((r) => r.id === updatedRole.id);
     if (index !== -1) {
         users.value[index] = updatedRole;

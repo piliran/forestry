@@ -2,7 +2,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserRole;
 use App\Models\Role;
+use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,11 +15,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::with('district')->get();
+        $userRoles = UserRole::with(['user','role'])->get();
         $roles = Role::all();
+        $districts = District::all();
         return Inertia::render('User/UserList', [
             'users' => $users,
             'roles' => $roles,
+            'userRoles' => $userRoles,
+            'districts' => $districts,
         ]);
     }
 
@@ -40,15 +46,15 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email',
             'gender' => 'nullable|string|max:255',
             'DOB' => 'nullable|date',
-            'district' => 'nullable|string|max:255',
+            'district_id' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
-            'country' => 'nullable|string|max:255',
+        
             'position' => 'nullable|string|max:255',
             'national_id' => 'nullable|string|max:255',
-            'phone' => 'nullable|integer',
+            'phone' => 'nullable|string|max:15',
             'account_status' => 'nullable|string|max:255',
             'marital_status' => 'nullable|string|max:255',
-            'password' => 'required|string|min:8|confirmed',
+       
         ]);
 
         $user = User::create([
@@ -57,16 +63,18 @@ class UserController extends Controller
             'email' => $request->email,
             'gender' => $request->gender,
             'DOB' => $request->DOB,
-            'district' => $request->district,
-            'city' => $request->city,
-            'country' => $request->country,
-            'position' => $request->position,
+            'district_id' => $request->district_id,
+            // 'city' => $request->city,
+            // 'country' => $request->country,
+            // 'position' => $request->position,
             'national_id' => $request->national_id,
-            'phone' => $request->phone,
-            'account_status' => $request->account_status,
-            'marital_status' => $request->marital_status,
-            'password' => bcrypt($request->password),
+            // 'phone' => $request->phone,
+            // 'account_status' => $request->account_status,
+            // 'marital_status' => $request->marital_status,
+            'password' => bcrypt(12345678),
         ]);
+
+        $user->load('district');
 
         return response()->json($user, 201); // Return the created user
     }
@@ -102,15 +110,15 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'gender' => 'nullable|string|max:255',
             'DOB' => 'nullable|date',
-            'district' => 'nullable|string|max:255',
+            'district_id' => 'nullable|integer|max:255',
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
             'national_id' => 'nullable|string|max:255',
-            'phone' => 'nullable|integer',
+            'phone' => 'nullable|string|max:15',
             'account_status' => 'nullable|string|max:255',
             'marital_status' => 'nullable|string|max:255',
-            'password' => 'nullable|string|min:8|confirmed',
+           
         ]);
 
         $user->update([
@@ -119,16 +127,19 @@ class UserController extends Controller
             'email' => $request->email,
             'gender' => $request->gender,
             'DOB' => $request->DOB,
-            'district' => $request->district,
-            'city' => $request->city,
-            'country' => $request->country,
-            'position' => $request->position,
+            'district_id' => $request->district_id,
+            // 'city' => $request->city,
+            // 'country' => $request->country,
+            // 'position' => $request->position,
             'national_id' => $request->national_id,
             'phone' => $request->phone,
-            'account_status' => $request->account_status,
-            'marital_status' => $request->marital_status,
-            'password' => $request->password ? bcrypt($request->password) : $user->password,
+            // 'account_status' => $request->account_status,
+            // 'marital_status' => $request->marital_status,
+            // 'password' => $request->password ? bcrypt($request->password) : $user->password,
         ]);
+
+        $user->load('district');
+
 
         return response()->json($user); // Return the updated user
     }

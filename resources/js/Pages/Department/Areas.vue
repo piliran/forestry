@@ -443,41 +443,78 @@ const hideDialog = () => {
     productDialog.value = false;
     submitted.value = false;
 };
-const saveProduct = () => {
+const saveProduct = async () => {
     submitted.value = true;
 
-    if (product?.value.name?.trim()) {
-        if (product.value.id) {
-            product.value.inventoryStatus = product.value.inventoryStatus.value
-                ? product.value.inventoryStatus.value
-                : product.value.inventoryStatus;
-            products.value[findIndexById(product.value.id)] = product.value;
-            toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Updated",
-                life: 3000,
-            });
-        } else {
-            product.value.id = createId();
-            product.value.code = createId();
-            product.value.image = "product-placeholder.svg";
-            product.value.inventoryStatus = product.value.inventoryStatus
-                ? product.value.inventoryStatus.value
-                : "INSTOCK";
-            products.value.push(product.value);
-            toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Created",
-                life: 3000,
-            });
-        }
+    if (product?.value?.name?.trim()) {
+        loading.value = true;
 
-        productDialog.value = false;
-        product.value = {};
+        try {
+            if (product.value.id) {
+                // Update product
+                const response = await axios.put(
+                    `/products/${product.value.id}`,
+                    product.value
+                );
+
+                // Find the index of the product to update
+                const index = products.value.findIndex(
+                    (prod) => prod.id === product.value.id
+                );
+                if (index !== -1) {
+                    products.value[index] = response.data; // Update the product in the array
+                }
+
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Product Updated",
+                    life: 3000,
+                });
+            } else {
+                // Create new product
+                const response = await axios.post("/products", product.value);
+                products.value.push(response.data);
+
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Product Created",
+                    life: 3000,
+                });
+            }
+
+            productDialog.value = false;
+            product.value = {}; // Reset form after saving
+        } catch (err) {
+            if (err.response && err.response.status === 422) {
+                // Display validation errors
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                console.error(err);
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
+        } finally {
+            loading.value = false;
+        }
     }
 };
+
 const editProduct = (prod) => {
     product.value = { ...prod };
     productDialog.value = true;

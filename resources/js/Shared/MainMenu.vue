@@ -1,4 +1,4 @@
-<template v-once>
+<template>
     <div>
         <div v-for="(item, index) in items" :key="index" class="mb-4">
             <!-- Main Link -->
@@ -122,6 +122,14 @@ const items = ref([
         route: "/zones",
     },
     {
+        label: "Districts",
+        icon: "districts",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        route: "/districts",
+    },
+    {
         label: "Users",
         icon: "users",
         class: "parent-link-with-no-sublinks",
@@ -157,14 +165,7 @@ const items = ref([
         icon: "permissions",
         route: "/permissions",
     },
-    {
-        label: "Districts",
-        icon: "districts",
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
 
-        route: "/districts",
-    },
     {
         label: "Stations",
         icon: "stations",
