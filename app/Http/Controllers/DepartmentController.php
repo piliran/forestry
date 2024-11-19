@@ -34,6 +34,20 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         //
+        $validated = $request->validate([
+            'code' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|number|max:255',
+            'location' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'website' => 'required|string|max:255',
+            'chairperson' => 'required|string|max:255',
+            
+        ]);
+
+        $department = Department::create($validated);
+
+        return response()->json($department, 201);
     }
 
     /**
@@ -58,6 +72,21 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         //
+        $validated = $request->validate([
+            'code' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|number|max:255',
+            'location' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'website' => 'required|string|max:255',
+            'chairperson' => 'required|string|max:255',
+            
+        ]);
+
+        $department->update($validated);
+
+        return response()->json($department, 200);
+        
     }
 
     /**
@@ -65,6 +94,15 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        //
+        $department->delete();
+
+        return response()->json(['message' => 'Department deleted successfully'], 200);
+    }
+    public function batchDelete(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        Department::whereIn('id', $validated['ids'])->delete();
+
+        return response()->json(['message' => 'Selected Departments deleted'], 200);
     }
 }

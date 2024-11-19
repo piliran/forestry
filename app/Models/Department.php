@@ -15,7 +15,7 @@ class Department extends Model
         'website',
         'code',
         'chairperson',
-     
+    
     ];
 
 
