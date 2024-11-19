@@ -329,7 +329,28 @@ const saveDistrict = async () => {
                 });
             }
         } catch (err) {
-            console.error(err);
+            if (err.response && err.response.status === 422) {
+                // Display validation errors
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                console.error(err);
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
             districtDialog.value = false;
@@ -357,7 +378,28 @@ const deleteDistrict = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            console.error(err);
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteDistrictDialog.value = false;
         loading.value = false;
@@ -382,7 +424,28 @@ const deleteSelectedDistricts = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            console.error(err);
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteDistrictsDialog.value = false;
         loading.value = false;

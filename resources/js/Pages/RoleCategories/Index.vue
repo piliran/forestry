@@ -354,12 +354,27 @@ const saveCategory = async () => {
             categoryDialog.value = false;
             category.value = {}; // Reset form after saving
         } catch (error) {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "Failed to save category.",
-                life: 3000,
-            });
+            if (err.response && err.response.status === 422) {
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                console.error(err);
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
         }

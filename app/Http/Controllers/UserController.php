@@ -110,7 +110,7 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'gender' => 'nullable|string|max:255',
             'DOB' => 'nullable|date',
-            'district_id' => 'nullable|string|max:255',
+            'district_id' => 'nullable|integer|max:255',
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
