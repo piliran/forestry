@@ -78,7 +78,7 @@ class DepartmentController extends Controller
             'phone' => 'nullable|number|max:255',
             'location' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
-            'website' => 'requinullablered|string|max:255',
+            'website' => 'nullable|string|max:255',
             'chairperson' => 'nullable|string|max:255',
             
         ]);
