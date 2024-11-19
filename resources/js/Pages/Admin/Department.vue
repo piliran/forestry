@@ -18,7 +18,8 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedDepartments || !selectedDepartments.length
+                                !selectedDepartments ||
+                                !selectedDepartments.length
                             "
                         />
                     </template>
@@ -81,7 +82,7 @@
                         header="Department Name"
                         sortable
                         style="min-width: 10rem"
-                    ></Column>                    
+                    ></Column>
                     <Column
                         field="phone"
                         header="Phone"
@@ -262,7 +263,7 @@
                             Location is required.
                         </small>
                     </div>
-                    
+
                     <div>
                         <label for="chairperson" class="block font-bold mb-3">
                             Chairperson
@@ -360,7 +361,8 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span>
-                        Are you sure you want to delete the selected Departments?
+                        Are you sure you want to delete the selected
+                        Departments?
                     </span>
                 </div>
                 <template #footer>
@@ -384,7 +386,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedDepartments"
+                            @click="deleteSelectedDepartment"
                         />
                     </div>
                 </template>
@@ -458,7 +460,7 @@ const saveDepartment = async () => {
         try {
             if (department.value.id) {
                 const response = await axios.put(
-                    `/departments/${department.value.id}`,
+                    `/department/${department.value.id}`,
                     department.value
                 );
                 updateDepartment(response.data);
@@ -469,7 +471,10 @@ const saveDepartment = async () => {
                     life: 3000,
                 });
             } else {
-                const response = await axios.post("/departments", department.value);
+                const response = await axios.post(
+                    "/department",
+                    department.value
+                );
                 departments.value.push(response.data);
                 toast.add({
                     severity: "success",
@@ -479,7 +484,28 @@ const saveDepartment = async () => {
                 });
             }
         } catch (err) {
-            console.error(err);
+            if (err.response && err.response.status === 422) {
+                // Display validation errors
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                console.error(err);
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
             departmentDialog.value = false;
@@ -496,7 +522,7 @@ const editDepartment = (departmentData) => {
 const deleteDepartment = async () => {
     loading.value = true;
     try {
-        await axios.delete(`/departments/${department.value.id}`);
+        await axios.delete(`/department/${department.value.id}`);
         departments.value = departments.value.filter(
             (r) => r.id !== department.value.id
         );
@@ -507,7 +533,28 @@ const deleteDepartment = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            console.error(err);
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteDepartmentDialog.value = false;
         loading.value = false;
@@ -523,8 +570,10 @@ const deleteSelectedDepartment = async () => {
     const ids = selectedDepartments.value.map((department) => department.id);
     loading.value = true;
     try {
-        await axios.post("/departments/bulk-delete", { ids });
-        departments.value = departments.value.filter((r) => !ids.includes(r.id));
+        await axios.post("/department/bulk-delete", { ids });
+        departments.value = departments.value.filter(
+            (r) => !ids.includes(r.id)
+        );
         toast.add({
             severity: "success",
             summary: "Successful",
@@ -532,7 +581,28 @@ const deleteSelectedDepartment = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            console.error(err);
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteDepartmentDialog.value = false;
         loading.value = false;
@@ -544,7 +614,9 @@ const confirmDeleteSelected = () => {
 };
 
 const updateDepartment = (updatedDepartment) => {
-    const index = departments.value.findIndex((r) => r.id === updatedDepartment.id);
+    const index = departments.value.findIndex(
+        (r) => r.id === updatedDepartment.id
+    );
     if (index !== -1) {
         departments.value[index] = updatedDepartment;
     }
