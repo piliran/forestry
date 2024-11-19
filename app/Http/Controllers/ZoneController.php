@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Zone;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,9 +15,11 @@ class ZoneController extends Controller
      */
     public function index()
     {
-        $zones = Zone::all();
+        $zones = Zone::with('department')->get();
+        $departments = Department::all();
         return Inertia::render('Admin/Zone', [
             'zones' => $zones,
+            'departments' => $departments,
         ]);
     }
 
@@ -38,12 +41,16 @@ class ZoneController extends Controller
             'phone' => 'nullable|string|max:255',
             'website' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
+            'department_id' => 'nullable|integer',
         
         ]);
 
-        $zones = Zone::create($validated);
+        $zone = Zone::create($validated);
 
-        return response()->json($zones, 201);
+        $zone->load('department');
+
+
+        return response()->json($zone, 201);
     }
 
     /**
@@ -71,11 +78,14 @@ class ZoneController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:255',
             'website' => 'nullable|string|max:255',
+            'department_id' => 'nullable|integer',
             'location' => 'nullable|string|max:255',
         
         ]);
 
         $zone->update($request->all());
+        $zone->load('department');
+
 
         return response()->json($zone);
     }
@@ -97,10 +107,7 @@ class ZoneController extends Controller
      */
     public function batchDelete(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:users,id',
-        ]);
+        $validated = $request->validate(['ids' => 'required|array']);
 
         Zone::whereIn('id', $request->ids)->delete();
 

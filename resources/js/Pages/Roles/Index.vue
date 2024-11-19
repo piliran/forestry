@@ -361,7 +361,6 @@ const saveRole = async () => {
                     });
                 }
             } else {
-                console.error(err);
                 toast.add({
                     severity: "error",
                     summary: "Error",
@@ -407,7 +406,6 @@ const deleteRole = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",
@@ -452,7 +450,6 @@ const deleteSelectedRoles = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",

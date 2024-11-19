@@ -159,10 +159,7 @@ class UserController extends Controller
      */
     public function bulkDelete(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:users,id',
-        ]);
+        $validated = $request->validate(['ids' => 'required|array']);
 
         User::whereIn('id', $request->ids)->delete();
 

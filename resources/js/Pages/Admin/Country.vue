@@ -282,10 +282,6 @@ const props = defineProps({
     countries: Array,
 });
 
-onMounted(async () => {
-    console.log(countries);
-});
-
 const countries = ref(props.countries);
 
 // CRUD Methods
@@ -329,7 +325,27 @@ const saveCountry = async () => {
                 });
             }
         } catch (err) {
-            console.error(err);
+            if (err.response && err.response.status === 422) {
+                // Display validation errors
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
             countryDialog.value = false;
@@ -371,7 +387,6 @@ const deleteCountry = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",
@@ -417,7 +432,6 @@ const deleteSelectedCountries = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",

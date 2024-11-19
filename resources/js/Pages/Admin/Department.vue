@@ -434,10 +434,6 @@ const props = defineProps({
     departments: Array,
 });
 
-onMounted(async () => {
-    console.log(departments);
-});
-
 const departments = ref(props.departments);
 
 // CRUD Methods
@@ -498,7 +494,6 @@ const saveDepartment = async () => {
                     });
                 }
             } else {
-                console.error(err);
                 toast.add({
                     severity: "error",
                     summary: "Error",
@@ -547,7 +542,6 @@ const deleteDepartment = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",
@@ -595,7 +589,6 @@ const deleteSelectedDepartment = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",

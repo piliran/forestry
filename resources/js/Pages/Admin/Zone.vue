@@ -17,9 +17,7 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="
-                                !selectedZones || !selectedZones.length
-                            "
+                            :disabled="!selectedZones || !selectedZones.length"
                         />
                     </template>
                     <template #end>
@@ -75,7 +73,13 @@
                         header="Zone Name"
                         sortable
                         style="min-width: 10rem"
-                    ></Column>                    
+                    ></Column>
+                    <Column
+                        field="department.name"
+                        header="Department"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
                     <Column
                         field="phone"
                         header="Phone"
@@ -146,7 +150,28 @@
                             v-if="submitted && !zone.name"
                             class="text-red-500"
                         >
-                        Zone Name is required.
+                            Zone Name is required.
+                        </small>
+                    </div>
+
+                    <div class="col-12 md:col-6">
+                        <label for="district" class="block font-bold mb-2"
+                            >Department</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="zone.department_id"
+                            :options="departments"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Department"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !zone.department_id"
+                            class="text-red-500"
+                        >
+                            Department Name is required.
                         </small>
                     </div>
                     <div>
@@ -187,7 +212,7 @@
                             Location is required.
                         </small>
                     </div>
-                    
+
                     <div>
                         <label for="website" class="block font-bold mb-3">
                             Website
@@ -207,7 +232,6 @@
                             Website is required.
                         </small>
                     </div>
-                    
                 </div>
                 <template #footer>
                     <Button
@@ -356,13 +380,11 @@ const filters = ref({
 
 const props = defineProps({
     zones: Array,
-});
-
-onMounted(async () => {
-    console.log(zones);
+    departments: Array,
 });
 
 const zones = ref(props.zones);
+const departments = ref(props.departments);
 
 // CRUD Methods
 const openNew = () => {
@@ -405,7 +427,27 @@ const saveZone = async () => {
                 });
             }
         } catch (err) {
-            console.error(err);
+            if (err.response && err.response.status === 422) {
+                // Display validation errors
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
             zoneDialog.value = false;
@@ -423,9 +465,7 @@ const deleteZone = async () => {
     loading.value = true;
     try {
         await axios.delete(`/zones/${zone.value.id}`);
-        zones.value = zones.value.filter(
-            (r) => r.id !== zone.value.id
-        );
+        zones.value = zones.value.filter((r) => r.id !== zone.value.id);
         toast.add({
             severity: "success",
             summary: "Successful",
@@ -433,7 +473,27 @@ const deleteZone = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteZoneDialog.value = false;
         loading.value = false;
@@ -458,7 +518,27 @@ const deleteSelectedZones = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteZonesDialog.value = false;
         loading.value = false;
