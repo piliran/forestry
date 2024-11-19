@@ -10,8 +10,14 @@ class Zone extends Model
         
         'name',
         'phone',
+        'department_id',
         'location',
         'website',
     
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 }

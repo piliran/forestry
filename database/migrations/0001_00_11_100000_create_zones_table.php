@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('zones', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('department_id')->nullable();
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade')->onUpdate('cascade');
+           
             $table->string('phone')->nullable();
             $table->string('location')->nullable();
             $table->string('website')->nullable();

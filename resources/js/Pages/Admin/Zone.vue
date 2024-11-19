@@ -75,6 +75,12 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
+                        field="department.name"
+                        header="Department"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
                         field="phone"
                         header="Phone"
                         sortable
@@ -145,6 +151,27 @@
                             class="text-red-500"
                         >
                             Zone Name is required.
+                        </small>
+                    </div>
+
+                    <div class="col-12 md:col-6">
+                        <label for="district" class="block font-bold mb-2"
+                            >Department</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="zone.department_id"
+                            :options="departments"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Department"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !zone.department_id"
+                            class="text-red-500"
+                        >
+                            Department Name is required.
                         </small>
                     </div>
                     <div>
@@ -353,9 +380,11 @@ const filters = ref({
 
 const props = defineProps({
     zones: Array,
+    departments: Array,
 });
 
 const zones = ref(props.zones);
+const departments = ref(props.departments);
 
 // CRUD Methods
 const openNew = () => {
