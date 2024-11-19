@@ -75,11 +75,11 @@ class DepartmentController extends Controller
         $validated = $request->validate([
             'code' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',
-            'phone' => 'nullable|number|max:255',
-            'location' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'website' => 'nullable|string|max:255',
-            'chairperson' => 'nullable|string|max:255',
+            'phone' => 'required|number|max:255',
+            'location' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'website' => 'required|string|max:255',
+            'chairperson' => 'required|string|max:255',
             
         ]);
 
