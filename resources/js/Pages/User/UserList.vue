@@ -418,7 +418,7 @@
     </AppLayout>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
@@ -433,7 +433,7 @@ import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
-
+import { format } from "date-fns";
 import DatePicker from "primevue/datepicker";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
@@ -467,10 +467,6 @@ const roles = ref(props.roles);
 const districts = ref(props.districts);
 const userRoles = ref(props.userRoles);
 
-onMounted(() => {
-    console.log(users);
-});
-
 const titleOptions = ["Mr.", "Mrs.", "Miss", "Dr.", "Prof."];
 const genderOptions = ["Male", "Female", "Other"];
 // CRUD Methods
@@ -485,6 +481,16 @@ const hideDialog = () => {
     userRolesDialog.value = false;
     submitted.value = false;
 };
+
+watch(
+    () => user.value.DOB,
+    (newVal) => {
+        if (newVal && typeof newVal === "string" && newVal.includes("T")) {
+            user.value.DOB = format(new Date(newVal), "dd/MM/yyyy");
+        }
+    },
+    { immediate: true }
+);
 
 const saveUser = async () => {
     submitted.value = true;
@@ -529,7 +535,6 @@ const saveUser = async () => {
                     });
                 }
             } else {
-                console.error(err);
                 toast.add({
                     severity: "error",
                     summary: "Error",
@@ -575,7 +580,6 @@ const deleteUser = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",
@@ -620,7 +624,6 @@ const deleteSelectedUsers = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",

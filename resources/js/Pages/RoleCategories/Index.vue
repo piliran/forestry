@@ -367,7 +367,6 @@ const saveCategory = async () => {
                     });
                 }
             } else {
-                console.error(err);
                 toast.add({
                     severity: "error",
                     summary: "Error",

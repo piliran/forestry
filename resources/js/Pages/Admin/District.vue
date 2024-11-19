@@ -76,6 +76,12 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
+                    <Column
+                        field="zone.name"
+                        header="Zone"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
 
                     <Column
                         header="Action"
@@ -130,6 +136,27 @@
                             class="text-red-500"
                         >
                             District Name is required.
+                        </small>
+                    </div>
+
+                    <div class="col-12 md:col-6">
+                        <label for="district" class="block font-bold mb-2"
+                            >Zone</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="district.zone_id"
+                            :options="zones"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select zone"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !district.zone_id"
+                            class="text-red-500"
+                        >
+                            Zone Name is required.
                         </small>
                     </div>
                 </div>
@@ -280,13 +307,11 @@ const filters = ref({
 
 const props = defineProps({
     districts: Array,
-});
-
-onMounted(async () => {
-    console.log(districts);
+    zones: Array,
 });
 
 const districts = ref(props.districts);
+const zones = ref(props.zones);
 
 // CRUD Methods
 const openNew = () => {
@@ -343,7 +368,6 @@ const saveDistrict = async () => {
                     });
                 }
             } else {
-                console.error(err);
                 toast.add({
                     severity: "error",
                     summary: "Error",
@@ -392,7 +416,6 @@ const deleteDistrict = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",
@@ -438,7 +461,6 @@ const deleteSelectedDistricts = async () => {
                 });
             }
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",
