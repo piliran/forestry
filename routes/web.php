@@ -20,11 +20,11 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\StationController;
 
 use App\Http\Controllers\UserController;
-
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 
-
+Route::post('/countries/bulk-delete', [CountryController::class, 'batchDelete']);
+Route::resource('countries', CountryController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 Route::post('/role-categories/bulk-delete', [RoleCategoryController::class, 'bulkDelete']);
 Route::post('/roles/bulk-delete', [RoleController::class, 'batchDelete']);
