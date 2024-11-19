@@ -97,10 +97,7 @@ class ZoneController extends Controller
      */
     public function batchDelete(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:users,id',
-        ]);
+        $validated = $request->validate(['ids' => 'required|array']);
 
         Zone::whereIn('id', $request->ids)->delete();
 
