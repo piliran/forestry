@@ -87,7 +87,23 @@ const toggleSidebar = () => {
 
                         <dropdown class="md:hidden px-6" placement="bottom-end">
                             <template #default>
+                                <div
+                                    v-if="
+                                        $page.props.jetstream
+                                            .managesProfilePhotos
+                                    "
+                                >
+                                    <img
+                                        class="w-10 h-10 rounded-full me-3 object-cover"
+                                        :src="
+                                            $page.props.auth.user
+                                                .profile_photo_url
+                                        "
+                                        :alt="$page.props.auth.user.name"
+                                    />
+                                </div>
                                 <svg
+                                    v-else
                                     class="w-6 h-6 fill-white cursor-pointer"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
@@ -137,6 +153,23 @@ const toggleSidebar = () => {
                         <Dropdown class="mt-1" placement="bottom-end">
                             <template #default>
                                 <div
+                                    v-if="
+                                        $page.props.jetstream
+                                            .managesProfilePhotos
+                                    "
+                                    class="shrink-0 me-3"
+                                >
+                                    <img
+                                        class="h-10 w-10 rounded-full object-cover"
+                                        :src="
+                                            $page.props.auth.user
+                                                .profile_photo_url
+                                        "
+                                        :alt="$page.props.auth.user.name"
+                                    />
+                                </div>
+                                <div
+                                    v-else
                                     class="group flex items-center cursor-pointer select-none"
                                 >
                                     <div
