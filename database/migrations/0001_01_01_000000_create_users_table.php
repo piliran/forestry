@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('age')->nullable();
             $table->string('position')->nullable();
             $table->string('national_id')->nullable();
-            $table->integer('phone')->nullable();
+            $table->string('phone')->nullable();
             $table->string('account_status')->nullable();
             $table->string('marital_status')->nullable();
 

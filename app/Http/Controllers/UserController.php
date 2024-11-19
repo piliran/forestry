@@ -40,22 +40,22 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'title' => 'nullable|string|max:255',
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|email|max:255|unique:users,email',
-        //     'gender' => 'nullable|string|max:255',
-        //     'DOB' => 'nullable|date',
-        //     'district_id' => 'nullable|string|max:255',
-        //     'city' => 'nullable|string|max:255',
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'gender' => 'nullable|string|max:255',
+            'DOB' => 'nullable|date',
+            'district_id' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
         
-        //     'position' => 'nullable|string|max:255',
-        //     'national_id' => 'nullable|string|max:255',
-        //     'phone' => 'nullable|integer',
-        //     'account_status' => 'nullable|string|max:255',
-        //     'marital_status' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'national_id' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:15',
+            'account_status' => 'nullable|string|max:255',
+            'marital_status' => 'nullable|string|max:255',
        
-        // ]);
+        ]);
 
         $user = User::create([
             'title' => $request->title,
@@ -104,22 +104,22 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // $request->validate([
-        //     'title' => 'nullable|string|max:255',
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-        //     'gender' => 'nullable|string|max:255',
-        //     'DOB' => 'nullable|date',
-        //     'district_id' => 'nullable|string|max:255',
-        //     'city' => 'nullable|string|max:255',
-        //     'country' => 'nullable|string|max:255',
-        //     'position' => 'nullable|string|max:255',
-        //     'national_id' => 'nullable|string|max:255',
-        //     'phone' => 'nullable|integer',
-        //     'account_status' => 'nullable|string|max:255',
-        //     'marital_status' => 'nullable|string|max:255',
-        //     'password' => 'nullable|string|min:8|confirmed',
-        // ]);
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'gender' => 'nullable|string|max:255',
+            'DOB' => 'nullable|date',
+            'district_id' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'national_id' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:15',
+            'account_status' => 'nullable|string|max:255',
+            'marital_status' => 'nullable|string|max:255',
+           
+        ]);
 
         $user->update([
             'title' => $request->title,
