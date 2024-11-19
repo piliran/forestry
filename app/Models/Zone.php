@@ -16,12 +16,8 @@ class Zone extends Model
     
     ];
 
-<<<<<<< HEAD
-    
-=======
     public function department()
     {
         return $this->belongsTo(Department::class, 'department_id');
     }
->>>>>>> 6a8be31028bcdd4ecb0a4c99a3208adfd7cbbcc1
 }
