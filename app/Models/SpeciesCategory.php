@@ -12,4 +12,9 @@ class SpeciesCategory extends Model
         'description',
    
     ];
+
+    public function species()
+    {
+        return $this->hasMany(Species::class, 'id');
+    }
 }

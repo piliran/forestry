@@ -76,30 +76,7 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                    <Column
-                        field="location"
-                        header="Location"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="phone"
-                        header="Phone"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="email"
-                        header="Email"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="chairperson"
-                        header="Chairperson"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
+
                     <Column
                         header="Action"
                         :exportable="false"
@@ -153,82 +130,6 @@
                             class="text-red-500"
                         >
                             District Name is required.
-                        </small>
-                    </div>
-                    <div>
-                        <label for="location" class="block font-bold mb-3">
-                            Location
-                        </label>
-                        <InputText
-                            id="location"
-                            v-model.trim="district.location"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !district.location"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !district.location"
-                            class="text-red-500"
-                        >
-                            Location is required.
-                        </small>
-                    </div>
-                    <div>
-                        <label for="phone" class="block font-bold mb-3">
-                            Phone
-                        </label>
-                        <InputText
-                            id="phone"
-                            v-model.trim="district.phone"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !district.phone"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !district.phone"
-                            class="text-red-500"
-                        >
-                            Phone is required.
-                        </small>
-                    </div>
-                    <div>
-                        <label for="email" class="block font-bold mb-3">
-                            Email
-                        </label>
-                        <InputText
-                            id="email"
-                            v-model.trim="district.email"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !district.email"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !district.email"
-                            class="text-red-500"
-                        >
-                            Email is required.
-                        </small>
-                    </div>
-                    <div>
-                        <label for="chairperson" class="block font-bold mb-3">
-                            Chairperson
-                        </label>
-                        <InputText
-                            id="chairperson"
-                            v-model.trim="district.chairperson"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !district.chairperson"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !district.chairperson"
-                            class="text-red-500"
-                        >
-                            Chairperson is required.
                         </small>
                     </div>
                 </div>

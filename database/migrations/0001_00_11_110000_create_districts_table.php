@@ -18,10 +18,7 @@ return new class extends Migration
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('zone_id');
             $table->foreign('zone_id')->references('id')->on('zones')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('location');
-            $table->string('phone');
-            $table->string('email');
-            $table->string('chairperson');
+           
             $table->timestamps();
         });
     }

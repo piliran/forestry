@@ -1,4 +1,4 @@
-<template>
+<template v-once>
     <div>
         <div v-for="(item, index) in items" :key="index" class="mb-4">
             <!-- Main Link -->

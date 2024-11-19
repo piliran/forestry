@@ -17,4 +17,9 @@ class Station extends Model
         'email',
         'chairperson',
     ];
+
+    public function area()
+    {
+        return $this->hasMany(Area::class);
+    }
 }

@@ -70,13 +70,31 @@
                     ></Column>
                     <Column
                         field="name"
-                        header="Role Name"
+                        header="Name"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        header="Category Name"
-                        field="category.name"
+                        header="Title"
+                        field="title"
+                        sortable
+                        style="min-width: 12rem"
+                    ></Column>
+                    <Column
+                        header="Gender"
+                        field="gender"
+                        sortable
+                        style="min-width: 12rem"
+                    ></Column>
+                    <Column
+                        header="Email"
+                        field="email"
+                        sortable
+                        style="min-width: 12rem"
+                    ></Column>
+                    <Column
+                        header="District"
+                        field="district"
                         sortable
                         style="min-width: 12rem"
                     ></Column>

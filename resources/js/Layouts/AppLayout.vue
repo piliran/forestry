@@ -35,6 +35,7 @@ const switchToTeam = (team) => {
 };
 
 const logout = () => {
+    sessionStorage.removeItem("dropdownVisibility");
     router.post(route("logout"));
 };
 
