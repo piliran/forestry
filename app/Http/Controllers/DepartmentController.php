@@ -75,7 +75,7 @@ class DepartmentController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'phone' => 'required|number|max:255',
+            'phone' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'website' => 'required|string|max:255',

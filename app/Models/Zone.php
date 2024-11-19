@@ -12,6 +12,6 @@ class Zone extends Model
         'phone',
         'location',
         'website',
-     
+    
     ];
 }
