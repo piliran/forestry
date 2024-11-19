@@ -116,10 +116,11 @@
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
+                    <!-- Role Name -->
                     <div>
-                        <label for="name" class="block font-bold mb-3">
-                            Role Name
-                        </label>
+                        <label for="name" class="block font-bold mb-3"
+                            >Role Name</label
+                        >
                         <InputText
                             id="name"
                             v-model.trim="role.name"
@@ -135,20 +136,35 @@
                             Role Name is required.
                         </small>
                     </div>
+
+                    <!-- Role Category -->
                     <div>
-                        <label
-                            for="inventoryStatus"
-                            class="block font-bold mb-3"
-                        >
+                        <label for="roleCategory" class="block font-bold mb-3">
                             Role Category
                         </label>
                         <Select
-                            id="inventoryStatus"
+                            id="roleCategory"
                             v-model="role.role_category_id"
                             :options="roleCategories"
                             optionLabel="name"
                             optionValue="id"
                             placeholder="Select a Role Category"
+                            fluid
+                        />
+                    </div>
+
+                    <!-- Permissions -->
+                    <div>
+                        <label for="permissions" class="block font-bold mb-3">
+                            Permissions
+                        </label>
+                        <MultiSelect
+                            id="permissions"
+                            v-model="role.permissions"
+                            :options="props.permissions"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Permissions"
                             fluid
                         />
                     </div>
@@ -277,7 +293,7 @@ import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
-
+import MultiSelect from "primevue/multiselect";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
@@ -296,6 +312,12 @@ const submitted = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+
+role.value = {
+    name: "",
+    role_category_id: null,
+    permissions: [],
+};
 
 const props = defineProps({
     roles: Array,
@@ -324,12 +346,18 @@ const saveRole = async () => {
     if (role?.value?.name?.trim()) {
         loading.value = true;
         try {
+            const rolePayload = {
+                name: role.value.name,
+                role_category_id: role.value.role_category_id,
+                permissions: role.value.permissions, // Send permissions to the backend
+            };
+
             if (role.value.id) {
+                // Update existing role
                 const response = await axios.put(
                     `/roles/${role.value.id}`,
-                    role.value
+                    rolePayload
                 );
-
                 updateRole(response.data);
                 toast.add({
                     severity: "success",
@@ -338,8 +366,8 @@ const saveRole = async () => {
                     life: 3000,
                 });
             } else {
-                const response = await axios.post("/roles", role.value);
-
+                // Create new role
+                const response = await axios.post("/roles", rolePayload);
                 roles.value.push(response.data);
                 toast.add({
                     severity: "success",
@@ -349,32 +377,75 @@ const saveRole = async () => {
                 });
             }
         } catch (err) {
-            if (err.response && err.response.status === 422) {
-                const errors = err.response.data.errors;
-                for (const [field, messages] of Object.entries(errors)) {
-                    messages.forEach((message) => {
-                        toast.add({
-                            severity: "error",
-                            summary: "Validation Error",
-                            detail: message,
-                            life: 5000,
-                        });
-                    });
-                }
-            } else {
-                toast.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "An unexpected error occurred.",
-                    life: 5000,
-                });
-            }
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "Failed to save role.",
+                life: 3000,
+            });
         } finally {
             loading.value = false;
             roleDialog.value = false;
         }
     }
 };
+
+// const saveRole = async () => {
+//     submitted.value = true;
+//     if (role?.value?.name?.trim()) {
+//         loading.value = true;
+//         try {
+//             if (role.value.id) {
+//                 const response = await axios.put(
+//                     `/roles/${role.value.id}`,
+//                     role.value
+//                 );
+
+//                 updateRole(response.data);
+//                 toast.add({
+//                     severity: "success",
+//                     summary: "Successful",
+//                     detail: "Role Updated",
+//                     life: 3000,
+//                 });
+//             } else {
+//                 const response = await axios.post("/roles", role.value);
+
+//                 roles.value.push(response.data);
+//                 toast.add({
+//                     severity: "success",
+//                     summary: "Successful",
+//                     detail: "Role Created",
+//                     life: 3000,
+//                 });
+//             }
+//         } catch (err) {
+//             if (err.response && err.response.status === 422) {
+//                 const errors = err.response.data.errors;
+//                 for (const [field, messages] of Object.entries(errors)) {
+//                     messages.forEach((message) => {
+//                         toast.add({
+//                             severity: "error",
+//                             summary: "Validation Error",
+//                             detail: message,
+//                             life: 5000,
+//                         });
+//                     });
+//                 }
+//             } else {
+//                 toast.add({
+//                     severity: "error",
+//                     summary: "Error",
+//                     detail: "An unexpected error occurred.",
+//                     life: 5000,
+//                 });
+//             }
+//         } finally {
+//             loading.value = false;
+//             roleDialog.value = false;
+//         }
+//     }
+// };
 
 const editRole = (roleData) => {
     editDialog.value = true;

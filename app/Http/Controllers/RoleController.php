@@ -37,21 +37,42 @@ class RoleController extends Controller
         return response()->json($role, 201);
     }
 
-//     public function store(Request $request)
-// {
-//     $data = $request->validate([
-//         'name' => 'required|string|unique:roles,name',
-//         'permissions' => 'array',
-//     ]);
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required|string|max:255|unique:roles,name',
+    //         'role_category_id' => 'required|exists:role_categories,id',
+    //         'permissions' => 'required|array',
+    //         'permissions.*' => 'exists:permissions,id', // Ensure each permission exists
+    //     ]);
 
-//     $role = Role::create(['name' => $data['name']]);
+    //     DB::beginTransaction();
+    //     try {
+    //         // Create the new role
+    //         $role = Role::create([
+    //             'name' => $request->input('name'),
+    //             'role_category_id' => $request->input('role_category_id'),
+    //         ]);
 
-//     if (!empty($data['permissions'])) {
-//         $role->permissions()->sync($data['permissions']);
-//     }
+    //         // Attach the permissions
+    //         $permissions = $request->input('permissions');
+    //         $role->permissions()->sync($permissions);
 
-//     return redirect()->back()->with('success', 'Role created successfully.');
-// }
+    //         DB::commit();
+
+    //         return response()->json([
+    //             'message' => 'Role created successfully.',
+    //             'role' => $role->load('permissions'),
+    //         ], 201);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+
+    //         return response()->json([
+    //             'message' => 'Failed to create role.',
+    //             'error' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
 
 
     public function update(Request $request, Role $role)
