@@ -30,4 +30,14 @@ class District extends Model
     {
         return $this->belongsTo(Country::class, 'country_id');
     }
+
+    public function user()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function suspect()
+    {
+        return $this->hasMany(Suspect::class);
+    }
 }
