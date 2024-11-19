@@ -20,10 +20,7 @@ class DistrictController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'chairperson' => 'required|string|max:255',
+
         ]);
 
         $district = District::create($validated);
@@ -35,10 +32,7 @@ class DistrictController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'chairperson' => 'required|string|max:255',
+        
         ]);
 
         $district->update($validated);
