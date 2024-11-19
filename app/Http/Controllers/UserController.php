@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('district')->get();
+        $users = User::with(['roles','district'])->get();
         $userRoles = UserRole::with(['user','role'])->get();
         $roles = Role::all();
         $districts = District::all();
@@ -24,6 +24,11 @@ class UserController extends Controller
             'roles' => $roles,
             'userRoles' => $userRoles,
             'districts' => $districts,
+            'can' => [
+                'createUser' => auth()->user()->hasPermissionTo('create_user'),
+                'editUser' => auth()->user()->hasPermissionTo('edit_user'),
+                'deleteUser' => auth()->user()->hasPermissionTo('delete_user'),
+            ],
         ]);
     }
 
@@ -57,6 +62,8 @@ class UserController extends Controller
        
         ]);
 
+        $this->authorize('create_user');
+
         $user = User::create([
             'title' => $request->title,
             'name' => $request->name,
@@ -74,7 +81,7 @@ class UserController extends Controller
             'password' => bcrypt(12345678),
         ]);
 
-        $user->load('district');
+        $user->load(['roles','district']);
 
         return response()->json($user, 201); // Return the created user
     }
@@ -120,6 +127,8 @@ class UserController extends Controller
             'marital_status' => 'nullable|string|max:255',
            
         ]);
+
+        $this->authorize('edit_user');
 
         $user->update([
             'title' => $request->title,

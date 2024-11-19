@@ -450,6 +450,8 @@ const saveRole = async () => {
 const editRole = (roleData) => {
     editDialog.value = true;
     role.value = { ...roleData };
+    // Set the selected permissions for this role
+    role.value.permissions = roleData.permissions.map((p) => p.id); // Assuming permissions are objects with 'id' and 'name'
     roleDialog.value = true;
 };
 

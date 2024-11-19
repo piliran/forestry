@@ -8,6 +8,8 @@ use App\Http\Controllers\RoleController;
 
 use App\Http\Controllers\SpecieTypesController;
 use App\Http\Controllers\SpecieController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserRoleController;
 
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\CountryController;
@@ -63,6 +65,12 @@ Route::post('/stations/bulk-delete', [StationController::class, 'batchDelete']);
 Route::resource('countries', CountryController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/countries/bulk-delete', [CountryController::class, 'batchDelete']);
 
+
+Route::resource('permissions', PermissionController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/permissions/bulk-delete', [PermissionController::class, 'batchDelete']);
+
+Route::resource('user-role', UserRoleController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/user-role/bulk-delete', [UserRoleController::class, 'batchDelete']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -123,9 +131,9 @@ Route::get('/user-roles', function () {
 // Route::get('/roles', function () {
 //     return Inertia::render('User/Roles');
 // });
-Route::get('/permissions', function () {
-    return Inertia::render('User/Permissions');
-});
+// Route::get('/permissions', function () {
+//     return Inertia::render('User/Permissions');
+// });
 
 
 

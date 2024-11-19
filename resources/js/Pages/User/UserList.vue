@@ -129,6 +129,7 @@
                     >
                         <template #body="slotProps">
                             <Button
+                                v-if="can.editUser"
                                 icon="pi pi-pencil"
                                 outlined
                                 rounded
@@ -420,35 +421,28 @@
                 </template>
             </Dialog>
 
+            <!-- User Role Assignment Dialog -->
             <Dialog
                 v-model:visible="roleAssignmentDialog"
-                :style="{ width: '500px' }"
-                header="Assign Roles"
+                :style="{ width: '450px' }"
+                header="Assign Roles to User"
                 :modal="true"
             >
                 <div class="grid gap-4">
-                    <!-- User Information -->
+                    <!-- Role Selection -->
                     <div class="col-12">
-                        <h4 class="font-bold">User: {{ user.name }}</h4>
-                        <p>Email: {{ user.email }}</p>
-                    </div>
-
-                    <!-- Roles Selection -->
-                    <div class="col-12">
-                        <h5 class="font-bold mb-2">Assign Roles:</h5>
-                        <div
-                            v-for="role in roles"
-                            :key="role.id"
-                            class="flex items-center mb-2"
+                        <label for="role" class="block font-bold mb-2"
+                            >Select Role</label
                         >
-                            <Checkbox
-                                :value="role.id"
-                                inputId="`role_${role.id}`"
-                            />
-                            <label :for="`role_${role.id}`" class="ml-2">{{
-                                role.name
-                            }}</label>
-                        </div>
+                        <MultiSelect
+                            id="role"
+                            v-model="userRole"
+                            :options="roles"
+                            optionValue="id"
+                            optionLabel="name"
+                            placeholder="Select role"
+                            fluid
+                        />
                     </div>
                 </div>
 
@@ -457,8 +451,9 @@
                         label="Cancel"
                         icon="pi pi-times"
                         text
-                        @click="hideDialog"
+                        @click="roleAssignmentDialog = false"
                     />
+
                     <div>
                         <ProgressSpinner
                             v-if="loading"
@@ -472,7 +467,8 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveAssignedRoles"
+                            @click="saveUserRole"
+                            :disabled="!userRole"
                         />
                     </div>
                 </template>
@@ -481,7 +477,7 @@
     </AppLayout>
 </template>
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, reactive } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
@@ -495,6 +491,7 @@ import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
+import MultiSelect from "primevue/multiselect";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import { format } from "date-fns";
@@ -509,11 +506,14 @@ const toast = useToast();
 const dt = ref();
 const userRolesDialog = ref(false);
 const roleAssignmentDialog = ref(false);
+const selectedRole = ref(null);
 const editDialog = ref(false);
 const loading = ref(false);
 const deletUserDialog = ref(false);
 const deleteUsersDialog = ref(false);
 const user = ref({});
+const userRole = ref([]);
+
 const selectedRoles = ref([]);
 const submitted = ref(false);
 const filters = ref({
@@ -525,12 +525,16 @@ const props = defineProps({
     roles: Array,
     userRoles: Array,
     districts: Array,
+    can: Object,
 });
 
+const roleOptions = ref([]);
 const users = ref(props.users);
 const roles = ref(props.roles);
 const districts = ref(props.districts);
 const userRoles = ref(props.userRoles);
+const can = ref(props.can);
+console.log(can.value.editUser);
 
 const titleOptions = ["Mr.", "Mrs.", "Miss", "Dr.", "Prof."];
 const genderOptions = ["Male", "Female", "Other"];
@@ -557,6 +561,43 @@ watch(
     },
     { immediate: true }
 );
+
+async function saveUserRole() {
+    loading.value = true;
+    try {
+        const response = await axios.post("/user-role", {
+            userId: user.value.id,
+            roleIds: userRole.value,
+        });
+
+        if (response.status === 200) {
+            const targetUser = users.value.find((u) => u.id === user.value.id);
+            if (targetUser) {
+                targetUser.roles = response.data.roles; // Update roles in the users array
+            }
+
+            userRole.value = response.data.roles.map((role) => role.id);
+
+            toast.add({
+                severity: "success",
+                summary: "Success",
+                detail: "Roles assigned successfully",
+                life: 3000,
+            });
+        }
+        roleAssignmentDialog.value = false;
+    } catch (error) {
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Error assigning roles",
+        });
+        console.error("Error assigning roles:", error);
+    } finally {
+        loading.value = false;
+        roleAssignmentDialog.value = false;
+    }
+}
 
 const saveUser = async () => {
     submitted.value = true;
@@ -623,37 +664,10 @@ const editUser = (userData) => {
 
 const assignAndEditRoles = (userData) => {
     user.value = { ...userData };
+
+    userRole.value = userData.roles.map((p) => p.id);
+
     roleAssignmentDialog.value = true;
-};
-
-const saveAssignedRoles = async () => {
-    loading.value = true;
-    try {
-        // Send assigned roles to the backend
-        await axios.post(`/users/${props.user.id}/roles`, {
-            // roles: assignedRoles.value,
-        });
-
-        // Notify success
-        toast.add({
-            severity: "success",
-            summary: "Success",
-            detail: "Roles updated successfully.",
-            life: 3000,
-        });
-
-        hideDialog();
-    } catch (error) {
-        console.error(error);
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to update roles.",
-            life: 3000,
-        });
-    } finally {
-        loading.value = false;
-    }
 };
 
 const deleteUser = async () => {

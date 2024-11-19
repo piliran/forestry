@@ -98,39 +98,39 @@ class User extends Authenticatable
     }
 
 
-    public function hasPermission($permissionName)
-{
-    $rolePermissions = $this->roles()
-                            ->with('permissions')
-                            ->get()
-                            ->pluck('permissions')
-                            ->flatten()
-                            ->pluck('name')
-                            ->toArray();
-
-    $directPermissions = $this->permissions()->pluck('name')->toArray();
-
-    $allPermissions = array_unique(array_merge($rolePermissions, $directPermissions));
-
-    return in_array($permissionName, $allPermissions);
-}
-
-// public function hasPermissionTo($permission)
+//     public function hasPermission($permissionName)
 // {
+//     $rolePermissions = $this->roles()
+//                             ->with('permissions')
+//                             ->get()
+//                             ->pluck('permissions')
+//                             ->flatten()
+//                             ->pluck('name')
+//                             ->toArray();
+
+//     $directPermissions = $this->permissions()->pluck('name')->toArray();
+
+//     $allPermissions = array_unique(array_merge($rolePermissions, $directPermissions));
+
+//     return in_array($permissionName, $allPermissions);
+// }
+
+public function hasPermissionTo($permission)
+{
    
-//     if ($this->permissions->contains('name', $permission)) {
-//         return true;
-//     }
+    // if ($this->permissions->contains('name', $permission)) {
+    //     return true;
+    // }
 
   
-//     foreach ($this->roles as $role) {
-//         if ($role->permissions->contains('name', $permission)) {
-//             return true;
-//         }
-//     }
+    foreach ($this->roles as $role) {
+        if ($role->permissions->contains('name', $permission)) {
+            return true;
+        }
+    }
 
-//     return false;
-// }
+    return false;
+}
 
 
 

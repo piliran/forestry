@@ -14,7 +14,7 @@ class PermissionController extends Controller
     public function index()
     {
         $permissions = Permission::all();
-        return Inertia::render('Permissions/Index', [
+        return Inertia::render('User/Permissions', [
             'permissions' => $permissions,
         ]);
     }
@@ -88,12 +88,9 @@ class PermissionController extends Controller
     /**
      * Bulk delete selected permissions.
      */
-    public function bulkDelete(Request $request)
+    public function batchDelete(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:permissions,id',
-        ]);
+        $validated = $request->validate(['ids' => 'required|array']);
 
         Permission::whereIn('id', $request->ids)->delete();
 

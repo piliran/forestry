@@ -6,12 +6,16 @@ use App\Models\Permission;
 use App\Models\RoleCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+
 
 class RoleController extends Controller
 {
     public function index()
     {
-        $roles = Role::with('category')->get();
+        $roles = Role::with(['category','permissions'])->get();
         $permissions = Permission::all();
         $roleCategories = RoleCategory::all();
 
@@ -22,69 +26,81 @@ class RoleController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'role_category_id' => 'required|exists:role_categories,id',
-        ]);
-
-        $role = Role::create($validated);
-
-    
-        $role->load('category');
-
-        return response()->json($role, 201);
-    }
-
     // public function store(Request $request)
     // {
-    //     $request->validate([
-    //         'name' => 'required|string|max:255|unique:roles,name',
+    //     $validated = $request->validate([
+    //         'name' => 'required|string|max:255',
     //         'role_category_id' => 'required|exists:role_categories,id',
-    //         'permissions' => 'required|array',
-    //         'permissions.*' => 'exists:permissions,id', // Ensure each permission exists
     //     ]);
 
-    //     DB::beginTransaction();
-    //     try {
-    //         // Create the new role
-    //         $role = Role::create([
-    //             'name' => $request->input('name'),
-    //             'role_category_id' => $request->input('role_category_id'),
-    //         ]);
+    //     $role = Role::create($validated);
 
-    //         // Attach the permissions
-    //         $permissions = $request->input('permissions');
-    //         $role->permissions()->sync($permissions);
+    
+    //     $role->load('category');
 
-    //         DB::commit();
-
-    //         return response()->json([
-    //             'message' => 'Role created successfully.',
-    //             'role' => $role->load('permissions'),
-    //         ], 201);
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-
-    //         return response()->json([
-    //             'message' => 'Failed to create role.',
-    //             'error' => $e->getMessage(),
-    //         ], 500);
-    //     }
+    //     return response()->json($role, 201);
     // }
+
+    public function store(Request $request)
+    {
+       
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'role_category_id' => 'required|exists:role_categories,id',
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,id',  
+        ]);
+
+        DB::beginTransaction();
+        try {
+            
+            $role = Role::create([
+                'name' => $request->input('name'),
+                'role_category_id' => $request->input('role_category_id'),
+            ]);
+
+           
+
+            $permissions = $request->input('permissions');
+          
+            $role->permissions()->sync($permissions);
+       
+            
+
+            DB::commit();
+        
+            $role->load(['category','permissions']);
+            return response()->json($role, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+           
+            return response()->json([
+                'message' => 'Failed to create role.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+
+    }
 
 
     public function update(Request $request, Role $role)
     {
-        $validated = $request->validate([
+        $validated= $request->validate([
             'name' => 'required|string|max:255',
             'role_category_id' => 'required|exists:role_categories,id',
+            // 'permissions' => 'required|array',
+            // 'permissions.*' => 'exists:permissions,id',  // Ensures each permission exists in the permissions table
         ]);
 
         $role->update($validated);
 
-        $role->load('category');
+         // Sync permissions with the role
+         $role->permissions()->sync($request->permissions); // This will add new permissions and remove unticked ones
+
+
+       
+        $role->load(['category','permissions']);
 
         return response()->json($role, 200);
     }
