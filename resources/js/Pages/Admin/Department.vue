@@ -370,7 +370,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteDepartmentDialog = false"
+                        @click="deleteDepartmentsDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -604,13 +604,13 @@ const deleteSelectedDepartment = async () => {
             });
         }
     } finally {
-        deleteDepartmentDialog.value = false;
+        deleteDepartmentsDialog.value = false;
         loading.value = false;
     }
 };
 
 const confirmDeleteSelected = () => {
-    deleteDepartmentDialog.value = true;
+    deleteDepartmentsDialog.value = true;
 };
 
 const updateDepartment = (updatedDepartment) => {

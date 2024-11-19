@@ -76,7 +76,7 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                
+
                     <Column
                         header="Action"
                         :exportable="false"
@@ -132,7 +132,6 @@
                             Country Name is required.
                         </small>
                     </div>
-                    
                 </div>
                 <template #footer>
                     <Button
@@ -358,7 +357,28 @@ const deleteCountry = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            console.error(err);
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteCountryDialog.value = false;
         loading.value = false;
@@ -383,7 +403,28 @@ const deleteSelectedCountries = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            console.error(err);
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteCountriesDialog.value = false;
         loading.value = false;
