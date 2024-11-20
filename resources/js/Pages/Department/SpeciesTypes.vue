@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Species Categories">
+    <AppLayout title="Specie Categories">
         <div>
             <div class="card">
                 <Toolbar class="mb-6">
@@ -46,7 +46,7 @@
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} role categories"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} specie categories"
                 >
                     <template #header>
                         <div
@@ -77,6 +77,12 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
+                    <Column
+                        field="description"
+                        header="Description"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
 
                     <Column
                         header="Action"
@@ -102,7 +108,7 @@
                     </Column>
                 </DataTable>
                 <div v-else class="flex items-center justify-center">
-                    <h2>No Specie Categories Found</h2>
+                    <h2>No specie categories found</h2>
                 </div>
             </div>
 
@@ -129,6 +135,26 @@
                             v-if="submitted && !category.name"
                             class="text-red-500"
                             >Category Name is required.</small
+                        >
+                    </div>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <div>
+                        <label for="description" class="block font-bold mb-3"
+                            >Description</label
+                        >
+                        <InputText
+                            id="description"
+                            v-model.trim="category.description"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !category.description"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !category.description"
+                            class="text-red-500"
+                            >Description is required.</small
                         >
                     </div>
                 </div>
@@ -279,20 +305,20 @@ const filters = ref({
 const submitted = ref(false);
 
 const props = defineProps({
-    roleCategories: Array,
+    specieCategories: Array,
 });
 
-const categories = ref(props.roleCategories);
+const categories = ref(props.specieCategories);
 
 // onMounted(async () => {
 //     try {
-//         const response = await axios.get("/role-categories");
-//         categories.value = response.data.roleCategories;
+//         const response = await axios.get("/species-types");
+//         categories.value = response.data.specieCategories;
 //     } catch (error) {
 //         toast.add({
 //             severity: "error",
 //             summary: "Error",
-//             detail: "Failed to load role categories.",
+//             detail: "Failed to load specieF categories.",
 //             life: 3000,
 //         });
 //     }
@@ -394,7 +420,7 @@ const deleteCategory = async () => {
     loading.value = true;
 
     try {
-        await axios.delete(`/specie-types/${category.value.id}`);
+        await axios.delete(`/species-types/${category.value.id}`);
         categories.value = categories.value.filter(
             (val) => val.id !== category.value.id
         );
