@@ -142,5 +142,13 @@ public function isAdministrator(): bool
 }
 
 
+protected function getUserRoles(): array
+{
+    return$this->roles()
+        ->pluck('name') // Retrieve only the role names
+        ->toArray();
+}
+
+
 
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import ApplicationMark from "@/Components/ApplicationMark.vue";
 import Banner from "@/Components/Banner.vue";
@@ -14,6 +14,9 @@ import Logo from "@/Shared/Logo.vue";
 import FlashMessages from "@/Shared/FlashMessages.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import Breadcrumb from "@/Components/Breadcrumb.vue";
+import { usePage } from "@inertiajs/vue3";
+
+const page = usePage();
 
 defineProps({
     title: String,

@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'can' => auth()->check() ? $this->getUserPermissions() : [],
+            'roles' => auth()->check() ? $this->getUserRoles() : [], 
         ];
     }
 
@@ -52,6 +53,19 @@ class HandleInertiaRequests extends Middleware
             ->roles
             ->flatMap(fn ($role) => $role->permissions) // Combine all permissions
             ->mapWithKeys(fn ($permission) => [$permission->name => true]) // Flatten to key-value pairs
+            ->toArray();
+    }
+
+    /**
+     * Get the user's roles.
+     *
+     * @return array
+     */
+    protected function getUserRoles(): array
+    {
+        return auth()->user()
+            ->roles()
+            ->pluck('name') // Retrieve only the role names
             ->toArray();
     }
 }

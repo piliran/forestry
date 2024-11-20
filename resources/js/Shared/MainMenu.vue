@@ -3,6 +3,7 @@
         <div v-for="(item, index) in items" :key="index" class="mb-4">
             <!-- Main Link -->
             <div
+                v-if="hasAccess(item.allowedRoles)"
                 class="group flex items-center py-2 px-4 cursor-pointer"
                 :class="[
                     isUrl(item.route) ? 'bg-white rounded-xl' : 'hover:bg-dark',
@@ -92,6 +93,18 @@ import Icon from "@/Shared/Icon.vue";
 import { router } from "@inertiajs/vue3";
 
 const page = usePage();
+
+const roles = computed(() => page.props.roles || []);
+const permissions = computed(() => page.props.can || {});
+
+if (roles.value.includes("Admin")) {
+    console.log("User is an Admin");
+}
+
+if (permissions.value.create_user) {
+    console.log("User can create users");
+}
+
 const items = ref([
     {
         label: "Dashboard",
@@ -99,6 +112,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/dashboard",
+        allowedRoles: ["Admin", "User"],
     },
     {
         label: "Countries",
@@ -106,6 +120,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/countries",
+        allowedRoles: ["Admin", "User"],
     },
     {
         label: "Department",
@@ -113,6 +128,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/department",
+        allowedRoles: ["Admin", "User"],
     },
     {
         label: "Zones",
@@ -120,6 +136,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/zones",
+        allowedRoles: ["Admin", "User"],
     },
     {
         label: "Districts",
@@ -128,6 +145,7 @@ const items = ref([
         forwardIcon: false,
 
         route: "/districts",
+        allowedRoles: ["Admin", "User"],
     },
     {
         class: "parent-link-with-no-sublinks",
@@ -136,6 +154,7 @@ const items = ref([
         label: "Permissions",
         icon: "permissions",
         route: "/permissions",
+        allowedRoles: ["Admin", "User"],
     },
 
     {
@@ -143,6 +162,7 @@ const items = ref([
         icon: "roles",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
+        allowedRoles: ["Admin", "User"],
 
         items: [
             {
@@ -164,6 +184,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/users",
+        allowedRoles: ["Admin", "User"],
     },
 
     {
@@ -172,6 +193,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/stations",
+        allowedRoles: ["Admin", "User"],
     },
     {
         label: "Crimes",
@@ -180,6 +202,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
 
         route: "/crimes",
+        allowedRoles: ["Admin", "User"],
     },
     {
         label: "Arrests",
@@ -188,6 +211,7 @@ const items = ref([
         forwardIcon: false,
 
         route: "/arrests",
+        allowedRoles: ["Admin", "User"],
     },
     {
         label: "Confiscates",
@@ -196,12 +220,14 @@ const items = ref([
         forwardIcon: false,
 
         route: "/confiscates",
+        allowedRoles: ["Admin", "User"],
     },
     {
         label: "Operations",
         icon: "operations",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
+        allowedRoles: ["Admin", "User"],
 
         items: [
             {
@@ -222,6 +248,7 @@ const items = ref([
         icon: "location",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
+        allowedRoles: ["Admin", "User"],
 
         items: [
             {
@@ -241,6 +268,7 @@ const items = ref([
         icon: "road",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
+        allowedRoles: ["Admin", "User"],
 
         items: [
             {
@@ -261,6 +289,7 @@ const items = ref([
         icon: "road",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
+        allowedRoles: ["Admin", "User"],
 
         items: [
             {
@@ -278,6 +307,10 @@ const items = ref([
 ]);
 
 const dropdownVisibility = ref([]);
+
+const hasAccess = (allowedRoles) => {
+    return allowedRoles.some((role) => roles.value.includes(role));
+};
 
 const toggleDropdown = (index, item) => {
     if (item.items && item.items.length > 0) {
