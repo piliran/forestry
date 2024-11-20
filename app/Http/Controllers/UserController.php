@@ -7,6 +7,8 @@ use App\Models\Role;
 use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\Response;
 
 class UserController extends Controller
 {
@@ -62,7 +64,11 @@ class UserController extends Controller
        
         ]);
 
-        $this->authorize('create_user');
+        // $this->authorize('create_user');
+
+        if ($request->user()->cannot('create_user', User::class)) {
+            abort(403);
+        }
 
         $user = User::create([
             'title' => $request->title,
@@ -128,7 +134,21 @@ class UserController extends Controller
            
         ]);
 
-        $this->authorize('edit_user');
+        // Gate::authorize('edit-user');
+ 
+        // if (! Gate::allows('edit-user')) {
+        //     abort(403);
+        // }
+
+        // Gate::define('edit-user', function (User $user) {
+        //     return $user->isAdministrator
+        //                 ? Response::allow()
+        //                 : Response::deny('You must be an administrator.');
+        // });
+
+        if ($request->user()->cannot('edit_user', User::class)) {
+            abort(403);
+        }
 
         $user->update([
             'title' => $request->title,

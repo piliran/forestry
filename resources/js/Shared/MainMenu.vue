@@ -130,11 +130,12 @@ const items = ref([
         route: "/districts",
     },
     {
-        label: "Users",
-        icon: "users",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
-        route: "/users",
+
+        label: "Permissions",
+        icon: "permissions",
+        route: "/permissions",
     },
 
     {
@@ -158,12 +159,11 @@ const items = ref([
         ],
     },
     {
+        label: "Users",
+        icon: "users",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
-
-        label: "Permissions",
-        icon: "permissions",
-        route: "/permissions",
+        route: "/users",
     },
 
     {

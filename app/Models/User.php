@@ -97,6 +97,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Permission::class, 'user_permissions');
     }
 
+    
+
 
 //     public function hasPermission($permissionName)
 // {
@@ -118,9 +120,9 @@ class User extends Authenticatable
 public function hasPermissionTo($permission)
 {
    
-    // if ($this->permissions->contains('name', $permission)) {
-    //     return true;
-    // }
+    if ($this->permissions->contains('name', $permission)) {
+        return true;
+    }
 
   
     foreach ($this->roles as $role) {
@@ -130,6 +132,13 @@ public function hasPermissionTo($permission)
     }
 
     return false;
+}
+
+
+public function isAdministrator(): bool
+{
+    // Check if the user has a role with the name "admin"
+    return $this->roles()->where('name', 'admin')->exists();
 }
 
 
