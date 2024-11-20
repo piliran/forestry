@@ -6,7 +6,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\RoleCategoryController;
 use App\Http\Controllers\RoleController;
 
-use App\Http\Controllers\SpecieTypesController;
+use App\Http\Controllers\SpeciesCategoryController;
 use App\Http\Controllers\SpecieController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserRoleController;
@@ -23,6 +23,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\StationController;
 
 use App\Http\Controllers\UserController;
+use App\Models\Species;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 
@@ -76,6 +77,9 @@ Route::post('/user-role/bulk-delete', [UserRoleController::class, 'batchDelete']
 Route::resource('user-permission', UserPermissionsController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/user-permission/bulk-delete', [UserPermissionsController::class, 'batchDelete']);
 
+Route::resource('species-types', SpeciesCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/species-types/bulk-delete', [SpeciesCategoryController::class, 'batchDelete']);
+
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -118,13 +122,13 @@ Route::get('/route-types', function () {
     return Inertia::render('Department/RouteTypes');
 });
 
-Route::get('/species-list', function () {
-    return Inertia::render('Department/SpeciesList');
-});
+// Route::get('/species-list', function () {
+//     return Inertia::render('Department/SpeciesList');
+// });
 
-Route::get('/species-types', function () {
-    return Inertia::render('Department/SpeciesTypes');
-});
+// Route::get('/species-types', function () {
+//     return Inertia::render('Department/SpeciesTypes');
+// });
 
 
 Route::get('/users-list', function () {

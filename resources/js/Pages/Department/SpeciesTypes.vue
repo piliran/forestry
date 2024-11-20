@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Species Types">
+    <AppLayout title="Species Categories">
         <div>
             <div class="card">
                 <Toolbar class="mb-6">
@@ -17,8 +17,8 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedTypes ||
-                                !selectedTypes.length
+                                !selectedCategories ||
+                                !selectedCategories.length
                             "
                         />
                     </template>
@@ -36,23 +36,23 @@
                 <Toast />
 
                 <DataTable
-                    v-if="types.length > 0"
+                    v-if="categories.length > 0"
                     ref="dt"
-                    v-model:selection="selectedTypes"
-                    :value="types"
+                    v-model:selection="selectedCategories"
+                    :value="categories"
                     dataKey="id"
                     :paginator="true"
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Specie Type"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} role categories"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Species Types</h4>
+                            <h4 class="m-0">Manage Species Categories</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -73,13 +73,7 @@
 
                     <Column
                         field="name"
-                        header="Specie Type Name"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="description"
-                        header="Description"
+                        header="Category Name"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -95,46 +89,46 @@
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editType(slotProps.data)"
+                                @click="editCategory(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteType(slotProps.data)"
+                                @click="confirmDeleteCategory(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
                 <div v-else class="flex items-center justify-center">
-                    <h2>No Species Types Found</h2>
+                    <h2>No Specie Categories Found</h2>
                 </div>
             </div>
 
             <Dialog
-                v-model:visible="typeDialog"
+                v-model:visible="categoryDialog"
                 :style="{ width: '450px' }"
-                :header="editDialog ? 'Edit Type' : 'Add New Type'"
+                :header="editDialog ? 'Edit Category' : 'Add New Category'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
                     <div>
                         <label for="name" class="block font-bold mb-3"
-                            >Specie Type Name</label
+                            >Category Name</label
                         >
                         <InputText
                             id="name"
-                            v-model.trim="type.name"
+                            v-model.trim="category.name"
                             required="true"
                             autofocus
-                            :invalid="submitted && !type.name"
+                            :invalid="submitted && !category.name"
                             fluid
                         />
                         <small
-                            v-if="submitted && !type.name"
+                            v-if="submitted && !category.name"
                             class="text-red-500"
-                            >Species Type Name is required.</small
+                            >Category Name is required.</small
                         >
                     </div>
                 </div>
@@ -159,23 +153,23 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveType"
+                            @click="saveCategory"
                         />
                     </div>
                 </template>
             </Dialog>
 
             <Dialog
-                v-model:visible="deleteTypeDialog"
+                v-model:visible="deleteCategoryDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="type"
+                    <span v-if="category"
                         >Are you sure you want to delete
-                        <b>{{ type.name }}</b
+                        <b>{{ category.name }}</b
                         >?</span
                     >
                 </div>
@@ -184,7 +178,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteTypeDialog = false"
+                        @click="deleteCategoryDialog = false"
                     />
 
                     <div>
@@ -200,23 +194,23 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="deleteType"
+                            @click="deleteCategory"
                         />
                     </div>
                 </template>
             </Dialog>
 
             <Dialog
-                v-model:visible="deleteTypesDialog"
+                v-model:visible="deleteCategoriesDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="type"
+                    <span v-if="category"
                         >Are you sure you want to delete the selected
-                        types?</span
+                        categories?</span
                     >
                 </div>
                 <template #footer>
@@ -224,7 +218,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteTypesDialog = false"
+                        @click="deleteCategoriesDialog = false"
                     />
 
                     <div>
@@ -241,7 +235,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedTypes"
+                            @click="deleteSelectedCategories"
                         />
                     </div>
                 </template>
@@ -272,23 +266,23 @@ import axios from "axios";
 const toast = useToast();
 const dt = ref();
 // const categories = ref([]);
-const typeDialog = ref(false);
+const categoryDialog = ref(false);
 const editDialog = ref(false);
 const loading = ref(false);
-const deleteTypeDialog = ref(false);
-const deleteTypesDialog = ref(false);
-const types = ref({});
-const selectedTypes = ref();
+const deleteCategoryDialog = ref(false);
+const deleteCategoriesDialog = ref(false);
+const category = ref({});
+const selectedCategories = ref();
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const submitted = ref(false);
 
 const props = defineProps({
-    specieTypes: Array,
+    roleCategories: Array,
 });
 
-const categories = ref(props.specieTypes);
+const categories = ref(props.roleCategories);
 
 // onMounted(async () => {
 //     try {
@@ -307,102 +301,116 @@ const categories = ref(props.specieTypes);
 const openNew = () => {
     editDialog.value = false;
 
-    type.value = {};
+    category.value = {};
     submitted.value = false;
-    typeDialog.value = true;
+    categoryDialog.value = true;
 };
 const hideDialog = () => {
-    typeDialog.value = false;
+    categoryDialog.value = false;
     submitted.value = false;
 };
-const saveType = async () => {
+const saveCategory = async () => {
     submitted.value = true;
 
-    if (type?.value.name?.trim()) {
+    if (category?.value.name?.trim()) {
         loading.value = true;
 
         try {
-            if (type.value.id) {
-                // Update types
+            if (category.value.id) {
+                // Update category
                 const response = await axios.put(
-                    `/specie-types/${type.value.id}`,
-                    type.value
+                    `/species-types/${category.value.id}`,
+                    category.value
                 );
 
-                // Find the index of the specie type to update
-                const index = types.value.findIndex(
-                    (typ) => typ.id === type.value.id
+                // Find the index of the category to update
+                const index = categories.value.findIndex(
+                    (cat) => cat.id === category.value.id
                 );
                 if (index !== -1) {
-                    types.value[index] = response.data; // Update the specie type in the array
+                    categories.value[index] = response.data; // Update the category in the array
                 }
 
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Specie Type Updated",
+                    detail: "Category Updated",
                     life: 3000,
                 });
             } else {
-                // Create new specie type
+                // Create new category
                 const response = await axios.post(
-                    "/specie-types",
-                    type.value
+                    "/species-types",
+                    category.value
                 );
-                types.value.push(response.data);
+                categories.value.push(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Specie Type Created",
+                    detail: "Category Created",
                     life: 3000,
                 });
             }
-            typeDialog.value = false;
-            type.value = {}; // Reset form after saving
+            categoryDialog.value = false;
+            category.value = {}; // Reset form after saving
         } catch (error) {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "Failed to save specie type.",
-                life: 3000,
-            });
+            if (err.response && err.response.status === 422) {
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
         }
     }
 };
 
-const editType = (typ) => {
+const editCategory = (cat) => {
     editDialog.value = true;
 
-    type.value = { ...typ };
-    typeDialog.value = true;
+    category.value = { ...cat };
+    categoryDialog.value = true;
 };
-const confirmDeleteType = (cat) => {
-    type.value = cat;
-    deleteTypeDialog.value = true;
+const confirmDeleteCategory = (cat) => {
+    category.value = cat;
+    deleteCategoryDialog.value = true;
 };
-const deleteType = async () => {
+const deleteCategory = async () => {
     loading.value = true;
 
     try {
-        await axios.delete(`/specie-types/${type.value.id}`);
-        types.value = types.value.filter(
-            (val) => val.id !== type.value.id
+        await axios.delete(`/specie-types/${category.value.id}`);
+        categories.value = categories.value.filter(
+            (val) => val.id !== category.value.id
         );
-        deleteTypeDialog.value = false;
-        type.value = {};
+        deleteCategoryDialog.value = false;
+        category.value = {};
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Specie Type Deleted",
+            detail: "Category Deleted",
             life: 3000,
         });
     } catch (error) {
         toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Failed to delete Specie Type.",
+            detail: "Failed to delete category.",
             life: 3000,
         });
     } finally {
@@ -410,30 +418,30 @@ const deleteType = async () => {
     }
 };
 const confirmDeleteSelected = () => {
-    deleteTypesDialog.value = true;
+    deleteCategoriesDialog.value = true;
 };
-const deleteSelectedTypes = async () => {
+const deleteSelectedCategories = async () => {
     loading.value = true;
 
     try {
-        const idsToDelete = selectedTypes.value.map((typ) => typ.id);
-        await axios.post(`/specie-types/bulk-delete`, { ids: idsToDelete });
-        types.value = types.value.filter(
-            (val) => !selectedTypes.value.includes(val)
+        const idsToDelete = selectedCategories.value.map((cat) => cat.id);
+        await axios.post(`/species-types/bulk-delete`, { ids: idsToDelete });
+        categories.value = categories.value.filter(
+            (val) => !selectedCategories.value.includes(val)
         );
-        deleteTypesDialog.value = false;
-        selectedTypes.value = null;
+        deleteCategoriesDialog.value = false;
+        selectedCategories.value = null;
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Selected Specie Types Deleted",
+            detail: "Selected Categories Deleted",
             life: 3000,
         });
     } catch (error) {
         toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Failed to delete selected Specie Types.",
+            detail: "Failed to delete selected categories.",
             life: 3000,
         });
     } finally {
