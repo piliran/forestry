@@ -305,10 +305,6 @@ const props = defineProps({
     permissions: Array,
 });
 
-onMounted(async () => {
-    console.log(permissions);
-});
-
 const permissions = ref(props.permissions);
 
 const openNew = () => {
