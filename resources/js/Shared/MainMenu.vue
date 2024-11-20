@@ -186,6 +186,14 @@ const items = ref([
         route: "/users",
         allowedRoles: ["Admin", "User"],
     },
+    {
+        label: "Suspects",
+        icon: "users",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/suspects",
+        allowedRoles: ["Admin", "User"],
+    },
 
     {
         label: "Stations",
