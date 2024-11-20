@@ -97,13 +97,13 @@ const page = usePage();
 const roles = computed(() => page.props.roles || []);
 const permissions = computed(() => page.props.can || {});
 
-if (roles.value.includes("Admin")) {
-    console.log("User is an Admin");
-}
+// if (roles.value.includes("Admin")) {
+//     console.log("User is an Admin");
+// }
 
-if (permissions.value.create_user) {
-    console.log("User can create users");
-}
+// if (permissions.value.create_user) {
+//     console.log("User can create users");
+// }
 
 const items = ref([
     {
