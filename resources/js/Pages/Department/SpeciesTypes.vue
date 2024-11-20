@@ -305,10 +305,10 @@ const filters = ref({
 const submitted = ref(false);
 
 const props = defineProps({
-    specieCategories: Array,
+    speciesCategory: Array,
 });
 
-const categories = ref(props.specieCategories);
+const categories = ref(props.speciesCategory);
 
 // onMounted(async () => {
 //     try {
