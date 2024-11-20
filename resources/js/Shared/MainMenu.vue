@@ -2,8 +2,8 @@
     <div>
         <div v-for="(item, index) in items" :key="index" class="mb-4">
             <!-- Main Link -->
+            <!-- v-if="hasAccess(item.allowedRoles)" -->
             <div
-                v-if="hasAccess(item.allowedRoles)"
                 class="group flex items-center py-2 px-4 cursor-pointer"
                 :class="[
                     isUrl(item.route) ? 'bg-white rounded-xl' : 'hover:bg-dark',
