@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SpeciesCategory;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SpeciesCategoryController extends Controller
 {
