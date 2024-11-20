@@ -6,6 +6,7 @@ use App\Models\Species;
 use App\Models\SpeciesCategory;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SpeciesController extends Controller
 {
