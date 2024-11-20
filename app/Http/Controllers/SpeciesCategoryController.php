@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SpeciesCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class SpeciesCategoryController extends Controller
 {
@@ -63,17 +64,24 @@ class SpeciesCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SpeciesCategory $speciesCategory)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-        ]);
+ 
 
-        $speciesCategory->update($request->all());
+    public function update(Request $request, SpeciesCategory $category)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string|max:255',
+   
+    ]);
 
-        return response()->json($speciesCategory); 
-    }
+
+    $category =SpeciesCategory::find($request->id);
+    $category->update($request->all());
+
+    
+
+    return response()->json($category);  // Return the updated category
+}
 
     /**
      * Remove the specified resource from storage.

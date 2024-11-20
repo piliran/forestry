@@ -378,7 +378,6 @@ const saveCategory = async () => {
                 });
             }
             categoryDialog.value = false;
-            category.value = {}; // Reset form after saving
         } catch (error) {
             if (err.response && err.response.status === 422) {
                 const errors = err.response.data.errors;

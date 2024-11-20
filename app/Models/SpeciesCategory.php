@@ -10,10 +10,8 @@ class SpeciesCategory extends Model
     protected $table = 'specie_categories';
 
     protected $fillable = [
-        'name',
-       
-        'description',
-   
+        'name',       
+        'description',   
     ];
 
     public function species()
