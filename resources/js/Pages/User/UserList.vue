@@ -119,10 +119,18 @@
                         style="min-width: 8rem"
                     >
                         <template #body="slotProps">
-                            <Button icon="pi pi-eye" outlined severity="info" />
+                            <Button
+                                @click="
+                                    assignAndEditPermissions(slotProps.data)
+                                "
+                                icon="pi pi-eye"
+                                outlined
+                                severity="info"
+                            />
                         </template>
                     </Column>
                     <Column
+                        v-if="props.isAdmin"
                         header="Action"
                         :exportable="false"
                         style="min-width: 12rem"
@@ -425,7 +433,7 @@
             <Dialog
                 v-model:visible="roleAssignmentDialog"
                 :style="{ width: '450px' }"
-                header="Assign Roles to User"
+                :header="user.name"
                 :modal="true"
             >
                 <div class="grid gap-4">
@@ -473,6 +481,58 @@
                     </div>
                 </template>
             </Dialog>
+
+            <Dialog
+                v-model:visible="permissionAssignmentDialog"
+                :style="{ width: '450px' }"
+                :header="user.name"
+                :modal="true"
+            >
+                <div class="grid gap-4">
+                    <!-- Role Selection -->
+                    <div class="col-12">
+                        <label for="permission" class="block font-bold mb-2"
+                            >Select Permission</label
+                        >
+                        <MultiSelect
+                            id="permission"
+                            v-model="userPermission"
+                            :options="permissions"
+                            optionValue="id"
+                            optionLabel="name"
+                            placeholder="Select permission"
+                            fluid
+                        />
+                    </div>
+                </div>
+
+                <template #footer>
+                    <Button
+                        label="Cancel"
+                        icon="pi pi-times"
+                        text
+                        @click="permissionAssignmentDialog = false"
+                    />
+
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Save"
+                            icon="pi pi-check"
+                            @click="saveUserPermission"
+                            :disabled="!userPermission"
+                        />
+                    </div>
+                </template>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
@@ -506,6 +566,7 @@ const toast = useToast();
 const dt = ref();
 const userRolesDialog = ref(false);
 const roleAssignmentDialog = ref(false);
+const permissionAssignmentDialog = ref(false);
 const selectedRole = ref(null);
 const editDialog = ref(false);
 const loading = ref(false);
@@ -513,6 +574,7 @@ const deletUserDialog = ref(false);
 const deleteUsersDialog = ref(false);
 const user = ref({});
 const userRole = ref([]);
+const userPermission = ref([]);
 
 const selectedRoles = ref([]);
 const submitted = ref(false);
@@ -526,6 +588,8 @@ const props = defineProps({
     userRoles: Array,
     districts: Array,
     can: Object,
+    permissions: Array,
+    isAdmin: Boolean,
 });
 
 const roleOptions = ref([]);
@@ -534,6 +598,8 @@ const roles = ref(props.roles);
 const districts = ref(props.districts);
 const userRoles = ref(props.userRoles);
 const can = ref(props.can);
+const permissions = ref(props.permissions);
+
 console.log(can.value.editUser);
 
 const titleOptions = ["Mr.", "Mrs.", "Miss", "Dr.", "Prof."];
@@ -596,6 +662,45 @@ async function saveUserRole() {
     } finally {
         loading.value = false;
         roleAssignmentDialog.value = false;
+    }
+}
+
+async function saveUserPermission() {
+    loading.value = true;
+    try {
+        const response = await axios.post("/user-permission", {
+            userId: user.value.id,
+            permissionIds: userPermission.value,
+        });
+
+        if (response.status === 200) {
+            const targetUser = users.value.find((u) => u.id === user.value.id);
+            if (targetUser) {
+                targetUser.permissions = response.data.permissions;
+            }
+
+            userPermission.value = response.data.permissions.map(
+                (role) => role.id
+            );
+
+            toast.add({
+                severity: "success",
+                summary: "Success",
+                detail: "Permissions assigned successfully",
+                life: 3000,
+            });
+        }
+        permissionAssignmentDialog.value = false;
+    } catch (error) {
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Error assigning permissions",
+        });
+        console.error("Error assigning permissions:", error);
+    } finally {
+        loading.value = false;
+        permissionAssignmentDialog.value = false;
     }
 }
 
@@ -668,6 +773,14 @@ const assignAndEditRoles = (userData) => {
     userRole.value = userData.roles.map((p) => p.id);
 
     roleAssignmentDialog.value = true;
+};
+
+const assignAndEditPermissions = (userData) => {
+    user.value = { ...userData };
+
+    userPermission.value = userData.permissions.map((p) => p.id);
+
+    permissionAssignmentDialog.value = true;
 };
 
 const deleteUser = async () => {

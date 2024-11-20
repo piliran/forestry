@@ -10,6 +10,7 @@ use App\Http\Controllers\SpecieTypesController;
 use App\Http\Controllers\SpecieController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\UserPermissionsController;
 
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\CountryController;
@@ -71,6 +72,10 @@ Route::post('/permissions/bulk-delete', [PermissionController::class, 'batchDele
 
 Route::resource('user-role', UserRoleController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/user-role/bulk-delete', [UserRoleController::class, 'batchDelete']);
+
+Route::resource('user-permission', UserPermissionsController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/user-permission/bulk-delete', [UserPermissionsController::class, 'batchDelete']);
+
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [

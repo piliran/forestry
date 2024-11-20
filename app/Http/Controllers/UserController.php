@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\District;
 use Illuminate\Http\Request;
@@ -17,15 +18,18 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with(['roles','district'])->get();
+        $users = User::with(['roles','district','permissions'])->get();
         $userRoles = UserRole::with(['user','role'])->get();
+        $permissions = Permission::all();
         $roles = Role::all();
         $districts = District::all();
         return Inertia::render('User/UserList', [
             'users' => $users,
             'roles' => $roles,
+            'permissions' => $permissions,
             'userRoles' => $userRoles,
             'districts' => $districts,
+            'isAdmin' => auth()->user()->isAdministrator(),
             'can' => [
                 'createUser' => auth()->user()->hasPermissionTo('create_user'),
                 'editUser' => auth()->user()->hasPermissionTo('edit_user'),
@@ -87,7 +91,7 @@ class UserController extends Controller
             'password' => bcrypt(12345678),
         ]);
 
-        $user->load(['roles','district']);
+        $user->load(['roles','district','permissions']);
 
         return response()->json($user, 201); // Return the created user
     }

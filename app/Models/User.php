@@ -137,7 +137,7 @@ public function hasPermissionTo($permission)
 
 public function isAdministrator(): bool
 {
-    // Check if the user has a role with the name "admin"
+   
     return $this->roles()->where('name', 'admin')->exists();
 }
 
