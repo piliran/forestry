@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class SpeciesCategory extends Model
 {
+
+    protected $table = 'specie_categories';
+
     protected $fillable = [
         'name',
        
