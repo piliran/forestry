@@ -53,10 +53,11 @@
                         >
                             <h4 class="m-0">Manage suspects</h4>
                             <IconField>
-                                <InputIcon>
+                                <InputIcon id="icon">
                                     <i class="pi pi-search" />
                                 </InputIcon>
                                 <InputText
+                                    id="search"
                                     v-model="filters['global'].value"
                                     placeholder="Search..."
                                 />
@@ -77,12 +78,24 @@
                             /> -->
 
                             <Image
+                                v-if="
+                                    slotProps.data.suspect_photo_path &&
+                                    !slotProps.data.suspect_photo_path.endsWith(
+                                        '/null'
+                                    )
+                                "
                                 :src="`${slotProps.data.suspect_photo_path}`"
                                 :alt="slotProps.data.suspect_photo_path"
                                 preview
                             >
                                 <template #image>
                                     <img
+                                        v-if="
+                                            slotProps.data.suspect_photo_path &&
+                                            !slotProps.data.suspect_photo_path.endsWith(
+                                                '/null'
+                                            )
+                                        "
                                         :src="slotProps.data.suspect_photo_path"
                                         alt="Profile"
                                         style="
