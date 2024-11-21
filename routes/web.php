@@ -25,6 +25,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\StationController;
 
 use App\Http\Controllers\UserController;
+use App\Models\RouteType;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 
@@ -85,6 +86,12 @@ Route::resource('species-list', SpeciesController::class)->middleware([HandlePre
 Route::post('/species-list/bulk-delete', [SpeciesController::class, 'batchDelete']);
 
 
+Route::resource('route-types', RouteTypeController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/route-types/bulk-delete', [RouteTypeController::class, 'batchDelete']);
+
+Route::resource('route-list', RouteController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/route-list/bulk-delete', [RouteController::class, 'batchDelete']);
+
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
         'canLogin' => Route::has('login'),
@@ -118,13 +125,13 @@ Route::get('/confiscates', function () {
     return Inertia::render('Department/Confiscates');
 });
 
-Route::get('/route-list', function () {
-    return Inertia::render('Department/RouteList');
-});
+// Route::get('/route-list', function () {
+//     return Inertia::render('Department/RouteList');
+// });
 
-Route::get('/route-types', function () {
-    return Inertia::render('Department/RouteTypes');
-});
+// Route::get('/route-types', function () {
+//     return Inertia::render('Department/RouteTypes');
+// });
 
 // Route::get('/species-list', function () {
 //     return Inertia::render('Department/SpeciesList');
