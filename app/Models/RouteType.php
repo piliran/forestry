@@ -14,4 +14,9 @@ class RouteType extends Model
         'name',
         'description',
     ];
+
+    public function routes()
+    {
+        return $this->hasMany(Route::class, 'id');
+    }
 }

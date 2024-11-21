@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Species;
 use App\Models\SpeciesCategory;
-
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,12 +14,13 @@ class SpeciesController extends Controller
      */
     public function index()
     {
-        $species = Species::with('SpeciesCategory')->get();
+        $species = Species::with('speciesCategory')->get();
         $speciesCategory = SpeciesCategory::all();
+    
 
-        return Inertia::render('Department/Species', [
+        return Inertia::render('Department/SpeciesList', [
             'species' => $species,
-            'speciesCategory' => $speciesCategory,
+            'speciesCategories' => $speciesCategory,
         ]);
     }
 
@@ -39,9 +39,12 @@ class SpeciesController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'unplanted_seedlings_count' => 'required|numeric|max:255',
+            'planted_seedlings_count' => 'required|numeric|max:255',
+            'unmatured_specie_count' => 'required|numeric|max:255',
+            'matured_specie_count' => 'required|numeric|max:255',
             'description' => 'required|string|max:255',
-            'specie_cat_id' => 'required|exists:specie_categories,id',
-       
+            'specie_cat_id' => 'required|exists:species_categories,id',
         ]);
 
         $species = Species::create($request->all());
@@ -72,23 +75,22 @@ class SpeciesController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'unplanted_seedlings_count' => 'required|numeric|max:255',
+            'planted_seedlings_count' => 'required|numeric|max:255',
+            'unmatured_specie_count' => 'required|numeric|max:255',
+            'matured_specie_count' => 'required|numeric|max:255',
             'description' => 'required|string|max:255',
-            'specie_cat_id' => 'required|exists:specie_categories,id',
-       
+            'specie_cat_id' => 'required|exists:species_categories,id',
         ]);
-
-       
 
         $species->update($request->all());
 
-        return response()->json($species); 
+        return response()->json($species);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-
-
     public function destroy(Species $species)
     {
         $species->delete();
