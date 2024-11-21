@@ -71,12 +71,6 @@
                     ></Column>
                     <Column header="Image">
                         <template #body="slotProps">
-                            <!-- <img
-                                :src="`${slotProps.data.suspect_photo_path}`"
-                                :alt="slotProps.data.suspect_photo_path"
-                                class="w-10 h-10 rounded-full me-3 object-cover"
-                            /> -->
-
                             <Image
                                 v-if="
                                     slotProps.data.suspect_photo_path &&
