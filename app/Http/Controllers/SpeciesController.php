@@ -6,6 +6,7 @@ use App\Models\Species;
 use App\Models\SpeciesCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class SpeciesController extends Controller
 {
@@ -14,7 +15,7 @@ class SpeciesController extends Controller
      */
     public function index()
     {
-        $species = Species::with('speciesCategory')->get();
+        $species = Species::with('category')->get();
         $speciesCategory = SpeciesCategory::all();
     
 
@@ -48,7 +49,7 @@ class SpeciesController extends Controller
         ]);
 
         $species = Species::create($request->all());
-        $species->load('speciesCategory');
+        $species->load('category');
 
         return response()->json($species, 201);
     }
@@ -74,7 +75,10 @@ class SpeciesController extends Controller
      */
     public function update(Request $request, Species $species)
     {
-        $request->validate([
+
+        $species = Species::find($request->id);
+
+        $validated= $request->validate([
             'name' => 'required|string|max:255',
             'unplanted_seedlings_count' => 'required|numeric',
             'planted_seedlings_count' => 'required|numeric',
@@ -84,8 +88,9 @@ class SpeciesController extends Controller
             'specie_cat_id' => 'required|exists:specie_categories,id',
         ]);
 
-        $species->update($request->all());
-        $species->load('speciesCategory');
+        $species->update($validated);
+        $species->load('category');
+        \Log::info($validated);
 
 
         return response()->json($species);

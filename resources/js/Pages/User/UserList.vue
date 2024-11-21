@@ -68,6 +68,28 @@
                         style="width: 3rem"
                         :exportable="false"
                     ></Column>
+                    <Column header="Image">
+                        <template #body="slotProps">
+                            <Image
+                                :src="`${slotProps.data.profile_photo_url}`"
+                                :alt="slotProps.data.profile_photo_url"
+                                preview
+                            >
+                                <template #image>
+                                    <img
+                                        :src="slotProps.data.profile_photo_url"
+                                        alt="Profile"
+                                        style="
+                                            border-radius: 50%;
+                                            width: 50px;
+                                            height: 50px;
+                                            object-fit: cover;
+                                        "
+                                    />
+                                </template>
+                            </Image>
+                        </template>
+                    </Column>
                     <Column
                         header="Title"
                         field="title"
@@ -556,6 +578,7 @@ import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import { format } from "date-fns";
 import DatePicker from "primevue/datepicker";
+import Image from "primevue/image";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
