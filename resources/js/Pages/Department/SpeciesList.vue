@@ -437,11 +437,6 @@ const props = defineProps({
 const species = ref(props.species);
 const speciesCategories = ref(props.speciesCategories);
 
-// const specie = ref({ specie_cat_id: null });
-
-onMounted(() => {
-    console.log(props.categories);
-});
 
 
 // CRUD Methods
