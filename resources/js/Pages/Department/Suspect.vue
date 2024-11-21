@@ -73,9 +73,14 @@
                             <img
                                 :src="`${slotProps.data.suspect_photo_path}`"
                                 :alt="slotProps.data.suspect_photo_path"
-                                class="rounded"
-                                style="width: 64px"
+                                class="w-10 h-10 rounded-full me-3 object-cover"
                             />
+                            <!-- <Image
+                                :src="`${slotProps.data.suspect_photo_path}`"
+                                :alt="slotProps.data.suspect_photo_path"
+                                preview
+                                style="border-radius: 50%"
+                            /> -->
                         </template>
                     </Column>
                     <Column
@@ -711,3 +716,12 @@ const exportCSV = () => {
     dt.value?.exportCSV();
 };
 </script>
+
+<style>
+.profile-image {
+    border-radius: 15px; /* Full circle */
+    width: 50px; /* Square container */
+    height: 100px; /* Ensure the height matches the width */
+    object-fit: cover;
+}
+</style>
