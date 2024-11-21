@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::create('confiscates', function (Blueprint $table) {
             $table->id();
             $table->string('item');
-            $table->string('quantity');
-            $table->unsignedBigInteger('district_id');
-            $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('quantity');       
             $table->unsignedBigInteger('suspect_id');
             $table->foreign('suspect_id')->references('id')->on('suspects')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('encroached_area_id');

@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('national_id');
-            $table->unsignedBigInteger('country_id');
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
+           
             $table->unsignedBigInteger('district_id');
             $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
             $table->string('village');
