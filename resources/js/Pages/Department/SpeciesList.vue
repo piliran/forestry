@@ -17,7 +17,9 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="!selectedSpecies || !selectedSpecies.length"
+                            :disabled="
+                                !selectedSpecies || !selectedSpecies.length
+                            "
                         />
                     </template>
                     <template #end>
@@ -168,7 +170,9 @@
                     </div>
 
                     <div class="col-12 md:col-6">
-                        <label for="speciesCategory" class="block font-bold mb-2"
+                        <label
+                            for="speciesCategory"
+                            class="block font-bold mb-2"
                             >Category</label
                         >
                         <Select
@@ -208,7 +212,10 @@
                         </small>
                     </div>
                     <div>
-                        <label for="planted_seedlings_count" class="block font-bold mb-3">
+                        <label
+                            for="planted_seedlings_count"
+                            class="block font-bold mb-3"
+                        >
                             Planted Seedlings Count
                         </label>
                         <InputText
@@ -216,7 +223,9 @@
                             v-model.trim="specie.planted_seedlings_count"
                             required="true"
                             autofocus
-                            :invalid="submitted && !specie.planted_seedlings_count"
+                            :invalid="
+                                submitted && !specie.planted_seedlings_count
+                            "
                             fluid
                         />
                         <small
@@ -227,7 +236,10 @@
                         </small>
                     </div>
                     <div>
-                        <label for="unplanted_seedlings_count" class="block font-bold mb-3">
+                        <label
+                            for="unplanted_seedlings_count"
+                            class="block font-bold mb-3"
+                        >
                             Unplanted Seedlings Count
                         </label>
                         <InputText
@@ -235,18 +247,25 @@
                             v-model.trim="specie.unplanted_seedlings_count"
                             required="true"
                             autofocus
-                            :invalid="submitted && !specie.unplanted_seedlings_count"
+                            :invalid="
+                                submitted && !specie.unplanted_seedlings_count
+                            "
                             fluid
                         />
                         <small
-                            v-if="submitted && !specie.unplanted_seedlings_count"
+                            v-if="
+                                submitted && !specie.unplanted_seedlings_count
+                            "
                             class="text-red-500"
                         >
                             Unplanted Seedlings Count is required.
                         </small>
                     </div>
                     <div>
-                        <label for="matured_specie_count" class="block font-bold mb-3">
+                        <label
+                            for="matured_specie_count"
+                            class="block font-bold mb-3"
+                        >
                             Matured Specie Count
                         </label>
                         <InputText
@@ -265,7 +284,10 @@
                         </small>
                     </div>
                     <div>
-                        <label for="unmatured_specie_count" class="block font-bold mb-3">
+                        <label
+                            for="unmatured_specie_count"
+                            class="block font-bold mb-3"
+                        >
                             Unmatured Specie Count
                         </label>
                         <InputText
@@ -273,7 +295,9 @@
                             v-model.trim="specie.unmatured_specie_count"
                             required="true"
                             autofocus
-                            :invalid="submitted && !specie.unmatured_specie_count"
+                            :invalid="
+                                submitted && !specie.unmatured_specie_count
+                            "
                             fluid
                         />
                         <small
@@ -437,8 +461,6 @@ const props = defineProps({
 const species = ref(props.species);
 const speciesCategories = ref(props.speciesCategories);
 
-
-
 // CRUD Methods
 const openNew = () => {
     editDialog.value = false;
@@ -462,7 +484,7 @@ const saveSpecie = async () => {
                     `/species-list/${specie.value.id}`,
                     specie.value
                 );
-                updateSpecie(response.data);
+                updateSpecies(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
@@ -470,7 +492,10 @@ const saveSpecie = async () => {
                     life: 3000,
                 });
             } else {
-                const response = await axios.post("/species-list", specie.value);
+                const response = await axios.post(
+                    "/species-list",
+                    specie.value
+                );
                 species.value.push(response.data);
                 toast.add({
                     severity: "success",
@@ -518,9 +543,7 @@ const deleteSpecie = async () => {
     loading.value = true;
     try {
         await axios.delete(`/species-list/${specie.value.id}`);
-        species.value = species.value.filter(
-            (r) => r.id !== specie.value.id
-        );
+        species.value = species.value.filter((r) => r.id !== specie.value.id);
         toast.add({
             severity: "success",
             summary: "Successful",
@@ -610,7 +633,6 @@ const updateSpecies = (updatedSpecies) => {
         species.value[index] = updatedSpecies; // Corrected from `updatedSpecie`
     }
 };
-
 
 const exportCSV = () => {
     dt.value?.exportCSV();

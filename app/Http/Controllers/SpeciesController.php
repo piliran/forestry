@@ -39,15 +39,16 @@ class SpeciesController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'unplanted_seedlings_count' => 'required|numeric|max:255',
-            'planted_seedlings_count' => 'required|numeric|max:255',
-            'unmatured_specie_count' => 'required|numeric|max:255',
-            'matured_specie_count' => 'required|numeric|max:255',
-            'description' => 'required|string|max:255',
-            'specie_cat_id' => 'required|exists:species_categories,id',
+            'unplanted_seedlings_count' => 'required|numeric',
+            'planted_seedlings_count' => 'required|numeric',
+            'unmatured_specie_count' => 'required|numeric',
+            'matured_specie_count' => 'required|numeric',
+            'description' => 'required|string',
+            'specie_cat_id' => 'required|exists:specie_categories,id',
         ]);
 
         $species = Species::create($request->all());
+        $species->load('speciesCategory');
 
         return response()->json($species, 201);
     }
@@ -75,15 +76,17 @@ class SpeciesController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'unplanted_seedlings_count' => 'required|numeric|max:255',
-            'planted_seedlings_count' => 'required|numeric|max:255',
-            'unmatured_specie_count' => 'required|numeric|max:255',
-            'matured_specie_count' => 'required|numeric|max:255',
-            'description' => 'required|string|max:255',
-            'specie_cat_id' => 'required|exists:species_categories,id',
+            'unplanted_seedlings_count' => 'required|numeric',
+            'planted_seedlings_count' => 'required|numeric',
+            'unmatured_specie_count' => 'required|numeric',
+            'matured_specie_count' => 'required|numeric',
+            'description' => 'required|string',
+            'specie_cat_id' => 'required|exists:specie_categories,id',
         ]);
 
         $species->update($request->all());
+        $species->load('speciesCategory');
+
 
         return response()->json($species);
     }
