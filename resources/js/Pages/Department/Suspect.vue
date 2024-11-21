@@ -70,17 +70,30 @@
                     ></Column>
                     <Column header="Image">
                         <template #body="slotProps">
-                            <img
+                            <!-- <img
                                 :src="`${slotProps.data.suspect_photo_path}`"
                                 :alt="slotProps.data.suspect_photo_path"
                                 class="w-10 h-10 rounded-full me-3 object-cover"
-                            />
-                            <!-- <Image
+                            /> -->
+
+                            <Image
                                 :src="`${slotProps.data.suspect_photo_path}`"
                                 :alt="slotProps.data.suspect_photo_path"
                                 preview
-                                style="border-radius: 50%"
-                            /> -->
+                            >
+                                <template #image>
+                                    <img
+                                        :src="slotProps.data.suspect_photo_path"
+                                        alt="Profile"
+                                        style="
+                                            border-radius: 50%;
+                                            width: 50px;
+                                            height: 50px;
+                                            object-fit: cover;
+                                        "
+                                    />
+                                </template>
+                            </Image>
                         </template>
                     </Column>
                     <Column
@@ -717,11 +730,11 @@ const exportCSV = () => {
 };
 </script>
 
-<style>
-.profile-image {
-    border-radius: 15px; /* Full circle */
-    width: 50px; /* Square container */
-    height: 100px; /* Ensure the height matches the width */
+<style scoped>
+.profile-image img {
+    border-radius: 15px;
+    width: 50px;
+    height: 100px;
     object-fit: cover;
 }
 </style>

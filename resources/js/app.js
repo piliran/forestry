@@ -32,8 +32,18 @@ createInertiaApp({
                 theme: {
                     preset: Aura,
                 },
-                unstyled: false,
-                pt: Lara,
+                pt: {
+                    global: {
+                        css: `
+                            .my-button {
+                                border-width: 2px;
+                            }
+                        `,
+                    },
+                    button: {
+                        root: "my-button",
+                    },
+                },
             })
 
             .use(ToastService)
