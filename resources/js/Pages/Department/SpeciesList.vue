@@ -231,7 +231,7 @@
                             Unplanted Seedlings Count
                         </label>
                         <InputText
-                            id="planted_seedlings_count"
+                            id="uplanted_seedlings_count"
                             v-model.trim="specie.unplanted_seedlings_count"
                             required="true"
                             autofocus
