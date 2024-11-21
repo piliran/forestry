@@ -17,7 +17,8 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\SuspectController;
-
+use App\Http\Controllers\RouteController;
+use App\Http\Controllers\RouteTypeController;
 
 use App\Http\Controllers\CrimeController;
 use App\Http\Controllers\DistrictController;
@@ -80,6 +81,10 @@ Route::post('/user-permission/bulk-delete', [UserPermissionsController::class, '
 
 Route::resource('species-types', SpeciesCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/species-types/bulk-delete', [SpeciesCategoryController::class, 'batchDelete']);
+
+Route::resource('species-list', SpeciesController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/species-list/bulk-delete', [SpeciesController::class, 'batchDelete']);
+
 
 Route::resource('suspects', SuspectController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/suspects/bulk-delete', [SuspectController::class, 'batchDelete']);
