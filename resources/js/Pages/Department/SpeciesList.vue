@@ -168,23 +168,119 @@
                     </div>
 
                     <div class="col-12 md:col-6">
-                        <label for="specie" class="block font-bold mb-2"
+                        <label for="speciesCategory" class="block font-bold mb-2"
                             >Category</label
                         >
                         <Select
                             id="id"
-                            v-model="species.specie_cat_id"
-                            :options="speciesCategory"
+                            v-model="specie.specie_cat_id"
+                            :options="speciesCategories"
                             optionLabel="name"
                             optionValue="id"
                             placeholder="Select Specie Category"
                             fluid
                         />
+
                         <small
-                            v-if="submitted && !species.specie_cat_id"
+                            v-if="submitted && !specie.specie_cat_id"
                             class="text-red-500"
                         >
                             Category is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="description" class="block font-bold mb-3">
+                            Description
+                        </label>
+                        <InputText
+                            id="description"
+                            v-model.trim="specie.description"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !specie.description"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !specie.description"
+                            class="text-red-500"
+                        >
+                            Description is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="planted_seedlings_count" class="block font-bold mb-3">
+                            Planted Seedlings Count
+                        </label>
+                        <InputText
+                            id="planted_seedlings_count"
+                            v-model.trim="specie.planted_seedlings_count"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !specie.planted_seedlings_count"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !specie.planted_seedlings_count"
+                            class="text-red-500"
+                        >
+                            Planted Seedlings Count is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="unplanted_seedlings_count" class="block font-bold mb-3">
+                            Unplanted Seedlings Count
+                        </label>
+                        <InputText
+                            id="planted_seedlings_count"
+                            v-model.trim="specie.unplanted_seedlings_count"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !specie.unplanted_seedlings_count"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !specie.unplanted_seedlings_count"
+                            class="text-red-500"
+                        >
+                            Unplanted Seedlings Count is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="matured_specie_count" class="block font-bold mb-3">
+                            Matured Specie Count
+                        </label>
+                        <InputText
+                            id="matured_specie_count"
+                            v-model.trim="specie.matured_specie_count"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !specie.matured_specie_count"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !specie.matured_specie_count"
+                            class="text-red-500"
+                        >
+                            Matured Specie Count is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="unmatured_specie_count" class="block font-bold mb-3">
+                            Unmatured Specie Count
+                        </label>
+                        <InputText
+                            id="unmatured_specie_count"
+                            v-model.trim="specie.unmatured_specie_count"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !specie.unmatured_specie_count"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !specie.unmatured_specie_count"
+                            class="text-red-500"
+                        >
+                            Unmatured Specie Count is required.
                         </small>
                     </div>
                 </div>
@@ -335,11 +431,18 @@ const filters = ref({
 
 const props = defineProps({
     species: Array,
-    categories: Array,
+    speciesCategories: Array,
 });
 
 const species = ref(props.species);
-const categories = ref(props.categories);
+const speciesCategories = ref(props.speciesCategories);
+
+// const specie = ref({ specie_cat_id: null });
+
+onMounted(() => {
+    console.log(props.categories);
+});
+
 
 // CRUD Methods
 const openNew = () => {
@@ -509,9 +612,10 @@ const confirmDeleteSelected = () => {
 const updateSpecies = (updatedSpecies) => {
     const index = species.value.findIndex((r) => r.id === updatedSpecies.id);
     if (index !== -1) {
-        species.value[index] = updatedSpecie;
+        species.value[index] = updatedSpecies; // Corrected from `updatedSpecie`
     }
 };
+
 
 const exportCSV = () => {
     dt.value?.exportCSV();

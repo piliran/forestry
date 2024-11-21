@@ -11,6 +11,8 @@ use App\Http\Controllers\SpeciesController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\UserPermissionsController;
+use App\Http\Controllers\RouteController;
+use App\Http\Controllers\RouteTypeController;
 
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\CountryController;
