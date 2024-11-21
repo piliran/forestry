@@ -18,7 +18,7 @@ class SpeciesController extends Controller
         $species = Species::with('SpeciesCategory')->get();
         $speciesCategory = SpeciesCategory::all();
 
-        return Inertia::render('Department/Species', [
+        return Inertia::render('Department/SpeciesList', [
             'species' => $species,
             'speciesCategory' => $speciesCategory,
         ]);

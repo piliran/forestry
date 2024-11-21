@@ -7,7 +7,7 @@ use App\Http\Controllers\RoleCategoryController;
 use App\Http\Controllers\RoleController;
 
 use App\Http\Controllers\SpeciesCategoryController;
-use App\Http\Controllers\SpecieController;
+use App\Http\Controllers\SpeciesController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\UserPermissionsController;
@@ -23,7 +23,6 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\StationController;
 
 use App\Http\Controllers\UserController;
-use App\Models\Species;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 
@@ -79,6 +78,9 @@ Route::post('/user-permission/bulk-delete', [UserPermissionsController::class, '
 
 Route::resource('species-types', SpeciesCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/species-types/bulk-delete', [SpeciesCategoryController::class, 'batchDelete']);
+
+Route::resource('species-list', SpeciesController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/species-list/bulk-delete', [SpeciesController::class, 'batchDelete']);
 
 
 Route::get('/', function () {

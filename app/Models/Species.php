@@ -18,7 +18,7 @@ class Species extends Model
 
    
 
-    public function SpeciesCategory()
+    public function speciesCategory()
     {
         return $this->belongsTo(SpeciesCategory::class, 'specie_cat_id');
     }

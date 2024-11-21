@@ -45,7 +45,7 @@
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} roles"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Species"
                 >
                     <template #header>
                         <div
@@ -75,10 +75,10 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        header="Species Type Name"
-                        field="type.name"
+                        field="category.name"
+                        header="Category"
                         sortable
-                        style="min-width: 12rem"
+                        style="min-width: 10rem"
                     ></Column>
                     <Column
                         field="description"
@@ -87,14 +87,8 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="matured_specie_count"
-                        header="Matured Specie Count"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="umatured_specie_count"
-                        header="Unmatured Specie Count"
+                        field="unplanted_seedlings_count"
+                        header="Unplanted Seedlings Count"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -105,11 +99,18 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="unplanted_seedlings_count"
-                        header="Unplanted Seedlings Count"
+                        field="unmatured_specie_count"
+                        header="Unmatured Specie Count"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
+                    <Column
+                        field="matured_specie_count"
+                        header="Matured Specie Count"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+
                     <Column
                         header="Action"
                         :exportable="false"
@@ -138,7 +139,7 @@
                 </div>
             </div>
 
-            <!-- Add/Edit Role Dialog -->
+            <!-- Add/Edit Specie Dialog -->
             <Dialog
                 v-model:visible="specieDialog"
                 :style="{ width: '450px' }"
@@ -148,7 +149,7 @@
                 <div class="flex flex-col gap-6">
                     <div>
                         <label for="name" class="block font-bold mb-3">
-                            Specie 
+                            Specie Name
                         </label>
                         <InputText
                             id="name"
@@ -165,22 +166,26 @@
                             Specie Name is required.
                         </small>
                     </div>
-                    <div>
-                        <label
-                            for="inventoryStatus"
-                            class="block font-bold mb-3"
+
+                    <div class="col-12 md:col-6">
+                        <label for="specie" class="block font-bold mb-2"
+                            >Category</label
                         >
-                            Specie Type
-                        </label>
                         <Select
-                            id="inventoryStatus"
-                            v-model="specie.specie_cat_id"
-                            :options="specieTypes"
+                            id="id"
+                            v-model="species.specie_cat_id"
+                            :options="speciesCategory"
                             optionLabel="name"
                             optionValue="id"
-                            placeholder="Select a Specie Type"
+                            placeholder="Select Specie Category"
                             fluid
                         />
+                        <small
+                            v-if="submitted && !species.specie_cat_id"
+                            class="text-red-500"
+                        >
+                            Category is required.
+                        </small>
                     </div>
                 </div>
                 <template #footer>
@@ -209,7 +214,7 @@
                 </template>
             </Dialog>
 
-            <!-- Delete Single Role Confirmation Dialog -->
+            <!-- Delete Single Specie Confirmation Dialog -->
             <Dialog
                 v-model:visible="deleteSpecieDialog"
                 :style="{ width: '450px' }"
@@ -218,8 +223,9 @@
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="role">
-                        Are you sure you want to delete <b>{{ specie.name }}</b
+                    <span v-if="specie">
+                        Are you sure you want to delete
+                        <b>{{ specie.name }}</b
                         >?
                     </span>
                 </div>
@@ -249,7 +255,7 @@
                 </template>
             </Dialog>
 
-            <!-- Delete Multiple Roles Confirmation Dialog -->
+            <!-- Delete Multiple Specie Confirmation Dialog -->
             <Dialog
                 v-model:visible="deleteSpeciesDialog"
                 :style="{ width: '450px' }"
@@ -259,7 +265,7 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span>
-                        Are you sure you want to delete the selected species?
+                        Are you sure you want to delete the selected Species?
                     </span>
                 </div>
                 <template #footer>
@@ -267,7 +273,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteSpeciesDialog = false"
+                        @click="deleteSpecieDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -320,7 +326,7 @@ const editDialog = ref(false);
 const loading = ref(false);
 const deleteSpecieDialog = ref(false);
 const deleteSpeciesDialog = ref(false);
-const role = ref({});
+const specie = ref({});
 const selectedSpecies = ref([]);
 const submitted = ref(false);
 const filters = ref({
@@ -329,11 +335,11 @@ const filters = ref({
 
 const props = defineProps({
     species: Array,
-    specieTypes: Array,
+    categories: Array,
 });
 
 const species = ref(props.species);
-const specieTypes = ref(props.specieTypes);
+const categories = ref(props.categories);
 
 // CRUD Methods
 const openNew = () => {
@@ -355,30 +361,48 @@ const saveSpecie = async () => {
         try {
             if (specie.value.id) {
                 const response = await axios.put(
-                    `/species/${specie.value.id}`,
+                    `/species-list/${specie.value.id}`,
                     specie.value
                 );
-
                 updateSpecie(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Specie Updated",
+                    detail: "Species Updated",
                     life: 3000,
                 });
             } else {
-                const response = await axios.post("/species", role.value);
-
+                const response = await axios.post("/species-list", specie.value);
                 species.value.push(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Species Created",
+                    detail: "Specie Created",
                     life: 3000,
                 });
             }
         } catch (err) {
-            console.error(err);
+            if (err.response && err.response.status === 422) {
+                // Display validation errors
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
             specieDialog.value = false;
@@ -395,16 +419,38 @@ const editSpecie = (specieData) => {
 const deleteSpecie = async () => {
     loading.value = true;
     try {
-        await axios.delete(`/species/${specie.value.id}`);
-        species.value = species.value.filter((r) => r.id !== specie.value.id);
+        await axios.delete(`/species-list/${specie.value.id}`);
+        species.value = species.value.filter(
+            (r) => r.id !== specie.value.id
+        );
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Specie Deleted",
+            detail: "Species Deleted",
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteSpecieDialog.value = false;
         loading.value = false;
@@ -420,16 +466,36 @@ const deleteSelectedSpecies = async () => {
     const ids = selectedSpecies.value.map((specie) => specie.id);
     loading.value = true;
     try {
-        await axios.post("/species/bulk-delete", { ids });
+        await axios.post("/species-list/bulk-delete", { ids });
         species.value = species.value.filter((r) => !ids.includes(r.id));
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Selected Roles Deleted",
+            detail: "Selected Species Deleted",
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteSpeciesDialog.value = false;
         loading.value = false;
@@ -443,7 +509,7 @@ const confirmDeleteSelected = () => {
 const updateSpecies = (updatedSpecies) => {
     const index = species.value.findIndex((r) => r.id === updatedSpecies.id);
     if (index !== -1) {
-        species.value[index] = updatedSpecies;
+        species.value[index] = updatedSpecie;
     }
 };
 
