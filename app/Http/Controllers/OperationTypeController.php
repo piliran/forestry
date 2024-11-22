@@ -66,6 +66,7 @@ class OperationTypeController extends Controller
      */
     public function update(Request $request, OperationType $operationType)
     {
+        $operationType =OperationType::find($request->id);
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -79,8 +80,10 @@ class OperationTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(OperationType $operationType)
+    public function destroy(OperationType $operationType,$id)
     {
+        $operationType = OperationType::find($id);
+
         $operationType->delete();
 
         return response()->json('Operation Type deleted successfully.');
@@ -91,12 +94,9 @@ class OperationTypeController extends Controller
     /**
      * Bulk delete specified resources from storage.
      */
-    public function bulkDelete(Request $request)
+    public function batchDelete(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:operation_types,id', // Ensure each ID exists in the database
-        ]);
+        $validated = $request->validate(['ids' => 'required|array']);
 
         OperationType::whereIn('id', $request->ids)->delete();
 

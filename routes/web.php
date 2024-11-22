@@ -105,7 +105,7 @@ Route::resource('operations-list', OperationController::class)->middleware([Hand
 Route::post('/operations-list/bulk-delete', [OperationController::class, 'batchDelete']);
 
 Route::resource('operations-types', OperationTypeController::class)->middleware([HandlePrecognitiveRequests::class]);
-Route::post('/operations-types/bulk-delete', [OperationTypeController::class, 'batchDelete']);
+Route::post('/operations-types/delete-multiple', [OperationTypeController::class, 'batchDelete']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [

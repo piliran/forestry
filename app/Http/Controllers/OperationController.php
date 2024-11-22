@@ -8,6 +8,8 @@ use App\Models\Station;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 
 class OperationController extends Controller
 {
@@ -16,13 +18,13 @@ class OperationController extends Controller
      */
     public function index()
     {
-        $operations = Operation::with(['operationType', 'station'])->get();
-        $operationTypes = OperationType::all();
+        $operations = Operation::with('Type')->get();
+        $types = OperationType::all();
         $stations = Station::all();
 
         return Inertia::render('Operations/List', [
             'operations' => $operations,
-            'operationTypes' => $operationTypes,
+            'types' => $types,
             'stations' => $stations,
         ]);
     }
@@ -32,35 +34,20 @@ class OperationController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated=  $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
-            'station_id' => 'required|exists:stations,id',
+    
         ]);
 
-        DB::beginTransaction();
-        try {
-            $operation = Operation::create([
-                'name' => $request->input('name'),
-                'description' => $request->input('description'),
-                'operation_type_id' => $request->input('operation_type_id'),
-                'station_id' => $request->input('station_id'),
-            ]);
+       
+        $operations = Operation::create($request->all());
+        $operations->load('Type');
 
-            DB::commit();
+        return response()->json($operations, 201);
 
-            $operation->load(['operationType', 'station']);
-
-            return response()->json($operation, 201);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return response()->json([
-                'message' => 'Failed to create operation.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+       
     }
 
     /**
@@ -68,21 +55,20 @@ class OperationController extends Controller
      */
     public function update(Request $request, Operation $operation)
     {
-        $request->validate([
+
+        $operation = Operation::find($request->id);
+
+        $validated= $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
-            'station_id' => 'required|exists:stations,id',
+           
         ]);
 
-        $operation->update($request->only([
-            'name',
-            'description',
-            'operation_type_id',
-            'station_id',
-        ]));
+        $operation->update($validated);
 
-        $operation->load(['operationType', 'station']);
+        
+        $operation->load('Type');
 
         return response()->json($operation, 200);
     }
@@ -90,8 +76,10 @@ class OperationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Operation $operation)
+    public function destroy(Operation $operation,$id)
     {
+        $operation = Operation::find($id);
+
         $operation->delete();
 
         return response()->json(['message' => 'Operation deleted successfully'], 200);

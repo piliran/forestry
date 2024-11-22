@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Roles">
+    <AppLayout title="Operations">
         <div>
             <!-- Toolbar -->
             <div class="card">
@@ -17,7 +17,10 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="!selectedRoles || !selectedRoles.length"
+                            :disabled="
+                                !selectedOperations ||
+                                !selectedOperations.length
+                            "
                         />
                     </template>
                     <template #end>
@@ -35,23 +38,23 @@
 
                 <!-- Data Table -->
                 <DataTable
-                    v-if="roles.length > 0"
+                    v-if="operations.length > 0"
                     ref="dt"
-                    v-model:selection="selectedRoles"
-                    :value="roles"
+                    v-model:selection="selectedOperations"
+                    :value="operations"
                     dataKey="id"
                     :paginator="true"
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} roles"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} operations"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Roles</h4>
+                            <h4 class="m-0">Manage Operations</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -70,13 +73,13 @@
                     ></Column>
                     <Column
                         field="name"
-                        header="Role Name"
+                        header="Operation Name"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        header="Category Name"
-                        field="category.name"
+                        header="Type"
+                        field="type.name"
                         sortable
                         style="min-width: 12rem"
                     ></Column>
@@ -91,80 +94,84 @@
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editRole(slotProps.data)"
+                                @click="editOperation(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteRole(slotProps.data)"
+                                @click="confirmDeleteOperation(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
                 <div v-else class="flex items-center justify-center">
-                    <h2>No roles found</h2>
+                    <h2>No operations found</h2>
                 </div>
             </div>
 
-            <!-- Add/Edit Role Dialog -->
+            <!-- Add/Edit Operation Dialog -->
             <Dialog
-                v-model:visible="roleDialog"
+                v-model:visible="operationDialog"
                 :style="{ width: '450px' }"
-                :header="editDialog ? 'Edit Role' : 'Add New Role'"
+                :header="editDialog ? 'Edit Operation' : 'Add New Operation'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
-                    <!-- Role Name -->
+                    <!-- Operation Name -->
                     <div>
                         <label for="name" class="block font-bold mb-3"
-                            >Role Name</label
+                            >Operation Name</label
                         >
                         <InputText
                             id="name"
-                            v-model.trim="role.name"
+                            v-model.trim="operation.name"
                             required="true"
                             autofocus
-                            :invalid="submitted && !role.name"
+                            :invalid="submitted && !operation.name"
                             fluid
                         />
                         <small
-                            v-if="submitted && !role.name"
+                            v-if="submitted && !operation.name"
                             class="text-red-500"
                         >
-                            Role Name is required.
+                            Operation Name is required.
                         </small>
                     </div>
 
-                    <!-- Role Category -->
                     <div>
-                        <label for="roleCategory" class="block font-bold mb-3">
-                            Role Category
-                        </label>
-                        <Select
-                            id="roleCategory"
-                            v-model="role.role_category_id"
-                            :options="roleCategories"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select a Role Category"
+                        <label for="description" class="block font-bold mb-3"
+                            >Operation Description</label
+                        >
+                        <InputText
+                            id="description"
+                            v-model.trim="operation.description"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !operation.description"
                             fluid
                         />
+                        <small
+                            v-if="submitted && !operation.description"
+                            class="text-red-500"
+                        >
+                            Operation Description is required.
+                        </small>
                     </div>
 
-                    <!-- Permissions -->
+                    <!-- Operation Category -->
                     <div>
-                        <label for="permissions" class="block font-bold mb-3">
-                            Permissions
+                        <label for="category" class="block font-bold mb-3">
+                            Type
                         </label>
-                        <MultiSelect
-                            id="permissions"
-                            v-model="role.permissions"
-                            :options="props.permissions"
+                        <Select
+                            id="category"
+                            v-model="operation.operation_type_id"
+                            :options="types"
                             optionLabel="name"
                             optionValue="id"
-                            placeholder="Select Permissions"
+                            placeholder="Select a Category"
                             fluid
                         />
                     </div>
@@ -189,23 +196,24 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveRole"
+                            @click="saveOperation"
                         />
                     </div>
                 </template>
             </Dialog>
 
-            <!-- Delete Single Role Confirmation Dialog -->
+            <!-- Delete Single Operation Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteRoleDialog"
+                v-model:visible="deleteOperationDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="role">
-                        Are you sure you want to delete <b>{{ role.name }}</b
+                    <span v-if="operation">
+                        Are you sure you want to delete
+                        <b>{{ operation.name }}</b
                         >?
                     </span>
                 </div>
@@ -214,7 +222,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteRoleDialog = false"
+                        @click="deleteOperationDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -229,15 +237,15 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="deleteRole"
+                            @click="deleteOperation"
                         />
                     </div>
                 </template>
             </Dialog>
 
-            <!-- Delete Multiple Roles Confirmation Dialog -->
+            <!-- Delete Multiple Operations Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteRolesDialog"
+                v-model:visible="deleteOperationsDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
@@ -245,7 +253,7 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span>
-                        Are you sure you want to delete the selected roles?
+                        Are you sure you want to delete the selected operations?
                     </span>
                 </div>
                 <template #footer>
@@ -253,7 +261,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteRolesDialog = false"
+                        @click="deleteOperationsDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -269,7 +277,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedRoles"
+                            @click="deleteSelectedOperations"
                         />
                     </div>
                 </template>
@@ -277,12 +285,12 @@
         </div>
     </AppLayout>
 </template>
+
 <script setup>
 import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
-
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
@@ -293,225 +301,164 @@ import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
-import MultiSelect from "primevue/multiselect";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
 const toast = useToast();
-
-// Reactive State Variables
 const dt = ref();
-const roleDialog = ref(false);
+const operationDialog = ref(false);
 const editDialog = ref(false);
 const loading = ref(false);
-const deleteRoleDialog = ref(false);
-const deleteRolesDialog = ref(false);
-const role = ref({});
-const selectedRoles = ref([]);
+const deleteOperationDialog = ref(false);
+const deleteOperationsDialog = ref(false);
+const operation = ref({});
+const selectedOperations = ref([]);
 const submitted = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-role.value = {
-    name: "",
-    role_category_id: null,
-    permissions: [],
-};
+// operation.value = {
+//     name: "",
+//     description: "",
+//     operation_type_id: null,
+// };
 
 const props = defineProps({
-    roles: Array,
-    roleCategories: Array,
-    permissions: Array,
+    operations: Array,
+    types: Array,
+    stations: Array,
 });
 
-const roles = ref(props.roles);
-const roleCategories = ref(props.roleCategories);
+const operations = ref(props.operations);
+const types = ref(props.types);
 
 // CRUD Methods
 const openNew = () => {
     editDialog.value = false;
-    role.value = {};
+    operation.value = {};
     submitted.value = false;
-    roleDialog.value = true;
+    operationDialog.value = true;
 };
 
 const hideDialog = () => {
-    roleDialog.value = false;
+    operationDialog.value = false;
     submitted.value = false;
 };
 
-const saveRole = async () => {
+const saveOperation = async () => {
     submitted.value = true;
-    if (role?.value?.name?.trim()) {
+    if (operation?.value?.name?.trim()) {
         loading.value = true;
         try {
-            const rolePayload = {
-                name: role.value.name,
-                role_category_id: role.value.role_category_id,
-                permissions: role.value.permissions, // Send permissions to the backend
+            const operationPayload = {
+                name: operation.value.name,
+                description: operation.value.description,
+                operation_type_id: operation.value.operation_type_id,
             };
-
-            if (role.value.id) {
-                // Update existing role
+            // console.log(operationPayload);
+            if (operation.value.id) {
                 const response = await axios.put(
-                    `/roles/${role.value.id}`,
-                    rolePayload
+                    `/operations-list/${operation.value.id}`,
+                    {
+                        id: operation.value.id,
+                        name: operation.value.name,
+                        description: operation.value.description,
+                        operation_type_id: operation.value.operation_type_id,
+                    }
                 );
-                updateRole(response.data);
+                updateOperation(response.data);
                 toast.add({
                     severity: "success",
-                    summary: "Successful",
-                    detail: "Role Updated",
-                    life: 3000,
+                    summary: "Success",
+                    detail: "Operation updated successfully.",
                 });
             } else {
-                // Create new role
-                const response = await axios.post("/roles", rolePayload);
-                roles.value.push(response.data);
+                const response = await axios.post(
+                    "/operations-list",
+                    operationPayload
+                );
+                operations.value.push(response.data);
                 toast.add({
                     severity: "success",
-                    summary: "Successful",
-                    detail: "Role Created",
-                    life: 3000,
+                    summary: "Success",
+                    detail: "Operation added successfully.",
                 });
             }
+
+            hideDialog();
         } catch (err) {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "Failed to save role.",
-                life: 3000,
-            });
+            if (err.response && err.response.status === 422) {
+                // Display validation errors
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
-            roleDialog.value = false;
         }
     }
 };
 
-// const saveRole = async () => {
-//     submitted.value = true;
-//     if (role?.value?.name?.trim()) {
-//         loading.value = true;
-//         try {
-//             if (role.value.id) {
-//                 const response = await axios.put(
-//                     `/roles/${role.value.id}`,
-//                     role.value
-//                 );
-
-//                 updateRole(response.data);
-//                 toast.add({
-//                     severity: "success",
-//                     summary: "Successful",
-//                     detail: "Role Updated",
-//                     life: 3000,
-//                 });
-//             } else {
-//                 const response = await axios.post("/roles", role.value);
-
-//                 roles.value.push(response.data);
-//                 toast.add({
-//                     severity: "success",
-//                     summary: "Successful",
-//                     detail: "Role Created",
-//                     life: 3000,
-//                 });
-//             }
-//         } catch (err) {
-//             if (err.response && err.response.status === 422) {
-//                 const errors = err.response.data.errors;
-//                 for (const [field, messages] of Object.entries(errors)) {
-//                     messages.forEach((message) => {
-//                         toast.add({
-//                             severity: "error",
-//                             summary: "Validation Error",
-//                             detail: message,
-//                             life: 5000,
-//                         });
-//                     });
-//                 }
-//             } else {
-//                 toast.add({
-//                     severity: "error",
-//                     summary: "Error",
-//                     detail: "An unexpected error occurred.",
-//                     life: 5000,
-//                 });
-//             }
-//         } finally {
-//             loading.value = false;
-//             roleDialog.value = false;
-//         }
-//     }
-// };
-
-const editRole = (roleData) => {
+const editOperation = (operationData) => {
     editDialog.value = true;
-    role.value = { ...roleData };
-    // Set the selected permissions for this role
-    role.value.permissions = roleData.permissions.map((p) => p.id); // Assuming permissions are objects with 'id' and 'name'
-    roleDialog.value = true;
-};
 
-const deleteRole = async () => {
-    loading.value = true;
-    try {
-        await axios.delete(`/roles/${role.value.id}`);
-        roles.value = roles.value.filter((r) => r.id !== role.value.id);
-        toast.add({
-            severity: "success",
-            summary: "Successful",
-            detail: "Role Deleted",
-            life: 3000,
-        });
-    } catch (err) {
-        if (err.response && err.response.status === 422) {
-            const errors = err.response.data.errors;
-            for (const [field, messages] of Object.entries(errors)) {
-                messages.forEach((message) => {
-                    toast.add({
-                        severity: "error",
-                        summary: "Validation Error",
-                        detail: message,
-                        life: 5000,
-                    });
-                });
-            }
-        } else {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "An unexpected error occurred.",
-                life: 5000,
-            });
-        }
-    } finally {
-        deleteRoleDialog.value = false;
-        loading.value = false;
+    operation.value = { ...operationData };
+
+    // operation.value.districts = operationData.district.map((p) => p.id);
+    // operation.value.type = operationData.type.map((p) => p.id);
+    if (Array.isArray(operationData.type)) {
+        operation.value.type = operationData.type.map((p) => p.id); // Assuming districts are objects with 'id' and 'name'
+    } else if (operationData.type && typeof operationData.type === "object") {
+        // Handle the case where operationData.district is a single object
+        operation.value.type = [operationData.type.id];
+    } else {
+        // Handle the case where operationData.district is null or undefined
+        operation.value.type = [];
     }
+
+    operationDialog.value = true;
 };
 
-const confirmDeleteRole = (roleData) => {
-    role.value = roleData;
-    deleteRoleDialog.value = true;
+const confirmDeleteOperation = (op) => {
+    operation.value = op;
+    deleteOperationDialog.value = true;
 };
 
-const deleteSelectedRoles = async () => {
-    const ids = selectedRoles.value.map((role) => role.id);
+const deleteOperation = async () => {
     loading.value = true;
+
     try {
-        await axios.post("/roles/bulk-delete", { ids });
-        roles.value = roles.value.filter((r) => !ids.includes(r.id));
+        await axios.delete(`/operations-list/${operation.value.id}`);
+        operations.value = operations.value.filter(
+            (val) => val.id !== operation.value.id
+        );
+        deleteOperationDialog.value = false;
+        operation.value = {};
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Selected Roles Deleted",
+            detail: "Operation Deleted",
             life: 3000,
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
+            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -532,13 +479,65 @@ const deleteSelectedRoles = async () => {
             });
         }
     } finally {
-        deleteRolesDialog.value = false;
         loading.value = false;
     }
 };
 
 const confirmDeleteSelected = () => {
-    deleteRolesDialog.value = true;
+    deleteOperationsDialog.value = true;
+};
+
+const deleteSelectedOperations = async () => {
+    loading.value = true;
+
+    try {
+        const idsToDelete = selectedOperations.value.map((cat) => cat.id);
+        await axios.post(`/operations-list/bulk-delete`, { ids: idsToDelete });
+        operations.value = operations.value.filter(
+            (val) => !selectedOperations.value.includes(val)
+        );
+        deleteOperationsDialog.value = false;
+        selectedOperations.value = null;
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Selected Operations Deleted",
+            life: 3000,
+        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
+    } finally {
+        loading.value = false;
+    }
+};
+
+const updateOperation = (updatedOperations) => {
+    const index = operations.value.findIndex(
+        (r) => r.id === updatedOperations.id
+    );
+    if (index !== -1) {
+        operations.value[index] = updatedOperations;
+    }
 };
 
 const updateRole = (updatedRole) => {
@@ -549,6 +548,6 @@ const updateRole = (updatedRole) => {
 };
 
 const exportCSV = () => {
-    dt.value?.exportCSV();
+    dt.value.exportCSV();
 };
 </script>

@@ -390,63 +390,6 @@ const saveRole = async () => {
     }
 };
 
-// const saveRole = async () => {
-//     submitted.value = true;
-//     if (role?.value?.name?.trim()) {
-//         loading.value = true;
-//         try {
-//             if (role.value.id) {
-//                 const response = await axios.put(
-//                     `/roles/${role.value.id}`,
-//                     role.value
-//                 );
-
-//                 updateRole(response.data);
-//                 toast.add({
-//                     severity: "success",
-//                     summary: "Successful",
-//                     detail: "Role Updated",
-//                     life: 3000,
-//                 });
-//             } else {
-//                 const response = await axios.post("/roles", role.value);
-
-//                 roles.value.push(response.data);
-//                 toast.add({
-//                     severity: "success",
-//                     summary: "Successful",
-//                     detail: "Role Created",
-//                     life: 3000,
-//                 });
-//             }
-//         } catch (err) {
-//             if (err.response && err.response.status === 422) {
-//                 const errors = err.response.data.errors;
-//                 for (const [field, messages] of Object.entries(errors)) {
-//                     messages.forEach((message) => {
-//                         toast.add({
-//                             severity: "error",
-//                             summary: "Validation Error",
-//                             detail: message,
-//                             life: 5000,
-//                         });
-//                     });
-//                 }
-//             } else {
-//                 toast.add({
-//                     severity: "error",
-//                     summary: "Error",
-//                     detail: "An unexpected error occurred.",
-//                     life: 5000,
-//                 });
-//             }
-//         } finally {
-//             loading.value = false;
-//             roleDialog.value = false;
-//         }
-//     }
-// };
-
 const editRole = (roleData) => {
     editDialog.value = true;
     role.value = { ...roleData };
@@ -467,26 +410,6 @@ const deleteRole = async () => {
             life: 3000,
         });
     } catch (err) {
-        if (err.response && err.response.status === 422) {
-            const errors = err.response.data.errors;
-            for (const [field, messages] of Object.entries(errors)) {
-                messages.forEach((message) => {
-                    toast.add({
-                        severity: "error",
-                        summary: "Validation Error",
-                        detail: message,
-                        life: 5000,
-                    });
-                });
-            }
-        } else {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "An unexpected error occurred.",
-                life: 5000,
-            });
-        }
     } finally {
         deleteRoleDialog.value = false;
         loading.value = false;
@@ -511,26 +434,6 @@ const deleteSelectedRoles = async () => {
             life: 3000,
         });
     } catch (err) {
-        if (err.response && err.response.status === 422) {
-            const errors = err.response.data.errors;
-            for (const [field, messages] of Object.entries(errors)) {
-                messages.forEach((message) => {
-                    toast.add({
-                        severity: "error",
-                        summary: "Validation Error",
-                        detail: message,
-                        life: 5000,
-                    });
-                });
-            }
-        } else {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "An unexpected error occurred.",
-                life: 5000,
-            });
-        }
     } finally {
         deleteRolesDialog.value = false;
         loading.value = false;

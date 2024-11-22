@@ -284,20 +284,6 @@ const props = defineProps({
 
 const categories = ref(props.roleCategories);
 
-// onMounted(async () => {
-//     try {
-//         const response = await axios.get("/role-categories");
-//         categories.value = response.data.roleCategories;
-//     } catch (error) {
-//         toast.add({
-//             severity: "error",
-//             summary: "Error",
-//             detail: "Failed to load role categories.",
-//             life: 3000,
-//         });
-//     }
-// });
-
 const openNew = () => {
     editDialog.value = false;
 

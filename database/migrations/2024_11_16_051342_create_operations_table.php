@@ -17,8 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->unsignedBigInteger('operation_type_id');
             $table->foreign('operation_type_id')->references('id')->on('operation_types')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('station_id');
-            $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade')->onUpdate('cascade');
+        
             $table->timestamps();
         });
     }

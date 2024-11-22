@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Role Categories">
+    <AppLayout title="Operations Type">
         <div>
             <div class="card">
                 <Toolbar class="mb-6">
@@ -17,8 +17,8 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedCategories ||
-                                !selectedCategories.length
+                                !selectedOperations ||
+                                !selectedOperations.length
                             "
                         />
                     </template>
@@ -28,7 +28,7 @@
                             label="Export"
                             icon="pi pi-upload"
                             severity="secondary"
-                            @click="exportCSV($event)"
+                            @click="exportCSV"
                         />
                     </template>
                 </Toolbar>
@@ -36,23 +36,23 @@
                 <Toast />
 
                 <DataTable
-                    v-if="categories.length > 0"
+                    v-if="operations.length > 0"
                     ref="dt"
-                    v-model:selection="selectedCategories"
-                    :value="categories"
+                    v-model:selection="selectedOperations"
+                    :value="operations"
                     dataKey="id"
-                    :paginator="true"
+                    paginator
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} role categories"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} operations types"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Role Categories</h4>
+                            <h4 class="m-0">Manage Operations Types</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -73,7 +73,14 @@
 
                     <Column
                         field="name"
-                        header="Category Name"
+                        header="Name"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+
+                    <Column
+                        field="description"
+                        header="Description"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -89,47 +96,72 @@
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editCategory(slotProps.data)"
+                                @click="editOperation(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteCategory(slotProps.data)"
+                                @click="confirmDeleteOperation(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
                 <div v-else class="flex items-center justify-center">
-                    <h2>No role categories found</h2>
+                    <h2>No operations types found</h2>
                 </div>
             </div>
 
+            <!-- Add/Edit Dialog -->
             <Dialog
-                v-model:visible="categoryDialog"
+                v-model:visible="operationDialog"
                 :style="{ width: '450px' }"
-                :header="editDialog ? 'Edit Category' : 'Add New Category'"
-                :modal="true"
+                :header="
+                    editDialog
+                        ? 'Edit Operation Type'
+                        : 'Add New Operation Type'
+                "
+                modal
             >
                 <div class="flex flex-col gap-6">
                     <div>
                         <label for="name" class="block font-bold mb-3"
-                            >Category Name</label
+                            >Name</label
                         >
                         <InputText
                             id="name"
-                            v-model.trim="category.name"
-                            required="true"
+                            v-model.trim="operation.name"
+                            required
                             autofocus
-                            :invalid="submitted && !category.name"
+                            :invalid="submitted && !operation.name"
                             fluid
                         />
                         <small
-                            v-if="submitted && !category.name"
+                            v-if="submitted && !operation.name"
                             class="text-red-500"
-                            >Category Name is required.</small
                         >
+                            Name is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="description" class="block font-bold mb-3"
+                            >Description</label
+                        >
+                        <InputText
+                            id="description"
+                            v-model.trim="operation.description"
+                            required
+                            autofocus
+                            :invalid="submitted && !operation.description"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !operation.description"
+                            class="text-red-500"
+                        >
+                            Description is required.
+                        </small>
                     </div>
                 </div>
 
@@ -153,23 +185,24 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveCategory"
+                            @click="saveOperation"
                         />
                     </div>
                 </template>
             </Dialog>
 
+            <!-- Delete Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteCategoryDialog"
+                v-model:visible="deleteOperationDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
-                :modal="true"
+                modal
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="category"
+                    <span v-if="operation"
                         >Are you sure you want to delete
-                        <b>{{ category.name }}</b
+                        <b>{{ operation.name }}</b
                         >?</span
                     >
                 </div>
@@ -178,9 +211,8 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteCategoryDialog = false"
+                        @click="deleteOperationDialog = false"
                     />
-
                     <div>
                         <ProgressSpinner
                             v-if="loading"
@@ -194,23 +226,24 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="deleteCategory"
+                            @click="deleteOperation"
                         />
                     </div>
                 </template>
             </Dialog>
 
+            <!-- Bulk Delete Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteCategoriesDialog"
+                v-model:visible="deleteOperationsDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
-                :modal="true"
+                modal
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="category"
-                        >Are you sure you want to delete the selected
-                        categories?</span
+                    <span v-if="selectedOperations"
+                        >Are you sure you want to delete the selected operations
+                        types?</span
                     >
                 </div>
                 <template #footer>
@@ -218,9 +251,8 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteCategoriesDialog = false"
+                        @click="deleteOperationsDialog = false"
                     />
-
                     <div>
                         <ProgressSpinner
                             v-if="loading"
@@ -234,8 +266,7 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            text
-                            @click="deleteSelectedCategories"
+                            @click="deleteSelectedOperations"
                         />
                     </div>
                 </template>
@@ -247,113 +278,97 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
-import Toast from "primevue/toast";
+
 import { useToast } from "primevue/usetoast";
-
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import Button from "primevue/button";
-import Toolbar from "primevue/toolbar";
-import Dialog from "primevue/dialog";
-import InputIcon from "primevue/inputicon";
-import InputText from "primevue/inputtext";
-import IconField from "primevue/iconfield";
-import ProgressSpinner from "primevue/progressspinner";
-
-import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
+import AppLayout from "@/Layouts/AppLayout.vue";
+
+import {
+    Toast,
+    DataTable,
+    Column,
+    Button,
+    Toolbar,
+    Dialog,
+    InputIcon,
+    InputText,
+    IconField,
+    ProgressSpinner,
+} from "primevue";
 
 const toast = useToast();
 const dt = ref();
-// const categories = ref([]);
-const categoryDialog = ref(false);
+const operationDialog = ref(false);
 const editDialog = ref(false);
 const loading = ref(false);
-const deleteCategoryDialog = ref(false);
-const deleteCategoriesDialog = ref(false);
-const category = ref({});
-const selectedCategories = ref();
+const deleteOperationDialog = ref(false);
+const deleteOperationsDialog = ref(false);
+const operation = ref({});
+const selectedOperations = ref([]);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const submitted = ref(false);
 
 const props = defineProps({
-    roleCategories: Array,
+    operationTypes: Array,
 });
 
-const categories = ref(props.roleCategories);
-
-// onMounted(async () => {
-//     try {
-//         const response = await axios.get("/role-categories");
-//         categories.value = response.data.roleCategories;
-//     } catch (error) {
-//         toast.add({
-//             severity: "error",
-//             summary: "Error",
-//             detail: "Failed to load role categories.",
-//             life: 3000,
-//         });
-//     }
-// });
+const operations = ref(props.operationTypes);
 
 const openNew = () => {
     editDialog.value = false;
+    operation.value = {};
+    submitted.value = false;
+    operationDialog.value = true;
+};
 
-    category.value = {};
-    submitted.value = false;
-    categoryDialog.value = true;
-};
 const hideDialog = () => {
-    categoryDialog.value = false;
+    operationDialog.value = false;
     submitted.value = false;
 };
-const saveCategory = async () => {
+
+const saveOperation = async () => {
     submitted.value = true;
 
-    if (category?.value.name?.trim()) {
+    if (operation.value.name?.trim()) {
         loading.value = true;
-
         try {
-            if (category.value.id) {
-                // Update category
+            if (operation.value.id) {
+                // Update
                 const response = await axios.put(
-                    `/role-categories/${category.value.id}`,
-                    category.value
+                    `/operations-types/${operation.value.id}`,
+                    operation.value
                 );
-
-                // Find the index of the category to update
-                const index = categories.value.findIndex(
-                    (cat) => cat.id === category.value.id
+                const index = operations.value.findIndex(
+                    (op) => op.id === operation.value.id
                 );
-                if (index !== -1) {
-                    categories.value[index] = response.data; // Update the category in the array
-                }
+                if (index !== -1) operations.value[index] = response.data;
 
                 toast.add({
                     severity: "success",
-                    summary: "Successful",
-                    detail: "Category Updated",
+                    summary: "Updated",
+                    detail: "Operation type updated",
                     life: 3000,
                 });
             } else {
-                // Create new category
+                // Create
                 const response = await axios.post(
-                    "/role-categories",
-                    category.value
+                    "/operations-types",
+                    operation.value
                 );
-                categories.value.push(response.data);
+                operations.value.push(response.data);
+
                 toast.add({
                     severity: "success",
-                    summary: "Successful",
-                    detail: "Category Created",
+                    summary: "Created",
+                    detail: "Operation type added",
                     life: 3000,
                 });
             }
-            categoryDialog.value = false;
-            category.value = {}; // Reset form after saving
-        } catch (error) {
+            operationDialog.value = false;
+            operation.value = {};
+        } catch (err) {
             if (err.response && err.response.status === 422) {
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
@@ -380,75 +395,112 @@ const saveCategory = async () => {
     }
 };
 
-const editCategory = (cat) => {
+const editOperation = (op) => {
     editDialog.value = true;
+    operation.value = { ...op };
 
-    category.value = { ...cat };
-    categoryDialog.value = true;
+    operationDialog.value = true;
 };
-const confirmDeleteCategory = (cat) => {
-    category.value = cat;
-    deleteCategoryDialog.value = true;
+
+const confirmDeleteOperation = (op) => {
+    operation.value = op;
+    deleteOperationDialog.value = true;
 };
-const deleteCategory = async () => {
+
+const deleteOperation = async () => {
     loading.value = true;
-
     try {
-        await axios.delete(`/role-categories/${category.value.id}`);
-        categories.value = categories.value.filter(
-            (val) => val.id !== category.value.id
+        await axios.delete(`/operations-types/${operation.value.id}`);
+        operations.value = operations.value.filter(
+            (op) => op.id !== operation.value.id
         );
-        deleteCategoryDialog.value = false;
-        category.value = {};
+
         toast.add({
             severity: "success",
-            summary: "Successful",
-            detail: "Category Deleted",
+            summary: "Deleted",
+            detail: "Operation type deleted",
             life: 3000,
         });
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to delete category.",
-            life: 3000,
-        });
+        deleteOperationDialog.value = false;
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         loading.value = false;
     }
 };
+
 const confirmDeleteSelected = () => {
-    deleteCategoriesDialog.value = true;
+    deleteOperationsDialog.value = true;
 };
-const deleteSelectedCategories = async () => {
-    loading.value = true;
 
+const deleteSelectedOperations = async () => {
+    loading.value = true;
     try {
-        const idsToDelete = selectedCategories.value.map((cat) => cat.id);
-        await axios.post(`/role-categories/bulk-delete`, { ids: idsToDelete });
-        categories.value = categories.value.filter(
-            (val) => !selectedCategories.value.includes(val)
+        await axios.post("/operations-types/delete-multiple", {
+            ids: selectedOperations.value.map((op) => op.id),
+        });
+        operations.value = operations.value.filter(
+            (op) => !selectedOperations.value.includes(op)
         );
-        deleteCategoriesDialog.value = false;
-        selectedCategories.value = null;
+
         toast.add({
             severity: "success",
-            summary: "Successful",
-            detail: "Selected Categories Deleted",
+            summary: "Deleted",
+            detail: "Selected operations deleted",
             life: 3000,
         });
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to delete selected categories.",
-            life: 3000,
-        });
+        deleteOperationsDialog.value = false;
+        selectedOperations.value = [];
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         loading.value = false;
     }
 };
+
 const exportCSV = () => {
-    dt.value.exportCSV();
+    dt.value?.exportCSV();
 };
 </script>
+
+<style>
+/* Add your custom styling here if needed */
+</style>
