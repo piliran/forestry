@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Operation;
+use App\Models\OperationType;
+use App\Models\Station;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class OperationController extends Controller
 {
@@ -13,18 +16,15 @@ class OperationController extends Controller
      */
     public function index()
     {
-        $operations = Operation::all();
-        return Inertia::render('Operations/Index', [
-            'operations' => $operations,
-        ]);
-    }
+        $operations = Operation::with(['operationType', 'station'])->get();
+        $operationTypes = OperationType::all();
+        $stations = Station::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return Inertia::render('Operations/Create');
+        return Inertia::render('Operations/List', [
+            'operations' => $operations,
+            'operationTypes' => $operationTypes,
+            'stations' => $stations,
+        ]);
     }
 
     /**
@@ -35,31 +35,32 @@ class OperationController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'operation_type_id' => 'required|exists:operation_types,id',
+            'station_id' => 'required|exists:stations,id',
         ]);
 
-        $operation = Operation::create($request->all());
+        DB::beginTransaction();
+        try {
+            $operation = Operation::create([
+                'name' => $request->input('name'),
+                'description' => $request->input('description'),
+                'operation_type_id' => $request->input('operation_type_id'),
+                'station_id' => $request->input('station_id'),
+            ]);
 
-        return response()->json($operation, 201); // Return the created operation
-    }
+            DB::commit();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Operation $operation)
-    {
-        return Inertia::render('Operations/Show', [
-            'operation' => $operation,
-        ]);
-    }
+            $operation->load(['operationType', 'station']);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Operation $operation)
-    {
-        return Inertia::render('Operations/Edit', [
-            'operation' => $operation,
-        ]);
+            return response()->json($operation, 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Failed to create operation.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -70,11 +71,20 @@ class OperationController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'operation_type_id' => 'required|exists:operation_types,id',
+            'station_id' => 'required|exists:stations,id',
         ]);
 
-        $operation->update($request->all());
+        $operation->update($request->only([
+            'name',
+            'description',
+            'operation_type_id',
+            'station_id',
+        ]));
 
-        return response()->json($operation); // Return the updated operation
+        $operation->load(['operationType', 'station']);
+
+        return response()->json($operation, 200);
     }
 
     /**
@@ -84,23 +94,21 @@ class OperationController extends Controller
     {
         $operation->delete();
 
-        return response()->json('Operation deleted successfully.');
+        return response()->json(['message' => 'Operation deleted successfully'], 200);
     }
 
     /**
-     * Bulk delete selected operations.
+     * Batch delete specified resources from storage.
      */
-    public function bulkDelete(Request $request)
+    public function batchDelete(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'exists:operations,id', // Ensure each id exists in the database
+            'ids.*' => 'exists:operations,id',
         ]);
 
-        Operation::whereIn('id', $request->ids)->delete();
+        Operation::whereIn('id', $validated['ids'])->delete();
 
-        return response()->json([
-            'message' => 'Selected operations deleted successfully.',
-        ]);
+        return response()->json(['message' => 'Operations deleted successfully'], 200);
     }
 }

@@ -12,6 +12,9 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\UserPermissionsController;
 
+use App\Http\Controllers\OperationTypeController;
+use App\Http\Controllers\OperationController;
+
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DepartmentController;
@@ -97,6 +100,12 @@ Route::post('/route-types/bulk-delete', [RouteTypeController::class, 'batchDelet
 
 Route::resource('route-list', RouteController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/route-list/bulk-delete', [RouteController::class, 'batchDelete']);
+
+Route::resource('operations-list', OperationController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/operations-list/bulk-delete', [OperationController::class, 'batchDelete']);
+
+Route::resource('operations-types', OperationTypeController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/operations-types/bulk-delete', [OperationTypeController::class, 'batchDelete']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
