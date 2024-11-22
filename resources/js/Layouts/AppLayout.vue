@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import ApplicationMark from "@/Components/ApplicationMark.vue";
 import Banner from "@/Components/Banner.vue";
@@ -24,6 +24,28 @@ defineProps({
 
 const showingNavigationDropdown = ref(false);
 const isSidebarVisible = ref(true); // State to track sidebar visibility
+
+const sidebarRef = ref(null);
+const savedScrollPosition = ref(0);
+
+// Save the scroll position before navigating
+const handleLinkClick = () => {
+    if (sidebarRef.value) {
+        savedScrollPosition.value = sidebarRef.value.scrollTop;
+        localStorage.setItem(
+            "sidebarScrollPosition",
+            savedScrollPosition.value
+        );
+    }
+};
+
+// Restore the scroll position after navigation
+onMounted(() => {
+    const storedPosition = localStorage.getItem("sidebarScrollPosition");
+    if (storedPosition && sidebarRef.value) {
+        sidebarRef.value.scrollTop = parseInt(storedPosition, 10);
+    }
+});
 
 const switchToTeam = (team) => {
     router.put(
@@ -214,6 +236,7 @@ const toggleSidebar = () => {
                     <main-menu
                         v-show="isSidebarVisible"
                         class="hidden flex-shrink-0 py-4 px-4 w-56 bg-dark overflow-y-auto md:block"
+                        scroll-region
                     />
 
                     <div

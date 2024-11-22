@@ -1,9 +1,10 @@
 <template>
-    <div>
+    <div class="overflow-y-auto" scroll-region>
         <div v-for="(item, index) in items" :key="index" class="mb-4">
             <!-- Main Link -->
             <!-- v-if="hasAccess(item.allowedRoles)" -->
             <div
+                ref="sidebarRef"
                 class="group flex items-center py-2 px-4 cursor-pointer"
                 :class="[
                     isUrl(item.route) ? 'bg-white rounded-xl' : 'hover:bg-dark',
@@ -96,6 +97,8 @@ const page = usePage();
 
 const roles = computed(() => page.props.roles || []);
 const permissions = computed(() => page.props.can || {});
+const sidebarRef = ref(null);
+const savedScrollPosition = ref(0);
 
 // if (roles.value.includes("Admin")) {
 //     console.log("User is an Admin");
@@ -104,7 +107,12 @@ const permissions = computed(() => page.props.can || {});
 // if (permissions.value.create_user) {
 //     console.log("User can create users");
 // }
-
+onMounted(() => {
+    const storedPosition = localStorage.getItem("sidebarScrollPosition");
+    if (storedPosition && sidebarRef.value) {
+        sidebarRef.value.scrollTop = parseInt(storedPosition, 10);
+    }
+});
 const items = ref([
     {
         label: "Dashboard",
@@ -348,7 +356,15 @@ const toggleDropdown = (index, item) => {
             JSON.stringify(dropdownVisibility.value)
         );
 
-        router.visit(item.route); // Navigate to the link
+        if (sidebarRef.value) {
+            savedScrollPosition.value = sidebarRef.value.scrollTop;
+            localStorage.setItem(
+                "sidebarScrollPosition",
+                savedScrollPosition.value
+            );
+        }
+
+        router.visit(item.route, { preserveScroll: false }); // Navigate to the link
     }
 };
 
@@ -371,7 +387,14 @@ onMounted(() => {
 });
 
 const navigateSubLink = (subItem) => {
-    router.visit(subItem.route);
+    if (sidebarRef.value) {
+        savedScrollPosition.value = sidebarRef.value.scrollTop;
+        localStorage.setItem(
+            "sidebarScrollPosition",
+            savedScrollPosition.value
+        );
+    }
+    router.visit(subItem.route, { preserveScroll: false });
 };
 
 const isUrl = (route) => {
