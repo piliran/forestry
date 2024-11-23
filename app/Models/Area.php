@@ -16,6 +16,8 @@ class Area extends Model
         'code',
         'location',
         'coordinates',
+        'latitude',
+        'longitude',
         'chairperson',
     ];
 

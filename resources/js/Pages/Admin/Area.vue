@@ -492,9 +492,9 @@ const saveArea = async () => {
     }
 };
 
-const editArea= (areaData) => {
+const editArea = (areaData) => {
     editDialog.value = true;
-    ara.value = { ...areaData };
+    area.value = { ...areaData };
     areaDialog.value = true;
 };
 
@@ -547,7 +547,7 @@ const deleteSelectedAreas = async () => {
     loading.value = true;
     try {
         await axios.post("/area-list/bulk-delete", { ids });
-        aras.value = areas.value.filter((r) => !ids.includes(r.id));
+        areas.value = areas.value.filter((r) => !ids.includes(r.id));
         toast.add({
             severity: "success",
             summary: "Successful",

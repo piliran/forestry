@@ -37,15 +37,19 @@ class AreaController extends Controller
      */
     public function store(Request $request)
     {
+
+       
         $request->validate([
             'station_id' => 'required|exists:stations,id',
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'latitude' => 'required|string|max:255',
-            'longitude' => 'required|string|max:255',
+            'code' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'chairperson' => 'required|string|max:255',
         ]);
+        
+        
 
         $area = Area::create($request->all());
         $area->load('station');
@@ -76,13 +80,14 @@ class AreaController extends Controller
      */
     public function update(Request $request, Area $area)
     {
+        $area = Area::find($request->id);
         $request->validate([
             'station_id' => 'required|exists:stations,id',
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'latitude' => 'required|string|max:255',
-            'longitude' => 'required|string|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'chairperson' => 'required|string|max:255',
         ]);
 
@@ -95,8 +100,9 @@ class AreaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Area $area)
+    public function destroy(Area $area,$id)
     {
+        $area = Area::find($id);
         $area->delete();
 
         return response()->json('Area deleted successfully.');
@@ -105,7 +111,7 @@ class AreaController extends Controller
     /**
      * Bulk delete selected areas.
      */
-    public function bulkDelete(Request $request)
+    public function batchDelete(Request $request)
     {
         $request->validate([
             'ids' => 'required|array',
