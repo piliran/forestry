@@ -161,12 +161,12 @@ const toggleSidebar = () => {
 
                     <div
                         class="hidden md:text-md md:flex items-center justify-between p-1 w-full text-sm border-b md:px-12 md:py-3 min-h-12"
-                        style="background-color: #007e4e;"
+                        style="background-color: #007e4e"
                     >
                         <div class="mr-4 my-2">
                             <!-- Icon for toggling sidebar on medium and large devices -->
                             <button
-                                class="hidden md:block text-gray-100 bg-white px-1"
+                                class="hidden md:block fill-white text-white px-1"
                                 @click="toggleSidebar"
                                 aria-label="Toggle Sidebar"
                             >
