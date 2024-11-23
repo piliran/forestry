@@ -18,7 +18,8 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedEncroaches || !selectedEncroaches.length
+                                !selectedEncroaches ||
+                                !selectedEncroaches.length
                             "
                         />
                     </template>
@@ -77,13 +78,13 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="encroached.latitude"
+                        field="latitude"
                         header="Latitude"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="encroached.longitude"
+                        field="longitude"
                         header="Longitude"
                         sortable
                         style="min-width: 10rem"
@@ -121,10 +122,14 @@
             <Dialog
                 v-model:visible="encroachedDialog"
                 :style="{ width: '450px' }"
-                :header="editDialog ? 'Edit Encroached Area' : 'Add New Encroached Area'"
+                :header="
+                    editDialog
+                        ? 'Edit Encroached Area'
+                        : 'Add New Encroached Area'
+                "
                 :modal="true"
             >
-                <div class="flex flex-col gap-6">                    
+                <div class="flex flex-col gap-6">
                     <div class="col-12 md:col-6">
                         <label for="encroached" class="block font-bold mb-2"
                             >Area Name</label
@@ -183,7 +188,6 @@
                             Longitude is required.
                         </small>
                     </div>
-
                 </div>
                 <template #footer>
                     <Button
@@ -262,7 +266,8 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span>
-                        Are you sure you want to delete the selected Encroached Areas?
+                        Are you sure you want to delete the selected Encroached
+                        Areas?
                     </span>
                 </div>
                 <template #footer>
@@ -353,14 +358,17 @@ const hideDialog = () => {
 
 const saveEncroached = async () => {
     submitted.value = true;
-    if (encroached?.value?.name?.trim()) {
+    if (encroached?.value?.latitude?.trim()) {
         loading.value = true;
+
         try {
             if (encroached.value.id) {
                 const response = await axios.put(
                     `/encroached-areas/${encroached.value.id}`,
                     encroached.value
                 );
+                console.log(response);
+
                 updateEncroached(response.data);
                 toast.add({
                     severity: "success",
@@ -369,7 +377,10 @@ const saveEncroached = async () => {
                     life: 3000,
                 });
             } else {
-                const response = await axios.post("/encroached-areas", encroached.value);
+                const response = await axios.post(
+                    "/encroached-areas",
+                    encroached.value
+                );
                 encroaches.value.push(response.data);
                 toast.add({
                     severity: "success",
@@ -464,7 +475,7 @@ const deleteSelectedEncroaches = async () => {
     loading.value = true;
     try {
         await axios.post("/encroached-areas/bulk-delete", { ids });
-        districts.value = encroaches.value.filter((r) => !ids.includes(r.id));
+        encroaches.value = encroaches.value.filter((r) => !ids.includes(r.id));
         toast.add({
             severity: "success",
             summary: "Successful",
@@ -504,7 +515,9 @@ const confirmDeleteSelected = () => {
 };
 
 const updateEncroached = (updatedEncroached) => {
-    const index = encroaches.value.findIndex((r) => r.id === updatedEncroached.id);
+    const index = encroaches.value.findIndex(
+        (r) => r.id === updatedEncroached.id
+    );
     if (index !== -1) {
         encroaches.value[index] = updatedEncroached;
     }

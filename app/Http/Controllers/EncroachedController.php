@@ -6,6 +6,8 @@ use App\Models\Area;
 use App\Models\Encroached;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
+
 
 
 class EncroachedController extends Controller
@@ -38,8 +40,8 @@ class EncroachedController extends Controller
     {
         $validated = $request->validate([
             'area_id' => 'required|exists:areas,id',
-            'latitude' => 'required|string|max:255',
-            'longitude' => 'required|string|max:255',
+           'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         
         ]);
 
@@ -72,19 +74,24 @@ class EncroachedController extends Controller
      */
     public function update(Request $request, Encroached $encroached)
     {
+        
+        $Encroached = Encroached::find($request->id);
+        Log::info($Encroached);
+
         $validated = $request->validate([
             'area_id' => 'required|exists:areas,id',
-            'latitude' => 'required|string|max:255',
-            'longitude' => 'required|string|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         
         ]);
 
         
-        $encroached->update($request->all());
-        $encroached->load('area');
+        $Encroached->update($validated);
+        $Encroached->load('area');
 
 
-        return response()->json($encroached);
+        return response()->json($Encroached, 201);
+      
     }
 
     /**
@@ -92,8 +99,10 @@ class EncroachedController extends Controller
      */
   
 
-    public function destroy(Encroached $encroached)
+    public function destroy(Encroached $encroached,$id)
     {
+        $encroached = Encroached::find($id);
+
         $encroached->delete();
 
         return response()->json('Encroached area deleted successfully.');
