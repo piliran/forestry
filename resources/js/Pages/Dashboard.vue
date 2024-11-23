@@ -140,7 +140,7 @@
 
         <div class="grid grid-cols-12 gap-4 py-4">
             <div
-                class="col-span-12 md:col-span-6 lg:col-span-8 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
+                class="col-span-12 md:col-span-6 lg:col-span-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
             >
                 <Chart
                     type="line"
@@ -150,7 +150,7 @@
                 />
             </div>
 
-            <!-- <div
+            <div
                 class="col-span-12 md:col-span-6 lg:col-span-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
             >
                 <Chart
@@ -159,23 +159,21 @@
                     :options="barChartOptions"
                     class="h-[30rem]"
                 />
-            </div> -->
+            </div>
 
             <!-- Timeline -->
-            <div
+            <!-- <div
                 class="col-span-12 md:col-span-6 lg:col-span-4 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg"
             >
-                <!-- Heading -->
+             
                 <div class="ps-2 my-2 first:mt-0">
                     <h3 class="text-xs font-medium uppercase text-gray-500">
                         1 Aug, 2023
                     </h3>
                 </div>
-                <!-- End Heading -->
-
-                <!-- Item -->
+               
                 <div class="flex gap-x-3">
-                    <!-- Icon -->
+             
                     <div
                         class="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200"
                     >
@@ -185,9 +183,7 @@
                             <div class="size-2 rounded-full bg-gray-400"></div>
                         </div>
                     </div>
-                    <!-- End Icon -->
-
-                    <!-- Right Content -->
+                   
                     <div class="grow pt-0.5 pb-8">
                         <h3 class="flex gap-x-1.5 font-semibold text-gray-800">
                             <svg
@@ -227,13 +223,11 @@
                             James Collins
                         </button>
                     </div>
-                    <!-- End Right Content -->
+                   
                 </div>
-                <!-- End Item -->
-
-                <!-- Item -->
+               
                 <div class="flex gap-x-3">
-                    <!-- Icon -->
+                 
                     <div
                         class="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200"
                     >
@@ -243,9 +237,7 @@
                             <div class="size-2 rounded-full bg-gray-400"></div>
                         </div>
                     </div>
-                    <!-- End Icon -->
-
-                    <!-- Right Content -->
+                   
                     <div class="grow pt-0.5 pb-8">
                         <h3 class="flex gap-x-1.5 font-semibold text-gray-800">
                             Release v5.2.0 quick bug fix 🐞
@@ -262,13 +254,11 @@
                             Alex Gregarov
                         </button>
                     </div>
-                    <!-- End Right Content -->
+                  
                 </div>
-                <!-- End Item -->
-
-                <!-- Item -->
+              
                 <div class="flex gap-x-3">
-                    <!-- Icon -->
+               
                     <div
                         class="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200"
                     >
@@ -278,9 +268,7 @@
                             <div class="size-2 rounded-full bg-gray-400"></div>
                         </div>
                     </div>
-                    <!-- End Icon -->
-
-                    <!-- Right Content -->
+                   
                     <div class="grow pt-0.5 pb-8">
                         <h3 class="flex gap-x-1.5 font-semibold text-gray-800">
                             Marked "Install Charts" completed
@@ -300,21 +288,17 @@
                             James Collins
                         </button>
                     </div>
-                    <!-- End Right Content -->
+                   
                 </div>
-                <!-- End Item -->
-
-                <!-- Heading -->
+            
                 <div class="ps-2 my-2 first:mt-0">
                     <h3 class="text-xs font-medium uppercase text-gray-500">
                         31 Jul, 2023
                     </h3>
                 </div>
-                <!-- End Heading -->
-
-                <!-- Item -->
+               
                 <div class="flex gap-x-3">
-                    <!-- Icon -->
+                   
                     <div
                         class="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200"
                     >
@@ -324,9 +308,7 @@
                             <div class="size-2 rounded-full bg-gray-400"></div>
                         </div>
                     </div>
-                    <!-- End Icon -->
-
-                    <!-- Right Content -->
+                   
                     <div class="grow pt-0.5 pb-8">
                         <h3 class="flex gap-x-1.5 font-semibold text-gray-800">
                             Take a break ⛳️
@@ -335,11 +317,10 @@
                             Just chill for now... 😉
                         </p>
                     </div>
-                    <!-- End Right Content -->
+                  
                 </div>
-                <!-- End Item -->
-            </div>
-            <!-- End Timeline -->
+              
+            </div> -->
         </div>
     </AppLayout>
 </template>
