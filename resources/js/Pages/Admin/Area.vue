@@ -87,8 +87,14 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="coordinates"
-                        header="Coordinates"
+                        field="latitude"
+                        header="Latitude"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="longitude"
+                        header="Longitude"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -154,16 +160,13 @@
                         </small>
                     </div>
                     <div>
-                        <label
-                            for="station"
-                            class="block font-bold mb-3"
-                        >
+                        <label for="station" class="block font-bold mb-3">
                             Station
                         </label>
                         <Select
                             id="station"
                             v-model="area.station_id"
-                            :options="Stations"
+                            :options="stations"
                             optionLabel="name"
                             optionValue="id"
                             placeholder="Select Station"
@@ -209,22 +212,41 @@
                         </small>
                     </div>
                     <div>
-                        <label for="coordinates" class="block font-bold mb-3">
-                            Coordinates
+                        <label for="latitude" class="block font-bold mb-3">
+                            Latitude
                         </label>
                         <InputText
                             id="location"
-                            v-model.trim="area.coordinates"
+                            v-model.trim="area.latitude"
                             required="true"
                             autofocus
-                            :invalid="submitted && !area.coordinates"
+                            :invalid="submitted && !area.latitude"
                             fluid
                         />
                         <small
-                            v-if="submitted && !area.coordinates"
+                            v-if="submitted && !area.latitude"
                             class="text-red-500"
                         >
-                            Coordinates is required.
+                            Latitude is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="longitude" class="block font-bold mb-3">
+                            Longitude
+                        </label>
+                        <InputText
+                            id="location"
+                            v-model.trim="area.longitude"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !area.longitude"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !area.longitude"
+                            class="text-red-500"
+                        >
+                            Longitude is required.
                         </small>
                     </div>
                     <div>

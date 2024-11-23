@@ -2,18 +2,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Station;
+use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class StationController extends Controller
 {
     public function index()
     {
-        $stations = Station::all();
+        $stations = Station::with('district')->get();
+        $districts = District::all();
+    
 
         return Inertia::render('Department/Stations', [
             'stations' => $stations,
+            'districts' => $districts,
         ]);
+
     }
 
     public function store(Request $request)
@@ -21,11 +27,14 @@ class StationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
+            'district_id' => 'required|exists:districts,id',
             'email' => 'required|email|max:255',
             'chairperson' => 'required|string|max:255',
         ]);
 
-        $station = Station::create($validated);
+        $station = Station::create($request->all());
+        $station->load('district');
+
 
         return response()->json($station, 201);
     }
@@ -35,13 +44,17 @@ class StationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
+            'district_id' => 'required|exists:districts,id',
             'email' => 'required|email|max:255',
             'chairperson' => 'required|string|max:255',
         ]);
 
         $station->update($validated);
+        $station->load('district');
 
         return response()->json($station, 200);
+
+
     }
 
     public function destroy(Station $station)

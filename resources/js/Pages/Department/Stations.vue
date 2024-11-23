@@ -82,6 +82,12 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
+                    <Column
+                        field="district.name"
+                        header="District"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
 
                     <Column
                         field="email"
@@ -167,6 +173,27 @@
                             class="text-red-500"
                         >
                             Location is required.
+                        </small>
+                    </div>
+                    
+                    <div class="col-12 md:col-6">
+                        <label for="station" class="block font-bold mb-2"
+                            >District</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="station.district_id"
+                            :options="districts"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select District"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !station.district_id"
+                            class="text-red-500"
+                        >
+                            District is required.
                         </small>
                     </div>
 
@@ -355,13 +382,16 @@ const filters = ref({
 
 const props = defineProps({
     stations: Array,
+    districts: Array,
 });
+
+
+const stations = ref(props.stations);
+const districts = ref(props.districts);
 
 onMounted(async () => {
     console.log(stations);
 });
-
-const stations = ref(props.stations);
 
 // CRUD Methods
 const openNew = () => {

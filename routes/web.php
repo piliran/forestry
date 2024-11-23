@@ -19,6 +19,7 @@ use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\EncroachedController;
 use App\Http\Controllers\SuspectController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\RouteTypeController;
@@ -45,6 +46,9 @@ Route::resource('countries', CountryController::class)->middleware([HandlePrecog
 
 Route::post('/area-list/bulk-delete', [AreaController::class, 'batchDelete']);
 Route::resource('area-list', AreaController::class)->middleware([HandlePrecognitiveRequests::class]);
+
+Route::post('/encroached-areas/bulk-delete', [EncroachedController::class, 'batchDelete']);
+Route::resource('encroached-areas', EncroachedController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 
 
@@ -132,9 +136,9 @@ Route::get('/arrests', function () {
 //     return Inertia::render('Department/Stations');
 // });
 
-Route::get('/encroached-areas', function () {
-    return Inertia::render('Department/EncroachedAreas');
-});
+// Route::get('/encroached-areas', function () {
+//     return Inertia::render('Department/EncroachedAreas');
+// }); 
 
 Route::get('/confiscates', function () {
     return Inertia::render('Department/Confiscates');

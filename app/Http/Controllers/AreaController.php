@@ -14,9 +14,14 @@ class AreaController extends Controller
     public function index()
     {
         $areas = Area::with('station')->get();
+        $stations = Station::all();
+    
+
         return Inertia::render('Admin/Area', [
+            'stations' => $stations,
             'areas' => $areas,
         ]);
+
     }
 
     /**
@@ -37,11 +42,13 @@ class AreaController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'coordinates' => 'required|string|max:255',
+            'latitude' => 'required|string|max:255',
+            'longitude' => 'required|string|max:255',
             'chairperson' => 'required|string|max:255',
         ]);
 
         $area = Area::create($request->all());
+        $area->load('station');
 
         return response()->json($area, 201); // Return the created area
     }
@@ -74,11 +81,13 @@ class AreaController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'coordinates' => 'required|string|max:255',
+            'latitude' => 'required|string|max:255',
+            'longitude' => 'required|string|max:255',
             'chairperson' => 'required|string|max:255',
         ]);
 
         $area->update($request->all());
+        $area->load('station');
 
         return response()->json($area); // Return the updated area
     }

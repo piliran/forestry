@@ -1,6 +1,7 @@
 <template>
-    <AppLayout title="Arrests">
+    <AppLayout title="Encroached Areas">
         <div>
+            <!-- Toolbar -->
             <div class="card">
                 <Toolbar class="mb-6">
                     <template #start>
@@ -17,23 +18,11 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedProducts || !selectedProducts.length
+                                !selectedEncroaches || !selectedEncroaches.length
                             "
                         />
                     </template>
-
                     <template #end>
-                        <FileUpload
-                            mode="basic"
-                            accept="image/*"
-                            :maxFileSize="1000000"
-                            label="Import"
-                            customUpload
-                            chooseLabel="Import"
-                            class="mr-2"
-                            auto
-                            :chooseButtonProps="{ severity: 'secondary' }"
-                        />
                         <Button
                             label="Export"
                             icon="pi pi-upload"
@@ -43,25 +32,28 @@
                     </template>
                 </Toolbar>
 
+                <!-- Toast Notifications -->
                 <Toast />
 
+                <!-- Data Table -->
                 <DataTable
+                    v-if="encroaches.length > 0"
                     ref="dt"
-                    v-model:selection="selectedProducts"
-                    :value="products"
+                    v-model:selection="selectedEncroaches"
+                    :value="encroaches"
                     dataKey="id"
                     :paginator="true"
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} districts"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Products</h4>
+                            <h4 class="m-0">Manage Encroached Areas</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -73,231 +65,126 @@
                             </IconField>
                         </div>
                     </template>
-
                     <Column
                         selectionMode="multiple"
                         style="width: 3rem"
                         :exportable="false"
                     ></Column>
                     <Column
-                        field="code"
-                        header="Code"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
-                    <Column
-                        field="name"
-                        header="Name"
-                        sortable
-                        style="min-width: 16rem"
-                    ></Column>
-                    <Column header="Image">
-                        <template #body="slotProps">
-                            <img
-                                :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`"
-                                :alt="slotProps.data.image"
-                                class="rounded"
-                                style="width: 64px"
-                            />
-                        </template>
-                    </Column>
-                    <Column
-                        field="price"
-                        header="Price"
-                        sortable
-                        style="min-width: 8rem"
-                    >
-                        <template #body="slotProps">
-                            {{ formatCurrency(slotProps.data.price) }}
-                        </template>
-                    </Column>
-                    <Column
-                        field="category"
-                        header="Category"
+                        field="area.name"
+                        header="Area"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="rating"
-                        header="Reviews"
+                        field="encroached.latitude"
+                        header="Latitude"
                         sortable
-                        style="min-width: 12rem"
-                    >
-                        <template #body="slotProps">
-                            <Rating
-                                :modelValue="slotProps.data.rating"
-                                :readonly="true"
-                            />
-                        </template>
-                    </Column>
+                        style="min-width: 10rem"
+                    ></Column>
                     <Column
-                        field="inventoryStatus"
-                        header="Status"
+                        field="encroached.longitude"
+                        header="Longitude"
                         sortable
+                        style="min-width: 10rem"
+                    ></Column>
+
+                    <Column
+                        header="Action"
+                        :exportable="false"
                         style="min-width: 12rem"
                     >
-                        <template #body="slotProps">
-                            <Tag
-                                :value="slotProps.data.inventoryStatus"
-                                :severity="
-                                    getStatusLabel(
-                                        slotProps.data.inventoryStatus
-                                    )
-                                "
-                            />
-                        </template>
-                    </Column>
-                    <Column :exportable="false" style="min-width: 12rem">
                         <template #body="slotProps">
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editProduct(slotProps.data)"
+                                @click="editEncroached(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteProduct(slotProps.data)"
+                                @click="confirmDeleteEncroached(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
+                <div v-else class="flex items-center justify-center">
+                    <h2>No Encroached Areas Found</h2>
+                </div>
             </div>
 
+            <!-- Add/Edit Encroached Area Dialog -->
             <Dialog
-                v-model:visible="productDialog"
+                v-model:visible="encroachedDialog"
                 :style="{ width: '450px' }"
-                header="Product Details"
+                :header="editDialog ? 'Edit Encroached Area' : 'Add New Encroached Area'"
                 :modal="true"
             >
-                <div class="flex flex-col gap-6">
-                    <img
-                        v-if="product.image"
-                        :src="`https://primefaces.org/cdn/primevue/images/product/${product.image}`"
-                        :alt="product.image"
-                        class="block m-auto pb-4"
-                    />
-                    <div>
-                        <label for="name" class="block font-bold mb-3"
-                            >Name</label
+                <div class="flex flex-col gap-6">                    
+                    <div class="col-12 md:col-6">
+                        <label for="encroached" class="block font-bold mb-2"
+                            >Area Name</label
                         >
-                        <InputText
-                            id="name"
-                            v-model.trim="product.name"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !product.name"
+                        <Select
+                            id="id"
+                            v-model="encroached.area_id"
+                            :options="areas"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Area"
                             fluid
                         />
                         <small
-                            v-if="submitted && !product.name"
+                            v-if="submitted && !encroached.area_id"
                             class="text-red-500"
-                            >Name is required.</small
                         >
+                            Area is required.
+                        </small>
                     </div>
                     <div>
-                        <label for="description" class="block font-bold mb-3"
-                            >Description</label
-                        >
-                        <Textarea
-                            id="description"
-                            v-model="product.description"
+                        <label for="latitude" class="block font-bold mb-3">
+                            Latitude
+                        </label>
+                        <InputText
+                            id="latitude"
+                            v-model.trim="encroached.latitude"
                             required="true"
-                            rows="3"
-                            cols="20"
+                            autofocus
+                            :invalid="submitted && !encroached.latitude"
                             fluid
                         />
-                    </div>
-                    <div>
-                        <label
-                            for="inventoryStatus"
-                            class="block font-bold mb-3"
-                            >Inventory Status</label
+                        <small
+                            v-if="submitted && !encroached.latitude"
+                            class="text-red-500"
                         >
-                        <Select
-                            id="inventoryStatus"
-                            v-model="product.inventoryStatus"
-                            :options="statuses"
-                            optionLabel="label"
-                            placeholder="Select a Status"
-                            fluid
-                        ></Select>
+                            Latitude is required.
+                        </small>
                     </div>
-
                     <div>
-                        <span class="block font-bold mb-4">Category</span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category1"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Accessories"
-                                />
-                                <label for="category1">Accessories</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category2"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Clothing"
-                                />
-                                <label for="category2">Clothing</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category3"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Electronics"
-                                />
-                                <label for="category3">Electronics</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category4"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Fitness"
-                                />
-                                <label for="category4">Fitness</label>
-                            </div>
-                        </div>
+                        <label for="longitude" class="block font-bold mb-3">
+                            Longitude
+                        </label>
+                        <InputText
+                            id="longitude"
+                            v-model.trim="encroached.longitude"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !encroached.longitude"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !encroached.longitude"
+                            class="text-red-500"
+                        >
+                            Longitude is required.
+                        </small>
                     </div>
 
-                    <div class="grid grid-cols-12 gap-4">
-                        <div class="col-span-6">
-                            <label for="price" class="block font-bold mb-3"
-                                >Price</label
-                            >
-                            <InputNumber
-                                id="price"
-                                v-model="product.price"
-                                mode="currency"
-                                currency="USD"
-                                locale="en-US"
-                                fluid
-                            />
-                        </div>
-                        <div class="col-span-6">
-                            <label for="quantity" class="block font-bold mb-3"
-                                >Quantity</label
-                            >
-                            <InputNumber
-                                id="quantity"
-                                v-model="product.quantity"
-                                integeronly
-                                fluid
-                            />
-                        </div>
-                    </div>
                 </div>
-
                 <template #footer>
                     <Button
                         label="Cancel"
@@ -305,253 +192,325 @@
                         text
                         @click="hideDialog"
                     />
-                    <Button
-                        label="Save"
-                        icon="pi pi-check"
-                        @click="saveProduct"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Save"
+                            icon="pi pi-check"
+                            @click="saveEncroached"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
+            <!-- Delete Single Encroached Area Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteProductDialog"
+                v-model:visible="deleteEncroachedDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="product"
-                        >Are you sure you want to delete
-                        <b>{{ product.name }}</b
-                        >?</span
-                    >
+                    <span v-if="encroached">
+                        Are you sure you want to delete
+                        <b>{{ encroached.name }}</b
+                        >?
+                    </span>
                 </div>
                 <template #footer>
                     <Button
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteProductDialog = false"
+                        @click="deleteEncroachedDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        @click="deleteProduct"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            @click="deleteEncroached"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
+            <!-- Delete Multiple Encroached Areas Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteProductsDialog"
+                v-model:visible="deleteEncroachesDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="product"
-                        >Are you sure you want to delete the selected
-                        products?</span
-                    >
+                    <span>
+                        Are you sure you want to delete the selected Encroached Areas?
+                    </span>
                 </div>
                 <template #footer>
                     <Button
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteProductsDialog = false"
+                        @click="deleteEncroachedDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        text
-                        @click="deleteSelectedProducts"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            text
+                            @click="deleteSelectedEncroaches"
+                        />
+                    </div>
                 </template>
             </Dialog>
         </div>
     </AppLayout>
 </template>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
-
 import { useToast } from "primevue/usetoast";
-import { ProductService } from "@/primevue/service/ProductService";
 
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-
 import Button from "primevue/button";
-import FileUpload from "primevue/fileupload";
 import Toolbar from "primevue/toolbar";
-import Rating from "primevue/rating";
-import Textarea from "primevue/textarea";
-import RadioButton from "primevue/radiobutton";
-import InputNumber from "primevue/inputnumber";
 import Dialog from "primevue/dialog";
-
 import InputIcon from "primevue/inputicon";
-import Select from "primevue/select";
-import IconField from "primevue/iconfield";
-
 import InputText from "primevue/inputtext";
-import Tag from "primevue/tag";
+import IconField from "primevue/iconfield";
+import Select from "primevue/select";
+import ProgressSpinner from "primevue/progressspinner";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
-
-onMounted(() => {
-    ProductService.getProducts().then((data) => (products.value = data));
-});
+import axios from "axios";
 
 const toast = useToast();
+
+// Reactive State Variables
 const dt = ref();
-const products = ref();
-const productDialog = ref(false);
-const deleteProductDialog = ref(false);
-const deleteProductsDialog = ref(false);
-const product = ref({});
-const selectedProducts = ref();
+const encroachedDialog = ref(false);
+const editDialog = ref(false);
+const loading = ref(false);
+const deleteEncroachedDialog = ref(false);
+const deleteEncroachesDialog = ref(false);
+const encroached = ref({});
+const selectedEncroaches = ref([]);
+const submitted = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const submitted = ref(false);
-const statuses = ref([
-    { label: "INSTOCK", value: "instock" },
-    { label: "LOWSTOCK", value: "lowstock" },
-    { label: "OUTOFSTOCK", value: "outofstock" },
-]);
+const props = defineProps({
+    encroaches: Array,
+    areas: Array,
+});
 
-const formatCurrency = (value) => {
-    if (value)
-        return value.toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-        });
-    return;
-};
+const encroaches = ref(props.encroaches);
+const areas = ref(props.areas);
+
+// CRUD Methods
 const openNew = () => {
-    product.value = {};
+    editDialog.value = false;
+    encroached.value = {};
     submitted.value = false;
-    productDialog.value = true;
+    encroachedDialog.value = true;
 };
+
 const hideDialog = () => {
-    productDialog.value = false;
+    encroachedDialog.value = false;
     submitted.value = false;
 };
-const saveProduct = () => {
+
+const saveEncroached = async () => {
     submitted.value = true;
+    if (encroached?.value?.name?.trim()) {
+        loading.value = true;
+        try {
+            if (encroached.value.id) {
+                const response = await axios.put(
+                    `/encroached-areas/${encroached.value.id}`,
+                    encroached.value
+                );
+                updateEncroached(response.data);
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Encroached Area Updated",
+                    life: 3000,
+                });
+            } else {
+                const response = await axios.post("/encroached-areas", encroached.value);
+                encroaches.value.push(response.data);
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Encroached Area Created",
+                    life: 3000,
+                });
+            }
+        } catch (err) {
+            if (err.response && err.response.status === 422) {
+                // Display validation errors
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
+        } finally {
+            loading.value = false;
+            encroachedDialog.value = false;
+        }
+    }
+};
 
-    if (product?.value.name?.trim()) {
-        if (product.value.id) {
-            product.value.inventoryStatus = product.value.inventoryStatus.value
-                ? product.value.inventoryStatus.value
-                : product.value.inventoryStatus;
-            products.value[findIndexById(product.value.id)] = product.value;
-            toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Updated",
-                life: 3000,
-            });
+const editEncroached = (encroachedData) => {
+    editDialog.value = true;
+    encroached.value = { ...encroachedData };
+    encroachedDialog.value = true;
+};
+
+const deleteEncroached = async () => {
+    loading.value = true;
+    try {
+        await axios.delete(`/encroached-areas/${encroached.value.id}`);
+        encroaches.value = encroaches.value.filter(
+            (r) => r.id !== encroached.value.id
+        );
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Encroached Area Deleted",
+            life: 3000,
+        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
         } else {
-            product.value.id = createId();
-            product.value.code = createId();
-            product.value.image = "product-placeholder.svg";
-            product.value.inventoryStatus = product.value.inventoryStatus
-                ? product.value.inventoryStatus.value
-                : "INSTOCK";
-            products.value.push(product.value);
             toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Created",
-                life: 3000,
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
             });
         }
-
-        productDialog.value = false;
-        product.value = {};
+    } finally {
+        deleteEncroachedDialog.value = false;
+        loading.value = false;
     }
 };
-const editProduct = (prod) => {
-    product.value = { ...prod };
-    productDialog.value = true;
+
+const confirmDeleteEncroached = (encroachedData) => {
+    encroached.value = encroachedData;
+    deleteEncroachedDialog.value = true;
 };
-const confirmDeleteProduct = (prod) => {
-    product.value = prod;
-    deleteProductDialog.value = true;
-};
-const deleteProduct = () => {
-    products.value = products.value.filter(
-        (val) => val.id !== product.value.id
-    );
-    deleteProductDialog.value = false;
-    product.value = {};
-    toast.add({
-        severity: "success",
-        summary: "Successful",
-        detail: "Product Deleted",
-        life: 3000,
-    });
-};
-const findIndexById = (id) => {
-    let index = -1;
-    for (let i = 0; i < products.value.length; i++) {
-        if (products.value[i].id === id) {
-            index = i;
-            break;
+
+const deleteSelectedEncroaches = async () => {
+    const ids = selectedEncroaches.value.map((encroached) => encroached.id);
+    loading.value = true;
+    try {
+        await axios.post("/encroached-areas/bulk-delete", { ids });
+        districts.value = encroaches.value.filter((r) => !ids.includes(r.id));
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Selected Encroached Areas Deleted",
+            life: 3000,
+        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
         }
+    } finally {
+        deleteEncroachesDialog.value = false;
+        loading.value = false;
     }
+};
 
-    return index;
-};
-const createId = () => {
-    let id = "";
-    var chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < 5; i++) {
-        id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return id;
-};
-const exportCSV = () => {
-    dt.value.exportCSV();
-};
 const confirmDeleteSelected = () => {
-    deleteProductsDialog.value = true;
-};
-const deleteSelectedProducts = () => {
-    products.value = products.value.filter(
-        (val) => !selectedProducts.value.includes(val)
-    );
-    deleteProductsDialog.value = false;
-    selectedProducts.value = null;
-    toast.add({
-        severity: "success",
-        summary: "Successful",
-        detail: "Products Deleted",
-        life: 3000,
-    });
+    deleteEncroachesDialog.value = true;
 };
 
-const getStatusLabel = (status) => {
-    switch (status) {
-        case "INSTOCK":
-            return "success";
-
-        case "LOWSTOCK":
-            return "warn";
-
-        case "OUTOFSTOCK":
-            return "danger";
-
-        default:
-            return null;
+const updateEncroached = (updatedEncroached) => {
+    const index = encroaches.value.findIndex((r) => r.id === updatedEncroached.id);
+    if (index !== -1) {
+        encroaches.value[index] = updatedEncroached;
     }
+};
+
+const exportCSV = () => {
+    dt.value?.exportCSV();
 };
 </script>
