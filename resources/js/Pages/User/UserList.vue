@@ -565,7 +565,7 @@
             <Dialog
                 v-model:visible="viewUserDialog"
                 :style="{ width: '450px' }"
-                :header="'View User'"
+                :header="'User Details'"
                 :modal="true"
             >
                 <div class="grid gap-4">
