@@ -241,7 +241,7 @@ const toggleSidebar = () => {
                     />
 
                     <div
-                        class="px-0 py-8 mx-4 md:flex-1 md:p-10 md:overflow-y-auto"
+                        class="px-0 py-8 mx-2 md:flex-1 md:p-10 md:overflow-y-auto"
                         scroll-region
                     >
                         <slot />

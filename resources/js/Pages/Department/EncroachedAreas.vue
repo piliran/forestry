@@ -1,6 +1,35 @@
 <template>
     <AppLayout title="Encroached Areas">
         <div>
+            <div class="-mt-6 inline-block">
+                <Breadcrumb :home="home" :model="breadCumbItems">
+                    <template #item="{ item, props }">
+                        <Link
+                            v-if="item.route"
+                            :href="item.route"
+                            preserve-scroll
+                            v-bind="props.action"
+                        >
+                            <span :class="[item.icon, 'text-color']" />
+                            <span class="text-primary font-semibold">{{
+                                item.label
+                            }}</span>
+                        </Link>
+                        <a
+                            v-else
+                            :href="item.url"
+                            :target="item.target"
+                            v-bind="props.action"
+                        >
+                            <span
+                                class="text-surface-700 dark:text-surface-0"
+                                >{{ item.label }}</span
+                            >
+                        </a>
+                    </template>
+                </Breadcrumb>
+            </div>
+
             <!-- Toolbar -->
             <div class="card">
                 <Toolbar class="mb-6">
@@ -304,6 +333,8 @@ import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
+import { Link } from "@inertiajs/vue3";
+import Breadcrumb from "primevue/breadcrumb";
 
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
@@ -334,6 +365,14 @@ const submitted = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+
+const home = ref({
+    icon: "pi pi-home",
+    label: "Dashboard",
+    route: "/dashboard",
+});
+
+const breadCumbItems = ref([{ label: "Encroached Areas" }]);
 
 const props = defineProps({
     encroaches: Array,
@@ -527,3 +566,23 @@ const exportCSV = () => {
     dt.value?.exportCSV();
 };
 </script>
+<style scoped>
+.content-wrapper {
+    padding-left: var(--sidebar-width, 250px); /* Accounts for sidebar width */
+    padding-top: var(
+        --navbar-height,
+        60px
+    ); /* Accounts for top navigation height */
+    position: relative; /* Ensures breadcrumb is placed correctly */
+}
+.breadcrumb-container {
+    position: absolute; /* Positioned relative to the nearest positioned ancestor */
+    top: 1rem; /* Adjust based on your layout's padding/margin */
+    left: 1rem; /* Avoid overlapping the sidebar */
+    padding-left: var(
+        --sidebar-width,
+        2rem
+    ); /* Replace with actual sidebar width if defined */
+    z-index: 10; /* Ensure it stays on top */
+}
+</style>
