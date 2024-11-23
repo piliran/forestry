@@ -152,14 +152,20 @@
                         </template>
                     </Column>
                     <Column
-                        v-if="props.isAdmin"
                         header="Action"
                         :exportable="false"
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
                             <Button
-                                v-if="can.editUser"
+                                icon="pi pi-eye"
+                                outlined
+                                rounded
+                                class="mr-2"
+                                severity="info"
+                                @click="viewUser(slotProps.data)"
+                            />
+                            <Button
                                 icon="pi pi-pencil"
                                 outlined
                                 rounded
@@ -555,6 +561,157 @@
                     </div>
                 </template>
             </Dialog>
+
+            <Dialog
+                v-model:visible="viewUserDialog"
+                :style="{ width: '450px' }"
+                :header="'View User'"
+                :modal="true"
+            >
+                <div class="grid gap-4">
+                    <div
+                        class="w-full h-48 overflow-hidden rounded-lg border shadow-md"
+                    >
+                        <img
+                            v-if="user.profile_photo_url"
+                            :src="user.profile_photo_url"
+                            alt="user Photo"
+                            class="object-cover w-full h-full"
+                        />
+                        <div v-else class="text-gray-500">
+                            No Photo Available
+                        </div>
+                    </div>
+                    <!-- Title -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="title"
+                            class="block font-semibold text-lg text-gray-800"
+                            >Title</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.title || "N/A" }}
+                        </div>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="name"
+                            class="block font-semibold text-lg text-gray-800"
+                            >Full Name</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.name || "N/A" }}
+                        </div>
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="dob"
+                            class="block font-semibold text-lg text-gray-800"
+                            >Date of Birth</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.DOB || "N/A" }}
+                        </div>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="gender"
+                            class="block font-semibold text-lg text-gray-800"
+                            >Gender</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.gender || "N/A" }}
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="email"
+                            class="block font-semibold text-lg text-gray-800"
+                            >Email</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.email || "N/A" }}
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="phone"
+                            class="block font-semibold text-lg text-gray-800"
+                            >Phone Number</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.phone || "N/A" }}
+                        </div>
+                    </div>
+
+                    <!-- Village -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="village"
+                            class="block font-semibold text-lg text-gray-800"
+                            >Village</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.village || "N/A" }}
+                        </div>
+                    </div>
+
+                    <!-- National ID -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="nid"
+                            class="block font-semibold text-lg text-gray-800"
+                            >National ID</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.national_id || "N/A" }}
+                        </div>
+                    </div>
+
+                    <!-- Traditional Authority -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="traditional_authority"
+                            class="block font-semibold text-lg text-gray-800"
+                            >Traditional Authority</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.traditional_authority || "N/A" }}
+                        </div>
+                    </div>
+
+                    <!-- District -->
+                    <div class="col-12 md:col-6">
+                        <label
+                            for="district"
+                            class="block font-semibold text-lg text-gray-800"
+                            >District</label
+                        >
+                        <div class="text-base text-gray-600">
+                            {{ user.district?.name || "N/A" }}
+                        </div>
+                    </div>
+                </div>
+
+                <template #footer>
+                    <Button
+                        label="Close"
+                        icon="pi pi-times"
+                        text
+                        @click="viewUserDialog = false"
+                    />
+                </template>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
@@ -579,7 +736,7 @@ import ProgressSpinner from "primevue/progressspinner";
 import { format } from "date-fns";
 import DatePicker from "primevue/datepicker";
 import Image from "primevue/image";
-
+import axiosInstance from "@/axiosInstance";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
@@ -588,6 +745,7 @@ const toast = useToast();
 // Reactive State Variables
 const dt = ref();
 const userRolesDialog = ref(false);
+const viewUserDialog = ref(false);
 const roleAssignmentDialog = ref(false);
 const permissionAssignmentDialog = ref(false);
 const selectedRole = ref(null);
@@ -623,7 +781,7 @@ const userRoles = ref(props.userRoles);
 const can = ref(props.can);
 const permissions = ref(props.permissions);
 
-console.log(can.value.editUser);
+// console.log(can.value.editUser);
 
 const titleOptions = ["Mr.", "Mrs.", "Miss", "Dr.", "Prof."];
 const genderOptions = ["Male", "Female", "Other"];
@@ -675,13 +833,34 @@ async function saveUserRole() {
             });
         }
         roleAssignmentDialog.value = false;
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Error assigning roles",
-        });
-        console.error("Error assigning roles:", error);
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         loading.value = false;
         roleAssignmentDialog.value = false;
@@ -714,13 +893,34 @@ async function saveUserPermission() {
             });
         }
         permissionAssignmentDialog.value = false;
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Error assigning permissions",
-        });
-        console.error("Error assigning permissions:", error);
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         loading.value = false;
         permissionAssignmentDialog.value = false;
@@ -769,6 +969,13 @@ const saveUser = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
                 toast.add({
                     severity: "error",
@@ -790,6 +997,11 @@ const editUser = (userData) => {
     userRolesDialog.value = true;
 };
 
+const viewUser = (userData) => {
+    editDialog.value = true;
+    user.value = { ...userData };
+    viewUserDialog.value = true;
+};
 const assignAndEditRoles = (userData) => {
     user.value = { ...userData };
 
@@ -810,6 +1022,8 @@ const deleteUser = async () => {
     loading.value = true;
     try {
         await axios.delete(`/users/${user.value.id}`);
+        // await axiosInstance.delete(`/users/${user.value.id}`);
+
         users.value = users.value.filter((r) => r.id !== user.value.id);
         toast.add({
             severity: "success",
@@ -830,6 +1044,13 @@ const deleteUser = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",
@@ -874,6 +1095,13 @@ const deleteSelectedUsers = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",

@@ -30,10 +30,6 @@
                                 />
                             </div>
                         </div>
-                        <!-- <span class="text-green-500 font-medium">24 new </span>
-                        <span class="text-surface-500 dark:text-surface-300"
-                            >since last visit</span
-                        > -->
                     </div>
                 </div>
                 <div
@@ -63,10 +59,6 @@
                                 />
                             </div>
                         </div>
-                        <!-- <span class="text-green-500 font-medium">%52+ </span>
-                        <span class="text-surface-500 dark:text-surface-300"
-                            >since last week</span
-                        > -->
                     </div>
                 </div>
                 <div

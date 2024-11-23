@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="suspects">
+    <AppLayout title="Suspects">
         <div>
             <!-- Toolbar -->
             <div class="card">
@@ -140,6 +140,14 @@
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
+                            <Button
+                                icon="pi pi-eye"
+                                outlined
+                                rounded
+                                class="mr-2"
+                                severity="info"
+                                @click="viewSuspect(slotProps.data)"
+                            />
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
@@ -416,6 +424,99 @@
                     </div>
                 </template>
             </Dialog>
+
+            <Dialog
+                v-model:visible="viewDialog"
+                modal
+                header="Suspect Details"
+                :style="{ width: '25rem' }"
+            >
+                <div class="p-6 space-y-6">
+                    <!-- Grid Container for Image and Details -->
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Suspect Photo on the Left -->
+                        <div
+                            class="col-span-1 flex justify-center items-center"
+                        >
+                            <div
+                                class="w-full h-48 overflow-hidden rounded-lg border shadow-md"
+                            >
+                                <img
+                                    v-if="suspect.suspect_photo_path"
+                                    :src="suspect.suspect_photo_path"
+                                    alt="Suspect Photo"
+                                    class="object-cover w-full h-full"
+                                />
+                                <div v-else class="text-gray-500">
+                                    No Photo Available
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Suspect Data on the Right -->
+                        <div class="col-span-1 flex flex-col space-y-3">
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Suspect Name:</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ suspect.name || "N/A" }}
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Suspect National ID:</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ suspect.national_id || "N/A" }}
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >District:</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ suspect.district?.name || "N/A" }}
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Suspect Village:</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ suspect.village || "N/A" }}
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Suspect T/A:</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ suspect.TA || "N/A" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <template #footer>
+                    <Button
+                        label="Close"
+                        icon="pi pi-times"
+                        text
+                        @click="viewDialog = false"
+                    />
+                </template>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
@@ -450,6 +551,7 @@ const toast = useToast();
 const dt = ref();
 const suspectDialog = ref(false);
 const editDialog = ref(false);
+const viewDialog = ref(false);
 const loading = ref(false);
 const deleteSuspectDialog = ref(false);
 const deleteRolesDialog = ref(false);
@@ -608,13 +710,22 @@ const saveSuspect = async () => {
     }
 };
 
-// const editSuspect = (suspectData) => {
-//     editDialog.value = true;
-//     suspect.value = { ...suspectData };
-
-//     suspect.value.districts = suspectData.district.map((p) => p.id);
-//     suspectDialog.value = true;
-// };
+const viewSuspect = (suspectData) => {
+    suspect.value = { ...suspectData };
+    if (Array.isArray(suspectData.district)) {
+        suspect.value.districts = suspectData.district.map((p) => p.id); // Assuming districts are objects with 'id' and 'name'
+    } else if (
+        suspectData.district &&
+        typeof suspectData.district === "object"
+    ) {
+        // Handle the case where suspectData.district is a single object
+        suspect.value.districts = [suspectData.district.id];
+    } else {
+        // Handle the case where suspectData.district is null or undefined
+        suspect.value.districts = [];
+    }
+    viewDialog.value = true;
+};
 
 const editSuspect = (suspectData) => {
     editDialog.value = true;
