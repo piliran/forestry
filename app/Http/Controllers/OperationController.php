@@ -84,6 +84,13 @@ class OperationController extends Controller
 
         return response()->json(['message' => 'Operation deleted successfully'], 200);
     }
+// plann sec
+// desk officer
+// zone manager
+// law enforce 
+
+// natura res man team lead
+// forestry specialist
 
     /**
      * Batch delete specified resources from storage.

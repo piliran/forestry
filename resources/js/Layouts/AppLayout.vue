@@ -103,7 +103,7 @@ const toggleSidebar = () => {
                             </template>
                             <template #dropdown>
                                 <div
-                                    class="mt-2 px-8 py-4 bg-dark rounded shadow-lg"
+                                    class="mt-2 px-8 py-4 bg-dark rounded shadow-lg overflow-y-auto"
                                 >
                                     <main-menu />
                                 </div>
