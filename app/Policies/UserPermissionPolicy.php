@@ -25,7 +25,7 @@ class UserPermissionPolicy
     {
         // Check if the user has permission to view a specific UserPermission
         // You can add more logic to check if the user is the one who owns the permission or has a specific role
-        return $user->hasPermissionTo('view_user_permission') || $user->id === $userPermission->user_id;
+        return $user->hasPermissionTo('view_user_permission');
     }
 
     /**
@@ -44,7 +44,7 @@ class UserPermissionPolicy
     {
         // Check if the user has permission to update the UserPermission
         // You can also check if the user is the owner or has an admin role
-        return $user->hasPermissionTo('update_user_permission') || $user->id === $userPermission->user_id;
+        return $user->hasPermissionTo('update_user_permission');
     }
 
     /**
@@ -54,7 +54,7 @@ class UserPermissionPolicy
     {
         // Check if the user has permission to delete the UserPermission
         // You can also check if the user is an admin or the user who owns the permission
-        return $user->hasPermissionTo('delete_user_permission') || $user->id === $userPermission->user_id;
+        return $user->hasPermissionTo('delete_user_permission');
     }
 
     /**
@@ -64,7 +64,7 @@ class UserPermissionPolicy
     {
         // Check if the user has permission to restore the UserPermission
         // You can also check if the user is an admin or the owner of the permission
-        return $user->hasPermissionTo('restore_user_permission') || $user->id === $userPermission->user_id;
+        return $user->hasPermissionTo('restore_user_permission');
     }
 
     /**
@@ -74,7 +74,7 @@ class UserPermissionPolicy
     {
         // Check if the user has permission to permanently delete the UserPermission
         // You can also check if the user is an admin or the owner of the permission
-        return $user->hasPermissionTo('force_delete_user_permission') || $user->id === $userPermission->user_id;
+        return $user->hasPermissionTo('force_delete_user_permission');
     }
 
     public function before(User $user, string $ability): bool|null

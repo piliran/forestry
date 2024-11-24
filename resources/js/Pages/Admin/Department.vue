@@ -481,7 +481,6 @@ const saveDepartment = async () => {
             }
         } catch (err) {
             if (err.response && err.response.status === 422) {
-                // Display validation errors
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
                     messages.forEach((message) => {
@@ -493,6 +492,13 @@ const saveDepartment = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
                 toast.add({
                     severity: "error",
@@ -529,7 +535,6 @@ const deleteDepartment = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -541,6 +546,13 @@ const deleteDepartment = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",
@@ -576,7 +588,6 @@ const deleteSelectedDepartment = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -588,6 +599,13 @@ const deleteSelectedDepartment = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",

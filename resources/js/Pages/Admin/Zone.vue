@@ -428,7 +428,6 @@ const saveZone = async () => {
             }
         } catch (err) {
             if (err.response && err.response.status === 422) {
-                // Display validation errors
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
                     messages.forEach((message) => {
@@ -440,6 +439,13 @@ const saveZone = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
                 toast.add({
                     severity: "error",
@@ -474,7 +480,6 @@ const deleteZone = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -486,6 +491,13 @@ const deleteZone = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",
@@ -519,7 +531,6 @@ const deleteSelectedZones = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -531,6 +542,13 @@ const deleteSelectedZones = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",

@@ -23,7 +23,7 @@ class RolePolicy
     public function view(User $user, Role $role): bool
     {
         // Check if the user has permission to view the specific role
-        return $user->hasPermissionTo('view_role') || $user->hasRole('admin');
+        return $user->hasPermissionTo('view_role');
     }
 
     /**

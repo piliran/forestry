@@ -692,6 +692,13 @@ const saveSuspect = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
                 toast.add({
                     severity: "error",
@@ -778,6 +785,13 @@ const deleteSuspect = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",
@@ -822,6 +836,13 @@ const deleteSelectedSuspects = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",

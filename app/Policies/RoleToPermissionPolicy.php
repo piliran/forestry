@@ -23,7 +23,7 @@ class RoleToPermissionPolicy
     public function view(User $user, RoleToPermission $roleToPermission): bool
     {
         // Check if the user has permission to view a specific role-to-permission mapping
-        return $user->hasPermissionTo('view_role_to_permission') || $user->hasRole('admin');
+        return $user->hasPermissionTo('view_role_to_permission');
     }
 
     /**

@@ -23,7 +23,7 @@ class AreaPolicy
     public function view(User $user, Area $area): bool
     {
         // Check if the user has permission to view the specific area
-        return $user->hasPermissionTo('view_area') || $user->id === $area->user_id;
+        return $user->hasPermissionTo('view_area');
     }
 
     /**
@@ -41,7 +41,7 @@ class AreaPolicy
     public function update(User $user, Area $area): bool
     {
         // Check if the user has permission to update the area or if the user owns the area
-        return $user->hasPermissionTo('update_area') || $user->id === $area->user_id;
+        return $user->hasPermissionTo('update_area');
     }
 
     /**
@@ -50,7 +50,7 @@ class AreaPolicy
     public function delete(User $user, Area $area): bool
     {
         // Check if the user has permission to delete the area or if the user owns the area
-        return $user->hasPermissionTo('delete_area') || $user->id === $area->user_id;
+        return $user->hasPermissionTo('delete_area') ;
     }
 
     /**
@@ -59,7 +59,7 @@ class AreaPolicy
     public function restore(User $user, Area $area): bool
     {
         // Check if the user has permission to restore the area or if the user owns the area
-        return $user->hasPermissionTo('restore_area') || $user->id === $area->user_id;
+        return $user->hasPermissionTo('restore_area');
     }
 
     /**
@@ -68,7 +68,7 @@ class AreaPolicy
     public function forceDelete(User $user, Area $area): bool
     {
         // Check if the user has permission to permanently delete the area or if the user owns the area
-        return $user->hasPermissionTo('force_delete_area') || $user->id === $area->user_id;
+        return $user->hasPermissionTo('force_delete_area');
     }
 
     /**

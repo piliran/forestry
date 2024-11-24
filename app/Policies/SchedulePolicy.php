@@ -24,7 +24,7 @@ class SchedulePolicy
     {
         // Check if the user has permission to view a specific Schedule, 
         // or if they are the creator of the schedule
-        return $user->hasPermissionTo('view_schedule') || $user->id === $schedule->created_by;
+        return $user->hasPermissionTo('view_schedule');
     }
 
     /**
@@ -43,7 +43,7 @@ class SchedulePolicy
     {
         // Check if the user has permission to update the Schedule,
         // or if they are the creator of the Schedule
-        return $user->hasPermissionTo('update_schedule') || $user->id === $schedule->created_by;
+        return $user->hasPermissionTo('update_schedule');
     }
 
     /**
@@ -53,7 +53,7 @@ class SchedulePolicy
     {
         // Check if the user has permission to delete the Schedule,
         // or if they are the creator of the Schedule
-        return $user->hasPermissionTo('delete_schedule') || $user->id === $schedule->created_by;
+        return $user->hasPermissionTo('delete_schedule');
     }
 
     /**

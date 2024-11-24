@@ -377,12 +377,33 @@ const saveRole = async () => {
                 });
             }
         } catch (err) {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "Failed to save role.",
-                life: 3000,
-            });
+            if (err.response && err.response.status === 422) {
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
             roleDialog.value = false;

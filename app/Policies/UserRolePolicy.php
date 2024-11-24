@@ -24,7 +24,7 @@ class UserRolePolicy
     {
         // Users with the 'view_user_role' permission can view any role
         // You can add an additional check to ensure the user is the owner or has specific access
-        return $user->hasPermissionTo('view_user_role') || $user->id === $userRole->user_id;
+        return $user->hasPermissionTo('view_user_role');
     }
 
     /**
@@ -43,7 +43,7 @@ class UserRolePolicy
     {
         // Users with the 'update_user_role' permission can update the role
         // You can also check if the user has a higher role or is an admin
-        return $user->hasPermissionTo('update_user_role') || $user->id === $userRole->user_id;
+        return $user->hasPermissionTo('update_user_role');
     }
 
     /**
@@ -53,7 +53,7 @@ class UserRolePolicy
     {
         // Users with the 'delete_user_role' permission can delete the user role
         // You can also restrict deletion to admins or users with a certain role
-        return $user->hasPermissionTo('delete_user_role') || $user->id === $userRole->user_id;
+        return $user->hasPermissionTo('delete_user_role');
     }
 
     /**
@@ -63,7 +63,7 @@ class UserRolePolicy
     {
         // Users with the 'restore_user_role' permission can restore deleted roles
         // You can also check if the user is an admin or has the necessary role
-        return $user->hasPermissionTo('restore_user_role') || $user->id === $userRole->user_id;
+        return $user->hasPermissionTo('restore_user_role');
     }
 
     /**
@@ -73,7 +73,7 @@ class UserRolePolicy
     {
         // Users with the 'force_delete_user_role' permission can permanently delete the role
         // You can also check if the user is an admin or the user is deleting their own role
-        return $user->hasPermissionTo('force_delete_user_role') || $user->id === $userRole->user_id;
+        return $user->hasPermissionTo('force_delete_user_role');
     }
     public function before(User $user, string $ability): bool|null
     {

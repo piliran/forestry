@@ -430,7 +430,6 @@ const saveEncroached = async () => {
             }
         } catch (err) {
             if (err.response && err.response.status === 422) {
-                // Display validation errors
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
                     messages.forEach((message) => {
@@ -442,6 +441,13 @@ const saveEncroached = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
                 toast.add({
                     severity: "error",
@@ -478,7 +484,6 @@ const deleteEncroached = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -490,6 +495,13 @@ const deleteEncroached = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",
@@ -523,7 +535,6 @@ const deleteSelectedEncroaches = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -535,6 +546,13 @@ const deleteSelectedEncroaches = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",

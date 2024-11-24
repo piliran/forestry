@@ -175,7 +175,7 @@
                             Location is required.
                         </small>
                     </div>
-                    
+
                     <div class="col-12 md:col-6">
                         <label for="station" class="block font-bold mb-2"
                             >District</label
@@ -385,7 +385,6 @@ const props = defineProps({
     districts: Array,
 });
 
-
 const stations = ref(props.stations);
 const districts = ref(props.districts);
 
@@ -434,7 +433,33 @@ const saveStation = async () => {
                 });
             }
         } catch (err) {
-            console.error(err);
+            if (err.response && err.response.status === 422) {
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
             stationDialog.value = false;
@@ -462,7 +487,33 @@ const deleteStation = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteStationDialog.value = false;
         loading.value = false;
@@ -487,7 +538,33 @@ const deleteSelectedStations = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteStationsDialog.value = false;
         loading.value = false;

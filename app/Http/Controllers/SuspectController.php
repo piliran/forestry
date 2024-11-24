@@ -40,6 +40,10 @@ class SuspectController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->cannot('create', Suspect::class)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'national_id' => 'required|string|max:255|unique:suspects,national_id',      
@@ -94,6 +98,11 @@ class SuspectController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        if (auth()->user()->cannot('update', Suspect::class)) {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $suspect = Suspect::findOrFail($id);
 
         $validated = $request->validate([
@@ -134,6 +143,10 @@ class SuspectController extends Controller
      */
     public function destroy(Suspect $suspect)
     {
+        if (auth()->user()->cannot('delete', Suspect::class)) {
+            abort(403, 'Unauthorized action.');
+        }
+        
         // Perform soft delete by setting 'deleted_at'
         $suspect->delete();
         return response()->json(['message' => 'Suspect deleted successfully'], 200);
@@ -144,6 +157,10 @@ class SuspectController extends Controller
      */
     public function batchDelete(Request $request)
     {
+        if (auth()->user()->cannot('batch_delete', Suspect::class)) {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $validated = $request->validate(['ids' => 'required|array']);
         Suspect::whereIn('id', $validated['ids'])->delete();
         return response()->json(['message' => 'Selected suspects deleted successfully'], 200);
@@ -154,6 +171,10 @@ class SuspectController extends Controller
      */
     public function updateSuspect(Request $request)
     {
+        if (auth()->user()->cannot('update', Suspect::class)) {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $suspect = Suspect::findOrFail($request->id);
 
         $validated = $request->validate([

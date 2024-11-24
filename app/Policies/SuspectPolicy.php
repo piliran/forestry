@@ -71,6 +71,12 @@ class SuspectPolicy
         
     }
 
+    public function batchDelete(User $user, Suspect $suspect): bool
+    {
+        return $user->hasPermissionTo('delete_suspects');
+        
+    }
+
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {

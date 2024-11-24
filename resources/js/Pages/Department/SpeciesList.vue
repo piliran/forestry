@@ -507,7 +507,6 @@ const saveSpecie = async () => {
             }
         } catch (err) {
             if (err.response && err.response.status === 422) {
-                // Display validation errors
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
                     messages.forEach((message) => {
@@ -519,6 +518,13 @@ const saveSpecie = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
                 toast.add({
                     severity: "error",
@@ -553,7 +559,6 @@ const deleteSpecie = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -565,6 +570,13 @@ const deleteSpecie = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",
@@ -598,7 +610,6 @@ const deleteSelectedSpecies = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -610,6 +621,13 @@ const deleteSelectedSpecies = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
             toast.add({
                 severity: "error",

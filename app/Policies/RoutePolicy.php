@@ -23,7 +23,7 @@ class RoutePolicy
     public function view(User $user, Route $route): bool
     {
         // Check if the user has permission to view a specific route
-        return $user->hasPermissionTo('view_route') || $user->hasRole('admin');
+        return $user->hasPermissionTo('view_route');
     }
 
     /**
@@ -41,7 +41,7 @@ class RoutePolicy
     public function update(User $user, Route $route): bool
     {
         // Check if the user has permission to update a route, or if they are the creator of the route
-        return $user->hasPermissionTo('update_route') || $user->id === $route->created_by;
+        return $user->hasPermissionTo('update_route') ;
     }
 
     /**
@@ -50,7 +50,7 @@ class RoutePolicy
     public function delete(User $user, Route $route): bool
     {
         // Check if the user has permission to delete the route, or if they are the creator of the route
-        return $user->hasPermissionTo('delete_route') || $user->id === $route->created_by;
+        return $user->hasPermissionTo('delete_route');
     }
 
     /**

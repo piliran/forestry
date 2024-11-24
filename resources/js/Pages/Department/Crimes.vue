@@ -378,7 +378,6 @@ const saveCrime = async () => {
             }
         } catch (err) {
             if (err.response && err.response.status === 422) {
-                // Display validation errors
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
                     messages.forEach((message) => {
@@ -390,8 +389,14 @@ const saveCrime = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
-                console.error(err);
                 toast.add({
                     severity: "error",
                     summary: "Error",
@@ -425,7 +430,6 @@ const deleteCrime = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -437,8 +441,14 @@ const deleteCrime = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",
@@ -471,7 +481,6 @@ const deleteSelectedCrimes = async () => {
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
-            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -483,8 +492,14 @@ const deleteSelectedCrimes = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",

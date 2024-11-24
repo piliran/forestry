@@ -21,7 +21,7 @@ class OperationPolicy
      */
     public function view(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('view_operation') || $user->id === $operation->created_by;
+        return $user->hasPermissionTo('view_operation');
     }
 
     /**
@@ -37,7 +37,7 @@ class OperationPolicy
      */
     public function update(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('update_operation') || $user->id === $operation->created_by;
+        return $user->hasPermissionTo('update_operation');
     }
 
     /**
@@ -45,7 +45,7 @@ class OperationPolicy
      */
     public function delete(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('delete_operation') || $user->id === $operation->created_by;
+        return $user->hasPermissionTo('delete_operation');
     }
 
     /**

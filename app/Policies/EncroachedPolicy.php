@@ -21,7 +21,7 @@ class EncroachedPolicy
      */
     public function view(User $user, Encroached $encroached): bool
     {
-        return $user->hasPermissionTo('view_encroached') || $user->id === $encroached->created_by;
+        return $user->hasPermissionTo('view_encroached');
     }
 
     /**
@@ -37,7 +37,7 @@ class EncroachedPolicy
      */
     public function update(User $user, Encroached $encroached): bool
     {
-        return $user->hasPermissionTo('update_encroached') || $user->id === $encroached->created_by;
+        return $user->hasPermissionTo('update_encroached');
     }
 
     /**
@@ -45,7 +45,7 @@ class EncroachedPolicy
      */
     public function delete(User $user, Encroached $encroached): bool
     {
-        return $user->hasPermissionTo('delete_encroached') || $user->id === $encroached->created_by;
+        return $user->hasPermissionTo('delete_encroached');
     }
 
     /**

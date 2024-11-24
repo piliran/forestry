@@ -21,7 +21,7 @@ class DistrictPolicy
      */
     public function view(User $user, District $district): bool
     {
-        return $user->hasPermissionTo('view_district') || $user->id === $district->created_by;
+        return $user->hasPermissionTo('view_district');
     }
 
     /**
@@ -37,7 +37,7 @@ class DistrictPolicy
      */
     public function update(User $user, District $district): bool
     {
-        return $user->hasPermissionTo('update_district') || $user->id === $district->created_by;
+        return $user->hasPermissionTo('update_district') ;
     }
 
     /**
@@ -45,7 +45,7 @@ class DistrictPolicy
      */
     public function delete(User $user, District $district): bool
     {
-        return $user->hasPermissionTo('delete_district') || $user->id === $district->created_by;
+        return $user->hasPermissionTo('delete_district');
     }
 
     /**

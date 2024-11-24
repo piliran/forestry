@@ -23,7 +23,7 @@ class RouteTypePolicy
     public function view(User $user, RouteType $routeType): bool
     {
         // Check if the user has permission to view a specific RouteType
-        return $user->hasPermissionTo('view_route_type') || $user->hasRole('admin');
+        return $user->hasPermissionTo('view_route_type');
     }
 
     /**
@@ -41,7 +41,7 @@ class RouteTypePolicy
     public function update(User $user, RouteType $routeType): bool
     {
         // Check if the user has permission to update a RouteType, or if they are the creator of the RouteType
-        return $user->hasPermissionTo('update_route_type') || $user->id === $routeType->created_by;
+        return $user->hasPermissionTo('update_route_type');
     }
 
     /**
@@ -50,7 +50,7 @@ class RouteTypePolicy
     public function delete(User $user, RouteType $routeType): bool
     {
         // Check if the user has permission to delete the RouteType, or if they are the creator of the RouteType
-        return $user->hasPermissionTo('delete_route_type') || $user->id === $routeType->created_by;
+        return $user->hasPermissionTo('delete_route_type');
     }
 
     /**

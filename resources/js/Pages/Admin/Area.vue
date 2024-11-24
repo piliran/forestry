@@ -515,8 +515,14 @@ const saveArea = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
-                console.error(err);
                 toast.add({
                     severity: "error",
                     summary: "Error",
@@ -561,8 +567,14 @@ const deleteArea = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",
@@ -606,8 +618,14 @@ const deleteSelectedAreas = async () => {
                     });
                 });
             }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
         } else {
-            console.error(err);
             toast.add({
                 severity: "error",
                 summary: "Error",

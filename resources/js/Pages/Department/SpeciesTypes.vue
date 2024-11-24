@@ -378,7 +378,7 @@ const saveCategory = async () => {
                 });
             }
             categoryDialog.value = false;
-        } catch (error) {
+        } catch (err) {
             if (err.response && err.response.status === 422) {
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
@@ -391,6 +391,13 @@ const saveCategory = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
                 toast.add({
                     severity: "error",
@@ -431,13 +438,34 @@ const deleteCategory = async () => {
             detail: "Category Deleted",
             life: 3000,
         });
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to delete category.",
-            life: 3000,
-        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         loading.value = false;
     }
@@ -462,13 +490,34 @@ const deleteSelectedCategories = async () => {
             detail: "Selected Categories Deleted",
             life: 3000,
         });
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to delete selected categories.",
-            life: 3000,
-        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         loading.value = false;
     }
