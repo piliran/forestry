@@ -81,7 +81,7 @@ const toggleSidebar = () => {
                 <div class="md:flex md:flex-shrink-0">
                     <div
                         v-show="isSidebarVisible"
-                        class="flex items-center border-b-2 border-transparent lg:border-white md:border-white justify-between px-0 py-1 bg-dark md:flex-shrink-0 md:w-56"
+                        class="flex items-center border-b-2 border-r-2 border-transparent lg:border-white md:border-white justify-between px-0 py-1 bg-dark md:flex-shrink-0 md:w-56"
                     >
                         <div class="block w-full px-6">
                             <Link class="mb-1 py-1 flex" href="/">
