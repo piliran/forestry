@@ -429,7 +429,7 @@
                 v-model:visible="viewDialog"
                 modal
                 header="Suspect Details"
-                :style="{ width: '25rem' }"
+                :style="{ width: '450px' }"
             >
                 <div class="p-6 space-y-6">
                     <!-- Grid Container for Image and Details -->

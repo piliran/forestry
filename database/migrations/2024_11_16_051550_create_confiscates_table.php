@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('encroached_area_id');
             $table->foreign('encroached_area_id')->references('id')->on('encroacheds')->onDelete('cascade')->onUpdate('cascade');
             $table->string('proof');
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('longitude', 10, 7)->nullable();
            
             $table->string('chairperson');
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

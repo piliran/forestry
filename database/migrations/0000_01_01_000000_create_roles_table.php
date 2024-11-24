@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('role_category_id');
             $table->foreign('role_category_id')->references('id')->on('role_categories')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class PermissionController extends Controller
 {
@@ -13,18 +15,12 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = Permission::all();
+        // Fetch non-deleted permissions
+        $permissions = Permission::whereNull('deleted_at')->get();
+
         return Inertia::render('User/Permissions', [
             'permissions' => $permissions,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //    
     }
 
     /**
@@ -53,14 +49,6 @@ class PermissionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Permission $permission)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Permission $permission)
@@ -76,26 +64,61 @@ class PermissionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource.
      */
     public function destroy(Permission $permission)
     {
-        $permission->delete();
+        $permission->delete(); // Soft delete
 
-        return response()->json('Permission deleted successfully.');
+        return response()->json('Permission soft-deleted successfully.');
     }
 
     /**
-     * Bulk delete selected permissions.
+     * Batch soft delete selected permissions.
      */
     public function batchDelete(Request $request)
     {
-        $validated = $request->validate(['ids' => 'required|array']);
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:permissions,id',
+        ]);
 
-        Permission::whereIn('id', $request->ids)->delete();
+        Permission::whereIn('id', $validated['ids'])->delete(); // Soft delete
 
         return response()->json([
-            'message' => 'Selected permissions deleted successfully.',
+            'message' => 'Selected permissions soft-deleted successfully.',
         ]);
+    }
+
+    /**
+     * Restore a soft-deleted permission.
+     */
+    public function restore($id)
+    {
+        $permission = Permission::withTrashed()->findOrFail($id);
+        $permission->restore();
+
+        return response()->json(['message' => 'Permission restored successfully.'], 200);
+    }
+
+    /**
+     * Bulk restore selected soft-deleted permissions.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        Permission::withTrashed()->whereIn('id', $validated['ids'])->restore();
+
+        return response()->json(['message' => 'Selected permissions restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch all soft-deleted permissions (trashed).
+     */
+    public function trashed()
+    {
+        $trashedPermissions = Permission::onlyTrashed()->get();
+
+        return response()->json($trashedPermissions, 200);
     }
 }

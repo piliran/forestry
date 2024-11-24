@@ -20,7 +20,8 @@ return new class extends Migration
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade')->onUpdate('cascade');
 
-            $table->timestamps(); // Timestamps
+            $table->softDeletes(); 
+            $table->timestamps();
         });
     }
 

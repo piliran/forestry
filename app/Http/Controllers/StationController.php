@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Station;
@@ -9,19 +10,24 @@ use Illuminate\Support\Facades\Log;
 
 class StationController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $stations = Station::with('district')->get();
+        // Fetch non-deleted stations
+        $stations = Station::with('district')->whereNull('deleted_at')->get();
         $districts = District::all();
-    
 
         return Inertia::render('Department/Stations', [
             'stations' => $stations,
             'districts' => $districts,
         ]);
-
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -35,10 +41,12 @@ class StationController extends Controller
         $station = Station::create($request->all());
         $station->load('district');
 
-
         return response()->json($station, 201);
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Station $station)
     {
         $validated = $request->validate([
@@ -53,22 +61,58 @@ class StationController extends Controller
         $station->load('district');
 
         return response()->json($station, 200);
-
-
     }
 
+    /**
+     * Soft delete the specified resource from storage.
+     */
     public function destroy(Station $station)
     {
-        $station->delete();
+        $station->delete();  // Soft delete
 
-        return response()->json(['message' => 'Station deleted'], 200);
+        return response()->json(['message' => 'Station soft-deleted successfully.'], 200);
     }
 
+    /**
+     * Bulk soft delete selected stations.
+     */
     public function batchDelete(Request $request)
     {
         $validated = $request->validate(['ids' => 'required|array']);
-        Station::whereIn('id', $validated['ids'])->delete();
+        Station::whereIn('id', $validated['ids'])->delete();  // Soft delete
 
-        return response()->json(['message' => 'Stations deleted'], 200);
+        return response()->json(['message' => 'Selected stations soft-deleted successfully.'], 200);
+    }
+
+    /**
+     * Restore a soft-deleted station.
+     */
+    public function restore($id)
+    {
+        $station = Station::withTrashed()->findOrFail($id);
+        $station->restore();  // Restore the soft-deleted station
+
+        return response()->json(['message' => 'Station restored successfully.'], 200);
+    }
+
+    /**
+     * Bulk restore soft-deleted stations.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        Station::withTrashed()->whereIn('id', $request->ids)->restore();  // Restore soft-deleted stations
+
+        return response()->json(['message' => 'Selected stations restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch trashed stations.
+     */
+    public function trashed()
+    {
+        $trashedStations = Station::onlyTrashed()->get();  // Fetch all soft-deleted stations
+
+        return response()->json($trashedStations, 200);
     }
 }

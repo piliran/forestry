@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Role;
@@ -8,14 +9,15 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
-
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class RoleController extends Controller
 {
     public function index()
     {
-        $roles = Role::with(['category','permissions'])->get();
+        // Fetch non-deleted roles
+        $roles = Role::whereNull('deleted_at')->with(['category','permissions'])->get();
         $permissions = Permission::all();
         $roleCategories = RoleCategory::all();
 
@@ -26,97 +28,93 @@ class RoleController extends Controller
         ]);
     }
 
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'role_category_id' => 'required|exists:role_categories,id',
-    //     ]);
-
-    //     $role = Role::create($validated);
-
-    
-    //     $role->load('category');
-
-    //     return response()->json($role, 201);
-    // }
-
     public function store(Request $request)
     {
-       
-
         $request->validate([
             'name' => 'required|string|max:255',
             'role_category_id' => 'required|exists:role_categories,id',
             'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,id',  
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
         DB::beginTransaction();
         try {
-            
             $role = Role::create([
                 'name' => $request->input('name'),
                 'role_category_id' => $request->input('role_category_id'),
             ]);
 
-           
-
             $permissions = $request->input('permissions');
-          
             $role->permissions()->sync($permissions);
-       
-            
 
             DB::commit();
-        
+
             $role->load(['category','permissions']);
             return response()->json($role, 200);
         } catch (\Exception $e) {
             DB::rollBack();
-           
             return response()->json([
                 'message' => 'Failed to create role.',
                 'error' => $e->getMessage(),
             ], 500);
         }
-
     }
-
 
     public function update(Request $request, Role $role)
     {
-        $validated= $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'role_category_id' => 'required|exists:role_categories,id',
-            // 'permissions' => 'required|array',
-            // 'permissions.*' => 'exists:permissions,id',  // Ensures each permission exists in the permissions table
         ]);
 
         $role->update($validated);
 
-         // Sync permissions with the role
-         $role->permissions()->sync($request->permissions); // This will add new permissions and remove unticked ones
+        // Sync permissions with the role
+        $role->permissions()->sync($request->permissions); // This will add new permissions and remove unticked ones
 
-
-       
-        $role->load(['category','permissions']);
+        $role->load(['category', 'permissions']);
 
         return response()->json($role, 200);
     }
 
     public function destroy(Role $role)
     {
-        $role->delete();
+        $role->delete();  // Soft delete
 
-        return response()->json(['message' => 'Role deleted'], 200);
+        return response()->json(['message' => 'Role soft-deleted'], 200);
     }
 
     public function batchDelete(Request $request)
     {
         $validated = $request->validate(['ids' => 'required|array']);
-        Role::whereIn('id', $validated['ids'])->delete();
+        Role::whereIn('id', $validated['ids'])->delete();  // Soft delete
 
-        return response()->json(['message' => 'Roles deleted'], 200);
+        return response()->json(['message' => 'Roles soft-deleted'], 200);
+    }
+
+    // Soft delete a role
+    public function restore($id)
+    {
+        $role = Role::withTrashed()->findOrFail($id);
+        $role->restore();  // Restore the soft-deleted role
+
+        return response()->json(['message' => 'Role restored successfully.'], 200);
+    }
+
+    // Restore multiple roles at once
+    public function bulkRestore(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        Role::withTrashed()->whereIn('id', $request->ids)->restore();  // Restore the soft-deleted roles
+
+        return response()->json(['message' => 'Selected roles restored successfully.'], 200);
+    }
+
+    // Fetch trashed roles
+    public function trashed()
+    {
+        $trashedRoles = Role::onlyTrashed()->get();  // Fetch all soft-deleted roles
+
+        return response()->json($trashedRoles, 200);
     }
 }

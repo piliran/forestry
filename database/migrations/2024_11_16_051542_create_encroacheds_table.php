@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade')->onUpdate('cascade');
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

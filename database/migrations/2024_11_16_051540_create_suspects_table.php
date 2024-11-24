@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('village');
             $table->string('TA');
             $table->string('suspect_photo_path', 2048)->nullable();          
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

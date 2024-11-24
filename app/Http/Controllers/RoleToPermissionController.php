@@ -7,6 +7,7 @@ use App\Models\Permission;
 use App\Models\RoleToPermission;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class RoleToPermissionController extends Controller
 {
@@ -15,18 +16,11 @@ class RoleToPermissionController extends Controller
      */
     public function index()
     {
-        $roleToPermissions = RoleToPermission::with(['role', 'permission'])->get();
+        // Fetch non-deleted relationships
+        $roleToPermissions = RoleToPermission::whereNull('deleted_at')->with(['role', 'permission'])->get();
         return Inertia::render('RoleToPermission/Index', [
             'roleToPermissions' => $roleToPermissions,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -55,14 +49,6 @@ class RoleToPermissionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(RoleToPermission $roleToPermission)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, RoleToPermission $roleToPermission)
@@ -78,13 +64,13 @@ class RoleToPermissionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource from storage.
      */
     public function destroy(RoleToPermission $roleToPermission)
     {
-        $roleToPermission->delete();
+        $roleToPermission->delete();  // Soft delete
 
-        return response()->json('Role-to-Permission relationship deleted successfully.');
+        return response()->json('Role-to-Permission relationship soft-deleted successfully.');
     }
 
     /**
@@ -97,10 +83,42 @@ class RoleToPermissionController extends Controller
             'ids.*' => 'exists:role_to_permission,id',
         ]);
 
-        RoleToPermission::whereIn('id', $request->ids)->delete();
+        RoleToPermission::whereIn('id', $request->ids)->delete();  // Soft delete
 
         return response()->json([
-            'message' => 'Selected role-to-permission relationships deleted successfully.',
+            'message' => 'Selected role-to-permission relationships soft-deleted successfully.',
         ]);
+    }
+
+    /**
+     * Restore a soft-deleted role-to-permission relationship.
+     */
+    public function restore($id)
+    {
+        $roleToPermission = RoleToPermission::withTrashed()->findOrFail($id);
+        $roleToPermission->restore();  // Restore the soft-deleted relationship
+
+        return response()->json(['message' => 'Role-to-Permission relationship restored successfully.'], 200);
+    }
+
+    /**
+     * Restore multiple soft-deleted role-to-permission relationships.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        RoleToPermission::withTrashed()->whereIn('id', $request->ids)->restore();  // Restore the soft-deleted relationships
+
+        return response()->json(['message' => 'Selected role-to-permission relationships restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch trashed role-to-permission relationships.
+     */
+    public function trashed()
+    {
+        $trashedRoleToPermissions = RoleToPermission::onlyTrashed()->get();  // Fetch all soft-deleted relationships
+
+        return response()->json($trashedRoleToPermissions, 200);
     }
 }

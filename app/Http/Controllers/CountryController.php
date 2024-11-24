@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Gate; // Preserved for future use
+use App\Models\User; // Preserved for future use
 
 class CountryController extends Controller
 {
@@ -14,7 +15,9 @@ class CountryController extends Controller
      */
     public function index()
     {
-        $countries = Country::all();
+        // Fetch only non-deleted countries
+        $countries = Country::whereNull('deleted_at')->get();
+
         return Inertia::render('Admin/Country', [
             'countries' => $countries,
         ]);
@@ -35,7 +38,6 @@ class CountryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-        
         ]);
 
         $country = Country::create($validated);
@@ -74,20 +76,47 @@ class CountryController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource from storage.
      */
     public function destroy(Country $country)
     {
-        $country->delete();
+        $country->delete(); // Soft delete
 
-        return response()->json(['message' => 'Country deleted'], 200);
+        return response()->json(['message' => 'Country soft-deleted successfully.'], 200);
     }
 
+    /**
+     * Bulk soft delete selected countries.
+     */
     public function batchDelete(Request $request)
     {
         $validated = $request->validate(['ids' => 'required|array']);
-        Country::whereIn('id', $validated['ids'])->delete();
 
-        return response()->json(['message' => 'Selected Countries deleted'], 200);
+        Country::whereIn('id', $validated['ids'])->delete(); // Soft delete
+
+        return response()->json(['message' => 'Selected countries soft-deleted successfully.'], 200);
+    }
+
+    /**
+     * Restore a soft-deleted country.
+     */
+    public function restore($id)
+    {
+        $country = Country::withTrashed()->findOrFail($id);
+        $country->restore();
+
+        return response()->json(['message' => 'Country restored successfully.'], 200);
+    }
+
+    /**
+     * Bulk restore selected countries.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+
+        Country::withTrashed()->whereIn('id', $validated['ids'])->restore();
+
+        return response()->json(['message' => 'Selected countries restored successfully.'], 200);
     }
 }

@@ -6,7 +6,6 @@ use App\Models\Department;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-
 class DepartmentController extends Controller
 {
     /**
@@ -14,18 +13,12 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::all();
+        // Fetch non-deleted departments
+        $departments = Department::whereNull('deleted_at')->get();
+
         return Inertia::render('Admin/Department', [
             'departments' => $departments,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -33,7 +26,6 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $validated = $request->validate([
             'code' => 'required|string|max:255',
             'name' => 'required|string|max:255',
@@ -42,7 +34,6 @@ class DepartmentController extends Controller
             'email' => 'required|email|max:255',
             'website' => 'required|string|max:255',
             'chairperson' => 'required|string|max:255',
-            
         ]);
 
         $department = Department::create($validated);
@@ -51,27 +42,10 @@ class DepartmentController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Department $department)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Department $department)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Department $department)
     {
-        //
         $validated = $request->validate([
             'code' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',
@@ -80,29 +54,65 @@ class DepartmentController extends Controller
             'email' => 'nullable|email|max:255',
             'website' => 'nullable|string|max:255',
             'chairperson' => 'nullable|string|max:255',
-            
         ]);
 
         $department->update($validated);
 
         return response()->json($department, 200);
-        
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource.
      */
     public function destroy(Department $department)
     {
-        $department->delete();
+        $department->delete(); // Soft delete
 
-        return response()->json(['message' => 'Department deleted successfully'], 200);
+        return response()->json(['message' => 'Department soft-deleted successfully.'], 200);
     }
+
+    /**
+     * Bulk soft delete selected departments.
+     */
     public function batchDelete(Request $request)
     {
         $validated = $request->validate(['ids' => 'required|array']);
-        Department::whereIn('id', $validated['ids'])->delete();
 
-        return response()->json(['message' => 'Selected Departments deleted'], 200);
+        Department::whereIn('id', $validated['ids'])->delete(); // Soft delete
+
+        return response()->json(['message' => 'Selected departments soft-deleted successfully.'], 200);
+    }
+
+    /**
+     * Restore a soft-deleted department.
+     */
+    public function restore($id)
+    {
+        $department = Department::withTrashed()->findOrFail($id);
+        $department->restore();
+
+        return response()->json(['message' => 'Department restored successfully.'], 200);
+    }
+
+    /**
+     * Bulk restore selected departments.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+
+        Department::withTrashed()->whereIn('id', $validated['ids'])->restore();
+
+        return response()->json(['message' => 'Selected departments restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch all trashed departments for review.
+     */
+    public function trashed()
+    {
+        $trashedDepartments = Department::onlyTrashed()->get();
+
+        return response()->json($trashedDepartments, 200);
     }
 }

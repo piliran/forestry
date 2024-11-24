@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Confiscate extends Model
 {
     //
+    use SoftDeletes;
     use HasFactory;
 
     // Define fillable fields

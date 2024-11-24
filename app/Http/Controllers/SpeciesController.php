@@ -15,9 +15,9 @@ class SpeciesController extends Controller
      */
     public function index()
     {
-        $species = Species::with('category')->get();
+        // Fetch non-deleted species
+        $species = Species::with('category')->whereNull('deleted_at')->get();
         $speciesCategory = SpeciesCategory::all();
-    
 
         return Inertia::render('Department/SpeciesList', [
             'species' => $species,
@@ -51,7 +51,7 @@ class SpeciesController extends Controller
         $species = Species::create($request->all());
         $species->load('category');
 
-        return response()->json($species, 201);
+        return response()->json($species, 201);  // Return the created species
     }
 
     /**
@@ -75,10 +75,7 @@ class SpeciesController extends Controller
      */
     public function update(Request $request, Species $species)
     {
-
-        $species = Species::find($request->id);
-
-        $validated= $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'unplanted_seedlings_count' => 'required|numeric',
             'planted_seedlings_count' => 'required|numeric',
@@ -88,29 +85,64 @@ class SpeciesController extends Controller
             'specie_cat_id' => 'required|exists:specie_categories,id',
         ]);
 
-        $species->update($validated);
+        $species = Species::find($request->id);
+        $species->update($request->all());
         $species->load('category');
-        \Log::info($validated);
-
+        \Log::info($request->all());
 
         return response()->json($species);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource from storage.
      */
     public function destroy(Species $species)
     {
-        $species->delete();
+        $species->delete();  // Soft delete
 
-        return response()->json(['message' => 'species deleted'], 200);
+        return response()->json(['message' => 'Species soft-deleted successfully.'], 200);
     }
 
+    /**
+     * Bulk soft delete selected species.
+     */
     public function batchDelete(Request $request)
     {
         $validated = $request->validate(['ids' => 'required|array']);
-        Species::whereIn('id', $validated['ids'])->delete();
+        Species::whereIn('id', $validated['ids'])->delete();  // Soft delete
 
-        return response()->json(['message' => 'species deleted'], 200);
+        return response()->json(['message' => 'Selected species soft-deleted successfully.'], 200);
+    }
+
+    /**
+     * Restore a soft-deleted species.
+     */
+    public function restore($id)
+    {
+        $species = Species::withTrashed()->findOrFail($id);
+        $species->restore();  // Restore the soft-deleted species
+
+        return response()->json(['message' => 'Species restored successfully.'], 200);
+    }
+
+    /**
+     * Bulk restore soft-deleted species.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        Species::withTrashed()->whereIn('id', $request->ids)->restore();  // Restore soft-deleted species
+
+        return response()->json(['message' => 'Selected species restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch trashed species.
+     */
+    public function trashed()
+    {
+        $trashedSpecies = Species::onlyTrashed()->get();  // Fetch all soft-deleted species
+
+        return response()->json($trashedSpecies, 200);
     }
 }

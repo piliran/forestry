@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 
 class UserRoleController extends Controller
 {
@@ -17,8 +18,8 @@ class UserRoleController extends Controller
      */
     public function index()
     {
-        // Fetch all user roles, including related users and roles
-        $userRoles = UserRole::with(['user', 'role'])->get();
+        // Fetch non-deleted user roles, including related users and roles
+        $userRoles = UserRole::with(['user', 'role'])->whereNull('deleted_at')->get();
         $roles = Role::all();
         $users = User::all();
 
@@ -35,7 +36,6 @@ class UserRoleController extends Controller
      */
     public function store(Request $request)
     {
-      
         DB::beginTransaction();
 
         try {
@@ -50,7 +50,6 @@ class UserRoleController extends Controller
 
             DB::commit();
 
-          
             $user->load('roles');
 
             return response()->json($user, 200);
@@ -94,7 +93,7 @@ class UserRoleController extends Controller
      */
     public function destroy(UserRole $userRole)
     {
-        // Delete the user role
+        // Perform soft delete by setting 'deleted_at'
         $userRole->delete();
 
         // Return a success message
@@ -109,7 +108,7 @@ class UserRoleController extends Controller
         // Validate the incoming request data
         $validated = $request->validate(['ids' => 'required|array']);
 
-        // Delete the roles in a batch
+        // Perform soft delete for the roles in a batch
         UserRole::whereIn('id', $validated['ids'])->delete();
 
         // Return a success message

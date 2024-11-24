@@ -1,10 +1,13 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\Station;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate; // Preserved for future use
+use App\Models\User; // Preserved for future use
 
 class AreaController extends Controller
 {
@@ -13,15 +16,14 @@ class AreaController extends Controller
      */
     public function index()
     {
-        $areas = Area::with('station')->get();
+        // Fetch only non-deleted areas
+        $areas = Area::with('station')->whereNull('deleted_at')->get();
         $stations = Station::all();
-    
 
         return Inertia::render('Admin/Area', [
             'stations' => $stations,
             'areas' => $areas,
         ]);
-
     }
 
     /**
@@ -37,8 +39,6 @@ class AreaController extends Controller
      */
     public function store(Request $request)
     {
-
-       
         $request->validate([
             'station_id' => 'required|exists:stations,id',
             'name' => 'required|string|max:255',
@@ -48,8 +48,6 @@ class AreaController extends Controller
             'longitude' => 'nullable|numeric|between:-180,180',
             'chairperson' => 'required|string|max:255',
         ]);
-        
-        
 
         $area = Area::create($request->all());
         $area->load('station');
@@ -78,9 +76,10 @@ class AreaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Area $area)
+    public function update(Request $request, $id)
     {
-        $area = Area::find($request->id);
+        $area = Area::findOrFail($id);
+
         $request->validate([
             'station_id' => 'required|exists:stations,id',
             'name' => 'required|string|max:255',
@@ -98,18 +97,18 @@ class AreaController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource from storage.
      */
-    public function destroy(Area $area,$id)
+    public function destroy($id)
     {
-        $area = Area::find($id);
-        $area->delete();
+        $area = Area::findOrFail($id);
+        $area->delete(); // Soft delete
 
         return response()->json('Area deleted successfully.');
     }
 
     /**
-     * Bulk delete selected areas.
+     * Bulk soft delete selected areas.
      */
     public function batchDelete(Request $request)
     {
@@ -118,10 +117,21 @@ class AreaController extends Controller
             'ids.*' => 'exists:areas,id',
         ]);
 
-        Area::whereIn('id', $request->ids)->delete();
+        Area::whereIn('id', $request->ids)->delete(); // Soft delete
 
         return response()->json([
             'message' => 'Selected areas deleted successfully.',
         ]);
+    }
+
+    /**
+     * Restore a soft-deleted area.
+     */
+    public function restore($id)
+    {
+        $area = Area::withTrashed()->findOrFail($id);
+        $area->restore();
+
+        return response()->json('Area restored successfully.');
     }
 }

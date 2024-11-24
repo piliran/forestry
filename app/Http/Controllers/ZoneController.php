@@ -6,7 +6,8 @@ use App\Models\Zone;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class ZoneController extends Controller
 {
@@ -15,8 +16,10 @@ class ZoneController extends Controller
      */
     public function index()
     {
-        $zones = Zone::with('department')->get();
+        // Fetch non-deleted zones, including related departments
+        $zones = Zone::with('department')->whereNull('deleted_at')->get();
         $departments = Department::all();
+
         return Inertia::render('Admin/Zone', [
             'zones' => $zones,
             'departments' => $departments,
@@ -28,7 +31,7 @@ class ZoneController extends Controller
      */
     public function create()
     {
-        //
+        // Implementation if necessary
     }
 
     /**
@@ -42,13 +45,13 @@ class ZoneController extends Controller
             'website' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'department_id' => 'nullable|integer',
-        
         ]);
 
+        // Create a new zone and associate the department
         $zone = Zone::create($validated);
 
+        // Load the associated department
         $zone->load('department');
-
 
         return response()->json($zone, 201);
     }
@@ -58,7 +61,7 @@ class ZoneController extends Controller
      */
     public function show(Zone $zone)
     {
-        //
+        // Implementation if necessary
     }
 
     /**
@@ -66,7 +69,7 @@ class ZoneController extends Controller
      */
     public function edit(Zone $zone)
     {
-        //
+        // Implementation if necessary
     }
 
     /**
@@ -80,12 +83,13 @@ class ZoneController extends Controller
             'website' => 'nullable|string|max:255',
             'department_id' => 'nullable|integer',
             'location' => 'nullable|string|max:255',
-        
         ]);
 
-        $zone->update($request->all());
-        $zone->load('department');
+        // Update the zone data
+        $zone->update($validated);
 
+        // Load the associated department
+        $zone->load('department');
 
         return response()->json($zone);
     }
@@ -93,23 +97,23 @@ class ZoneController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-  
-
     public function destroy(Zone $zone)
     {
+        // Perform a soft delete by setting 'deleted_at'
         $zone->delete();
 
-        return response()->json('zone deleted successfully.');
+        return response()->json('Zone deleted successfully.');
     }
 
     /**
-     * Bulk delete selected users.
+     * Bulk delete selected zones.
      */
     public function batchDelete(Request $request)
     {
         $validated = $request->validate(['ids' => 'required|array']);
 
-        Zone::whereIn('id', $request->ids)->delete();
+        // Soft delete the zones in a batch
+        Zone::whereIn('id', $validated['ids'])->delete();
 
         return response()->json([
             'message' => 'Selected zones deleted successfully.',

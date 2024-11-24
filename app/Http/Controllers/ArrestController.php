@@ -6,6 +6,8 @@ use App\Models\Arrest;
 use App\Models\Confiscate;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate; // Preserved for future use
+use App\Models\User; // Preserved for future use
 
 class ArrestController extends Controller
 {
@@ -14,7 +16,8 @@ class ArrestController extends Controller
      */
     public function index()
     {
-        $arrests = Arrest::with('confiscate')->get();
+        // Fetch only non-deleted arrests
+        $arrests = Arrest::with('confiscate')->whereNull('deleted_at')->get();
         return Inertia::render('Arrests/Index', [
             'arrests' => $arrests,
         ]);
@@ -71,8 +74,10 @@ class ArrestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Arrest $arrest)
+    public function update(Request $request, $id)
     {
+        $arrest = Arrest::findOrFail($id);
+
         $request->validate([
             'description' => 'required|string|max:255',
             'date' => 'required|date',
@@ -87,17 +92,18 @@ class ArrestController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource from storage.
      */
-    public function destroy(Arrest $arrest)
+    public function destroy($id)
     {
-        $arrest->delete();
+        $arrest = Arrest::findOrFail($id);
+        $arrest->delete(); // Soft delete
 
         return response()->json('Arrest deleted successfully.');
     }
 
     /**
-     * Bulk delete selected arrests.
+     * Bulk soft delete selected arrests.
      */
     public function bulkDelete(Request $request)
     {
@@ -106,10 +112,38 @@ class ArrestController extends Controller
             'ids.*' => 'exists:arrests,id',
         ]);
 
-        Arrest::whereIn('id', $request->ids)->delete();
+        Arrest::whereIn('id', $request->ids)->delete(); // Soft delete
 
         return response()->json([
             'message' => 'Selected arrests deleted successfully.',
         ]);
     }
-};
+
+    /**
+     * Restore a soft-deleted arrest.
+     */
+    public function restore($id)
+    {
+        $arrest = Arrest::withTrashed()->findOrFail($id);
+        $arrest->restore();
+
+        return response()->json('Arrest restored successfully.');
+    }
+
+    /**
+     * Bulk restore selected arrests.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:arrests,id',
+        ]);
+
+        Arrest::withTrashed()->whereIn('id', $request->ids)->restore();
+
+        return response()->json([
+            'message' => 'Selected arrests restored successfully.',
+        ]);
+    }
+}

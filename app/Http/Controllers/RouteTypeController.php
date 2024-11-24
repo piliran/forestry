@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\RouteType;
@@ -12,7 +13,8 @@ class RouteTypeController extends Controller
      */
     public function index()
     {
-        $routeTypes = RouteType::all();
+        // Fetch non-deleted route types
+        $routeTypes = RouteType::whereNull('deleted_at')->get();
         return Inertia::render('RouteTypes/Index', [
             'routeTypes' => $routeTypes,
         ]);
@@ -77,13 +79,13 @@ class RouteTypeController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource from storage.
      */
     public function destroy(RouteType $routeType)
     {
-        $routeType->delete();
+        $routeType->delete();  // Soft delete
 
-        return response()->json('Route Type deleted successfully.');
+        return response()->json('Route Type soft-deleted successfully.');
     }
 
     /**
@@ -96,10 +98,42 @@ class RouteTypeController extends Controller
             'ids.*' => 'exists:route_types,id',
         ]);
 
-        RouteType::whereIn('id', $request->ids)->delete();
+        RouteType::whereIn('id', $request->ids)->delete();  // Soft delete
 
         return response()->json([
-            'message' => 'Selected route types deleted successfully.',
+            'message' => 'Selected route types soft-deleted successfully.',
         ]);
+    }
+
+    /**
+     * Restore a soft-deleted route type.
+     */
+    public function restore($id)
+    {
+        $routeType = RouteType::withTrashed()->findOrFail($id);
+        $routeType->restore();  // Restore the soft-deleted route type
+
+        return response()->json(['message' => 'Route Type restored successfully.'], 200);
+    }
+
+    /**
+     * Restore multiple soft-deleted route types.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        RouteType::withTrashed()->whereIn('id', $request->ids)->restore();  // Restore the soft-deleted route types
+
+        return response()->json(['message' => 'Selected route types restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch trashed route types.
+     */
+    public function trashed()
+    {
+        $trashedRouteTypes = RouteType::onlyTrashed()->get();  // Fetch all soft-deleted route types
+
+        return response()->json($trashedRouteTypes, 200);
     }
 }

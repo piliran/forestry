@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('unmatured_specie_count');
             $table->string('planted_seedlings_count');
             $table->string('unplanted_seedlings_count');
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

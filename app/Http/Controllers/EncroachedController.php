@@ -7,8 +7,7 @@ use App\Models\Encroached;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
-
-
+use Illuminate\Support\Facades\Gate;
 
 class EncroachedController extends Controller
 {
@@ -17,20 +16,14 @@ class EncroachedController extends Controller
      */
     public function index()
     {
-        $encroaches = Encroached::with('area')->get();
+        // Fetch non-deleted encroached areas
+        $encroaches = Encroached::with('area')->whereNull('deleted_at')->get();
         $areas = Area::all();
+
         return Inertia::render('Department/EncroachedAreas', [
             'encroaches' => $encroaches,
             'areas' => $areas,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -42,31 +35,12 @@ class EncroachedController extends Controller
             'area_id' => 'required|exists:areas,id',
            'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-        
         ]);
 
         $encroached = Encroached::create($validated);
-
         $encroached->load('area');
 
-
         return response()->json($encroached, 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Encroached $encroached)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Encroached $encroached)
-    {
-        //
     }
 
     /**
@@ -74,50 +48,68 @@ class EncroachedController extends Controller
      */
     public function update(Request $request, Encroached $encroached)
     {
-        
-        $Encroached = Encroached::find($request->id);
-        Log::info($Encroached);
-
         $validated = $request->validate([
             'area_id' => 'required|exists:areas,id',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-        
         ]);
 
-        
-        $Encroached->update($validated);
-        $Encroached->load('area');
+        $encroached->update($validated);
+        $encroached->load('area');
 
-
-        return response()->json($Encroached, 201);
-      
+        return response()->json($encroached, 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource.
      */
-  
-
-    public function destroy(Encroached $encroached,$id)
+    public function destroy(Encroached $encroached)
     {
-        $encroached = Encroached::find($id);
+        $encroached->delete(); // Soft delete
 
-        $encroached->delete();
-
-        return response()->json('Encroached area deleted successfully.');
+        return response()->json('Encroached area soft-deleted successfully.');
     }
 
     /**
-     * Bulk delete selected users.
+     * Bulk soft delete selected encroached areas.
      */
     public function batchDelete(Request $request)
     {
-      
         $validated = $request->validate(['ids' => 'required|array']);
-        Encroached::whereIn('id', $validated['ids'])->delete();
+        Encroached::whereIn('id', $validated['ids'])->delete(); // Soft delete
 
-        return response()->json(['message' => 'Selected Encroached Areas deleted'], 200);
+        return response()->json(['message' => 'Selected Encroached Areas soft-deleted successfully.'], 200);
+    }
 
+    /**
+     * Restore a soft-deleted encroached area.
+     */
+    public function restore($id)
+    {
+        $encroached = Encroached::withTrashed()->findOrFail($id);
+        $encroached->restore();
+
+        return response()->json(['message' => 'Encroached area restored successfully.'], 200);
+    }
+
+    /**
+     * Bulk restore selected soft-deleted encroached areas.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        Encroached::withTrashed()->whereIn('id', $validated['ids'])->restore();
+
+        return response()->json(['message' => 'Selected Encroached Areas restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch all soft-deleted (trashed) encroached areas.
+     */
+    public function trashed()
+    {
+        $trashedEncroaches = Encroached::onlyTrashed()->get();
+
+        return response()->json($trashedEncroaches, 200);
     }
 }

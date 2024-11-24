@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\OperationType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class OperationTypeController extends Controller
 {
@@ -13,19 +15,12 @@ class OperationTypeController extends Controller
      */
     public function index()
     {
-        $operationTypes = OperationType::all();
+        // Fetch non-deleted operation types
+        $operationTypes = OperationType::whereNull('deleted_at')->get();
 
         return Inertia::render('Operations/Type', [
             'operationTypes' => $operationTypes,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -54,19 +49,11 @@ class OperationTypeController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(OperationType $operationType)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, OperationType $operationType)
     {
-        $operationType =OperationType::find($request->id);
+        $operationType = OperationType::find($request->id);
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -78,30 +65,61 @@ class OperationTypeController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource.
      */
-    public function destroy(OperationType $operationType,$id)
+    public function destroy(OperationType $operationType)
     {
-        $operationType = OperationType::find($id);
+        $operationType->delete(); // Soft delete
 
-        $operationType->delete();
-
-        return response()->json('Operation Type deleted successfully.');
-        // Uncomment the next line if redirecting to an index route:
-        // return redirect()->route('operation-types.index')->with('success', 'Operation Type deleted successfully.');
+        return response()->json('Operation Type soft-deleted successfully.');
     }
 
     /**
-     * Bulk delete specified resources from storage.
+     * Batch soft delete specified resources from storage.
      */
     public function batchDelete(Request $request)
     {
-        $validated = $request->validate(['ids' => 'required|array']);
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:operation_types,id',
+        ]);
 
-        OperationType::whereIn('id', $request->ids)->delete();
+        OperationType::whereIn('id', $validated['ids'])->delete(); // Soft delete
 
         return response()->json([
-            'message' => 'Selected operation types deleted successfully.',
+            'message' => 'Selected operation types soft-deleted successfully.',
         ]);
+    }
+
+    /**
+     * Restore a soft-deleted operation type.
+     */
+    public function restore($id)
+    {
+        $operationType = OperationType::withTrashed()->findOrFail($id);
+        $operationType->restore();
+
+        return response()->json(['message' => 'Operation Type restored successfully.'], 200);
+    }
+
+    /**
+     * Bulk restore selected soft-deleted operation types.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        OperationType::withTrashed()->whereIn('id', $validated['ids'])->restore();
+
+        return response()->json(['message' => 'Selected operation types restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch all soft-deleted operation types.
+     */
+    public function trashed()
+    {
+        $trashedOperationTypes = OperationType::onlyTrashed()->get();
+
+        return response()->json($trashedOperationTypes, 200);
     }
 }

@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class OperationController extends Controller
 {
@@ -18,7 +19,8 @@ class OperationController extends Controller
      */
     public function index()
     {
-        $operations = Operation::with('Type')->get();
+        // Fetch non-deleted operations
+        $operations = Operation::with('Type')->whereNull('deleted_at')->get();
         $types = OperationType::all();
         $stations = Station::all();
 
@@ -34,20 +36,16 @@ class OperationController extends Controller
      */
     public function store(Request $request)
     {
-        $validated=  $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
-    
         ]);
 
-       
-        $operations = Operation::create($request->all());
-        $operations->load('Type');
+        $operation = Operation::create($validated);
+        $operation->load('Type');
 
-        return response()->json($operations, 201);
-
-       
+        return response()->json($operation, 201);
     }
 
     /**
@@ -55,45 +53,30 @@ class OperationController extends Controller
      */
     public function update(Request $request, Operation $operation)
     {
-
-        $operation = Operation::find($request->id);
-
-        $validated= $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
-           
         ]);
 
         $operation->update($validated);
-
-        
         $operation->load('Type');
 
         return response()->json($operation, 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource.
      */
-    public function destroy(Operation $operation,$id)
+    public function destroy(Operation $operation)
     {
-        $operation = Operation::find($id);
+        $operation->delete(); // Soft delete
 
-        $operation->delete();
-
-        return response()->json(['message' => 'Operation deleted successfully'], 200);
+        return response()->json(['message' => 'Operation soft-deleted successfully'], 200);
     }
-// plann sec
-// desk officer
-// zone manager
-// law enforce 
-
-// natura res man team lead
-// forestry specialist
 
     /**
-     * Batch delete specified resources from storage.
+     * Batch soft delete specified resources from storage.
      */
     public function batchDelete(Request $request)
     {
@@ -102,8 +85,40 @@ class OperationController extends Controller
             'ids.*' => 'exists:operations,id',
         ]);
 
-        Operation::whereIn('id', $validated['ids'])->delete();
+        Operation::whereIn('id', $validated['ids'])->delete(); // Soft delete
 
-        return response()->json(['message' => 'Operations deleted successfully'], 200);
+        return response()->json(['message' => 'Operations soft-deleted successfully'], 200);
+    }
+
+    /**
+     * Restore a soft-deleted operation.
+     */
+    public function restore($id)
+    {
+        $operation = Operation::withTrashed()->findOrFail($id);
+        $operation->restore();
+
+        return response()->json(['message' => 'Operation restored successfully'], 200);
+    }
+
+    /**
+     * Bulk restore selected soft-deleted operations.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        Operation::withTrashed()->whereIn('id', $validated['ids'])->restore();
+
+        return response()->json(['message' => 'Selected Operations restored successfully'], 200);
+    }
+
+    /**
+     * Fetch all soft-deleted operations.
+     */
+    public function trashed()
+    {
+        $trashedOperations = Operation::onlyTrashed()->get();
+
+        return response()->json($trashedOperations, 200);
     }
 }

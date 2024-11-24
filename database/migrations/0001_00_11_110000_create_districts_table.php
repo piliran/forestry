@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('zone_id')->nullable();
             $table->foreign('zone_id')->references('id')->on('zones')->onDelete('cascade')->onUpdate('cascade');
            
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

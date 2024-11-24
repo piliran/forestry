@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Route;
@@ -13,7 +14,8 @@ class RouteController extends Controller
      */
     public function index()
     {
-        $routes = Route::with('area')->get();
+        // Fetch non-deleted routes
+        $routes = Route::whereNull('deleted_at')->with('area')->get();
         return Inertia::render('Routes/Index', [
             'routes' => $routes,
         ]);
@@ -89,13 +91,13 @@ class RouteController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource from storage.
      */
     public function destroy(Route $route)
     {
-        $route->delete();
+        $route->delete();  // Soft delete
 
-        return response()->json('Route deleted successfully.');
+        return response()->json('Route soft-deleted successfully.');
     }
 
     /**
@@ -108,10 +110,42 @@ class RouteController extends Controller
             'ids.*' => 'exists:routes,id',
         ]);
 
-        Route::whereIn('id', $request->ids)->delete();
+        Route::whereIn('id', $request->ids)->delete();  // Soft delete
 
         return response()->json([
-            'message' => 'Selected routes deleted successfully.',
+            'message' => 'Selected routes soft-deleted successfully.',
         ]);
+    }
+
+    /**
+     * Restore a soft-deleted route.
+     */
+    public function restore($id)
+    {
+        $route = Route::withTrashed()->findOrFail($id);
+        $route->restore();  // Restore the soft-deleted route
+
+        return response()->json(['message' => 'Route restored successfully.'], 200);
+    }
+
+    /**
+     * Restore multiple soft-deleted routes.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        Route::withTrashed()->whereIn('id', $request->ids)->restore();  // Restore the soft-deleted routes
+
+        return response()->json(['message' => 'Selected routes restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch trashed routes.
+     */
+    public function trashed()
+    {
+        $trashedRoutes = Route::onlyTrashed()->get();  // Fetch all soft-deleted routes
+
+        return response()->json($trashedRoutes, 200);
     }
 }

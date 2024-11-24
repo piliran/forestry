@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Confiscate;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate; // Preserved for future use
+use App\Models\User; // Preserved for future use
 
 class ConfiscateController extends Controller
 {
@@ -12,7 +15,8 @@ class ConfiscateController extends Controller
      */
     public function index()
     {
-        $confiscates = Confiscate::all();
+        // Fetch only non-deleted confiscates
+        $confiscates = Confiscate::whereNull('deleted_at')->get();
         return Inertia::render('Confiscates/Index', [
             'confiscates' => $confiscates,
         ]);
@@ -87,17 +91,18 @@ class ConfiscateController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource from storage.
      */
-    public function destroy(Confiscate $confiscate)
+    public function destroy($id)
     {
-        $confiscate->delete();
+        $confiscate = Confiscate::findOrFail($id);
+        $confiscate->delete(); // Soft delete
 
         return response()->json('Confiscate deleted successfully.');
     }
 
     /**
-     * Bulk delete selected confiscates.
+     * Bulk soft delete selected confiscates.
      */
     public function bulkDelete(Request $request)
     {
@@ -106,10 +111,38 @@ class ConfiscateController extends Controller
             'ids.*' => 'exists:confiscates,id',
         ]);
 
-        Confiscate::whereIn('id', $request->ids)->delete();
+        Confiscate::whereIn('id', $request->ids)->delete(); // Soft delete
 
         return response()->json([
             'message' => 'Selected confiscates deleted successfully.',
+        ]);
+    }
+
+    /**
+     * Restore a soft-deleted confiscate.
+     */
+    public function restore($id)
+    {
+        $confiscate = Confiscate::withTrashed()->findOrFail($id);
+        $confiscate->restore();
+
+        return response()->json('Confiscate restored successfully.');
+    }
+
+    /**
+     * Bulk restore selected confiscates.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:confiscates,id',
+        ]);
+
+        Confiscate::withTrashed()->whereIn('id', $request->ids)->restore();
+
+        return response()->json([
+            'message' => 'Selected confiscates restored successfully.',
         ]);
     }
 }

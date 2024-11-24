@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
-          
             $table->string('name');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('gender')->nullable();
             $table->string('DOB')->nullable();
-            
             $table->unsignedBigInteger('district_id')->nullable();
             $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
             $table->string('age')->nullable();
@@ -28,12 +26,12 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('account_status')->nullable();
             $table->string('marital_status')->nullable();
-
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->softDeletes(); 
             $table->timestamps();
         });
 

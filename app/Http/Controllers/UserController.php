@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -8,8 +9,6 @@ use App\Models\Role;
 use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Auth\Access\Response;
 
 class UserController extends Controller
 {
@@ -18,11 +17,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with(['roles','district','permissions'])->get();
-        $userRoles = UserRole::with(['user','role'])->get();
+        // Fetch only non-deleted users
+        $users = User::with(['roles', 'district', 'permissions'])->whereNull('deleted_at')->get();
+        $userRoles = UserRole::with(['user', 'role'])->get();
         $permissions = Permission::all();
         $roles = Role::all();
         $districts = District::all();
+
         return Inertia::render('User/UserList', [
             'users' => $users,
             'roles' => $roles,
@@ -39,14 +40,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return Inertia::render('Users/Create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -57,18 +50,10 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email',
             'gender' => 'nullable|string|max:255',
             'DOB' => 'nullable|date',
-            'district_id' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-        
-            'position' => 'nullable|string|max:255',
-            'national_id' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:15',
-            'account_status' => 'nullable|string|max:255',
-            'marital_status' => 'nullable|string|max:255',
-       
-        ]);
+            'district_id' => 'nullable|integer',
 
-        // $this->authorize('create_user');
+            'national_id' => 'nullable|string|max:255',
+        ]);
 
         if ($request->user()->cannot('create_user', User::class)) {
             abort(403);
@@ -81,39 +66,13 @@ class UserController extends Controller
             'gender' => $request->gender,
             'DOB' => $request->DOB,
             'district_id' => $request->district_id,
-            // 'city' => $request->city,
-            // 'country' => $request->country,
-            // 'position' => $request->position,
             'national_id' => $request->national_id,
-            // 'phone' => $request->phone,
-            // 'account_status' => $request->account_status,
-            // 'marital_status' => $request->marital_status,
-            'password' => bcrypt(12345678),
+            'password' => bcrypt('12345678'),
         ]);
 
-        $user->load(['roles','district','permissions']);
+        $user->load(['roles', 'district', 'permissions']);
 
-        return response()->json($user, 201); // Return the created user
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        return Inertia::render('Users/Show', [
-            'user' => $user,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        return Inertia::render('Users/Edit', [
-            'user' => $user,
-        ]);
+        return response()->json($user, 201);
     }
 
     /**
@@ -127,28 +86,10 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'gender' => 'nullable|string|max:255',
             'DOB' => 'nullable|date',
-            'district_id' => 'nullable|integer|max:255',
-            'city' => 'nullable|string|max:255',
-            'country' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
+            'district_id' => 'nullable|integer',
             'national_id' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:15',
-            'account_status' => 'nullable|string|max:255',
-            'marital_status' => 'nullable|string|max:255',
-           
         ]);
-
-        // Gate::authorize('edit-user');
- 
-        // if (! Gate::allows('edit-user')) {
-        //     abort(403);
-        // }
-
-        // Gate::define('edit-user', function (User $user) {
-        //     return $user->isAdministrator
-        //                 ? Response::allow()
-        //                 : Response::deny('You must be an administrator.');
-        // });
 
         if ($request->user()->cannot('edit_user', User::class)) {
             abort(403);
@@ -161,47 +102,49 @@ class UserController extends Controller
             'gender' => $request->gender,
             'DOB' => $request->DOB,
             'district_id' => $request->district_id,
-            // 'city' => $request->city,
-            // 'country' => $request->country,
-            // 'position' => $request->position,
             'national_id' => $request->national_id,
             'phone' => $request->phone,
-            // 'account_status' => $request->account_status,
-            // 'marital_status' => $request->marital_status,
-            // 'password' => $request->password ? bcrypt($request->password) : $user->password,
         ]);
 
         $user->load('district');
 
-
-        return response()->json($user); // Return the updated user
+        return response()->json($user);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource from storage.
      */
     public function destroy(User $user)
     {
         if (auth()->user()->cannot('delete_user', User::class)) {
             abort(403, 'Unauthorized action.');
         }
-        
-        $user->delete();
 
+        $user->delete(); // Soft delete
         return response()->json('User deleted successfully.');
     }
 
     /**
-     * Bulk delete selected users.
+     * Bulk soft delete selected users.
      */
     public function bulkDelete(Request $request)
     {
         $validated = $request->validate(['ids' => 'required|array']);
 
-        User::whereIn('id', $request->ids)->delete();
-
+        User::whereIn('id', $request->ids)->delete(); // Soft delete
         return response()->json([
             'message' => 'Selected users deleted successfully.',
         ]);
+    }
+
+    /**
+     * Restore a soft-deleted user.
+     */
+    public function restore($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+
+        return response()->json('User restored successfully.');
     }
 }

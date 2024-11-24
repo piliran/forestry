@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id(); // Primary Key
             $table->string('name')->unique(); // Permission name (e.g., 'edit_posts')
             $table->string('description')->nullable(); // Optional description
-            $table->timestamps(); // Timestamps
+            $table->softDeletes(); 
+            $table->timestamps();
         });
     }
 
