@@ -99,11 +99,14 @@ class SuspectController extends Controller
     public function update(Request $request, $id)
     {
 
-        if (auth()->user()->cannot('update', Suspect::class)) {
+      
+        
+        $suspect = Suspect::findOrFail($request->id);
+
+
+        if (auth()->user()->cannot('update',  $suspect)) {
             abort(403, 'Unauthorized action.');
         }
-        
-        $suspect = Suspect::findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -143,9 +146,11 @@ class SuspectController extends Controller
      */
     public function destroy(Suspect $suspect)
     {
-        if (auth()->user()->cannot('delete', Suspect::class)) {
+      
+        if (auth()->user()->cannot('delete', $suspect)) {
             abort(403, 'Unauthorized action.');
         }
+
         
         // Perform soft delete by setting 'deleted_at'
         $suspect->delete();
@@ -157,9 +162,10 @@ class SuspectController extends Controller
      */
     public function batchDelete(Request $request)
     {
-        if (auth()->user()->cannot('batch_delete', Suspect::class)) {
+        if (auth()->user()->cannot('batchDelete', Suspect::class)) {
             abort(403, 'Unauthorized action.');
         }
+    
         
         $validated = $request->validate(['ids' => 'required|array']);
         Suspect::whereIn('id', $validated['ids'])->delete();
@@ -171,11 +177,13 @@ class SuspectController extends Controller
      */
     public function updateSuspect(Request $request)
     {
-        if (auth()->user()->cannot('update', Suspect::class)) {
-            abort(403, 'Unauthorized action.');
-        }
+     
         
         $suspect = Suspect::findOrFail($request->id);
+
+        if (auth()->user()->cannot('update', $suspect)) {
+            abort(403, 'Unauthorized action.');
+        }
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',

@@ -64,6 +64,13 @@ class ArrestPolicy
         return $user->hasPermissionTo('force_delete_arrest');
     }
 
+    public function batchDelete(User $user): bool
+    {
+        return $user->hasPermissionTo('delete_arrests');
+        
+    }
+
+
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {

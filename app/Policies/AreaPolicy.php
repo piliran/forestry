@@ -71,6 +71,13 @@ class AreaPolicy
         return $user->hasPermissionTo('force_delete_area');
     }
 
+
+    public function batchDelete(User $user): bool
+    {
+        return $user->hasPermissionTo('delete_areas');
+        
+    }
+
     /**
      * This method is called before any other policy method.
      * It allows administrators to bypass all checks.

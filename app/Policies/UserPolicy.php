@@ -49,4 +49,10 @@ class UserPolicy
     
         return null;
     }
+
+    public function batchDelete(User $user): bool
+    {
+        return $user->hasPermissionTo('delete_users');
+        
+    }
 }

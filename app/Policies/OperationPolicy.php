@@ -72,4 +72,10 @@ class OperationPolicy
     
         return null;
     }
+
+    public function batchDelete(User $user): bool
+    {
+        return $user->hasPermissionTo('delete_operations');
+        
+    }
 }

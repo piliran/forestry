@@ -71,7 +71,7 @@ class SuspectPolicy
         
     }
 
-    public function batchDelete(User $user, Suspect $suspect): bool
+    public function batchDelete(User $user): bool
     {
         return $user->hasPermissionTo('delete_suspects');
         
