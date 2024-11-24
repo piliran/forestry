@@ -582,123 +582,134 @@
                             No Photo Available
                         </div>
                     </div>
-                    <!-- Title -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="title"
-                            class="block font-semibold text-lg text-gray-800"
-                            >Title</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.title || "N/A" }}
+                    <div class="col-span-1 flex flex-col space-y-3">
+                        <!-- Title -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="title"
+                                class="block font-semibold text-lg text-gray-800"
+                                >Title</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.title || "N/A" }}
+                            </div>
                         </div>
-                    </div>
+                        <Divider />
 
-                    <!-- Full Name -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="name"
-                            class="block font-semibold text-lg text-gray-800"
-                            >Full Name</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.name || "N/A" }}
+                        <!-- Full Name -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="name"
+                                class="block font-semibold text-lg text-gray-800"
+                                >Full Name</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.name || "N/A" }}
+                            </div>
                         </div>
-                    </div>
+                        <Divider />
 
-                    <!-- Date of Birth -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="dob"
-                            class="block font-semibold text-lg text-gray-800"
-                            >Date of Birth</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.DOB || "N/A" }}
+                        <!-- Date of Birth -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="dob"
+                                class="block font-semibold text-lg text-gray-800"
+                                >Date of Birth</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.DOB || "N/A" }}
+                            </div>
                         </div>
-                    </div>
+                        <Divider />
 
-                    <!-- Gender -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="gender"
-                            class="block font-semibold text-lg text-gray-800"
-                            >Gender</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.gender || "N/A" }}
+                        <!-- Gender -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="gender"
+                                class="block font-semibold text-lg text-gray-800"
+                                >Gender</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.gender || "N/A" }}
+                            </div>
                         </div>
-                    </div>
+                        <Divider />
 
-                    <!-- Email -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="email"
-                            class="block font-semibold text-lg text-gray-800"
-                            >Email</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.email || "N/A" }}
+                        <!-- Email -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="email"
+                                class="block font-semibold text-lg text-gray-800"
+                                >Email</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.email || "N/A" }}
+                            </div>
                         </div>
-                    </div>
+                        <Divider />
 
-                    <!-- Phone Number -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="phone"
-                            class="block font-semibold text-lg text-gray-800"
-                            >Phone Number</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.phone || "N/A" }}
+                        <!-- Phone Number -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="phone"
+                                class="block font-semibold text-lg text-gray-800"
+                                >Phone Number</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.phone || "N/A" }}
+                            </div>
                         </div>
-                    </div>
+                        <Divider />
 
-                    <!-- Village -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="village"
-                            class="block font-semibold text-lg text-gray-800"
-                            >Village</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.village || "N/A" }}
+                        <!-- Village -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="village"
+                                class="block font-semibold text-lg text-gray-800"
+                                >Village</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.village || "N/A" }}
+                            </div>
                         </div>
-                    </div>
+                        <Divider />
 
-                    <!-- National ID -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="nid"
-                            class="block font-semibold text-lg text-gray-800"
-                            >National ID</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.national_id || "N/A" }}
+                        <!-- National ID -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="nid"
+                                class="block font-semibold text-lg text-gray-800"
+                                >National ID</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.national_id || "N/A" }}
+                            </div>
                         </div>
-                    </div>
+                        <Divider />
 
-                    <!-- Traditional Authority -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="traditional_authority"
-                            class="block font-semibold text-lg text-gray-800"
-                            >Traditional Authority</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.traditional_authority || "N/A" }}
+                        <!-- Traditional Authority -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="traditional_authority"
+                                class="block font-semibold text-lg text-gray-800"
+                                >Traditional Authority</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.traditional_authority || "N/A" }}
+                            </div>
                         </div>
-                    </div>
+                        <Divider />
 
-                    <!-- District -->
-                    <div class="col-12 md:col-6">
-                        <label
-                            for="district"
-                            class="block font-semibold text-lg text-gray-800"
-                            >District</label
-                        >
-                        <div class="text-base text-gray-600">
-                            {{ user.district?.name || "N/A" }}
+                        <!-- District -->
+                        <div class="col-12 md:col-6">
+                            <label
+                                for="district"
+                                class="block font-semibold text-lg text-gray-800"
+                                >District</label
+                            >
+                            <div class="text-base text-gray-600">
+                                {{ user.district?.name || "N/A" }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -739,6 +750,7 @@ import Image from "primevue/image";
 import axiosInstance from "@/axiosInstance";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
+import Divider from "primevue/divider";
 
 const toast = useToast();
 
