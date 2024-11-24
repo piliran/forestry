@@ -20,7 +20,7 @@ class EncroachedController extends Controller
         $encroaches = Encroached::with('area')->whereNull('deleted_at')->get();
         $areas = Area::all();
 
-        return Inertia::render('Department/EncroachedAreas', [
+        return Inertia::render('EncroachedAreas/Index', [
             'encroaches' => $encroaches,
             'areas' => $areas,
         ]);

@@ -469,7 +469,7 @@ const openNew = () => {
 };
 
 const hideDialog = () => {
-    AreaDialog.value = false;
+    areaDialog.value = false;
     submitted.value = false;
 };
 
@@ -654,3 +654,9 @@ const exportCSV = () => {
     dt.value?.exportCSV();
 };
 </script>
+<style scoped>
+::v-deep(.p-breadcrumb) {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+</style>

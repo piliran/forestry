@@ -16,7 +16,7 @@ class DepartmentController extends Controller
         // Fetch non-deleted departments
         $departments = Department::whereNull('deleted_at')->get();
 
-        return Inertia::render('Admin/Department', [
+        return Inertia::render('Department/Index', [
             'departments' => $departments,
         ]);
     }

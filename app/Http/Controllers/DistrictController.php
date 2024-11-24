@@ -18,7 +18,7 @@ class DistrictController extends Controller
         $districts = District::whereNull('deleted_at')->with('zone')->get();
         $zones = Zone::all();
 
-        return Inertia::render('Admin/District', [
+        return Inertia::render('District/Index', [
             'districts' => $districts,
             'zones' => $zones,
         ]);

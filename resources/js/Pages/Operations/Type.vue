@@ -1,6 +1,34 @@
 <template>
     <AppLayout title="Operations Type">
         <div>
+            <div class="-mt-6 inline-block bg-transparent">
+                <Breadcrumb :home="home" :model="breadCumbItems">
+                    <template #item="{ item, props }">
+                        <Link
+                            v-if="item.route"
+                            :href="item.route"
+                            preserve-scroll
+                            v-bind="props.action"
+                        >
+                            <span :class="[item.icon, 'text-color']" />
+                            <span class="text-primary font-semibold">{{
+                                item.label
+                            }}</span>
+                        </Link>
+                        <a
+                            v-else
+                            :href="item.url"
+                            :target="item.target"
+                            v-bind="props.action"
+                        >
+                            <span
+                                class="text-surface-700 dark:text-surface-0"
+                                >{{ item.label }}</span
+                            >
+                        </a>
+                    </template>
+                </Breadcrumb>
+            </div>
             <div class="card">
                 <Toolbar class="mb-6">
                     <template #start>
@@ -295,6 +323,8 @@ import {
     IconField,
     ProgressSpinner,
 } from "primevue";
+import Breadcrumb from "primevue/breadcrumb";
+import { Link } from "@inertiajs/vue3";
 
 const toast = useToast();
 const dt = ref();
@@ -313,6 +343,14 @@ const submitted = ref(false);
 const props = defineProps({
     operationTypes: Array,
 });
+
+const home = ref({
+    icon: "pi pi-home",
+    label: "Dashboard",
+    route: "/dashboard",
+});
+
+const breadCumbItems = ref([{ label: "Operation types" }]);
 
 const operations = ref(props.operationTypes);
 
@@ -501,6 +539,9 @@ const exportCSV = () => {
 };
 </script>
 
-<style>
-/* Add your custom styling here if needed */
+<style scoped>
+::v-deep(.p-breadcrumb) {
+    background: transparent !important;
+    box-shadow: none !important;
+}
 </style>

@@ -18,7 +18,7 @@ class CrimeController extends Controller
         // Fetch only non-deleted crimes
         $crimes = Crime::whereNull('deleted_at')->get();
 
-        return Inertia::render('Department/Crimes', [
+        return Inertia::render('Crimes/Index', [
             'crimes' => $crimes,
         ]);
     }

@@ -20,7 +20,7 @@ class AreaController extends Controller
         $areas = Area::with('station')->whereNull('deleted_at')->get();
         $stations = Station::all();
 
-        return Inertia::render('Admin/Area', [
+        return Inertia::render('Areas/Index', [
             'stations' => $stations,
             'areas' => $areas,
         ]);

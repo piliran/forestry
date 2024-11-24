@@ -37,6 +37,10 @@ createInertiaApp({
                         css: `
                             .my-button {
                                 border-width: 2px;
+                            },
+                            ::v-deep(.p-breadcrumb) {
+                                background: transparent !important;
+                                box-shadow: none !important;
                             }
                         `,
                     },

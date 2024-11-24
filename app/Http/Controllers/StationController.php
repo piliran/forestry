@@ -19,7 +19,7 @@ class StationController extends Controller
         $stations = Station::with('district')->whereNull('deleted_at')->get();
         $districts = District::all();
 
-        return Inertia::render('Department/Stations', [
+        return Inertia::render('Stations/Index', [
             'stations' => $stations,
             'districts' => $districts,
         ]);

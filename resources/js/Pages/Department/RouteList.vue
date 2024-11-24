@@ -1,6 +1,34 @@
 <template>
     <AppLayout title="Arrests">
         <div>
+            <div class="-mt-6 inline-block bg-transparent">
+                <Breadcrumb :home="home" :model="breadCumbItems">
+                    <template #item="{ item, props }">
+                        <Link
+                            v-if="item.route"
+                            :href="item.route"
+                            preserve-scroll
+                            v-bind="props.action"
+                        >
+                            <span :class="[item.icon, 'text-color']" />
+                            <span class="text-primary font-semibold">{{
+                                item.label
+                            }}</span>
+                        </Link>
+                        <a
+                            v-else
+                            :href="item.url"
+                            :target="item.target"
+                            v-bind="props.action"
+                        >
+                            <span
+                                class="text-surface-700 dark:text-surface-0"
+                                >{{ item.label }}</span
+                            >
+                        </a>
+                    </template>
+                </Breadcrumb>
+            </div>
             <div class="card">
                 <Toolbar class="mb-6">
                     <template #start>
@@ -393,7 +421,8 @@ import Textarea from "primevue/textarea";
 import RadioButton from "primevue/radiobutton";
 import InputNumber from "primevue/inputnumber";
 import Dialog from "primevue/dialog";
-
+import Breadcrumb from "primevue/breadcrumb";
+import { Link } from "@inertiajs/vue3";
 import InputIcon from "primevue/inputicon";
 import Select from "primevue/select";
 import IconField from "primevue/iconfield";

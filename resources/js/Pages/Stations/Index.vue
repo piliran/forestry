@@ -1,6 +1,34 @@
 <template>
     <AppLayout title="Stations">
         <div>
+            <div class="-mt-6 inline-block bg-transparent">
+                <Breadcrumb :home="home" :model="breadCumbItems">
+                    <template #item="{ item, props }">
+                        <Link
+                            v-if="item.route"
+                            :href="item.route"
+                            preserve-scroll
+                            v-bind="props.action"
+                        >
+                            <span :class="[item.icon, 'text-color']" />
+                            <span class="text-primary font-semibold">{{
+                                item.label
+                            }}</span>
+                        </Link>
+                        <a
+                            v-else
+                            :href="item.url"
+                            :target="item.target"
+                            v-bind="props.action"
+                        >
+                            <span
+                                class="text-surface-700 dark:text-surface-0"
+                                >{{ item.label }}</span
+                            >
+                        </a>
+                    </template>
+                </Breadcrumb>
+            </div>
             <!-- Toolbar -->
             <div class="card">
                 <Toolbar class="mb-6">
@@ -79,6 +107,12 @@
                     <Column
                         field="location"
                         header="Location"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="district.name"
+                        header="District"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -167,6 +201,27 @@
                             class="text-red-500"
                         >
                             Location is required.
+                        </small>
+                    </div>
+
+                    <div class="col-12 md:col-6">
+                        <label for="station" class="block font-bold mb-2"
+                            >District</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="station.district_id"
+                            :options="districts"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select District"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !station.district_id"
+                            class="text-red-500"
+                        >
+                            District is required.
                         </small>
                     </div>
 
@@ -333,7 +388,8 @@ import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
-
+import Breadcrumb from "primevue/breadcrumb";
+import { Link } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
@@ -353,15 +409,25 @@ const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
+const home = ref({
+    icon: "pi pi-home",
+    label: "Dashboard",
+    route: "/dashboard",
+});
+
+const breadCumbItems = ref([{ label: "Stations" }]);
+
 const props = defineProps({
     stations: Array,
+    districts: Array,
 });
+
+const stations = ref(props.stations);
+const districts = ref(props.districts);
 
 onMounted(async () => {
     console.log(stations);
 });
-
-const stations = ref(props.stations);
 
 // CRUD Methods
 const openNew = () => {
@@ -404,7 +470,33 @@ const saveStation = async () => {
                 });
             }
         } catch (err) {
-            console.error(err);
+            if (err.response && err.response.status === 422) {
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
         } finally {
             loading.value = false;
             stationDialog.value = false;
@@ -432,7 +524,33 @@ const deleteStation = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteStationDialog.value = false;
         loading.value = false;
@@ -457,7 +575,33 @@ const deleteSelectedStations = async () => {
             life: 3000,
         });
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         deleteStationsDialog.value = false;
         loading.value = false;
@@ -479,3 +623,9 @@ const exportCSV = () => {
     dt.value?.exportCSV();
 };
 </script>
+<style scoped>
+::v-deep(.p-breadcrumb) {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+</style>

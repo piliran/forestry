@@ -20,7 +20,7 @@ class ZoneController extends Controller
         $zones = Zone::with('department')->whereNull('deleted_at')->get();
         $departments = Department::all();
 
-        return Inertia::render('Admin/Zone', [
+        return Inertia::render('Zone/Index', [
             'zones' => $zones,
             'departments' => $departments,
         ]);

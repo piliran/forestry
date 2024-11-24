@@ -1,6 +1,34 @@
 <template>
     <AppLayout title="Specie Categories">
         <div>
+            <div class="-mt-6 inline-block bg-transparent">
+                <Breadcrumb :home="home" :model="breadCumbItems">
+                    <template #item="{ item, props }">
+                        <Link
+                            v-if="item.route"
+                            :href="item.route"
+                            preserve-scroll
+                            v-bind="props.action"
+                        >
+                            <span :class="[item.icon, 'text-color']" />
+                            <span class="text-primary font-semibold">{{
+                                item.label
+                            }}</span>
+                        </Link>
+                        <a
+                            v-else
+                            :href="item.url"
+                            :target="item.target"
+                            v-bind="props.action"
+                        >
+                            <span
+                                class="text-surface-700 dark:text-surface-0"
+                                >{{ item.label }}</span
+                            >
+                        </a>
+                    </template>
+                </Breadcrumb>
+            </div>
             <div class="card">
                 <Toolbar class="mb-6">
                     <template #start>
@@ -285,7 +313,8 @@ import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import ProgressSpinner from "primevue/progressspinner";
-
+import Breadcrumb from "primevue/breadcrumb";
+import { Link } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
@@ -307,6 +336,14 @@ const submitted = ref(false);
 const props = defineProps({
     speciesCategory: Array,
 });
+
+const home = ref({
+    icon: "pi pi-home",
+    label: "Dashboard",
+    route: "/dashboard",
+});
+
+const breadCumbItems = ref([{ label: "Specie Types" }]);
 
 const categories = ref(props.speciesCategory);
 
@@ -378,7 +415,7 @@ const saveCategory = async () => {
                 });
             }
             categoryDialog.value = false;
-        } catch (error) {
+        } catch (err) {
             if (err.response && err.response.status === 422) {
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
@@ -391,6 +428,13 @@ const saveCategory = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
                 toast.add({
                     severity: "error",
@@ -431,13 +475,34 @@ const deleteCategory = async () => {
             detail: "Category Deleted",
             life: 3000,
         });
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to delete category.",
-            life: 3000,
-        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         loading.value = false;
     }
@@ -462,13 +527,34 @@ const deleteSelectedCategories = async () => {
             detail: "Selected Categories Deleted",
             life: 3000,
         });
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to delete selected categories.",
-            life: 3000,
-        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
         loading.value = false;
     }
@@ -477,3 +563,9 @@ const exportCSV = () => {
     dt.value.exportCSV();
 };
 </script>
+<style scoped>
+::v-deep(.p-breadcrumb) {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+</style>

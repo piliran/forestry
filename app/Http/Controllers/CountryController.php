@@ -18,7 +18,7 @@ class CountryController extends Controller
         // Fetch only non-deleted countries
         $countries = Country::whereNull('deleted_at')->get();
 
-        return Inertia::render('Admin/Country', [
+        return Inertia::render('Country/Index', [
             'countries' => $countries,
         ]);
     }

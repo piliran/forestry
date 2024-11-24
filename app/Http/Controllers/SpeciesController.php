@@ -19,7 +19,7 @@ class SpeciesController extends Controller
         $species = Species::with('category')->whereNull('deleted_at')->get();
         $speciesCategory = SpeciesCategory::all();
 
-        return Inertia::render('Department/SpeciesList', [
+        return Inertia::render('Species/List', [
             'species' => $species,
             'speciesCategories' => $speciesCategory,
         ]);

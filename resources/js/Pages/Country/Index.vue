@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Encroached Areas">
+    <AppLayout title="Countries">
         <div>
             <div class="-mt-6 inline-block bg-transparent">
                 <Breadcrumb :home="home" :model="breadCumbItems">
@@ -29,7 +29,6 @@
                     </template>
                 </Breadcrumb>
             </div>
-
             <!-- Toolbar -->
             <div class="card">
                 <Toolbar class="mb-6">
@@ -47,8 +46,7 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedEncroaches ||
-                                !selectedEncroaches.length
+                                !selectedCountries || !selectedCountries.length
                             "
                         />
                     </template>
@@ -67,23 +65,23 @@
 
                 <!-- Data Table -->
                 <DataTable
-                    v-if="encroaches.length > 0"
+                    v-if="countries.length > 0"
                     ref="dt"
-                    v-model:selection="selectedEncroaches"
-                    :value="encroaches"
+                    v-model:selection="selectedCountries"
+                    :value="countries"
                     dataKey="id"
                     :paginator="true"
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} districts"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} countries"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Encroached Areas</h4>
+                            <h4 class="m-0">Manage Countries</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -101,20 +99,8 @@
                         :exportable="false"
                     ></Column>
                     <Column
-                        field="area.name"
-                        header="Area"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="latitude"
-                        header="Latitude"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="longitude"
-                        header="Longitude"
+                        field="name"
+                        header="Country Name"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -130,91 +116,48 @@
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editEncroached(slotProps.data)"
+                                @click="editCountry(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteEncroached(slotProps.data)"
+                                @click="confirmDeleteCountry(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
                 <div v-else class="flex items-center justify-center">
-                    <h2>No Encroached Areas Found</h2>
+                    <h2>No Countries Found</h2>
                 </div>
             </div>
 
-            <!-- Add/Edit Encroached Area Dialog -->
+            <!-- Add/Edit Countries Dialog -->
             <Dialog
-                v-model:visible="encroachedDialog"
+                v-model:visible="countryDialog"
                 :style="{ width: '450px' }"
-                :header="
-                    editDialog
-                        ? 'Edit Encroached Area'
-                        : 'Add New Encroached Area'
-                "
+                :header="editDialog ? 'Edit Country' : 'Add New Country'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
-                    <div class="col-12 md:col-6">
-                        <label for="encroached" class="block font-bold mb-2"
-                            >Area Name</label
-                        >
-                        <Select
-                            id="id"
-                            v-model="encroached.area_id"
-                            :options="areas"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select Area"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !encroached.area_id"
-                            class="text-red-500"
-                        >
-                            Area is required.
-                        </small>
-                    </div>
                     <div>
-                        <label for="latitude" class="block font-bold mb-3">
-                            Latitude
+                        <label for="name" class="block font-bold mb-3">
+                            Country Name
                         </label>
                         <InputText
-                            id="latitude"
-                            v-model.trim="encroached.latitude"
+                            id="name"
+                            v-model.trim="country.name"
                             required="true"
                             autofocus
-                            :invalid="submitted && !encroached.latitude"
+                            :invalid="submitted && !country.name"
                             fluid
                         />
                         <small
-                            v-if="submitted && !encroached.latitude"
+                            v-if="submitted && !country.name"
                             class="text-red-500"
                         >
-                            Latitude is required.
-                        </small>
-                    </div>
-                    <div>
-                        <label for="longitude" class="block font-bold mb-3">
-                            Longitude
-                        </label>
-                        <InputText
-                            id="longitude"
-                            v-model.trim="encroached.longitude"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !encroached.longitude"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !encroached.longitude"
-                            class="text-red-500"
-                        >
-                            Longitude is required.
+                            Country Name is required.
                         </small>
                     </div>
                 </div>
@@ -238,24 +181,24 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveEncroached"
+                            @click="saveCountry"
                         />
                     </div>
                 </template>
             </Dialog>
 
-            <!-- Delete Single Encroached Area Confirmation Dialog -->
+            <!-- Delete Single Country Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteEncroachedDialog"
+                v-model:visible="deleteCountryDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="encroached">
+                    <span v-if="country">
                         Are you sure you want to delete
-                        <b>{{ encroached.name }}</b
+                        <b>{{ country.name }}</b
                         >?
                     </span>
                 </div>
@@ -264,7 +207,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteEncroachedDialog = false"
+                        @click="deleteCountryDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -279,15 +222,15 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="deleteEncroached"
+                            @click="deleteCountry"
                         />
                     </div>
                 </template>
             </Dialog>
 
-            <!-- Delete Multiple Encroached Areas Confirmation Dialog -->
+            <!-- Delete Multiple Country Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteEncroachesDialog"
+                v-model:visible="deleteCountriesDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
@@ -295,8 +238,7 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span>
-                        Are you sure you want to delete the selected Encroached
-                        Areas?
+                        Are you sure you want to delete the selected countries?
                     </span>
                 </div>
                 <template #footer>
@@ -304,7 +246,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteEncroachedDialog = false"
+                        @click="deleteCountryDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -320,7 +262,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedEncroaches"
+                            @click="deleteSelectedCountries"
                         />
                     </div>
                 </template>
@@ -333,8 +275,6 @@ import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
-import { Link } from "@inertiajs/vue3";
-import Breadcrumb from "primevue/breadcrumb";
 
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
@@ -346,25 +286,13 @@ import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
+import Breadcrumb from "primevue/breadcrumb";
+import { Link } from "@inertiajs/vue3";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
 const toast = useToast();
-
-// Reactive State Variables
-const dt = ref();
-const encroachedDialog = ref(false);
-const editDialog = ref(false);
-const loading = ref(false);
-const deleteEncroachedDialog = ref(false);
-const deleteEncroachesDialog = ref(false);
-const encroached = ref({});
-const selectedEncroaches = ref([]);
-const submitted = ref(false);
-const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
 
 const home = ref({
     icon: "pi pi-home",
@@ -372,59 +300,66 @@ const home = ref({
     route: "/dashboard",
 });
 
-const breadCumbItems = ref([{ label: "Encroached Areas" }]);
+const breadCumbItems = ref([{ label: "Countries" }]);
 
-const props = defineProps({
-    encroaches: Array,
-    areas: Array,
+// Reactive State Variables
+const dt = ref();
+const countryDialog = ref(false);
+const editDialog = ref(false);
+
+const loading = ref(false);
+const deleteCountryDialog = ref(false);
+const deleteCountriesDialog = ref(false);
+const country = ref({});
+const selectedCountries = ref([]);
+const submitted = ref(false);
+const filters = ref({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const encroaches = ref(props.encroaches);
-const areas = ref(props.areas);
+const props = defineProps({
+    countries: Array,
+});
+
+const countries = ref(props.countries);
 
 // CRUD Methods
 const openNew = () => {
     editDialog.value = false;
-    encroached.value = {};
+    country.value = {};
     submitted.value = false;
-    encroachedDialog.value = true;
+    countryDialog.value = true;
 };
 
 const hideDialog = () => {
-    encroachedDialog.value = false;
+    countryDialog.value = false;
     submitted.value = false;
 };
 
-const saveEncroached = async () => {
+const saveCountry = async () => {
     submitted.value = true;
-    if (encroached?.value?.latitude?.trim()) {
+    if (country?.value?.name?.trim()) {
         loading.value = true;
-
         try {
-            if (encroached.value.id) {
+            if (country.value.id) {
                 const response = await axios.put(
-                    `/encroached-areas/${encroached.value.id}`,
-                    encroached.value
+                    `/countries/${country.value.id}`,
+                    country.value
                 );
-                console.log(response);
-
-                updateEncroached(response.data);
+                updateCountry(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Encroached Area Updated",
+                    detail: "Country Updated",
                     life: 3000,
                 });
             } else {
-                const response = await axios.post(
-                    "/encroached-areas",
-                    encroached.value
-                );
-                encroaches.value.push(response.data);
+                const response = await axios.post("/countries", country.value);
+                countries.value.push(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Encroached Area Created",
+                    detail: "Country Created",
                     life: 3000,
                 });
             }
@@ -458,28 +393,28 @@ const saveEncroached = async () => {
             }
         } finally {
             loading.value = false;
-            encroachedDialog.value = false;
+            countryDialog.value = false;
         }
     }
 };
 
-const editEncroached = (encroachedData) => {
+const editCountry = (countryData) => {
     editDialog.value = true;
-    encroached.value = { ...encroachedData };
-    encroachedDialog.value = true;
+    country.value = { ...countryData };
+    countryDialog.value = true;
 };
 
-const deleteEncroached = async () => {
+const deleteCountry = async () => {
     loading.value = true;
     try {
-        await axios.delete(`/encroached-areas/${encroached.value.id}`);
-        encroaches.value = encroaches.value.filter(
-            (r) => r.id !== encroached.value.id
+        await axios.delete(`/countries/${country.value.id}`);
+        countries.value = countries.value.filter(
+            (r) => r.id !== country.value.id
         );
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Encroached Area Deleted",
+            detail: "Country Deleted",
             life: 3000,
         });
     } catch (err) {
@@ -511,26 +446,26 @@ const deleteEncroached = async () => {
             });
         }
     } finally {
-        deleteEncroachedDialog.value = false;
+        deleteCountryDialog.value = false;
         loading.value = false;
     }
 };
 
-const confirmDeleteEncroached = (encroachedData) => {
-    encroached.value = encroachedData;
-    deleteEncroachedDialog.value = true;
+const confirmDeleteCountry = (countryData) => {
+    country.value = countryData;
+    deleteCountryDialog.value = true;
 };
 
-const deleteSelectedEncroaches = async () => {
-    const ids = selectedEncroaches.value.map((encroached) => encroached.id);
+const deleteSelectedCountries = async () => {
+    const ids = selectedCountries.value.map((country) => country.id);
     loading.value = true;
     try {
-        await axios.post("/encroached-areas/bulk-delete", { ids });
-        encroaches.value = encroaches.value.filter((r) => !ids.includes(r.id));
+        await axios.post("/countries/bulk-delete", { ids });
+        countries.value = countries.value.filter((r) => !ids.includes(r.id));
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Selected Encroached Areas Deleted",
+            detail: "Selected Countries Deleted",
             life: 3000,
         });
     } catch (err) {
@@ -562,21 +497,19 @@ const deleteSelectedEncroaches = async () => {
             });
         }
     } finally {
-        deleteEncroachesDialog.value = false;
+        deleteCountriesDialog.value = false;
         loading.value = false;
     }
 };
 
 const confirmDeleteSelected = () => {
-    deleteEncroachesDialog.value = true;
+    deleteCountriesDialog.value = true;
 };
 
-const updateEncroached = (updatedEncroached) => {
-    const index = encroaches.value.findIndex(
-        (r) => r.id === updatedEncroached.id
-    );
+const updateCountry = (updatedCountry) => {
+    const index = countries.value.findIndex((r) => r.id === updatedCountry.id);
     if (index !== -1) {
-        encroaches.value[index] = updatedEncroached;
+        countries.value[index] = updatedCountry;
     }
 };
 
@@ -585,24 +518,6 @@ const exportCSV = () => {
 };
 </script>
 <style scoped>
-.content-wrapper {
-    padding-left: var(--sidebar-width, 250px); /* Accounts for sidebar width */
-    padding-top: var(
-        --navbar-height,
-        60px
-    ); /* Accounts for top navigation height */
-    position: relative; /* Ensures breadcrumb is placed correctly */
-}
-.breadcrumb-container {
-    position: absolute; /* Positioned relative to the nearest positioned ancestor */
-    top: 1rem; /* Adjust based on your layout's padding/margin */
-    left: 1rem; /* Avoid overlapping the sidebar */
-    padding-left: var(
-        --sidebar-width,
-        2rem
-    ); /* Replace with actual sidebar width if defined */
-    z-index: 10; /* Ensure it stays on top */
-}
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;

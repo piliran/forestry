@@ -17,7 +17,7 @@ class SpeciesCategoryController extends Controller
         // Fetch non-deleted species categories
         $speciesCategory = SpeciesCategory::whereNull('deleted_at')->get();
 
-        return Inertia::render('Department/SpeciesTypes', [
+        return Inertia::render('Species/Types', [
             'speciesCategory' => $speciesCategory,
         ]);
     }

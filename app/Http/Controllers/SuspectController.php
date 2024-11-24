@@ -21,7 +21,7 @@ class SuspectController extends Controller
         $suspects = Suspect::with('district')->whereNull('deleted_at')->get();
         $districts = District::all();
 
-        return Inertia::render('Department/Suspect', [
+        return Inertia::render('Suspects/Index', [
             'suspects' => $suspects,
             'districts' => $districts,
         ]);
