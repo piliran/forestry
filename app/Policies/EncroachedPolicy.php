@@ -13,7 +13,7 @@ class EncroachedPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('view_any_encroached');
     }
 
     /**
@@ -21,7 +21,7 @@ class EncroachedPolicy
      */
     public function view(User $user, Encroached $encroached): bool
     {
-        //
+        return $user->hasPermissionTo('view_encroached') || $user->id === $encroached->created_by;
     }
 
     /**
@@ -29,7 +29,7 @@ class EncroachedPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('create_encroached');
     }
 
     /**
@@ -37,7 +37,7 @@ class EncroachedPolicy
      */
     public function update(User $user, Encroached $encroached): bool
     {
-        //
+        return $user->hasPermissionTo('update_encroached') || $user->id === $encroached->created_by;
     }
 
     /**
@@ -45,7 +45,7 @@ class EncroachedPolicy
      */
     public function delete(User $user, Encroached $encroached): bool
     {
-        //
+        return $user->hasPermissionTo('delete_encroached') || $user->id === $encroached->created_by;
     }
 
     /**
@@ -53,7 +53,7 @@ class EncroachedPolicy
      */
     public function restore(User $user, Encroached $encroached): bool
     {
-        //
+        return $user->hasPermissionTo('restore_encroached');
     }
 
     /**
@@ -61,6 +61,15 @@ class EncroachedPolicy
      */
     public function forceDelete(User $user, Encroached $encroached): bool
     {
-        //
+        return $user->hasPermissionTo('force_delete_encroached');
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    
+        return null;
     }
 }

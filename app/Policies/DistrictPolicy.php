@@ -13,7 +13,7 @@ class DistrictPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('view_districts');
     }
 
     /**
@@ -21,7 +21,7 @@ class DistrictPolicy
      */
     public function view(User $user, District $district): bool
     {
-        //
+        return $user->hasPermissionTo('view_district') || $user->id === $district->created_by;
     }
 
     /**
@@ -29,7 +29,7 @@ class DistrictPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('create_district');
     }
 
     /**
@@ -37,7 +37,7 @@ class DistrictPolicy
      */
     public function update(User $user, District $district): bool
     {
-        //
+        return $user->hasPermissionTo('update_district') || $user->id === $district->created_by;
     }
 
     /**
@@ -45,7 +45,7 @@ class DistrictPolicy
      */
     public function delete(User $user, District $district): bool
     {
-        //
+        return $user->hasPermissionTo('delete_district') || $user->id === $district->created_by;
     }
 
     /**
@@ -53,7 +53,7 @@ class DistrictPolicy
      */
     public function restore(User $user, District $district): bool
     {
-        //
+        return $user->hasPermissionTo('restore_district');
     }
 
     /**
@@ -61,6 +61,15 @@ class DistrictPolicy
      */
     public function forceDelete(User $user, District $district): bool
     {
-        //
+        return $user->hasPermissionTo('force_delete_district');
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    
+        return null;
     }
 }

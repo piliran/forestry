@@ -452,53 +452,55 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Suspect Data on the Right -->
                         <div class="col-span-1 flex flex-col space-y-3">
                             <div class="space-y-1">
                                 <span
                                     class="font-semibold text-lg text-gray-800"
-                                    >Suspect Name:</span
+                                    >Name</span
                                 >
                                 <div class="text-base text-gray-600">
                                     {{ suspect.name || "N/A" }}
                                 </div>
                             </div>
-
+                            <Divider />
                             <div class="space-y-1">
                                 <span
                                     class="font-semibold text-lg text-gray-800"
-                                    >Suspect National ID:</span
+                                    >National ID</span
                                 >
                                 <div class="text-base text-gray-600">
                                     {{ suspect.national_id || "N/A" }}
                                 </div>
                             </div>
+                            <Divider />
 
                             <div class="space-y-1">
                                 <span
                                     class="font-semibold text-lg text-gray-800"
-                                    >District:</span
+                                    >District</span
                                 >
                                 <div class="text-base text-gray-600">
                                     {{ suspect.district?.name || "N/A" }}
                                 </div>
                             </div>
+                            <Divider />
 
                             <div class="space-y-1">
                                 <span
                                     class="font-semibold text-lg text-gray-800"
-                                    >Suspect Village:</span
+                                    >Village</span
                                 >
                                 <div class="text-base text-gray-600">
                                     {{ suspect.village || "N/A" }}
                                 </div>
                             </div>
+                            <Divider />
 
                             <div class="space-y-1">
                                 <span
                                     class="font-semibold text-lg text-gray-800"
-                                    >Suspect T/A:</span
+                                    >T/A</span
                                 >
                                 <div class="text-base text-gray-600">
                                     {{ suspect.TA || "N/A" }}
@@ -544,6 +546,8 @@ import ProgressSpinner from "primevue/progressspinner";
 import MultiSelect from "primevue/multiselect";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
+
+import Divider from "primevue/divider";
 
 const toast = useToast();
 

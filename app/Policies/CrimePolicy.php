@@ -13,7 +13,7 @@ class CrimePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('view_crimes');
     }
 
     /**
@@ -21,7 +21,7 @@ class CrimePolicy
      */
     public function view(User $user, Crime $crime): bool
     {
-        //
+        return $user->hasPermissionTo('view_crime');
     }
 
     /**
@@ -29,7 +29,7 @@ class CrimePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('create_crime');
     }
 
     /**
@@ -37,7 +37,7 @@ class CrimePolicy
      */
     public function update(User $user, Crime $crime): bool
     {
-        //
+        return $user->hasPermissionTo('update_crime');
     }
 
     /**
@@ -45,7 +45,7 @@ class CrimePolicy
      */
     public function delete(User $user, Crime $crime): bool
     {
-        //
+        return $user->hasPermissionTo('delete_crime');
     }
 
     /**
@@ -53,7 +53,7 @@ class CrimePolicy
      */
     public function restore(User $user, Crime $crime): bool
     {
-        //
+        return $user->hasPermissionTo('restore_crime');
     }
 
     /**
@@ -61,6 +61,15 @@ class CrimePolicy
      */
     public function forceDelete(User $user, Crime $crime): bool
     {
-        //
+        return $user->hasPermissionTo('force_delete_crime');
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    
+        return null;
     }
 }

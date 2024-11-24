@@ -13,7 +13,8 @@ class AreaPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        // Check if the user has permission to view any area
+        return $user->hasPermissionTo('view_any_area');
     }
 
     /**
@@ -21,7 +22,8 @@ class AreaPolicy
      */
     public function view(User $user, Area $area): bool
     {
-        //
+        // Check if the user has permission to view the specific area
+        return $user->hasPermissionTo('view_area') || $user->id === $area->user_id;
     }
 
     /**
@@ -29,7 +31,8 @@ class AreaPolicy
      */
     public function create(User $user): bool
     {
-        //
+        // Check if the user has permission to create an area
+        return $user->hasPermissionTo('create_area');
     }
 
     /**
@@ -37,7 +40,8 @@ class AreaPolicy
      */
     public function update(User $user, Area $area): bool
     {
-        //
+        // Check if the user has permission to update the area or if the user owns the area
+        return $user->hasPermissionTo('update_area') || $user->id === $area->user_id;
     }
 
     /**
@@ -45,7 +49,8 @@ class AreaPolicy
      */
     public function delete(User $user, Area $area): bool
     {
-        //
+        // Check if the user has permission to delete the area or if the user owns the area
+        return $user->hasPermissionTo('delete_area') || $user->id === $area->user_id;
     }
 
     /**
@@ -53,7 +58,8 @@ class AreaPolicy
      */
     public function restore(User $user, Area $area): bool
     {
-        //
+        // Check if the user has permission to restore the area or if the user owns the area
+        return $user->hasPermissionTo('restore_area') || $user->id === $area->user_id;
     }
 
     /**
@@ -61,6 +67,22 @@ class AreaPolicy
      */
     public function forceDelete(User $user, Area $area): bool
     {
-        //
+        // Check if the user has permission to permanently delete the area or if the user owns the area
+        return $user->hasPermissionTo('force_delete_area') || $user->id === $area->user_id;
+    }
+
+    /**
+     * This method is called before any other policy method.
+     * It allows administrators to bypass all checks.
+     */
+    public function before(User $user, string $ability): bool|null
+    {
+        // If the user is an administrator, they can perform any action
+        if ($user->isAdministrator()) {
+            return true; // Allow all actions for administrators
+        }
+    
+        // Otherwise, proceed with the usual checks
+        return null;
     }
 }

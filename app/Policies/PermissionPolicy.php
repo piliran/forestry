@@ -13,7 +13,7 @@ class PermissionPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('view_any_permission');
     }
 
     /**
@@ -21,7 +21,7 @@ class PermissionPolicy
      */
     public function view(User $user, Permission $permission): bool
     {
-        //
+        return $user->hasPermissionTo('view_permission');
     }
 
     /**
@@ -29,7 +29,7 @@ class PermissionPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('create_permission');
     }
 
     /**
@@ -37,7 +37,7 @@ class PermissionPolicy
      */
     public function update(User $user, Permission $permission): bool
     {
-        //
+        return $user->hasPermissionTo('update_permission');
     }
 
     /**
@@ -45,7 +45,7 @@ class PermissionPolicy
      */
     public function delete(User $user, Permission $permission): bool
     {
-        //
+        return $user->hasPermissionTo('delete_permission');
     }
 
     /**
@@ -53,7 +53,7 @@ class PermissionPolicy
      */
     public function restore(User $user, Permission $permission): bool
     {
-        //
+        return $user->hasPermissionTo('restore_permission');
     }
 
     /**
@@ -61,6 +61,15 @@ class PermissionPolicy
      */
     public function forceDelete(User $user, Permission $permission): bool
     {
-        //
+        return $user->hasPermissionTo('force_delete_permission');
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    
+        return null;
     }
 }

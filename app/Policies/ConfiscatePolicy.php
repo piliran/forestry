@@ -13,7 +13,7 @@ class ConfiscatePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('view_confiscates');
     }
 
     /**
@@ -21,7 +21,7 @@ class ConfiscatePolicy
      */
     public function view(User $user, Confiscate $confiscate): bool
     {
-        //
+        return $user->hasPermissionTo('view_confiscate');
     }
 
     /**
@@ -29,7 +29,7 @@ class ConfiscatePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('create_confiscate');
     }
 
     /**
@@ -37,7 +37,7 @@ class ConfiscatePolicy
      */
     public function update(User $user, Confiscate $confiscate): bool
     {
-        //
+        return $user->hasPermissionTo('update_confiscate');
     }
 
     /**
@@ -45,7 +45,7 @@ class ConfiscatePolicy
      */
     public function delete(User $user, Confiscate $confiscate): bool
     {
-        //
+        return $user->hasPermissionTo('delete_confiscate');
     }
 
     /**
@@ -53,7 +53,7 @@ class ConfiscatePolicy
      */
     public function restore(User $user, Confiscate $confiscate): bool
     {
-        //
+        return $user->hasPermissionTo('restore_confiscate');
     }
 
     /**
@@ -61,6 +61,15 @@ class ConfiscatePolicy
      */
     public function forceDelete(User $user, Confiscate $confiscate): bool
     {
-        //
+        return $user->hasPermissionTo('force_delete_confiscate');
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    
+        return null;
     }
 }

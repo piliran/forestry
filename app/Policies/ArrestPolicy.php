@@ -13,7 +13,7 @@ class ArrestPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('view_arrests');
     }
 
     /**
@@ -21,7 +21,7 @@ class ArrestPolicy
      */
     public function view(User $user, Arrest $arrest): bool
     {
-        //
+        return $user->hasPermissionTo('view_arrest');
     }
 
     /**
@@ -29,7 +29,7 @@ class ArrestPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('create_arrest');
     }
 
     /**
@@ -37,7 +37,7 @@ class ArrestPolicy
      */
     public function update(User $user, Arrest $arrest): bool
     {
-        //
+        return $user->hasPermissionTo('update_arrest');
     }
 
     /**
@@ -45,7 +45,7 @@ class ArrestPolicy
      */
     public function delete(User $user, Arrest $arrest): bool
     {
-        //
+        return $user->hasPermissionTo('delete_arrest');
     }
 
     /**
@@ -53,7 +53,7 @@ class ArrestPolicy
      */
     public function restore(User $user, Arrest $arrest): bool
     {
-        //
+        return $user->hasPermissionTo('restore_arrest');
     }
 
     /**
@@ -61,6 +61,15 @@ class ArrestPolicy
      */
     public function forceDelete(User $user, Arrest $arrest): bool
     {
-        //
+        return $user->hasPermissionTo('force_delete_arrest');
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    
+        return null;
     }
 }

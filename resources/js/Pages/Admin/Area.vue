@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Areas">
         <div>
-            <div class="-mt-6 inline-block">
+            <div class="-mt-6 inline-block bg-transparent">
                 <Breadcrumb :home="home" :model="breadCumbItems">
                     <template #item="{ item, props }">
                         <Link

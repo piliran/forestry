@@ -13,7 +13,8 @@ class RouteTypePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        // Check if the user has permission to view any RouteType
+        return $user->hasPermissionTo('view_any_route_type');
     }
 
     /**
@@ -21,7 +22,8 @@ class RouteTypePolicy
      */
     public function view(User $user, RouteType $routeType): bool
     {
-        //
+        // Check if the user has permission to view a specific RouteType
+        return $user->hasPermissionTo('view_route_type') || $user->hasRole('admin');
     }
 
     /**
@@ -29,7 +31,8 @@ class RouteTypePolicy
      */
     public function create(User $user): bool
     {
-        //
+        // Check if the user has permission to create a RouteType
+        return $user->hasPermissionTo('create_route_type');
     }
 
     /**
@@ -37,7 +40,8 @@ class RouteTypePolicy
      */
     public function update(User $user, RouteType $routeType): bool
     {
-        //
+        // Check if the user has permission to update a RouteType, or if they are the creator of the RouteType
+        return $user->hasPermissionTo('update_route_type') || $user->id === $routeType->created_by;
     }
 
     /**
@@ -45,7 +49,8 @@ class RouteTypePolicy
      */
     public function delete(User $user, RouteType $routeType): bool
     {
-        //
+        // Check if the user has permission to delete the RouteType, or if they are the creator of the RouteType
+        return $user->hasPermissionTo('delete_route_type') || $user->id === $routeType->created_by;
     }
 
     /**
@@ -53,7 +58,8 @@ class RouteTypePolicy
      */
     public function restore(User $user, RouteType $routeType): bool
     {
-        //
+        // Check if the user has permission to restore the RouteType
+        return $user->hasPermissionTo('restore_route_type');
     }
 
     /**
@@ -61,6 +67,16 @@ class RouteTypePolicy
      */
     public function forceDelete(User $user, RouteType $routeType): bool
     {
-        //
+        // Check if the user has permission to permanently delete the RouteType
+        return $user->hasPermissionTo('force_delete_route_type');
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    
+        return null;
     }
 }

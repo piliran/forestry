@@ -13,7 +13,7 @@ class CountryPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('view_countries');
     }
 
     /**
@@ -21,7 +21,7 @@ class CountryPolicy
      */
     public function view(User $user, Country $country): bool
     {
-        //
+        return $user->hasPermissionTo('view_country');
     }
 
     /**
@@ -29,7 +29,7 @@ class CountryPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('create_country');
     }
 
     /**
@@ -37,7 +37,7 @@ class CountryPolicy
      */
     public function update(User $user, Country $country): bool
     {
-        //
+        return $user->hasPermissionTo('update_country');
     }
 
     /**
@@ -45,7 +45,7 @@ class CountryPolicy
      */
     public function delete(User $user, Country $country): bool
     {
-        //
+        return $user->hasPermissionTo('delete_country');
     }
 
     /**
@@ -53,7 +53,7 @@ class CountryPolicy
      */
     public function restore(User $user, Country $country): bool
     {
-        //
+        return $user->hasPermissionTo('restore_country');
     }
 
     /**
@@ -61,6 +61,15 @@ class CountryPolicy
      */
     public function forceDelete(User $user, Country $country): bool
     {
-        //
+        return $user->hasPermissionTo('force_delete_country');
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    
+        return null;
     }
 }

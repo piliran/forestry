@@ -35,7 +35,6 @@ class UserPolicy
         return $user ? Response::allow() : Response::denyAsNotFound();                    
                    
     }
-
   
     public function create(User $user): bool
     {

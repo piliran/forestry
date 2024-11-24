@@ -13,7 +13,8 @@ class RolePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        // Check if the user has permission to view any roles
+        return $user->hasPermissionTo('view_any_role');
     }
 
     /**
@@ -21,7 +22,8 @@ class RolePolicy
      */
     public function view(User $user, Role $role): bool
     {
-        //
+        // Check if the user has permission to view the specific role
+        return $user->hasPermissionTo('view_role') || $user->hasRole('admin');
     }
 
     /**
@@ -29,7 +31,8 @@ class RolePolicy
      */
     public function create(User $user): bool
     {
-        //
+        // Check if the user has permission to create a new role
+        return $user->hasPermissionTo('create_role');
     }
 
     /**
@@ -37,7 +40,8 @@ class RolePolicy
      */
     public function update(User $user, Role $role): bool
     {
-        //
+        // Check if the user has permission to update the role
+        return $user->hasPermissionTo('update_role');
     }
 
     /**
@@ -45,7 +49,8 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-        //
+        // Check if the user has permission to delete the role
+        return $user->hasPermissionTo('delete_role');
     }
 
     /**
@@ -53,7 +58,8 @@ class RolePolicy
      */
     public function restore(User $user, Role $role): bool
     {
-        //
+        // Check if the user has permission to restore the role
+        return $user->hasPermissionTo('restore_role');
     }
 
     /**
@@ -61,6 +67,16 @@ class RolePolicy
      */
     public function forceDelete(User $user, Role $role): bool
     {
-        //
+        // Check if the user has permission to permanently delete the role
+        return $user->hasPermissionTo('force_delete_role');
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    
+        return null;
     }
 }
