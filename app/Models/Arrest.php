@@ -19,11 +19,17 @@ class Arrest extends Model
         'location',
         'proof',
         'confiscate_id',
+        'suspect_id'
     ];
 
     // Define relationship with Confiscate
     public function confiscate()
     {
         return $this->belongsTo(Confiscate::class);
+    }
+
+    public function suspect()
+    {
+        return $this->belongsTo(Suspect::class);
     }
 }

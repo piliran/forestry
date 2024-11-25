@@ -192,17 +192,17 @@
                             Arrest Description is required.
                         </small>
                     </div>
+
                     <div>
                         <label for="date" class="block font-bold mb-3">
                             Date
                         </label>
-                        <InputText
-                            id="name"
-                            v-model.trim="arrest.date"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !arrest.date"
+
+                        <DatePicker
                             fluid
+                            v-model="arrest.date"
+                            dateFormat="dd/mm/yy"
+                            placeholder="YYYY-MM-DD"
                         />
                         <small
                             v-if="submitted && !arrest.date"
@@ -211,7 +211,8 @@
                             Arrest Date is required.
                         </small>
                     </div>
-                    <div>
+
+                    <!-- <div>
                         <label for="location" class="block font-bold mb-3">
                             Location
                         </label>
@@ -229,8 +230,8 @@
                         >
                             Location is required.
                         </small>
-                    </div>
-                    <div>
+                    </div> -->
+                    <!-- <div>
                         <label for="proof" class="block font-bold mb-3">
                             Proof
                         </label>
@@ -248,7 +249,7 @@
                         >
                             Proof is required.
                         </small>
-                    </div>
+                    </div> -->
 
                     <div class="col-12 md:col-6">
                         <label for="suspects" class="block font-bold mb-2"
@@ -421,6 +422,7 @@ import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
+import DatePicker from "primevue/datepicker";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";

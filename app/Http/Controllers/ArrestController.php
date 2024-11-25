@@ -23,7 +23,7 @@ class ArrestController extends Controller
         $confiscates = Confiscate::all();
 
         
-        return Inertia::render('Department/Arrests', [
+        return Inertia::render('Arrests/Index', [
             'arrests' => $arrests,
             'suspects' => $suspects,
             'confiscates' => $confiscates,
@@ -46,16 +46,16 @@ class ArrestController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
+      $validated=  $request->validate([
             'description' => 'required|string|max:255',
-            'date' => 'required|date',
-            'location' => 'required|string|max:255',
-            'proof' => 'required|string|max:255',
+            'date' => 'required|string',
+            'location' => 'nullable|string|max:255',
+            'proof' => 'nullable|string|max:255',
             'suspect_id' => 'required|exists:suspects,id',
             'confiscate_id' => 'required|exists:confiscates,id',
         ]);
 
-        $arrest = Arrest::create($request->all());
+        $arrest = Arrest::create($validated);
         $arrest->load('suspect');
         $arrest->load('confiscate');
 
@@ -93,15 +93,17 @@ class ArrestController extends Controller
 
         $request->validate([
             'description' => 'required|string|max:255',
-            'date' => 'required|date',
-            'location' => 'required|string|max:255',
-            'proof' => 'required|string|max:255',
+            'date' => 'required|string',
+            'location' => 'nullable|string|max:255',
+            'proof' => 'nullable|string|max:255',
             'suspect_id' => 'required|exists:suspects,id',
             'confiscate_id' => 'required|exists:confiscates,id',
         ]);
 
         $arrest->update($request->all());
         $arrest->load(['suspect','confiscate',]); // Return the updated arrest
+
+        return response()->json($arrest, 201); 
     }
 
     /**
@@ -118,7 +120,7 @@ class ArrestController extends Controller
     /**
      * Bulk soft delete selected arrests.
      */
-    public function bulkDelete(Request $request)
+    public function batchDelete(Request $request)
     {
         $request->validate([
             'ids' => 'required|array',

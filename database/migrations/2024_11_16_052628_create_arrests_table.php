@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('arrests', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->date('date');
-            $table->string('location');
-            $table->string('proof');
+            $table->string('date');
+            $table->string('location')->nullable();
+            $table->string('proof')->nullable();
             $table->unsignedBigInteger('suspect_id');
             $table->foreign('suspect_id')->references('id')->on('suspects')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('confiscate_id');
