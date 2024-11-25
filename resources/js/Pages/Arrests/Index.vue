@@ -127,6 +127,12 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
+                    <!-- <Column
+                        field="crime.name"
+                        header="Crime"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column> -->
                     <Column
                         field="confiscate.item"
                         header="Confiscates"
@@ -170,6 +176,65 @@
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
+                    <div class="col-12 md:col-6">
+                        <label for="suspects" class="block font-bold mb-2"
+                            >Suspect</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="arrest.suspect_id"
+                            :options="suspects"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Suspect"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !arrest.suspect_id"
+                            class="text-red-500"
+                        >
+                            Suspect is required.
+                        </small>
+                    </div>
+
+                    <div class="col-12 md:col-6">
+                        <label for="crimes" class="block font-bold mb-2"
+                            >Crime</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="arrest.crime_id"
+                            :options="crimes"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Crime"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !arrest.crime_id"
+                            class="text-red-500"
+                        >
+                            Crime is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="date" class="block font-bold mb-3">
+                            Date Arrested
+                        </label>
+
+                        <DatePicker
+                            fluid
+                            v-model="arrest.date"
+                            dateFormat="dd/mm/yy"
+                            placeholder="YYYY-MM-DD"
+                        />
+                        <small
+                            v-if="submitted && !arrest.date"
+                            class="text-red-500"
+                        >
+                            Arrest Date is required.
+                        </small>
+                    </div>
                     <div class="col-12">
                         <label for="description" class="block font-bold mb-3"
                             >Description</label
@@ -191,24 +256,7 @@
                             Arrest Description is required.
                         </small>
                     </div>
-                    <div>
-                        <label for="date" class="block font-bold mb-3">
-                            Date
-                        </label>
 
-                        <DatePicker
-                            fluid
-                            v-model="arrest.date"
-                            dateFormat="dd/mm/yy"
-                            placeholder="YYYY-MM-DD"
-                        />
-                        <small
-                            v-if="submitted && !arrest.date"
-                            class="text-red-500"
-                        >
-                            Arrest Date is required.
-                        </small>
-                    </div>
                     <!-- <div>
                         <label for="location" class="block font-bold mb-3">
                             Location
@@ -248,28 +296,7 @@
                         </small>
                     </div> -->
 
-                    <div class="col-12 md:col-6">
-                        <label for="suspects" class="block font-bold mb-2"
-                            >Suspect</label
-                        >
-                        <Select
-                            id="id"
-                            v-model="arrest.suspect_id"
-                            :options="suspects"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select Suspect"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !arrest.suspect_id"
-                            class="text-red-500"
-                        >
-                            Suspect is required.
-                        </small>
-                    </div>
-
-                    <div class="col-12 md:col-6">
+                    <!-- <div class="col-12 md:col-6">
                         <label for="confiscate" class="block font-bold mb-2"
                             >Confiscate</label
                         >
@@ -288,7 +315,7 @@
                         >
                             Confiscate is required.
                         </small>
-                    </div>
+                    </div> -->
                 </div>
                 <template #footer>
                     <Button
@@ -444,11 +471,13 @@ const props = defineProps({
     arrests: Array,
     suspects: Array,
     confiscates: Array,
+    crimes: Array,
 });
 
 const arrests = ref(props.arrests);
 const suspects = ref(props.suspects);
 const confiscates = ref(props.confiscates);
+const crimes = ref(props.crimes);
 
 const home = ref({
     icon: "pi pi-home",

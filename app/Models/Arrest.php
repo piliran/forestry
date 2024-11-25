@@ -18,8 +18,9 @@ class Arrest extends Model
         'date',
         'location',
         'proof',
-        'confiscate_id',
-        'suspect_id'
+        // 'confiscate_id',
+        'suspect_id',
+        'crime_id'
     ];
 
     // Define relationship with Confiscate
@@ -31,5 +32,10 @@ class Arrest extends Model
     public function suspect()
     {
         return $this->belongsTo(Suspect::class);
+    }
+
+    public function crime()
+    {
+        return $this->belongsTo(Crime::class);
     }
 }

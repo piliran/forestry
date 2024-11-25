@@ -162,6 +162,13 @@
                         sortable
                         style="min-width: 12rem"
                     ></Column>
+
+                    <Column
+                        header="Status"
+                        field="status"
+                        sortable
+                        style="min-width: 12rem"
+                    ></Column>
                     <Column
                         header="Action"
                         :exportable="false"

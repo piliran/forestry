@@ -377,7 +377,7 @@ const home = ref({
     route: "/dashboard",
 });
 
-const breadCumbItems = ref([{ label: "Roles" }]);
+const breadCumbItems = ref([{ label: "Roles List" }]);
 
 const props = defineProps({
     roles: Array,

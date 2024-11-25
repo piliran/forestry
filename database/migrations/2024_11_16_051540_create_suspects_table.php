@@ -20,7 +20,15 @@ return new class extends Migration
             $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
             $table->string('village');
             $table->string('TA');
-            $table->string('suspect_photo_path', 2048)->nullable();          
+            $table->string('suspect_photo_path', 2048)->nullable();   
+            $table->enum('status', [
+                'Under Investigation',  // Default: suspect has been registered and is under investigation
+                'Arrested',             // Suspect is taken into custody
+                'Released Without Charge', // Released by police without charges
+                'Court Hearing Pending',   // Awaiting court proceedings
+                'Acquitted',            // Found not guilty and released by the court
+                'Convicted'             // Found guilty and convicted in court
+            ])->default('Under Investigation');       
             $table->softDeletes(); 
             $table->timestamps();
         });

@@ -19,8 +19,10 @@ return new class extends Migration
             $table->string('proof')->nullable();
             $table->unsignedBigInteger('suspect_id');
             $table->foreign('suspect_id')->references('id')->on('suspects')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('confiscate_id');
-            $table->foreign('confiscate_id')->references('id')->on('confiscates')->onDelete('cascade')->onUpdate('cascade');
+            // $table->unsignedBigInteger('confiscate_id');
+            // $table->foreign('confiscate_id')->references('id')->on('confiscates')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('crime_id');
+            $table->foreign('crime_id')->references('id')->on('crimes')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes(); 
             $table->timestamps();
         });
