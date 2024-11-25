@@ -80,7 +80,7 @@
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Species Categories</h4>
+                            <h4 class="m-0">Manage Species Types</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -136,7 +136,7 @@
                     </Column>
                 </DataTable>
                 <div v-else class="flex items-center justify-center">
-                    <h2>No specie categories found</h2>
+                    <h2>No specie types found</h2>
                 </div>
             </div>
 

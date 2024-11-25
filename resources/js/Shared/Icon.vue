@@ -90,17 +90,6 @@
         />
     </svg>
 
-    <!-- Home -->
-    <svg
-        v-else-if="name === 'home'"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-    >
-        <path
-            d="M10 20V11h5V8l7 7-7 7v-3h-5v6H3V12H1L8 5h4L19 12h-2V8h-5V4h3L10 0 1 9h3v3h6z"
-        />
-    </svg>
-
     <!-- Add -->
     <svg
         v-else-if="name === 'add'"
@@ -362,6 +351,18 @@
     >
         <path
             d="M12 2a6 6 0 1 1 0 12A6 6 0 0 1 12 2zm0 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM3 21v-2a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v2H3zm2-2h14v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v1z"
+        />
+    </svg>
+
+    <svg
+        v-else-if="name === 'home'"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+    >
+        <path
+            d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z"
         />
     </svg>
 </template>

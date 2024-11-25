@@ -116,7 +116,7 @@ onMounted(() => {
 const items = ref([
     {
         label: "Dashboard",
-        icon: "dashboard",
+        icon: "home",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/dashboard",
