@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Arrest;
 use App\Models\Confiscate;
+use App\Models\Suspect;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate; // Preserved for future use
@@ -17,10 +18,18 @@ class ArrestController extends Controller
     public function index()
     {
         // Fetch only non-deleted arrests
-        $arrests = Arrest::with('confiscate')->whereNull('deleted_at')->get();
-        return Inertia::render('Arrests/Index', [
+        $arrests = Arrest::with(['suspect', 'confiscate'])->whereNull('deleted_at')->get();
+        $suspects = Suspect::all();
+        $confiscates = Confiscate::all();
+
+        
+        return Inertia::render('Department/Arrests', [
             'arrests' => $arrests,
+            'suspects' => $suspects,
+            'confiscates' => $confiscates,
+
         ]);
+
     }
 
     /**
@@ -36,15 +45,19 @@ class ArrestController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'description' => 'required|string|max:255',
             'date' => 'required|date',
             'location' => 'required|string|max:255',
             'proof' => 'required|string|max:255',
+            'suspect_id' => 'required|exists:suspects,id',
             'confiscate_id' => 'required|exists:confiscates,id',
         ]);
 
         $arrest = Arrest::create($request->all());
+        $arrest->load('suspect');
+        $arrest->load('confiscate');
 
         return response()->json($arrest, 201); // Return the created arrest
     }
@@ -83,12 +96,12 @@ class ArrestController extends Controller
             'date' => 'required|date',
             'location' => 'required|string|max:255',
             'proof' => 'required|string|max:255',
+            'suspect_id' => 'required|exists:suspects,id',
             'confiscate_id' => 'required|exists:confiscates,id',
         ]);
 
         $arrest->update($request->all());
-
-        return response()->json($arrest); // Return the updated arrest
+        $arrest->load(['suspect','confiscate',]); // Return the updated arrest
     }
 
     /**

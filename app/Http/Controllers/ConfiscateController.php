@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Confiscate;
+use App\Models\Encroached;
+use App\Models\Suspect;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate; // Preserved for future use
@@ -16,9 +18,15 @@ class ConfiscateController extends Controller
     public function index()
     {
         // Fetch only non-deleted confiscates
-        $confiscates = Confiscate::whereNull('deleted_at')->get();
-        return Inertia::render('Confiscates/Index', [
+        
+        $confiscates = Confiscate::whereNull('deleted_at')->with(['suspect','encroached',])->get();
+        $suspects = Suspect::all();
+        $encroached_areas = Encroached::all();
+
+        return Inertia::render('Department/Confiscates', [
             'confiscates' => $confiscates,
+            'suspects' => $suspects,
+            'encroached_areas' => $encroached_areas,
         ]);
     }
 
@@ -36,17 +44,17 @@ class ConfiscateController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'national_id' => 'required|string|max:255',
-            'village' => 'required|string|max:255',
-            'TA' => 'required|string|max:255',
-            'district' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'coordinates' => 'required|string|max:255',
+            'item' => 'required|string|max:255',
+            'quantity' => 'required|numeric|max:255',
+            'suspect_id' => 'required|exists:suspects,id',
+            'encroached_area_id' => 'required|exists:encroacheds,id',
             'proof' => 'required|string|max:255',
         ]);
 
         $confiscate = Confiscate::create($request->all());
+        $confiscate->load('suspect');
+        $confiscate->load('encroached_area');
+
 
         return response()->json($confiscate, 201); // Return the created confiscate
     }
@@ -74,20 +82,21 @@ class ConfiscateController extends Controller
      */
     public function update(Request $request, Confiscate $confiscate)
     {
+        
         $request->validate([
-            'name' => 'required|string|max:255',
-            'national_id' => 'required|string|max:255',
-            'village' => 'required|string|max:255',
-            'TA' => 'required|string|max:255',
-            'district' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'coordinates' => 'required|string|max:255',
+            'item' => 'required|string|max:255',
+            'quantity' => 'required|numeric|max:255',
+            'suspect_id' => 'required|exists:suspects,id',
+            'encroached_area_id' => 'required|exists:encroacheds,id',
             'proof' => 'required|string|max:255',
         ]);
 
         $confiscate->update($request->all());
+        $confiscate->load(['suspect','encroached_area',]);
 
-        return response()->json($confiscate); // Return the updated confiscate
+        return response()->json($confiscate, 200); // Return the createdupdated
+
+
     }
 
     /**

@@ -27,9 +27,10 @@ use App\Http\Controllers\RouteTypeController;
 use App\Http\Controllers\CrimeController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\StationController;
+use App\Http\Controllers\ConfiscateController;
+use App\Http\Controllers\ArrestController;
 
 use App\Http\Controllers\UserController;
-use App\Models\RouteType;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 
@@ -49,6 +50,11 @@ Route::resource('area-list', AreaController::class)->middleware([HandlePrecognit
 
 Route::post('/encroached-areas/bulk-delete', [EncroachedController::class, 'batchDelete']);
 Route::resource('encroached-areas', EncroachedController::class)->middleware([HandlePrecognitiveRequests::class]);
+
+Route::post('/confiscates/bulk-delete', [ConfiscateController::class, 'batchDelete']);
+Route::resource('confiscates', ConfiscateController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/arrests/bulk-delete', [ArrestController::class, 'batchDelete']);
+Route::resource('arrests', ArrestController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 
 
@@ -128,9 +134,9 @@ Route::get('/', function () {
 //     return Inertia::render('Department/Crimes');
 // });
 
-Route::get('/arrests', function () {
-    return Inertia::render('Department/Arrests');
-});
+// Route::get('/arrests', function () {
+//     return Inertia::render('Department/Arrests');
+// });
 
 // Route::get('/stations', function () {
 //     return Inertia::render('Department/Stations');
@@ -140,9 +146,9 @@ Route::get('/arrests', function () {
 //     return Inertia::render('Department/EncroachedAreas');
 // }); 
 
-Route::get('/confiscates', function () {
-    return Inertia::render('Department/Confiscates');
-});
+// Route::get('/confiscates', function () {
+//     return Inertia::render('Department/Confiscates');
+// });
 
 // Route::get('/route-list', function () {
 //     return Inertia::render('Department/RouteList');
