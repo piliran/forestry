@@ -639,6 +639,7 @@ const props = defineProps({
 
 const suspects = ref(props.suspects);
 const countries = ref(props.countries);
+console.log(suspects);
 
 const previewUrl = ref(null);
 const onFileSelect = (event) => {
