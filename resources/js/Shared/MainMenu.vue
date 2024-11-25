@@ -260,6 +260,16 @@ const items = ref([
     },
 
     {
+        label: "Schedules",
+        icon: "scheduling",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        route: "/schedules",
+        allowedRoles: ["Admin", "User"],
+    },
+
+    {
         label: "Areas",
         icon: "location",
         class: "parent-link-with-sublinks",

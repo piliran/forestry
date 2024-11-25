@@ -17,9 +17,8 @@ return new class extends Migration
             $table->string('quantity');       
             $table->unsignedBigInteger('suspect_id');
             $table->foreign('suspect_id')->references('id')->on('suspects')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('encroached_area_id');
-            $table->foreign('encroached_area_id')->references('id')->on('encroacheds')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('proof');
+           
+            $table->string('proof')->nullable();
             $table->softDeletes(); 
             $table->timestamps();
         });

@@ -365,6 +365,17 @@
             d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z"
         />
     </svg>
+
+    <svg
+        v-else-if="name === 'scheduling'"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+    >
+        <path
+            d="M3 3h18v2H3V3zm2 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm1 3v8h12v-8H6zm3 2h6v2H9v-2z"
+        />
+    </svg>
 </template>
 
 <script>

@@ -47,7 +47,7 @@ class RouteController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:100',
             'location' => 'required|string|max:255',
-            'route_type_id' => 'required|exists:routeTypes,id',
+            'route_type_id' => 'required|exists:route_types,id',
         ]);
 
         $route = Route::create($request->all());

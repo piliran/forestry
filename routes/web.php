@@ -15,6 +15,9 @@ use App\Http\Controllers\UserPermissionsController;
 use App\Http\Controllers\OperationTypeController;
 use App\Http\Controllers\OperationController;
 
+use App\Http\Controllers\ScheduleController;
+
+
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DepartmentController;
@@ -52,7 +55,9 @@ Route::post('/encroached-areas/bulk-delete', [EncroachedController::class, 'batc
 Route::resource('encroached-areas', EncroachedController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 Route::post('/confiscates/bulk-delete', [ConfiscateController::class, 'batchDelete']);
+Route::post('/update-confiscate', [ConfiscateController::class, 'updateConfiscate']);
 Route::resource('confiscates', ConfiscateController::class)->middleware([HandlePrecognitiveRequests::class]);
+
 Route::post('/arrests/bulk-delete', [ArrestController::class, 'batchDelete']);
 Route::resource('arrests', ArrestController::class)->middleware([HandlePrecognitiveRequests::class]);
 
@@ -116,6 +121,9 @@ Route::post('/operations-list/bulk-delete', [OperationController::class, 'batchD
 
 Route::resource('operations-types', OperationTypeController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/operations-types/delete-multiple', [OperationTypeController::class, 'batchDelete']);
+
+Route::resource('schedules', ScheduleController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/schedules/delete-multiple', [ScheduleController::class, 'batchDelete']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [

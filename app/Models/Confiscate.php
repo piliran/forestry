@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Confiscate extends Model
 {
@@ -14,14 +15,9 @@ class Confiscate extends Model
 
     // Define fillable fields
     protected $fillable = [
-        'name',
-        'national_id',
-        'village',
-        'TA',
-        'district_id',
-        'encroached_area_id',
-        'suspect_id',
-   
+        'item',
+        'quantity',        
+        'suspect_id',   
         'proof',
     ];
 
@@ -40,5 +36,10 @@ class Confiscate extends Model
     public function Encroached()
     {
         return $this->belongsTo(Encroached::class, 'encroached_area_id');
+    }
+
+    public function getProofAttribute($value)
+    {
+        return $value ? Storage::url($value) : null;
     }
 }

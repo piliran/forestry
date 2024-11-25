@@ -45,7 +45,9 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="!selectedRoutes || !selectedRoutes.length"
+                            :disabled="
+                                !selectedRoutes || !selectedRoutes.length
+                            "
                         />
                     </template>
                     <template #end>
@@ -121,7 +123,7 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="routeType"
+                        field="route_type.name"
                         header="Route type"
                         sortable
                         style="min-width: 10rem"
@@ -241,7 +243,6 @@
                         </small>
                     </div>
 
-                    
                     <div class="col-12 md:col-6">
                         <label for="route" class="block font-bold mb-2"
                             >Route type</label
@@ -262,8 +263,6 @@
                             Route Type is required.
                         </small>
                     </div>
-
-                    
                 </div>
                 <template #footer>
                     <Button
@@ -404,7 +403,7 @@ const home = ref({
     route: "/dashboard",
 });
 
-const breadCumbItems = ref([{ label: "Routes" }]);
+const breadCumbItems = ref([{ label: "Route List" }]);
 
 // Reactive State Variables
 const dt = ref();
@@ -429,6 +428,7 @@ const props = defineProps({
 const routes = ref(props.routes);
 const areas = ref(props.areas);
 const routeTypes = ref(props.routeTypes);
+console.log(routes);
 
 // CRUD Methods
 const openNew = () => {

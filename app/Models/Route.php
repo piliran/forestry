@@ -22,7 +22,7 @@ class Route extends Model
 
     public function area()
     {
-        return $this->belongsTo(Area::class, 'zone_id');
+        return $this->belongsTo(Area::class, 'area_id');
     }
 
     public function RouteType()

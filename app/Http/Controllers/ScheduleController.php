@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use App\Models\User;
+use Inertia\Inertia;
 
 class ScheduleController extends Controller
 {
@@ -14,15 +13,12 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        //
-    }
+        // Fetch non-deleted schedules
+        $schedules = Schedule::whereNull('deleted_at')->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return Inertia::render('Schedule/Index', [
+            'schedules' => $schedules,
+        ]);
     }
 
     /**
@@ -30,23 +26,15 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'time' => 'required|string|max:255', // Assuming time is stored as a string
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Schedule $schedule)
-    {
-        //
-    }
+        $schedule = Schedule::create($validated);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Schedule $schedule)
-    {
-        //
+        return response()->json($schedule, 201);
     }
 
     /**
@@ -54,14 +42,69 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, Schedule $schedule)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:255',
+            'time' => 'nullable|string|max:255',
+        ]);
+
+        $schedule->update($validated);
+
+        return response()->json($schedule, 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource.
      */
     public function destroy(Schedule $schedule)
     {
-        //
+        $schedule->delete(); // Soft delete
+
+        return response()->json(['message' => 'Schedule soft-deleted successfully.'], 200);
+    }
+
+    /**
+     * Bulk soft delete selected schedules.
+     */
+    public function batchDelete(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+
+        Schedule::whereIn('id', $validated['ids'])->delete(); // Soft delete
+
+        return response()->json(['message' => 'Selected schedules soft-deleted successfully.'], 200);
+    }
+
+    /**
+     * Restore a soft-deleted schedule.
+     */
+    public function restore($id)
+    {
+        $schedule = Schedule::withTrashed()->findOrFail($id);
+        $schedule->restore();
+
+        return response()->json(['message' => 'Schedule restored successfully.'], 200);
+    }
+
+    /**
+     * Bulk restore selected schedules.
+     */
+    public function bulkRestore(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+
+        Schedule::withTrashed()->whereIn('id', $validated['ids'])->restore();
+
+        return response()->json(['message' => 'Selected schedules restored successfully.'], 200);
+    }
+
+    /**
+     * Fetch all trashed schedules for review.
+     */
+    public function trashed()
+    {
+        $trashedSchedules = Schedule::onlyTrashed()->get();
+
+        return response()->json($trashedSchedules, 200);
     }
 }

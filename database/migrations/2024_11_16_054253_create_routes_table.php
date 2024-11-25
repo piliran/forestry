@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('area_id');
             $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('route_type_id');
+            $table->foreign('route_type_id')->references('id')->on('route_types')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
             $table->string('code');
             $table->string('location');
-            $table->string('type');
+     
             $table->softDeletes(); 
             $table->timestamps();
         });

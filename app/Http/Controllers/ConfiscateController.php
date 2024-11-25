@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate; // Preserved for future use
 use App\Models\User; // Preserved for future use
+use Illuminate\Support\Facades\Storage;
 
 class ConfiscateController extends Controller
 {
@@ -19,10 +20,10 @@ class ConfiscateController extends Controller
     {
         // Fetch only non-deleted confiscates
         
-        $confiscates = Confiscate::whereNull('deleted_at')->with(['suspect','encroached',])->get();
+        $confiscates = Confiscate::whereNull('deleted_at')->with('suspect')->get();
         $suspects = Suspect::all();
         $encroached_areas = Encroached::all();
-
+ 
         return Inertia::render('Department/Confiscates', [
             'confiscates' => $confiscates,
             'suspects' => $suspects,
@@ -43,21 +44,38 @@ class ConfiscateController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        
+    
+        // Validate the request data
+        $validated = $request->validate([
             'item' => 'required|string|max:255',
             'quantity' => 'required|numeric|max:255',
             'suspect_id' => 'required|exists:suspects,id',
-            'encroached_area_id' => 'required|exists:encroacheds,id',
-            'proof' => 'required|string|max:255',
+            'proof' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov|max:20480', // Max 20MB
         ]);
-
-        $confiscate = Confiscate::create($request->all());
+    
+        // Handle file upload for the proof field
+        if ($request->hasFile('proof')) {
+            $validated['proof'] = $request
+                ->file('proof')
+                ->store('proofs', 'public'); // Save in 'public/confiscates/proofs'
+        }
+    
+        // Create the confiscate record
+        $confiscate = Confiscate::create([
+            'item' => $validated['item'],
+            'quantity' => $validated['quantity'],
+            'suspect_id' => $validated['suspect_id'],
+            'proof' => $validated['proof'] ?? null, // Default to null if no file
+        ]);
+    
+        // Load related suspect data
         $confiscate->load('suspect');
-        $confiscate->load('encroached_area');
-
-
-        return response()->json($confiscate, 201); // Return the created confiscate
+    
+        // Return the created confiscate as JSON
+        return response()->json($confiscate, 201);
     }
+    
 
     /**
      * Display the specified resource.
@@ -80,24 +98,50 @@ class ConfiscateController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Confiscate $confiscate)
+    public function updateConfiscate(Request $request)
     {
-        
-        $request->validate([
+        $confiscate = Confiscate::findOrFail($request->id);
+        // Validate the incoming request
+        $validated = $request->validate([
             'item' => 'required|string|max:255',
             'quantity' => 'required|numeric|max:255',
             'suspect_id' => 'required|exists:suspects,id',
-            'encroached_area_id' => 'required|exists:encroacheds,id',
-            'proof' => 'required|string|max:255',
+            'proof' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov|max:20480', // Max 20MB
+        ]);
+    
+        // Handle file upload if a new proof file is provided
+        if ($request->hasFile('proof')) {
+            // Delete the old proof file if it exists
+            if ($confiscate->proof) {
+                Storage::disk('public')->delete($confiscate->proof);
+            }
+    
+            // Store the new file
+            $validated['proof'] = $request
+                ->file('proof')
+                ->store('proofs', 'public');
+        }
+    
+        // Update the confiscate record with validated data
+        $confiscate->update([
+            'item' => $validated['item'],
+            'quantity' => $validated['quantity'],
+            'suspect_id' => $validated['suspect_id'],
+          
         ]);
 
-        $confiscate->update($request->all());
-        $confiscate->load(['suspect','encroached_area',]);
-
-        return response()->json($confiscate, 200); // Return the createdupdated
-
-
+        
+        if ($request->hasFile('proof')) {
+            $confiscate->update(['proof' => $validated['proof']]);
+        }
+    
+        // Load related suspect data
+        $confiscate->load('suspect');
+    
+        // Return the updated confiscate as JSON
+        return response()->json($confiscate, 200);
     }
+    
 
     /**
      * Soft delete the specified resource from storage.
@@ -113,7 +157,7 @@ class ConfiscateController extends Controller
     /**
      * Bulk soft delete selected confiscates.
      */
-    public function bulkDelete(Request $request)
+    public function batchDelete(Request $request)
     {
         $request->validate([
             'ids' => 'required|array',

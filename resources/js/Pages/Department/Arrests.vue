@@ -46,7 +46,7 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selecteArrests || !selectedArrests.length
+                                !selectedArrests || !selectedArrests.length
                             "
                         />
                     </template>
@@ -171,7 +171,6 @@
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
-                    
                     <div class="col-12">
                         <label for="description" class="block font-bold mb-3"
                             >Description</label
@@ -209,7 +208,7 @@
                             v-if="submitted && !arrest.date"
                             class="text-red-500"
                         >
-                        Arrest Date is required.
+                            Arrest Date is required.
                         </small>
                     </div>
                     <div>
@@ -408,6 +407,8 @@ import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 
+import Textarea from "primevue/textarea";
+
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
@@ -543,9 +544,7 @@ const deleteArrest = async () => {
     loading.value = true;
     try {
         await axios.delete(`/arrests/${arest.value.id}`);
-        arrests.value = arrests.value.filter(
-            (r) => r.id !== arrest.value.id
-        );
+        arrests.value = arrests.value.filter((r) => r.id !== arrest.value.id);
         toast.add({
             severity: "success",
             summary: "Successful",
