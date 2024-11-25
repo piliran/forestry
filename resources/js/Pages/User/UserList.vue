@@ -492,8 +492,8 @@
                 :header="user.name"
                 :modal="true"
             >
-                <div class="grid gap-4">
-                    <!-- Role Selection -->
+                <!-- <div class="grid gap-4">
+                 
                     <div class="col-12">
                         <label for="role" class="block font-bold mb-2"
                             >Select Role</label
@@ -507,6 +507,28 @@
                             placeholder="Select role"
                             fluid
                         />
+                    </div>
+                </div> -->
+
+                <div class="col-12">
+                    <label for="roles" class="block font-bold mb-2">
+                        Select Role
+                    </label>
+                    <div class="card flex flex-wrap justify-start gap-4">
+                        <div
+                            v-for="(role, index) in roles"
+                            :key="role.id"
+                            class="flex items-center gap-2"
+                        >
+                            <Checkbox
+                                v-model="userRole"
+                                :inputId="'role' + index"
+                                :value="role.id"
+                            />
+                            <label :for="'role' + index">{{
+                                role.name
+                            }}</label>
+                        </div>
                     </div>
                 </div>
 
@@ -544,8 +566,8 @@
                 :header="user.name"
                 :modal="true"
             >
-                <div class="grid gap-4">
-                    <!-- Role Selection -->
+                <!-- <div class="grid gap-4">
+                    
                     <div class="col-12">
                         <label for="permission" class="block font-bold mb-2"
                             >Select Permission</label
@@ -559,6 +581,28 @@
                             placeholder="Select permission"
                             fluid
                         />
+                    </div>
+                </div> -->
+
+                <div class="col-12">
+                    <label for="permissions" class="block font-bold mb-2">
+                        Select Permission
+                    </label>
+                    <div class="card flex flex-wrap justify-start gap-4">
+                        <div
+                            v-for="(permission, index) in permissions"
+                            :key="permission.id"
+                            class="flex items-center gap-2"
+                        >
+                            <Checkbox
+                                v-model="userPermission"
+                                :inputId="'permission' + index"
+                                :value="permission.id"
+                            />
+                            <label :for="'permission' + index">{{
+                                permission.name
+                            }}</label>
+                        </div>
                     </div>
                 </div>
 

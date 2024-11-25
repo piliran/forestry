@@ -182,7 +182,7 @@
                     </div>
 
                     <!-- Permissions -->
-                    <div>
+                    <!-- <div>
                         <label for="permissions" class="block font-bold mb-3">
                             Permissions
                         </label>
@@ -195,6 +195,28 @@
                             placeholder="Select Permissions"
                             fluid
                         />
+                    </div> -->
+
+                    <div class="col-12">
+                        <label for="permissions" class="block font-bold mb-2">
+                            Select Permissions
+                        </label>
+                        <div class="card flex flex-wrap justify-start gap-4">
+                            <div
+                                v-for="(permission, index) in props.permissions"
+                                :key="permission.id"
+                                class="flex items-center gap-2"
+                            >
+                                <Checkbox
+                                    v-model="role.permissions"
+                                    :inputId="'permission' + index"
+                                    :value="permission.id"
+                                />
+                                <label :for="'permission' + index">{{
+                                    permission.name
+                                }}</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <template #footer>
@@ -310,6 +332,7 @@ import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
+import Checkbox from "primevue/checkbox";
 
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
