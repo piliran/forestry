@@ -15,7 +15,7 @@ class RouteTypeController extends Controller
     {
         // Fetch non-deleted route types
         $routeTypes = RouteType::whereNull('deleted_at')->get();
-        return Inertia::render('RouteTypes/Index', [
+        return Inertia::render('Department/RouteTypes', [
             'routeTypes' => $routeTypes,
         ]);
     }

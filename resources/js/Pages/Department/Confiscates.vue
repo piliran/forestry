@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Arrests">
+    <AppLayout title="Confiscates">
         <div>
             <div class="-mt-6 inline-block bg-transparent">
                 <Breadcrumb :home="home" :model="breadCumbItems">
@@ -29,6 +29,7 @@
                     </template>
                 </Breadcrumb>
             </div>
+            <!-- Toolbar -->
             <div class="card">
                 <Toolbar class="mb-6">
                     <template #start>
@@ -45,23 +46,11 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedProducts || !selectedProducts.length
+                                !selectedConfiscates || !selectedConfiscates.length
                             "
                         />
                     </template>
-
                     <template #end>
-                        <FileUpload
-                            mode="basic"
-                            accept="image/*"
-                            :maxFileSize="1000000"
-                            label="Import"
-                            customUpload
-                            chooseLabel="Import"
-                            class="mr-2"
-                            auto
-                            :chooseButtonProps="{ severity: 'secondary' }"
-                        />
                         <Button
                             label="Export"
                             icon="pi pi-upload"
@@ -71,25 +60,28 @@
                     </template>
                 </Toolbar>
 
+                <!-- Toast Notifications -->
                 <Toast />
 
+                <!-- Data Table -->
                 <DataTable
+                    v-if="confiscates.length > 0"
                     ref="dt"
-                    v-model:selection="selectedProducts"
-                    :value="products"
+                    v-model:selection="selectedConfiscates"
+                    :value="confiscates"
                     dataKey="id"
                     :paginator="true"
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Confiscates"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Products</h4>
+                            <h4 class="m-0">Manage Confiscates</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -101,231 +93,139 @@
                             </IconField>
                         </div>
                     </template>
-
                     <Column
                         selectionMode="multiple"
                         style="width: 3rem"
                         :exportable="false"
                     ></Column>
                     <Column
-                        field="code"
-                        header="Code"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
-                    <Column
-                        field="name"
-                        header="Name"
-                        sortable
-                        style="min-width: 16rem"
-                    ></Column>
-                    <Column header="Image">
-                        <template #body="slotProps">
-                            <img
-                                :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`"
-                                :alt="slotProps.data.image"
-                                class="rounded"
-                                style="width: 64px"
-                            />
-                        </template>
-                    </Column>
-                    <Column
-                        field="price"
-                        header="Price"
-                        sortable
-                        style="min-width: 8rem"
-                    >
-                        <template #body="slotProps">
-                            {{ formatCurrency(slotProps.data.price) }}
-                        </template>
-                    </Column>
-                    <Column
-                        field="category"
-                        header="Category"
+                        field="item"
+                        header="Item Name"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="rating"
-                        header="Reviews"
+                        field="quantity"
+                        header="Quantity"
                         sortable
-                        style="min-width: 12rem"
-                    >
-                        <template #body="slotProps">
-                            <Rating
-                                :modelValue="slotProps.data.rating"
-                                :readonly="true"
-                            />
-                        </template>
-                    </Column>
+                        style="min-width: 10rem"
+                    ></Column>
                     <Column
-                        field="inventoryStatus"
-                        header="Status"
+                        field="suspect.name"
+                        header="Suspect"
                         sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="encroached.area.name"
+                        header="Encroached Area"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="Proof"
+                        header="Proof"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+
+                    <Column
+                        header="Action"
+                        :exportable="false"
                         style="min-width: 12rem"
                     >
-                        <template #body="slotProps">
-                            <Tag
-                                :value="slotProps.data.inventoryStatus"
-                                :severity="
-                                    getStatusLabel(
-                                        slotProps.data.inventoryStatus
-                                    )
-                                "
-                            />
-                        </template>
-                    </Column>
-                    <Column :exportable="false" style="min-width: 12rem">
                         <template #body="slotProps">
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editProduct(slotProps.data)"
+                                @click="editConfiscate(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteProduct(slotProps.data)"
+                                @click="confirmDeleteConfiscate(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
+                <div v-else class="flex items-center justify-center">
+                    <h2>No Confiscates Found</h2>
+                </div>
             </div>
 
+            <!-- Add/Edit Confiscates Dialog -->
             <Dialog
-                v-model:visible="productDialog"
+                v-model:visible="confiscateDialog"
                 :style="{ width: '450px' }"
-                header="Product Details"
+                :header="editDialog ? 'Edit Confiscate' : 'Add New Confiscate'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
-                    <img
-                        v-if="product.image"
-                        :src="`https://primefaces.org/cdn/primevue/images/product/${product.image}`"
-                        :alt="product.image"
-                        class="block m-auto pb-4"
-                    />
                     <div>
-                        <label for="name" class="block font-bold mb-3"
-                            >Name</label
-                        >
+                        <label for="name" class="block font-bold mb-3">
+                            Item Name
+                        </label>
                         <InputText
                             id="name"
-                            v-model.trim="product.name"
+                            v-model.trim="confiscate.item"
                             required="true"
                             autofocus
-                            :invalid="submitted && !product.name"
+                            :invalid="submitted && !confiscate.itemm"
                             fluid
                         />
                         <small
-                            v-if="submitted && !product.name"
+                            v-if="submitted && !confiscate.item"
                             class="text-red-500"
-                            >Name is required.</small
                         >
+                            Confiscate Item is required.
+                        </small>
                     </div>
-                    <div>
-                        <label for="description" class="block font-bold mb-3"
-                            >Description</label
-                        >
-                        <Textarea
-                            id="description"
-                            v-model="product.description"
-                            required="true"
-                            rows="3"
-                            cols="20"
-                            fluid
-                        />
-                    </div>
-                    <div>
-                        <label
-                            for="inventoryStatus"
-                            class="block font-bold mb-3"
-                            >Inventory Status</label
+
+                    <div class="col-12 md:col-6">
+                        <label for="confiscate" class="block font-bold mb-2"
+                            >Suspect</label
                         >
                         <Select
-                            id="inventoryStatus"
-                            v-model="product.inventoryStatus"
-                            :options="statuses"
-                            optionLabel="label"
-                            placeholder="Select a Status"
+                            id="id"
+                            v-model="confiscate.suspect_id"
+                            :options="suspects"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Suspect"
                             fluid
-                        ></Select>
+                        />
+                        <small
+                            v-if="submitted && !confiscate.suspect_id"
+                            class="text-red-500"
+                        >
+                            Suspect Name is required.
+                        </small>
                     </div>
-
-                    <div>
-                        <span class="block font-bold mb-4">Category</span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category1"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Accessories"
-                                />
-                                <label for="category1">Accessories</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category2"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Clothing"
-                                />
-                                <label for="category2">Clothing</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category3"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Electronics"
-                                />
-                                <label for="category3">Electronics</label>
-                            </div>
-                            <div class="flex items-center gap-2 col-span-6">
-                                <RadioButton
-                                    id="category4"
-                                    v-model="product.category"
-                                    name="category"
-                                    value="Fitness"
-                                />
-                                <label for="category4">Fitness</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-12 gap-4">
-                        <div class="col-span-6">
-                            <label for="price" class="block font-bold mb-3"
-                                >Price</label
-                            >
-                            <InputNumber
-                                id="price"
-                                v-model="product.price"
-                                mode="currency"
-                                currency="USD"
-                                locale="en-US"
-                                fluid
-                            />
-                        </div>
-                        <div class="col-span-6">
-                            <label for="quantity" class="block font-bold mb-3"
-                                >Quantity</label
-                            >
-                            <InputNumber
-                                id="quantity"
-                                v-model="product.quantity"
-                                integeronly
-                                fluid
-                            />
-                        </div>
+                    <div class="col-12 md:col-6">
+                        <label for="confiscate" class="block font-bold mb-2"
+                            >Encroached Area</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="confiscate.encroached_area_id"
+                            :options="encroached_areas"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Encroached Area"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !confiscate.encroached_area_id"
+                            class="text-red-500"
+                        >
+                            Encroached Area is required.
+                        </small>
                     </div>
                 </div>
-
                 <template #footer>
                     <Button
                         label="Cancel"
@@ -333,254 +233,361 @@
                         text
                         @click="hideDialog"
                     />
-                    <Button
-                        label="Save"
-                        icon="pi pi-check"
-                        @click="saveProduct"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Save"
+                            icon="pi pi-check"
+                            @click="saveConfiscate"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
+            <!-- Delete Single Confiscate Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteProductDialog"
+                v-model:visible="deleteConfiscateDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="product"
-                        >Are you sure you want to delete
-                        <b>{{ product.name }}</b
-                        >?</span
-                    >
+                    <span v-if="confiscate">
+                        Are you sure you want to delete
+                        <b>{{ confiscate.item }}</b
+                        >?
+                    </span>
                 </div>
                 <template #footer>
                     <Button
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteProductDialog = false"
+                        @click="deleteConfiscateDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        @click="deleteProduct"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            @click="deleteConfiscate"
+                        />
+                    </div>
                 </template>
             </Dialog>
 
+            <!-- Delete Multiple Confiscate Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteProductsDialog"
+                v-model:visible="deleteConfiscatesDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="product"
-                        >Are you sure you want to delete the selected
-                        products?</span
-                    >
+                    <span>
+                        Are you sure you want to delete the selected Confiscates?
+                    </span>
                 </div>
                 <template #footer>
                     <Button
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteProductsDialog = false"
+                        @click="deleteConfiscateDialog = false"
                     />
-                    <Button
-                        label="Yes"
-                        icon="pi pi-check"
-                        text
-                        @click="deleteSelectedProducts"
-                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            text
+                            @click="deleteSelectedConfiscates"
+                        />
+                    </div>
                 </template>
             </Dialog>
         </div>
     </AppLayout>
 </template>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
-
 import { useToast } from "primevue/usetoast";
-import { ProductService } from "@/primevue/service/ProductService";
 
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-
 import Button from "primevue/button";
-import FileUpload from "primevue/fileupload";
 import Toolbar from "primevue/toolbar";
-import Rating from "primevue/rating";
-import Textarea from "primevue/textarea";
-import RadioButton from "primevue/radiobutton";
-import InputNumber from "primevue/inputnumber";
 import Dialog from "primevue/dialog";
-
 import InputIcon from "primevue/inputicon";
-import Select from "primevue/select";
+import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
+import Select from "primevue/select";
+import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
-import InputText from "primevue/inputtext";
-import Tag from "primevue/tag";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
-
-onMounted(() => {
-    ProductService.getProducts().then((data) => (products.value = data));
-});
+import axios from "axios";
 
 const toast = useToast();
+
+// Reactive State Variables
 const dt = ref();
-const products = ref();
-const productDialog = ref(false);
-const deleteProductDialog = ref(false);
-const deleteProductsDialog = ref(false);
-const product = ref({});
-const selectedProducts = ref();
+const confiscateDialog = ref(false);
+const editDialog = ref(false);
+const loading = ref(false);
+const deleteConfiscateDialog = ref(false);
+const deleteConfiscatesDialog = ref(false);
+const confiscate = ref({});
+const selectedConfiscates = ref([]);
+const submitted = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const submitted = ref(false);
-const statuses = ref([
-    { label: "INSTOCK", value: "instock" },
-    { label: "LOWSTOCK", value: "lowstock" },
-    { label: "OUTOFSTOCK", value: "outofstock" },
-]);
+const props = defineProps({
+    confiscates: Array,
+    suspects: Array,
+    encroached_areas: Array,
+});
 
-const formatCurrency = (value) => {
-    if (value)
-        return value.toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-        });
-    return;
-};
+const confiscates = ref(props.confiscates);
+const suspects = ref(props.suspects);
+const encroached_areas = ref(props.encroached_areas)
+
+const home = ref({
+    icon: "pi pi-home",
+    label: "Dashboard",
+    route: "/dashboard",
+});
+
+const breadCumbItems = ref([{ label: "Confiscates" }]);
+
+// CRUD Methods
 const openNew = () => {
-    product.value = {};
+    editDialog.value = false;
+    confiscate.value = {};
     submitted.value = false;
-    productDialog.value = true;
+    confiscateDialog.value = true;
 };
-const hideDialog = () => {
-    productDialog.value = false;
-    submitted.value = false;
-};
-const saveProduct = () => {
-    submitted.value = true;
 
-    if (product?.value.name?.trim()) {
-        if (product.value.id) {
-            product.value.inventoryStatus = product.value.inventoryStatus.value
-                ? product.value.inventoryStatus.value
-                : product.value.inventoryStatus;
-            products.value[findIndexById(product.value.id)] = product.value;
+const hideDialog = () => {
+    confiscateDialog.value = false;
+    submitted.value = false;
+};
+
+const saveConfiscate = async () => {
+    submitted.value = true;
+    if (confiscate?.value?.item?.trim()) {
+        loading.value = true;
+        try {
+            if (confiscate.value.id) {
+                const response = await axios.put(
+                    `/confiscates/${confiscate.value.id}`,
+                    confiscate.value
+                );
+                updateConfiscate(response.data);
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Confiscate Updated",
+                    life: 3000,
+                });
+            } else {
+                const response = await axios.post("/confiscates", confiscate.value);
+                confiscates.value.push(response.data);
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: "Confiscate Created",
+                    life: 3000,
+                });
+            }
+        } catch (err) {
+            if (err.response && err.response.status === 422) {
+                const errors = err.response.data.errors;
+                for (const [field, messages] of Object.entries(errors)) {
+                    messages.forEach((message) => {
+                        toast.add({
+                            severity: "error",
+                            summary: "Validation Error",
+                            detail: message,
+                            life: 5000,
+                        });
+                    });
+                }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
+            } else {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "An unexpected error occurred.",
+                    life: 5000,
+                });
+            }
+        } finally {
+            loading.value = false;
+            confiscateDialog.value = false;
+        }
+    }
+};
+
+const editConfiscate = (confiscateData) => {
+    editDialog.value = true;
+    confiscate.value = { ...confiscateData };
+    confiscateDialog.value = true;
+};
+
+const deleteConfiscate = async () => {
+    loading.value = true;
+    try {
+        await axios.delete(`/confiscate-list/${confiscate.value.id}`);
+        confiscates.value = confiscates.value.filter(
+            (r) => r.id !== confiscate.value.id
+        );
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Confiscate Deleted",
+            life: 3000,
+        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
             toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Updated",
-                life: 3000,
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
             });
         } else {
-            product.value.id = createId();
-            product.value.code = createId();
-            product.value.image = "product-placeholder.svg";
-            product.value.inventoryStatus = product.value.inventoryStatus
-                ? product.value.inventoryStatus.value
-                : "INSTOCK";
-            products.value.push(product.value);
             toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Created",
-                life: 3000,
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
             });
         }
-
-        productDialog.value = false;
-        product.value = {};
+    } finally {
+        deleteConfiscateDialog.value = false;
+        loading.value = false;
     }
 };
-const editProduct = (prod) => {
-    product.value = { ...prod };
-    productDialog.value = true;
+
+const confirmDeleteConfiscate = (confiscateData) => {
+    confiscate.value = confiscateData;
+    deleteConfiscateDialog.value = true;
 };
-const confirmDeleteProduct = (prod) => {
-    product.value = prod;
-    deleteProductDialog.value = true;
-};
-const deleteProduct = () => {
-    products.value = products.value.filter(
-        (val) => val.id !== product.value.id
-    );
-    deleteProductDialog.value = false;
-    product.value = {};
-    toast.add({
-        severity: "success",
-        summary: "Successful",
-        detail: "Product Deleted",
-        life: 3000,
-    });
-};
-const findIndexById = (id) => {
-    let index = -1;
-    for (let i = 0; i < products.value.length; i++) {
-        if (products.value[i].id === id) {
-            index = i;
-            break;
+
+const deleteSelectedConfiscates = async () => {
+    const ids = selectedConfiscates.value.map((confiscate) => confiscate.id);
+    loading.value = true;
+    try {
+        await axios.post("/confiscate-list/bulk-delete", { ids });
+        confiscates.value = confiscates.value.filter((r) => !ids.includes(r.id));
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Selected Confiscate Deleted",
+            life: 3000,
+        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
         }
+    } finally {
+        deleteConfiscatesDialog.value = false;
+        loading.value = false;
     }
+};
 
-    return index;
-};
-const createId = () => {
-    let id = "";
-    var chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < 5; i++) {
-        id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return id;
-};
-const exportCSV = () => {
-    dt.value.exportCSV();
-};
 const confirmDeleteSelected = () => {
-    deleteProductsDialog.value = true;
-};
-const deleteSelectedProducts = () => {
-    products.value = products.value.filter(
-        (val) => !selectedProducts.value.includes(val)
-    );
-    deleteProductsDialog.value = false;
-    selectedProducts.value = null;
-    toast.add({
-        severity: "success",
-        summary: "Successful",
-        detail: "Products Deleted",
-        life: 3000,
-    });
+    deleteConfiscatesDialog.value = true;
 };
 
-const getStatusLabel = (status) => {
-    switch (status) {
-        case "INSTOCK":
-            return "success";
-
-        case "LOWSTOCK":
-            return "warn";
-
-        case "OUTOFSTOCK":
-            return "danger";
-
-        default:
-            return null;
+const updateConfiscate = (updatedConfiscate) => {
+    const index = confiscates.value.findIndex((r) => r.id === updatedConfiscate.id);
+    if (index !== -1) {
+        confiscate.value[index] = updatedConfiscate;
     }
+};
+
+const exportCSV = () => {
+    dt.value?.exportCSV();
 };
 </script>
+<style scoped>
+::v-deep(.p-breadcrumb) {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+</style>

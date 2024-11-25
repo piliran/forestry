@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Route;
 use App\Models\Area;
+use App\Models\RouteType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,9 +16,13 @@ class RouteController extends Controller
     public function index()
     {
         // Fetch non-deleted routes
-        $routes = Route::whereNull('deleted_at')->with('area')->get();
-        return Inertia::render('Routes/Index', [
+        $routes = Route::whereNull('deleted_at')->with(['area','routeType'])->get();
+        $areas = Area::all();
+        $routeTypes = RouteType::all();
+        return Inertia::render('Department/RouteList', [
             'routes' => $routes,
+            'areas' => $areas,
+            'routeTypes' => $routeTypes,
         ]);
     }
 
@@ -42,10 +47,12 @@ class RouteController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:100',
             'location' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
+            'route_type_id' => 'required|exists:routeTypes,id',
         ]);
 
         $route = Route::create($request->all());
+        $route->load('area');
+        $route->load('routeType');
 
         return response()->json($route, 201); // Return the created route
     }
@@ -82,11 +89,12 @@ class RouteController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:100',
             'location' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
+            'route_type_id' => 'required|exists:routeTypes,id',
         ]);
-
         $route->update($request->all());
-
+        $route->load('area');
+        $route->load('routeType');
+        
         return response()->json($route); // Return the updated route
     }
 
