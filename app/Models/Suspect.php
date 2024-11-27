@@ -23,9 +23,17 @@ class Suspect extends Model
         'district_id',
         'village',
         'TA',
-        'District',
         'suspect_photo_path',
         'status',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => 'string',  // Ensures 'status' is treated as a string
     ];
 
     // const STATUS_UNDER_INVESTIGATION = 'Under Investigation';

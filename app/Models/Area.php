@@ -27,4 +27,10 @@ class Area extends Model
     {
         return $this->belongsTo(Station::class);
     }
+
+    public function encroacheds()
+    {
+        return $this->hasMany(Encroached::class);
+    }
+    
 }
