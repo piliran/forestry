@@ -356,7 +356,7 @@
                         <StepList>
                             <Step value="1">Suspect</Step>
                             <Step value="2">Crimes</Step>
-                            <Step value="3">Confiscates</Step>
+                            <Step value="3">Confiscated</Step>
                         </StepList>
                         <StepPanels>
                             <StepPanel v-slot="{ activateCallback }" value="1">
