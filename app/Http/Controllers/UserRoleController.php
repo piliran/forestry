@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserRole;
 use App\Models\Role;
+use App\Models\RoleToPermission;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -34,38 +35,82 @@ class UserRoleController extends Controller
     /**
      * Store a newly created user role in storage.
      */
-    public function store(Request $request)
-    {
-        DB::beginTransaction();
+    // public function store(Request $request)
+    // {
+    //     DB::beginTransaction();
 
-        try {
-            // Find the user by the user ID
-            $user = User::findOrFail($request->input('userId'));
+    //     try {
+         
+    //         $user = User::findOrFail($request->input('userId'));
 
-            // Retrieve the array of role IDs from the request
-            $roleIds = $request->input('roleIds');
+          
+    //         $roleIds = $request->input('roleIds');
       
-            // Sync roles with the user (this will add new roles and remove any removed roles)
-            $user->roles()->sync($roleIds);  // Assuming User has a many-to-many relationship with Role
+         
+    //         $user->roles()->sync($roleIds);  
 
-            DB::commit();
+    //         DB::commit();
 
-            $user->load('roles');
+    //         $user->load('roles');
 
-            return response()->json($user, 200);
-        } catch (\Exception $e) {
-            DB::rollBack();
+    //         return response()->json($user, 200);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
 
-            // Log the error
-            Log::error('Error assigning roles to user: ' . $e->getMessage());
+       
+    //         Log::error('Error assigning roles to user: ' . $e->getMessage());
 
-            // Return an error response
-            return response()->json([
-                'message' => 'Failed to assign roles.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+           
+    //         return response()->json([
+    //             'message' => 'Failed to assign roles.',
+    //             'error' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
+
+
+    public function store(Request $request)
+{
+    DB::beginTransaction();
+
+    try {
+        // Find the user by the user ID
+        $user = User::findOrFail($request->input('userId'));
+
+        // Retrieve the array of role IDs from the request
+        $roleIds = $request->input('roleIds');
+
+        // Sync roles with the user (this will add new roles and remove any removed roles)
+        $user->roles()->sync($roleIds); // Assuming User has a many-to-many relationship with Role
+
+        // Extract all permission IDs associated with the provided roles
+        $permissionIds = RoleToPermission::whereIn('role_id', $roleIds)
+            ->pluck('permission_id')
+            ->unique(); // Get unique permission IDs
+
+        // Insert the permissions into the user_permissions table
+        $user->permissions()->sync($permissionIds); // Assuming User has a many-to-many relationship with Permission
+
+        DB::commit();
+
+        $user->load('roles', 'permissions'); // Load roles and permissions for the response
+
+        return response()->json($user, 200);
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        // Log the error
+        Log::error('Error assigning roles and permissions to user: ' . $e->getMessage());
+
+        // Return an error response
+        return response()->json([
+            'message' => 'Failed to assign roles and permissions.',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+
 
     /**
      * Update the specified user role in storage.
