@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('quantity');       
             $table->unsignedBigInteger('suspect_id');
             $table->foreign('suspect_id')->references('id')->on('suspects')->onDelete('cascade')->onUpdate('cascade');
-           
             $table->string('proof')->nullable();
             $table->softDeletes(); 
             $table->timestamps();

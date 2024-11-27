@@ -28,7 +28,6 @@ return new class extends Migration
             $table->foreign('team_leader')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('operation_type_id');
             $table->foreign('operation_type_id')->references('id')->on('operation_types')->onDelete('cascade')->onUpdate('cascade');
-        
             $table->softDeletes(); 
             $table->timestamps();
         });
