@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Operation;
 use App\Models\OperationType;
 use App\Models\Station;
+use App\Models\Route;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -20,14 +21,16 @@ class OperationController extends Controller
     public function index()
     {
         // Fetch non-deleted operations
-        $operations = Operation::with('Type')->whereNull('deleted_at')->get();
+        $operations = Operation::with(['type', 'station','route',])->whereNull('deleted_at')->get();
         $types = OperationType::all();
         $stations = Station::all();
+        $routes = Route::all();
 
         return Inertia::render('Operations/List', [
             'operations' => $operations,
             'types' => $types,
             'stations' => $stations,
+            'routes' => $routes,
         ]);
     }
 
@@ -40,10 +43,21 @@ class OperationController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
+            'station_id' => 'required|exists:stations,id',    
+            'type_of_patrol' => 'nullable|string',
+            'date_of_operation' => 'nullable|string',
+            'route_id' => 'required|exists:routes,id',
+            'date_time_of_deployment' => 'nullable|string',
+            'date_time_of_withdrawal' => 'nullable|string',
+            'team_leader' => 'nullable|string',
+            'funded_by' => 'nullable|string',
         ]);
 
         $operation = Operation::create($validated);
-        $operation->load('Type');
+        // $operation->load('Type');
+        // $operation->load('Station');
+        // $operation->load('Route');
+        $operation->load(['station','route',]);
 
         return response()->json($operation, 201);
     }
@@ -57,10 +71,20 @@ class OperationController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
+            'station_id' => 'required|exists:stations,id',    
+            'type_of_patrol' => 'nullable|string',
+            'date_of_operation' => 'nullable|string',
+            'route_id' => 'required|exists:routes,id',
+            'date_time_of_deployment' => 'nullable|string',
+            'date_time_of_withdrawal' => 'nullable|string',
+            'team_leader' => 'nullable|string',
+            'funded_by' => 'nullable|string',
         ]);
 
         $operation->update($validated);
-        $operation->load('Type');
+        $operation->load(['type', 'station','route',]);
+        // $operation->load('Station');
+        // $operation->load('Route');
 
         return response()->json($operation, 200);
     }

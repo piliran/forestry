@@ -101,12 +101,6 @@
                         :exportable="false"
                     ></Column>
                     <Column
-                        field="code"
-                        header="Code"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
                         field="name"
                         header="Schedule Name"
                         sortable
@@ -162,8 +156,8 @@
             >
                 <div class="flex flex-col gap-6">
                     <div>
-                        <label for="code" class="block font-bold mb-3">
-                            Code
+                        <label for="name" class="block font-bold mb-3">
+                            Schedule Name
                         </label>
                         <InputText
                             id="name"
@@ -204,7 +198,7 @@
                             Time
                         </label>
                         <InputText
-                            id="phone"
+                            id="time"
                             v-model.trim="schedule.time"
                             required="true"
                             autofocus
@@ -394,7 +388,7 @@ const openNew = () => {
 const hideDialog = () => {
     scheduleDialog.value = false;
     submitted.value = false;
-};
+}; 
 
 const saveSchedule = async () => {
     submitted.value = true;
