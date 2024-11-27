@@ -9,20 +9,55 @@ use App\Models\Role;
 use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\RoleToPermission;
+
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    // public function index()
+    // {      
+    //     $users = User::with(['roles', 'district', 'permissions'])->whereNull('deleted_at')->get();
+    //     $userRoles = UserRole::with(['user', 'role'])->get();
+    //     $permissions = Permission::all();
+    //     $roles = Role::all();
+    //     $districts = District::all();
+
+    //     return Inertia::render('User/UserList', [
+    //         'users' => $users,
+    //         'roles' => $roles,
+    //         'permissions' => $permissions,
+    //         'userRoles' => $userRoles,
+    //         'districts' => $districts,
+    //         'isAdmin' => auth()->user()->isAdministrator(),
+    //         'can' => [
+    //             'createUser' => auth()->user()->hasPermissionTo('create_user'),
+    //             'editUser' => auth()->user()->hasPermissionTo('edit_user'),
+    //             'deleteUser' => auth()->user()->hasPermissionTo('delete_user'),
+    //         ],
+    //     ]);
+    // }
+
     public function index()
     {
-        // Fetch only non-deleted users
-        $users = User::with(['roles', 'district', 'permissions'])->whereNull('deleted_at')->get();
-        $userRoles = UserRole::with(['user', 'role'])->get();
-        $permissions = Permission::all();
-        $roles = Role::all();
+        // Fetch only non-deleted users with their roles, district, and permissions
+        $users = User::with(['roles', 'district', 'permissions'])
+            ->whereNull('deleted_at')
+            ->get();
+
+        // Fetch roles with their associated permissions
+        $roles = Role::with('permissions')->get();
+
+        // Fetch only the permissions assigned to roles
+        $permissions = Permission::whereHas('roles')->get();
+
+        // Fetch all districts
         $districts = District::all();
+
+        // Fetch user-role assignments
+        $userRoles = UserRole::with(['user', 'role'])->get();
 
         return Inertia::render('User/UserList', [
             'users' => $users,
@@ -38,6 +73,7 @@ class UserController extends Controller
             ],
         ]);
     }
+
 
     /**
      * Store a newly created resource in storage.
