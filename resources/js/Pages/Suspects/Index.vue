@@ -565,11 +565,30 @@
                             </StepPanel>
 
                             <StepPanel v-slot="{ activateCallback }" value="2">
-                                <div class="flex flex-col h-48">
+                                <div
+                                    class="flex flex-col gap-2 mx-auto"
+                                    style="min-height: 16rem; max-width: 24rem"
+                                >
                                     <div
-                                        class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
+                                        class="text-center mt-4 mb-4 text-xl font-semibold"
                                     >
-                                        Content II
+                                        Choose suspect crimes
+                                    </div>
+                                    <div
+                                        class="flex flex-wrap justify-center gap-4"
+                                    >
+                                        <div
+                                            v-for="(
+                                                crime, index
+                                            ) in forestryCrimes"
+                                            :key="index"
+                                        >
+                                            <ToggleButton
+                                                v-model="crime.value"
+                                                :onLabel="crime.label"
+                                                :offLabel="crime.label"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="flex pt-6 justify-between">
@@ -588,13 +607,82 @@
                                 </div>
                             </StepPanel>
                             <StepPanel v-slot="{ activateCallback }" value="3">
-                                <div class="flex flex-col h-48">
+                                <div class="flex flex-col gap-4">
+                                    <p class="font-bold text-lg">
+                                        Select Confiscated Items
+                                    </p>
+
+                                    <!-- List of Items with Checkboxes -->
                                     <div
-                                        class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
+                                        v-for="item in confiscatedItems"
+                                        :key="item.id"
+                                        class="flex flex-col gap-2 border border-surface-200 dark:border-surface-700 rounded p-2 bg-surface-50 dark:bg-surface-950"
                                     >
-                                        Content III
+                                        <div class="flex items-center gap-3">
+                                            <input
+                                                type="checkbox"
+                                                :value="item.id"
+                                                :id="`checkbox-${item.id}`"
+                                                @change="
+                                                    handleCheckboxChange(item)
+                                                "
+                                                class="h-5 w-5"
+                                            />
+                                            <label
+                                                :for="`checkbox-${item.id}`"
+                                                class="text-base"
+                                                >{{ item.name }}</label
+                                            >
+                                        </div>
+
+                                        <!-- Quantity Input -->
+                                        <div
+                                            v-if="selectedItems[item.id]"
+                                            class="mt-2"
+                                        >
+                                            <label
+                                                for="quantity"
+                                                class="block font-semibold mb-1"
+                                            >
+                                                Enter quantity for
+                                                {{ item.name }}:
+                                            </label>
+                                            <input
+                                                type="number"
+                                                v-model.number="
+                                                    selectedItems[item.id]
+                                                "
+                                                min="1"
+                                                placeholder="Enter quantity"
+                                                class="border rounded p-2 w-full"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <!-- Display Selected Items and Quantities -->
+                                    <div
+                                        v-if="Object.keys(selectedItems).length"
+                                        class="mt-4"
+                                    >
+                                        <p class="font-bold text-lg">
+                                            Selected Items and Quantities:
+                                        </p>
+                                        <ul class="list-disc pl-6">
+                                            <li
+                                                v-for="(
+                                                    quantity, id
+                                                ) in selectedItems"
+                                                :key="id"
+                                                class="text-base"
+                                            >
+                                                <!-- Safely access item name by checking for existence -->
+                                                {{ getItemNameById(id) }}:
+                                                {{ quantity }}
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
+
                                 <div class="pt-6">
                                     <Button
                                         label="Back"
@@ -838,6 +926,7 @@ import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
 import Divider from "primevue/divider";
 import DatePicker from "primevue/datepicker";
+import ToggleButton from "primevue/togglebutton";
 
 import Stepper from "primevue/stepper";
 import StepList from "primevue/steplist";
@@ -918,21 +1007,38 @@ const onFileSelect = (event) => {
     }
 };
 
-const validate = (step) => {
-    if (step === "1") {
-        submitFirst.value = true;
-        activateCallback("2");
+const forestryCrimes = ref([
+    { label: "Illegal Logging", value: false },
+    { label: "Wildlife Poaching", value: false },
+    { label: "Forest Encroachment", value: false },
+    { label: "Timber Smuggling", value: false },
+    { label: "Unlawful Burning", value: false },
+]);
 
-        if (
-            !suspect.value.national_id &&
-            !suspect.value.name &&
-            !suspect.value.village &&
-            !suspect.value.TA &&
-            !suspect.value.district
-        ) {
-            activateCallback("2");
-        }
+const confiscatedItems = ref([
+    { id: 1, name: "Chainsaw" },
+    { id: 2, name: "Truckloads of Timber" },
+    { id: 3, name: "Animal Skins" },
+    { id: 4, name: "Hunting Rifles" },
+    { id: 5, name: "Unlicensed Vehicles" },
+]);
+
+const selectedItems = ref([]);
+
+const handleCheckboxChange = (item) => {
+    if (selectedItems.value[item.id]) {
+        delete selectedItems.value[item.id]; // Remove item if unchecked
+    } else {
+        selectedItems.value[item.id] = 1; // Initialize quantity to 1 when checked
     }
+};
+
+// Method to safely get item name by id
+const getItemNameById = (id) => {
+    const item = confiscatedItems.value.find(
+        (item) => item.id === parseInt(id)
+    );
+    return item ? item.name : "Item not found";
 };
 
 const validateStep1 = () => {
