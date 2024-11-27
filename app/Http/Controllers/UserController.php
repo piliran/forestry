@@ -42,21 +42,21 @@ class UserController extends Controller
 
     public function index()
     {
-        // Fetch only non-deleted users with their roles, district, and permissions
+        
         $users = User::with(['roles', 'district', 'permissions'])
             ->whereNull('deleted_at')
             ->get();
 
-        // Fetch roles with their associated permissions
+    
         $roles = Role::with('permissions')->get();
 
-        // Fetch only the permissions assigned to roles
-        $permissions = Permission::whereHas('roles')->get();
+      
+        $permissions = Permission::with('roles')->get();
 
-        // Fetch all districts
+   
         $districts = District::all();
 
-        // Fetch user-role assignments
+      
         $userRoles = UserRole::with(['user', 'role'])->get();
 
         return Inertia::render('User/UserList', [
