@@ -525,9 +525,7 @@
                                 :inputId="'role' + index"
                                 :value="role.id"
                             />
-                            <label :for="'role' + index">{{
-                                role.name
-                            }}</label>
+                            <label :for="'role' + index">{{ role.name }}</label>
                         </div>
                     </div>
                 </div>
