@@ -17,11 +17,13 @@ class Suspect extends Model
      */
     protected $fillable = [
         'name',
+        'age',
+        'sex',
         'national_id',
-      
         'district_id',
         'village',
         'TA',
+        'District',
         'suspect_photo_path',
         'status',
     ];

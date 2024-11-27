@@ -61,6 +61,9 @@ Route::resource('confiscates', ConfiscateController::class)->middleware([HandleP
 Route::post('/arrests/bulk-delete', [ArrestController::class, 'batchDelete']);
 Route::resource('arrests', ArrestController::class)->middleware([HandlePrecognitiveRequests::class]);
 
+Route::post('/schedules/bulk-delete', [ScheduleController::class, 'batchDelete']);
+Route::resource('schedules', ScheduleController::class)->middleware([HandlePrecognitiveRequests::class]);
+
 
 
 
