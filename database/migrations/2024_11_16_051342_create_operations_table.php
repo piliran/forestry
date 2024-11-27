@@ -19,10 +19,9 @@ return new class extends Migration
             $table->string('description');
             $table->date('date_of_operation');
             $table->timestamp('date_time_of_deployment');
-            $table->timestamp('date_time_of_withdrawal');
+            $table->dateTime('date_time_of_withdrawal');
             $table->string('type_of_patrol');
             $table->string('funded_by');
-            $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('route_id');
             $table->foreign('route_id')->references('id')->on('routes')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('team_leader');
