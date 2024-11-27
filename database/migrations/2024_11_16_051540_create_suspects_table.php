@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('suspects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('age')->nullable();
+            $table->string('sex');
             $table->string('national_id');
-           
             $table->unsignedBigInteger('district_id');
             $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
             $table->string('village');
