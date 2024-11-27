@@ -839,6 +839,7 @@ const deleteUsersDialog = ref(false);
 const user = ref({});
 const userRole = ref([]);
 const userPermission = ref([]);
+// const permissions = ref([]);
 
 const selectedRoles = ref([]);
 const submitted = ref(false);
@@ -1101,10 +1102,35 @@ const assignAndEditRoles = (userData) => {
     roleAssignmentDialog.value = true;
 };
 
+// const assignAndEditPermissions = (userData) => {
+//     user.value = { ...userData };
+
+//     userPermission.value = userData.permissions.map((p) => p.id);
+
+//     permissionAssignmentDialog.value = true;
+// };
+
 const assignAndEditPermissions = (userData) => {
     user.value = { ...userData };
 
+    // Find the roles associated with the user
+    const userRoles = props.userRoles.filter(
+        (role) => role.user_id === userData.id
+    );
+
+    // Filter permissions based on the roles assigned to the user
+    const rolePermissions = props.permissions.filter((permission) => {
+        // Check if any of the roles associated with the user have the permission
+        return permission.roles.some((role) =>
+            userRoles.some((userRole) => userRole.role_id === role.id)
+        );
+    });
+
+    // Now, userPermission will contain all permissions for the selected user
     userPermission.value = userData.permissions.map((p) => p.id);
+
+    // We can use the full permission data to display the permissions in the template
+    permissions.value = rolePermissions;
 
     permissionAssignmentDialog.value = true;
 };

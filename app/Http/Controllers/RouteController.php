@@ -19,7 +19,7 @@ class RouteController extends Controller
         $routes = Route::whereNull('deleted_at')->with(['area','routeType'])->get();
         $areas = Area::all();
         $routeTypes = RouteType::all();
-        return Inertia::render('Department/RouteList', [
+        return Inertia::render('Routes/List', [
             'routes' => $routes,
             'areas' => $areas,
             'routeTypes' => $routeTypes,

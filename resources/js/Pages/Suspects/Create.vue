@@ -30,330 +30,12 @@
                 </Breadcrumb>
             </div>
             <!-- Toolbar -->
-            <div class="card">
-                <Toolbar class="mb-6">
-                    <template #start>
-                        <Button
-                            label="New"
-                            icon="pi pi-plus"
-                            class="mr-2"
-                            @click="router.visit('add-suspect')"
-                        />
-
-                        <Button
-                            label="Delete"
-                            icon="pi pi-trash"
-                            severity="danger"
-                            outlined
-                            @click="confirmDeleteSelected"
-                            :disabled="!selectedRoles || !selectedRoles.length"
-                        />
-                    </template>
-                    <template #end>
-                        <Button
-                            label="Export"
-                            icon="pi pi-upload"
-                            severity="secondary"
-                            @click="exportCSV($event)"
-                        />
-                    </template>
-                </Toolbar>
-
+            <div class="">
                 <!-- Toast Notifications -->
                 <Toast />
 
-                <!-- Data Table -->
-                <DataTable
-                    v-if="suspects.length > 0"
-                    ref="dt"
-                    v-model:selection="selectedRoles"
-                    :value="suspects"
-                    dataKey="id"
-                    :paginator="true"
-                    :rows="10"
-                    :filters="filters"
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                    :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} suspects"
-                >
-                    <template #header>
-                        <div
-                            class="flex flex-wrap gap-2 items-center justify-between"
-                        >
-                            <h4 class="m-0">Manage suspects</h4>
-                            <IconField>
-                                <InputIcon id="icon">
-                                    <i class="pi pi-search" />
-                                </InputIcon>
-                                <InputText
-                                    id="search"
-                                    v-model="filters['global'].value"
-                                    placeholder="Search..."
-                                />
-                            </IconField>
-                        </div>
-                    </template>
-                    <Column
-                        selectionMode="multiple"
-                        style="width: 3rem"
-                        :exportable="false"
-                    ></Column>
-                    <Column header="Image">
-                        <template #body="slotProps">
-                            <Image
-                                v-if="
-                                    slotProps.data.suspect_photo_path &&
-                                    !slotProps.data.suspect_photo_path.endsWith(
-                                        '/null'
-                                    )
-                                "
-                                :src="`${slotProps.data.suspect_photo_path}`"
-                                :alt="slotProps.data.suspect_photo_path"
-                                preview
-                            >
-                                <template #image>
-                                    <img
-                                        v-if="
-                                            slotProps.data.suspect_photo_path &&
-                                            !slotProps.data.suspect_photo_path.endsWith(
-                                                '/null'
-                                            )
-                                        "
-                                        :src="slotProps.data.suspect_photo_path"
-                                        alt="Profile"
-                                        style="
-                                            border-radius: 50%;
-                                            width: 50px;
-                                            height: 50px;
-                                            object-fit: cover;
-                                        "
-                                    />
-                                </template>
-                            </Image>
-                        </template>
-                    </Column>
-                    <Column
-                        field="name"
-                        header="suspect Name"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="national_id"
-                        header="National ID"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-
-                    <Column
-                        header="District"
-                        field="district.name"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
-                    <Column
-                        header="Village"
-                        field="village"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
-                    <Column
-                        header="T/A"
-                        field="TA"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
-
-                    <Column
-                        header="Status"
-                        field="status"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
-                    <Column
-                        header="Action"
-                        :exportable="false"
-                        style="min-width: 12rem"
-                    >
-                        <template #body="slotProps">
-                            <Button
-                                icon="pi pi-eye"
-                                outlined
-                                rounded
-                                class="mr-2"
-                                severity="info"
-                                @click="viewSuspect(slotProps.data)"
-                            />
-                            <Button
-                                icon="pi pi-pencil"
-                                outlined
-                                rounded
-                                class="mr-2"
-                                @click="editSuspect(slotProps.data)"
-                            />
-                            <Button
-                                icon="pi pi-trash"
-                                outlined
-                                rounded
-                                severity="danger"
-                                @click="confirmDeleteSuspect(slotProps.data)"
-                            />
-                        </template>
-                    </Column>
-                </DataTable>
-                <div v-else class="flex items-center justify-center">
-                    <h2>No suspects found</h2>
-                </div>
-            </div>
-
-            <!-- Add/Edit suspect Dialog -->
-            <Dialog
-                v-model:visible="suspectDialog"
-                :style="{ width: '500px' }"
-                :header="editDialog ? 'Edit suspect' : 'Add New suspect'"
-                :modal="true"
-            >
-                <!-- <div class="flex flex-col gap-6">
-                    <div>
-                        <label for="name" class="block font-bold mb-3"
-                            >Suspect Name</label
-                        >
-                        <InputText
-                            id="name"
-                            v-model.trim="suspect.name"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !suspect.name"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !suspect.name"
-                            class="text-red-500"
-                        >
-                            suspect Name is required.
-                        </small>
-                    </div>
-
-                    <div>
-                        <label for="name" class="block font-bold mb-3"
-                            >Suspect Photo</label
-                        >
-
-                        <FileUpload
-                            ref="fileupload"
-                            mode="basic"
-                            name="suspect[]"
-                            accept="image/*"
-                            :maxFileSize="1000000"
-                            @select="onFileSelect"
-                            @upload="onUpload"
-                        />
-
-                        <div v-if="previewUrl" class="mt-3 flex justify-center">
-                            <img
-                                :src="previewUrl"
-                                alt="Selected Suspect Photo"
-                                width="250"
-                                class="border rounded-md"
-                            />
-                        </div>
-                        <div
-                            v-if="suspect.suspect_photo_path && !previewUrl"
-                            class="mt-3 flex justify-center"
-                        >
-                            <img
-                                :src="suspect.suspect_photo_path"
-                                alt="Suspect Photo"
-                                class="border rounded-md"
-                                width="250"
-                            />
-                        </div>
-
-                        <small
-                            v-if="submitted && !fileupload"
-                            class="text-red-500"
-                        >
-                            Suspect image is required.
-                        </small>
-                    </div>
-
-                    <div>
-                        <label for="national_id" class="block font-bold mb-3"
-                            >Suspect National Id</label
-                        >
-                        <InputText
-                            id="national_id"
-                            v-model.trim="suspect.national_id"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !suspect.national_id"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !suspect.national_id"
-                            class="text-red-500"
-                        >
-                            Suspect National Id is required.
-                        </small>
-                    </div>
-
-                    <div>
-                        <label for="districts" class="block font-bold mb-3">
-                            District
-                        </label>
-                        <Select
-                            id="districts"
-                            v-model="suspect.district_id"
-                            :options="props.districts"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select district"
-                            fluid
-                        />
-                    </div>
-
-                    <div>
-                        <label for="village" class="block font-bold mb-3"
-                            >Suspect Village</label
-                        >
-                        <InputText
-                            id="village"
-                            v-model.trim="suspect.village"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !suspect.village"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !suspect.village"
-                            class="text-red-500"
-                        >
-                            Suspect Village is required.
-                        </small>
-                    </div>
-                    <div>
-                        <label for="TA" class="block font-bold mb-3"
-                            >Suspect T/A</label
-                        >
-                        <InputText
-                            id="TA"
-                            v-model.trim="suspect.TA"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !suspect.TA"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !suspect.TA"
-                            class="text-red-500"
-                        >
-                            Suspect T/A is required.
-                        </small>
-                    </div>
-                </div> -->
-
-                <div class="card flex justify-center">
-                    <Stepper value="1" linear class="basis-[40rem]">
+                <div class="flex justify-center">
+                    <Stepper value="1" linear class="basis-full">
                         <StepList>
                             <Step value="1">Suspect</Step>
                             <Step value="2">Crimes</Step>
@@ -362,10 +44,14 @@
                         <StepPanels>
                             <StepPanel v-slot="{ activateCallback }" value="1">
                                 <div
-                                    class="flex flex-col w-full gap-6 p-4 border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950"
+                                    class="text-center mt-4 mb-4 pt-6 text-xl font-semibold"
                                 >
-                                    <!-- Suspect Name -->
-                                    <div class="flex flex-col w-full">
+                                    Suspect information
+                                </div>
+                                <div
+                                    class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950"
+                                >
+                                    <div class="flex flex-col">
                                         <label
                                             for="name"
                                             class="block font-bold mb-2"
@@ -390,7 +76,7 @@
                                     </div>
 
                                     <!-- Suspect National ID -->
-                                    <div class="flex flex-col w-full">
+                                    <div class="flex flex-col">
                                         <label
                                             for="national_id"
                                             class="block font-bold mb-2"
@@ -418,13 +104,13 @@
                                         </small>
                                     </div>
 
-                                    <div class="flex flex-col w-full">
+                                    <!-- Date of Birth -->
+                                    <div class="flex flex-col">
                                         <label
                                             for="dob"
                                             class="block font-bold mb-2"
                                             >Date of Birth</label
                                         >
-
                                         <DatePicker
                                             fluid
                                             v-model="suspect.DOB"
@@ -442,7 +128,8 @@
                                         </small>
                                     </div>
 
-                                    <div class="col-12 md:col-6">
+                                    <!-- Gender -->
+                                    <div class="flex flex-col">
                                         <label
                                             for="gender"
                                             class="block font-bold mb-2"
@@ -468,13 +155,13 @@
                                         </small>
                                     </div>
 
-                                    <div class="flex flex-col w-full">
+                                    <!-- District -->
+                                    <div class="flex flex-col">
                                         <label
                                             for="districts"
                                             class="block font-bold mb-3"
+                                            >District</label
                                         >
-                                            District
-                                        </label>
                                         <Select
                                             id="districts"
                                             v-model="suspect.district_id"
@@ -488,7 +175,6 @@
                                                 !suspect.district_id
                                             "
                                         />
-
                                         <small
                                             v-if="
                                                 submitFirst &&
@@ -500,7 +186,8 @@
                                         </small>
                                     </div>
 
-                                    <div class="flex flex-col w-full">
+                                    <!-- Suspect Village -->
+                                    <div class="flex flex-col">
                                         <label
                                             for="village"
                                             class="block font-bold mb-3"
@@ -525,7 +212,9 @@
                                             Suspect Village is required.
                                         </small>
                                     </div>
-                                    <div class="flex flex-col w-full">
+
+                                    <!-- Suspect T/A -->
+                                    <div class="flex flex-col">
                                         <label
                                             for="TA"
                                             class="block font-bold mb-3"
@@ -551,7 +240,7 @@
                                 </div>
 
                                 <!-- Next Button -->
-                                <div class="flex pt-6 justify-end">
+                                <div class="flex pt-6 p-4 justify-end">
                                     <Button
                                         label="Next"
                                         icon="pi pi-arrow-right"
@@ -566,33 +255,37 @@
                             </StepPanel>
 
                             <StepPanel v-slot="{ activateCallback }" value="2">
-                                <div
-                                    class="flex flex-col gap-2 mx-auto"
-                                    style="min-height: 16rem; max-width: 24rem"
-                                >
+                                <div class="flex flex-col gap-2 p-4 mx-auto">
                                     <div
                                         class="text-center mt-4 mb-4 text-xl font-semibold"
                                     >
                                         Choose suspect crimes
                                     </div>
-                                    <div
-                                        class="flex flex-wrap justify-center gap-4"
-                                    >
+
+                                    <div class="flex flex-wrap gap-4">
                                         <div
                                             v-for="(
                                                 crime, index
-                                            ) in forestryCrimes"
+                                            ) in props.crimes"
                                             :key="index"
+                                            class="flex items-center space-x-2"
                                         >
-                                            <ToggleButton
+                                            <input
+                                                type="checkbox"
                                                 v-model="crime.value"
-                                                :onLabel="crime.label"
-                                                :offLabel="crime.label"
+                                                id="id"
+                                                class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                                             />
+                                            <label
+                                                :for="`crime-${index}`"
+                                                class="text-sm font-medium"
+                                            >
+                                                {{ crime.name }}
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex pt-6 justify-between">
+                                <div class="flex pt-6 p-4 justify-between">
                                     <Button
                                         label="Back"
                                         severity="secondary"
@@ -608,7 +301,7 @@
                                 </div>
                             </StepPanel>
                             <StepPanel v-slot="{ activateCallback }" value="3">
-                                <div class="flex flex-col gap-4">
+                                <div class="flex flex-col gap-4 p-4">
                                     <p class="font-bold text-lg">
                                         Select Confiscated Items
                                     </p>
@@ -684,218 +377,20 @@
                                     </div>
                                 </div>
 
-                                <div class="pt-6">
+                                <div class="flex pt-6 p-4 justify-between">
                                     <Button
                                         label="Back"
                                         severity="secondary"
                                         icon="pi pi-arrow-left"
                                         @click="activateCallback('2')"
                                     />
+                                    <Button label="Submit" />
                                 </div>
                             </StepPanel>
                         </StepPanels>
                     </Stepper>
                 </div>
-                <!-- <template #footer>
-                    <Button
-                        label="Cancel"
-                        icon="pi pi-times"
-                        text
-                        @click="hideDialog"
-                    />
-                    <div>
-                        <ProgressSpinner
-                            v-if="loading"
-                            style="width: 30px; height: 30px"
-                            strokeWidth="4"
-                            fill="transparent"
-                            animationDuration=".5s"
-                            aria-label="Custom ProgressSpinner"
-                        />
-                        <Button
-                            v-else
-                            label="Save"
-                            icon="pi pi-check"
-                            @click="saveSuspect"
-                        />
-                    </div>
-                </template> -->
-            </Dialog>
-
-            <!-- Delete Single suspect Confirmation Dialog -->
-            <Dialog
-                v-model:visible="deleteSuspectDialog"
-                :style="{ width: '450px' }"
-                header="Confirm"
-                :modal="true"
-            >
-                <div class="flex items-center gap-4">
-                    <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="suspect">
-                        Are you sure you want to delete <b>{{ suspect.name }}</b
-                        >?
-                    </span>
-                </div>
-                <template #footer>
-                    <Button
-                        label="No"
-                        icon="pi pi-times"
-                        text
-                        @click="deleteSuspectDialog = false"
-                    />
-                    <div>
-                        <ProgressSpinner
-                            v-if="loading"
-                            style="width: 30px; height: 30px"
-                            strokeWidth="4"
-                            fill="transparent"
-                            animationDuration=".5s"
-                            aria-label="Custom ProgressSpinner"
-                        />
-                        <Button
-                            v-else
-                            label="Yes"
-                            icon="pi pi-check"
-                            @click="deleteSuspect"
-                        />
-                    </div>
-                </template>
-            </Dialog>
-
-            <!-- Delete Multiple suspects Confirmation Dialog -->
-            <Dialog
-                v-model:visible="deleteRolesDialog"
-                :style="{ width: '450px' }"
-                header="Confirm"
-                :modal="true"
-            >
-                <div class="flex items-center gap-4">
-                    <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span>
-                        Are you sure you want to delete the selected suspects?
-                    </span>
-                </div>
-                <template #footer>
-                    <Button
-                        label="No"
-                        icon="pi pi-times"
-                        text
-                        @click="deleteRolesDialog = false"
-                    />
-                    <div>
-                        <ProgressSpinner
-                            v-if="loading"
-                            style="width: 30px; height: 30px"
-                            strokeWidth="4"
-                            fill="transparent"
-                            animationDuration=".5s"
-                            aria-label="Custom ProgressSpinner"
-                        />
-                        <Button
-                            v-else
-                            label="Yes"
-                            icon="pi pi-check"
-                            text
-                            @click="deleteSelectedSuspects"
-                        />
-                    </div>
-                </template>
-            </Dialog>
-
-            <Dialog
-                v-model:visible="viewDialog"
-                modal
-                header="Suspect Details"
-                :style="{ width: '450px' }"
-            >
-                <div class="p-6 space-y-6">
-                    <!-- Grid Container for Image and Details -->
-                    <div class="grid grid-cols-1 gap-6">
-                        <!-- Suspect Photo on the Left -->
-                        <div
-                            class="col-span-1 flex justify-center items-center"
-                        >
-                            <div
-                                class="w-full h-48 overflow-hidden rounded-lg border shadow-md"
-                            >
-                                <img
-                                    v-if="suspect.suspect_photo_path"
-                                    :src="suspect.suspect_photo_path"
-                                    alt="Suspect Photo"
-                                    class="object-contain w-full h-full"
-                                />
-                                <div v-else class="text-gray-500">
-                                    No Photo Available
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Suspect Data on the Right -->
-                        <div class="col-span-1 flex flex-col space-y-3">
-                            <div class="space-y-1">
-                                <span
-                                    class="font-semibold text-lg text-gray-800"
-                                    >Name</span
-                                >
-                                <div class="text-base text-gray-600">
-                                    {{ suspect.name || "N/A" }}
-                                </div>
-                            </div>
-                            <Divider />
-                            <div class="space-y-1">
-                                <span
-                                    class="font-semibold text-lg text-gray-800"
-                                    >National ID</span
-                                >
-                                <div class="text-base text-gray-600">
-                                    {{ suspect.national_id || "N/A" }}
-                                </div>
-                            </div>
-                            <Divider />
-
-                            <div class="space-y-1">
-                                <span
-                                    class="font-semibold text-lg text-gray-800"
-                                    >District</span
-                                >
-                                <div class="text-base text-gray-600">
-                                    {{ suspect.district?.name || "N/A" }}
-                                </div>
-                            </div>
-                            <Divider />
-
-                            <div class="space-y-1">
-                                <span
-                                    class="font-semibold text-lg text-gray-800"
-                                    >Village</span
-                                >
-                                <div class="text-base text-gray-600">
-                                    {{ suspect.village || "N/A" }}
-                                </div>
-                            </div>
-                            <Divider />
-
-                            <div class="space-y-1">
-                                <span
-                                    class="font-semibold text-lg text-gray-800"
-                                    >T/A</span
-                                >
-                                <div class="text-base text-gray-600">
-                                    {{ suspect.TA || "N/A" }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <template #footer>
-                    <Button
-                        label="Close"
-                        icon="pi pi-times"
-                        text
-                        @click="viewDialog = false"
-                    />
-                </template>
-            </Dialog>
+            </div>
         </div>
     </AppLayout>
 </template>
@@ -904,6 +399,7 @@ import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
+import Checkbox from "primevue/checkbox";
 
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
@@ -924,7 +420,7 @@ import MultiSelect from "primevue/multiselect";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 import Breadcrumb from "primevue/breadcrumb";
-import { Link, router } from "@inertiajs/vue3";
+import { Link } from "@inertiajs/vue3";
 import Divider from "primevue/divider";
 import DatePicker from "primevue/datepicker";
 import ToggleButton from "primevue/togglebutton";
@@ -963,7 +459,10 @@ const home = ref({
     route: "/dashboard",
 });
 
-const breadCumbItems = ref([{ label: "Suspects" }]);
+const breadCumbItems = ref([
+    { label: "Suspects", route: "/suspects" },
+    { label: "Add Suspect" },
+]);
 const genderOptions = ["Male", "Female", "Other"];
 
 const fileupload = ref();
@@ -991,6 +490,7 @@ const props = defineProps({
     suspects: Array,
 
     districts: Array,
+    crimes: Array,
 });
 
 const suspects = ref(props.suspects);
@@ -1028,9 +528,9 @@ const selectedItems = ref([]);
 
 const handleCheckboxChange = (item) => {
     if (selectedItems.value[item.id]) {
-        delete selectedItems.value[item.id]; // Remove item if unchecked
+        delete selectedItems.value[item.id];
     } else {
-        selectedItems.value[item.id] = 1; // Initialize quantity to 1 when checked
+        selectedItems.value[item.id] = 1;
     }
 };
 
@@ -1051,7 +551,7 @@ const validateStep1 = () => {
         !suspect.value.village ||
         !suspect.value.TA
     ) {
-        return false;
+        return true;
     }
     return true;
 };

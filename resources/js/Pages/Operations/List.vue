@@ -106,10 +106,58 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
+                        field="description"
+                        header="Description"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
                         header="Type"
                         field="type.name"
                         sortable
                         style="min-width: 12rem"
+                    ></Column>
+                    <Column
+                        field="station.name"
+                        header="Station"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="type_of_patrol"
+                        header="Patrol Type"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="date_of_operation"
+                        header="Operation Date"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="route.name"
+                        header="Route"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="date_time_of_deployment"
+                        header="Time of Deployment"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="date_time_of_withdraw"
+                        header="Time of Withdraw"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="funded_by"
+                        header="Funded By"
+                        sortable
+                        style="min-width: 10rem"
                     ></Column>
                     <Column
                         header="Action"
@@ -187,6 +235,27 @@
                             Operation Description is required.
                         </small>
                     </div>
+                    <div class="col-12">
+                        <label for="description" class="block font-bold mb-3"
+                            >Operation Description</label
+                        >
+                        <Textarea
+                            id="description"
+                            v-model="operation.description"
+                            required="true"
+                            rows="3"
+                            cols="20"
+                            autofocus
+                            :invalid="submitted && !operation.description"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !operation.description"
+                            class="text-red-500"
+                        >
+                            Operation Type Description is required.
+                        </small>
+                    </div>
 
                     <!-- Operation Category -->
                     <div>
@@ -203,6 +272,163 @@
                             fluid
                         />
                     </div>
+                    <!-- Operation Station -->
+                    <div>
+                        <label for="station" class="block font-bold mb-3">
+                            Station
+                        </label>
+                        <Select
+                            id="station"
+                            v-model="operation.station_id"
+                            :options="stations"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select a Station"
+                            fluid
+                        />
+                    </div>
+
+                    <div>
+                        <label for="type_of_patrol" class="block font-bold mb-3"
+                            >Patrol Type</label
+                        >
+                        <InputText
+                            id="type_of_patrol"
+                            v-model.trim="operation.type_of_patrol"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !operation.type_of_patrol"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !operation.type_of_patrol"
+                            class="text-red-500"
+                        >
+                            Type of Patrol is required.
+                        </small>
+                    </div>
+
+                    <div>
+                        <label for="date_of_operation" class="block font-bold mb-3"
+                            >Date of Operation</label
+                        >
+                        <DatePicker 
+                            id="date_of_operation"
+                            v-model.trim="operation.date_of_operation"
+                            dateFormat="dd/mm/yy"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !operation.date_of_operation"
+                            fluid
+                            
+                        />
+                        <small
+                            v-if="submitted && !operation.date_of_operation"
+                            class="text-red-500"
+                        >
+                            Date of Operation is required.
+                        </small>
+                    </div>
+
+
+                    <!-- Operation Route -->
+                    <div>
+                        <label for="route" class="block font-bold mb-3">
+                            Route
+                        </label>
+                        <Select
+                            id="route"
+                            v-model="operation.route_id"
+                            :options="routes"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select a Route"
+                            fluid
+                        />
+                    </div>
+
+                    <div>
+                        <label for="date_time_of_deployment" class="block font-bold mb-3"
+                            >Deployment Date</label
+                        >
+                        <DatePicker 
+                            id="type_of_patrol"
+                            v-model.trim="operation.date_time_of_deployment"
+                            dateFormat="dd/mm/yy"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !operation.date_time_of_deployment"
+                            fluid
+                            
+                        />
+                        <small
+                            v-if="submitted && !operation.date_time_of_deployment"
+                            class="text-red-500"
+                        >
+                            Deployment Date is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="date_time_of_withdrawal" class="block font-bold mb-3"
+                            >Withdraw Time</label
+                        >
+                        <DatePicker 
+                            id="date_time_of_withdrawal"
+                            v-model.trim="operation.date_time_of_withdrawal"
+                            dateFormat="dd/mm/yy"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !operation.date_time_of_withdrawal"
+                            fluid
+                            
+                        />
+                        <small
+                            v-if="submitted && !operation.date_time_of_withdrawal"
+                            class="text-red-500"
+                        >
+                            Withdraw Time is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="team_leader" class="block font-bold mb-3"
+                            >Team Leader</label
+                        >
+                        <InputText
+                            id="type_of_patrol"
+                            v-model.trim="operation.team_leader"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !operation.team_leader"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !operation.team_leader"
+                            class="text-red-500"
+                        >
+                            Team Leader is required.
+                        </small>
+                    </div>
+                
+                    <div>
+                        <label for="funded_by" class="block font-bold mb-3"
+                            >Funded By</label
+                        >
+                        <InputText
+                            id="funded_by"
+                            v-model.trim="operation.funded_by"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !operation.funded_by"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !operation.funded_by"
+                            class="text-red-500"
+                        >
+                            Funded By is required.
+                        </small>
+                    </div>
+
                 </div>
                 <template #footer>
                     <Button
@@ -326,16 +552,20 @@ import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
+import DatePicker from 'primevue/datepicker';
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 import Breadcrumb from "primevue/breadcrumb";
+import Textarea from 'primevue/textarea';
+
 import { Link } from "@inertiajs/vue3";
 
 const toast = useToast();
 const dt = ref();
+const date = ref();
 const operationDialog = ref(false);
 const editDialog = ref(false);
 const loading = ref(false);
@@ -360,10 +590,14 @@ const props = defineProps({
     operations: Array,
     types: Array,
     stations: Array,
+    routes: Array,
 });
 
 const operations = ref(props.operations);
 const types = ref(props.types);
+const stations = ref(props.stations);
+const routes = ref(props.routes);
+
 
 // CRUD Methods
 const openNew = () => {
@@ -387,8 +621,18 @@ const saveOperation = async () => {
                 name: operation.value.name,
                 description: operation.value.description,
                 operation_type_id: operation.value.operation_type_id,
+                station_id: operation.value.station_id,
+                type_of_patrol: operation.value.type_of_patrol,
+                date_of_operation: operation.value.date_of_operation,
+                route_id: operation.value.route_id,
+                date_time_of_deployment: operation.value.date_time_of_deployment,
+                date_time_of_withdrawal: operation.value.date_time_of_withdrawal,
+                team_leader: operation.value.team_leader,
+                funded_by: operation.value.funded_by,
+                
+
             };
-            // console.log(operationPayload);
+            console.log(operationPayload);
             if (operation.value.id) {
                 const response = await axios.put(
                     `/operations-list/${operation.value.id}`,
@@ -397,6 +641,14 @@ const saveOperation = async () => {
                         name: operation.value.name,
                         description: operation.value.description,
                         operation_type_id: operation.value.operation_type_id,
+                        station_id: operation.value.station_id,
+                        type_of_patrol: operation.value.type_of_patrol,
+                        date_of_operation: operation.value.date_of_operation,
+                        route_id: operation.value.route_id,
+                        date_time_of_deployment: operation.value.date_time_of_deployment,
+                        date_time_of_withdrawal: operation.value.date_time_of_withdrawal,
+                        team_leader: operation.value.team_leader,
+                        funded_by: operation.value.funded_by,
                     }
                 );
                 updateOperation(response.data);

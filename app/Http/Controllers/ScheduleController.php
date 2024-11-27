@@ -33,7 +33,6 @@ class ScheduleController extends Controller
         ]);
 
         $schedule = Schedule::create($validated);
-
         return response()->json($schedule, 201);
     }
 

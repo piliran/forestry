@@ -16,6 +16,7 @@ use App\Http\Controllers\OperationTypeController;
 use App\Http\Controllers\OperationController;
 
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\TeamController;
 
 
 use App\Http\Controllers\ZoneController;
@@ -110,6 +111,7 @@ Route::post('/species-list/bulk-delete', [SpeciesController::class, 'batchDelete
 Route::resource('suspects', SuspectController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/suspects/bulk-delete', [SuspectController::class, 'batchDelete']);
 Route::post('/update-suspect', [SuspectController::class, 'updateSuspect']);
+Route::get('/add-suspect', [SuspectController::class, 'create']);
 
 
 
@@ -127,6 +129,9 @@ Route::post('/operations-types/delete-multiple', [OperationTypeController::class
 
 Route::resource('schedules', ScheduleController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/schedules/delete-multiple', [ScheduleController::class, 'batchDelete']);
+
+Route::resource('teams', TeamController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/teams/delete-multiple', [TeamController::class, 'batchDelete']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [

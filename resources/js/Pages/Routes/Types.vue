@@ -1,6 +1,35 @@
 <template>
-    <AppLayout title="Role Categories">
+    <AppLayout title="Route Types">
         <div>
+            <div class="-mt-6 inline-block bg-transparent">
+                <Breadcrumb :home="home" :model="breadCumbItems">
+                    <template #item="{ item, props }">
+                        <Link
+                            v-if="item.route"
+                            :href="item.route"
+                            preserve-scroll
+                            v-bind="props.action"
+                        >
+                            <span :class="[item.icon, 'text-color']" />
+                            <span class="text-primary font-semibold">{{
+                                item.label
+                            }}</span>
+                        </Link>
+                        <a
+                            v-else
+                            :href="item.url"
+                            :target="item.target"
+                            v-bind="props.action"
+                        >
+                            <span
+                                class="text-surface-700 dark:text-surface-0"
+                                >{{ item.label }}</span
+                            >
+                        </a>
+                    </template>
+                </Breadcrumb>
+            </div>
+            <!-- Toolbar -->
             <div class="card">
                 <Toolbar class="mb-6">
                     <template #start>
@@ -17,12 +46,11 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedCategories ||
-                                !selectedCategories.length
+                                !selectedRouteTypes ||
+                                !selectedRouteTypes.length
                             "
                         />
                     </template>
-
                     <template #end>
                         <Button
                             label="Export"
@@ -33,26 +61,28 @@
                     </template>
                 </Toolbar>
 
+                <!-- Toast Notifications -->
                 <Toast />
 
+                <!-- Data Table -->
                 <DataTable
-                    v-if="categories.length > 0"
+                    v-if="routeTypes.length > 0"
                     ref="dt"
-                    v-model:selection="selectedCategories"
-                    :value="categories"
+                    v-model:selection="selectedRouteTypes"
+                    :value="routeTypes"
                     dataKey="id"
                     :paginator="true"
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} role categories"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Route Types"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Role Categories</h4>
+                            <h4 class="m-0">Manage Route Types</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -64,20 +94,23 @@
                             </IconField>
                         </div>
                     </template>
-
                     <Column
                         selectionMode="multiple"
                         style="width: 3rem"
                         :exportable="false"
                     ></Column>
-
                     <Column
                         field="name"
-                        header="Category Name"
+                        header="Route Type"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-
+                    <Column
+                        field="description"
+                        header="Description"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
                     <Column
                         header="Action"
                         :exportable="false"
@@ -89,50 +122,73 @@
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editCategory(slotProps.data)"
+                                @click="editRouteType(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteCategory(slotProps.data)"
+                                @click="confirmDeleteRouteType(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
                 <div v-else class="flex items-center justify-center">
-                    <h2>No role categories found</h2>
+                    <h2>No Route Types Found</h2>
                 </div>
             </div>
 
+            <!-- Add/Edit Route Types Dialog -->
             <Dialog
-                v-model:visible="categoryDialog"
+                v-model:visible="routeTypeDialog"
                 :style="{ width: '450px' }"
-                :header="editDialog ? 'Edit Category' : 'Add New Category'"
+                :header="editDialog ? 'Edit Department' : 'Add New Department'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
                     <div>
-                        <label for="name" class="block font-bold mb-3"
-                            >Category Name</label
-                        >
+                        <label for="name" class="block font-bold mb-3">
+                            Route Type Name
+                        </label>
                         <InputText
                             id="name"
-                            v-model.trim="category.name"
+                            v-model.trim="routeType.name"
                             required="true"
                             autofocus
-                            :invalid="submitted && !category.name"
+                            :invalid="submitted && !routeType.name"
                             fluid
                         />
                         <small
-                            v-if="submitted && !category.name"
+                            v-if="submitted && !routeType.name"
                             class="text-red-500"
-                            >Category Name is required.</small
                         >
+                            Route Type Name is required.
+                        </small>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="description" class="block font-bold mb-3"
+                            >Description</label
+                        >
+                        <Textarea
+                            id="description"
+                            v-model="routeType.description"
+                            required="true"
+                            rows="3"
+                            cols="20"
+                            autofocus
+                            :invalid="submitted && !routeType.description"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !routeType.description"
+                            class="text-red-500"
+                        >
+                            Route Type Description is required.
+                        </small>
                     </div>
                 </div>
-
                 <template #footer>
                     <Button
                         label="Cancel"
@@ -153,34 +209,34 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveCategory"
+                            @click="saveRouteType"
                         />
                     </div>
                 </template>
             </Dialog>
 
+            <!-- Delete Single RouteType Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteCategoryDialog"
+                v-model:visible="deleteRouteTypeDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="category"
-                        >Are you sure you want to delete
-                        <b>{{ category.name }}</b
-                        >?</span
-                    >
+                    <span v-if="routeType">
+                        Are you sure you want to delete
+                        <b>{{ routeType.name }}</b
+                        >?
+                    </span>
                 </div>
                 <template #footer>
                     <Button
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteCategoryDialog = false"
+                        @click="deleteRouteTypeDialog = false"
                     />
-
                     <div>
                         <ProgressSpinner
                             v-if="loading"
@@ -194,33 +250,33 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="deleteCategory"
+                            @click="deleteRouteType"
                         />
                     </div>
                 </template>
             </Dialog>
 
+            <!-- Delete Multiple Department Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteCategoriesDialog"
+                v-model:visible="deleteRouteTypesDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="category"
-                        >Are you sure you want to delete the selected
-                        categories?</span
-                    >
+                    <span>
+                        Are you sure you want to delete the selected Route
+                        Types?
+                    </span>
                 </div>
                 <template #footer>
                     <Button
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteCategoriesDialog = false"
+                        @click="deleteRouteTypesDialog = false"
                     />
-
                     <div>
                         <ProgressSpinner
                             v-if="loading"
@@ -235,7 +291,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedCategories"
+                            @click="deleteSelectedRouteType"
                         />
                     </div>
                 </template>
@@ -243,7 +299,6 @@
         </div>
     </AppLayout>
 </template>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
@@ -258,102 +313,91 @@ import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
+import Select from "primevue/select";
+
+import Textarea from "primevue/textarea";
+
 import ProgressSpinner from "primevue/progressspinner";
+import Breadcrumb from "primevue/breadcrumb";
+import { Link } from "@inertiajs/vue3";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
 const toast = useToast();
+
+// Reactive State Variables
 const dt = ref();
-// const categories = ref([]);
-const categoryDialog = ref(false);
+const routeTypeDialog = ref(false);
 const editDialog = ref(false);
 const loading = ref(false);
-const deleteCategoryDialog = ref(false);
-const deleteCategoriesDialog = ref(false);
-const category = ref({});
-const selectedCategories = ref();
+const deleteRouteTypeDialog = ref(false);
+const deleteRouteTypesDialog = ref(false);
+const routeType = ref({});
+const selectedRouteTypes = ref([]);
+const submitted = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
-const submitted = ref(false);
 
 const props = defineProps({
-    roleCategories: Array,
+    routeTypes: Array,
 });
 
-const categories = ref(props.roleCategories);
+const home = ref({
+    icon: "pi pi-home",
+    label: "Dashboard",
+    route: "/dashboard",
+});
 
-// onMounted(async () => {
-//     try {
-//         const response = await axios.get("/role-categories");
-//         categories.value = response.data.roleCategories;
-//     } catch (error) {
-//         toast.add({
-//             severity: "error",
-//             summary: "Error",
-//             detail: "Failed to load role categories.",
-//             life: 3000,
-//         });
-//     }
-// });
+const breadCumbItems = ref([{ label: "RouteType" }]);
 
+const routeTypes = ref(props.routeTypes);
+
+// CRUD Methods
 const openNew = () => {
     editDialog.value = false;
-
-    category.value = {};
+    routeType.value = {};
     submitted.value = false;
-    categoryDialog.value = true;
+    routeTypeDialog.value = true;
 };
+
 const hideDialog = () => {
-    categoryDialog.value = false;
+    routeTypeDialog.value = false;
     submitted.value = false;
 };
-const saveCategory = async () => {
+
+const saveRouteType = async () => {
     submitted.value = true;
-
-    if (category?.value.name?.trim()) {
+    if (routeType?.value?.name?.trim()) {
         loading.value = true;
-
         try {
-            if (category.value.id) {
-                // Update category
+            if (routeType.value.id) {
                 const response = await axios.put(
-                    `/role-categories/${category.value.id}`,
-                    category.value
+                    `/route-types/${routeType.value.id}`,
+                    routeType.value
                 );
-
-                // Find the index of the category to update
-                const index = categories.value.findIndex(
-                    (cat) => cat.id === category.value.id
-                );
-                if (index !== -1) {
-                    categories.value[index] = response.data; // Update the category in the array
-                }
-
+                updateRouteType(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Category Updated",
+                    detail: "Route Type Updated",
                     life: 3000,
                 });
             } else {
-                // Create new category
                 const response = await axios.post(
-                    "/role-categories",
-                    category.value
+                    "/route-types",
+                    routeType.value
                 );
-                categories.value.push(response.data);
+                routeTypes.value.push(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "Category Created",
+                    detail: "Route Type Created",
                     life: 3000,
                 });
             }
-            categoryDialog.value = false;
-            category.value = {}; // Reset form after saving
-        } catch (error) {
+        } catch (err) {
             if (err.response && err.response.status === 422) {
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
@@ -366,6 +410,13 @@ const saveCategory = async () => {
                         });
                     });
                 }
+            } else if (err.response && err.response.status === 403) {
+                toast.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "You are not allowed to perform this action",
+                    life: 5000,
+                });
             } else {
                 toast.add({
                     severity: "error",
@@ -376,79 +427,135 @@ const saveCategory = async () => {
             }
         } finally {
             loading.value = false;
+            routeTypeDialog.value = false;
         }
     }
 };
 
-const editCategory = (cat) => {
+const editRouteType = (routeTypeData) => {
     editDialog.value = true;
+    routeType.value = { ...routeTypeData };
+    routeTypeDialog.value = true;
+};
 
-    category.value = { ...cat };
-    categoryDialog.value = true;
-};
-const confirmDeleteCategory = (cat) => {
-    category.value = cat;
-    deleteCategoryDialog.value = true;
-};
-const deleteCategory = async () => {
+const deleteRouteType = async () => {
     loading.value = true;
-
     try {
-        await axios.delete(`/role-categories/${category.value.id}`);
-        categories.value = categories.value.filter(
-            (val) => val.id !== category.value.id
+        await axios.delete(`/route-types/${routeType.value.id}`);
+        routeTypes.value = routeTypes.value.filter(
+            (r) => r.id !== routeType.value.id
         );
-        deleteCategoryDialog.value = false;
-        category.value = {};
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Category Deleted",
+            detail: "Route Type Deleted",
             life: 3000,
         });
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to delete category.",
-            life: 3000,
-        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
     } finally {
+        deleteRouteTypeDialog.value = false;
         loading.value = false;
     }
 };
+
+const confirmDeleteRouteType = (routeTypeData) => {
+    routeType.value = routeTypeData;
+    deleteRouteTypeDialog.value = true;
+};
+
+const deleteSelectedRouteType = async () => {
+    const ids = selectedRouteTypes.value.map((routeType) => routeType.id);
+    loading.value = true;
+    try {
+        await axios.post("/route-types/bulk-delete", { ids });
+        routeTypes.value = routeTypes.value.filter((r) => !ids.includes(r.id));
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Selected Route Type Deleted",
+            life: 3000,
+        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else if (err.response && err.response.status === 403) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "You are not allowed to perform this action",
+                life: 5000,
+            });
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
+    } finally {
+        deleteRouteTypesDialog.value = false;
+        loading.value = false;
+    }
+};
+
 const confirmDeleteSelected = () => {
-    deleteCategoriesDialog.value = true;
+    deleteRouteTypesDialog.value = true;
 };
-const deleteSelectedCategories = async () => {
-    loading.value = true;
 
-    try {
-        const idsToDelete = selectedCategories.value.map((cat) => cat.id);
-        await axios.post(`/role-categories/bulk-delete`, { ids: idsToDelete });
-        categories.value = categories.value.filter(
-            (val) => !selectedCategories.value.includes(val)
-        );
-        deleteCategoriesDialog.value = false;
-        selectedCategories.value = null;
-        toast.add({
-            severity: "success",
-            summary: "Successful",
-            detail: "Selected Categories Deleted",
-            life: 3000,
-        });
-    } catch (error) {
-        toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to delete selected categories.",
-            life: 3000,
-        });
-    } finally {
-        loading.value = false;
+const updateRouteType = (updatedRouteType) => {
+    const index = routeTypes.value.findIndex(
+        (r) => r.id === updatedRouteType.id
+    );
+    if (index !== -1) {
+        routeTypes.value[index] = updatedRouteType;
     }
 };
+
 const exportCSV = () => {
-    dt.value.exportCSV();
+    dt.value?.exportCSV();
 };
 </script>
+<style scoped>
+::v-deep(.p-breadcrumb) {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+</style>
