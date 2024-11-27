@@ -480,7 +480,7 @@
                                     v-if="suspect.suspect_photo_path"
                                     :src="suspect.suspect_photo_path"
                                     alt="Suspect Photo"
-                                    class="object-cover w-full h-full"
+                                    class="object-contain w-full h-full"
                                 />
                                 <div v-else class="text-gray-500">
                                     No Photo Available
@@ -585,6 +585,14 @@ import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
 import Divider from "primevue/divider";
 
+import Stepper from 'primevue/stepper';
+import StepList from 'primevue/steplist';
+import StepPanels from 'primevue/steppanels';
+import StepItem from 'primevue/stepitem';
+import Step from 'primevue/step';
+import StepPanel from 'primevue/steppanel';
+
+
 const toast = useToast();
 
 // Reactive State Variables
@@ -639,7 +647,6 @@ const props = defineProps({
 
 const suspects = ref(props.suspects);
 const countries = ref(props.countries);
-console.log(suspects);
 
 const previewUrl = ref(null);
 const onFileSelect = (event) => {

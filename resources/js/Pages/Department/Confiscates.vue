@@ -174,6 +174,14 @@
                     >
                         <template #body="slotProps">
                             <Button
+                                icon="pi pi-eye"
+                                outlined
+                                rounded
+                                class="mr-2"
+                                severity="info"
+                                @click="viewConfiscate(slotProps.data)"
+                            />
+                            <Button
                                 icon="pi pi-pencil"
                                 outlined
                                 rounded
@@ -275,7 +283,7 @@
                             name="proof[]"
                             @select="onFileSelect"
                             accept="image/*,video/*"
-                            :maxFileSize="2000000"
+                            :maxFileSize="9000000"
                         />
 
                         <!-- Image Preview -->
@@ -451,6 +459,88 @@
                     </div>
                 </template>
             </Dialog>
+
+            <Dialog
+                v-model:visible="viewDialog"
+                modal
+                header="Confiscate Details"
+                :style="{ width: '450px' }"
+            >
+                <div class="p-6 space-y-6">
+                    <!-- Grid Container for Image and Details -->
+                    <div class="grid grid-cols-1 gap-6">
+                        <div
+                            v-if="confiscate.proof"
+                            class="col-span-1 flex justify-center items-center"
+                        >
+                            <div
+                                class="w-full h-48 overflow-hidden rounded-lg border shadow-md"
+                            >
+                                <img
+                                    v-if="isImage(confiscate.proof)"
+                                    :src="confiscate.proof"
+                                    alt="proof"
+                                    class="object-contain w-full h-full border rounded-md"
+                                />
+
+                                <!-- Display the video if the proof is a video -->
+                                <video
+                                    v-else
+                                    controls
+                                    class="object-cover w-full h-full border rounded-md"
+                                >
+                                    <source
+                                        :src="confiscate.proof"
+                                        type="video/mp4"
+                                    />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                        <!-- Suspect Data on the Right -->
+                        <div class="col-span-1 flex flex-col space-y-3">
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Item</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ confiscate.item || "N/A" }}
+                                </div>
+                            </div>
+                            <Divider />
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Quantity</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ confiscate.quantity || "N/A" }}
+                                </div>
+                            </div>
+                            <Divider />
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Suspect</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ confiscate.suspect.name || "N/A" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <template #footer>
+                    <Button
+                        label="Close"
+                        icon="pi pi-times"
+                        text
+                        @click="viewDialog = false"
+                    />
+                </template>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
@@ -474,6 +564,7 @@ import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
 import Image from "primevue/image";
 import FileUpload from "primevue/fileupload";
+import Divider from "primevue/divider";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
@@ -484,6 +575,8 @@ const toast = useToast();
 const dt = ref();
 const confiscateDialog = ref(false);
 const editDialog = ref(false);
+const viewDialog = ref(false);
+
 const loading = ref(false);
 const deleteConfiscateDialog = ref(false);
 const deleteConfiscatesDialog = ref(false);
@@ -661,6 +754,11 @@ const editConfiscate = (confiscateData) => {
     editDialog.value = true;
     confiscate.value = { ...confiscateData };
     confiscateDialog.value = true;
+};
+
+const viewConfiscate = (confiscateData) => {
+    confiscate.value = { ...confiscateData };
+    viewDialog.value = true;
 };
 
 const deleteConfiscate = async () => {

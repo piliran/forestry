@@ -57,9 +57,12 @@ class ArrestController extends Controller
             'suspect_id' => 'required|exists:suspects,id',
             // 'confiscate_id' => 'required|exists:confiscates,id',
             'crime_id' => 'required|exists:crimes,id',
+            // 'status' => 'required|string|in:' . implode(',', Suspect::getStatuses()),
+
 
         ]);
 
+       
         $arrest = Arrest::create($validated);
         $arrest->load('suspect');
         // $arrest->load('confiscate');

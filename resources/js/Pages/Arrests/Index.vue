@@ -99,6 +99,18 @@
                         :exportable="false"
                     ></Column>
                     <Column
+                        field="suspect.name"
+                        header="Suspect Name"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="crime.name"
+                        header="Crime"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
                         field="description"
                         header="Description"
                         sortable
@@ -121,24 +133,19 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column> -->
-                    <Column
-                        field="suspect.name"
-                        header="Suspect Name"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
+
                     <!-- <Column
                         field="crime.name"
                         header="Crime"
                         sortable
                         style="min-width: 10rem"
                     ></Column> -->
-                    <Column
+                    <!-- <Column
                         field="confiscate.item"
                         header="Confiscates"
                         sortable
                         style="min-width: 10rem"
-                    ></Column>
+                    ></Column> -->
 
                     <Column
                         header="Action"
@@ -146,6 +153,14 @@
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
+                            <Button
+                                icon="pi pi-eye"
+                                outlined
+                                rounded
+                                class="mr-2"
+                                severity="info"
+                                @click="viewArrest(slotProps.data)"
+                            />
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
@@ -176,6 +191,23 @@
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
+                    <div class="col-span-1 flex justify-center items-center">
+                        <div
+                            v-if="showSelectedSuspect"
+                            class="h-48 w-48 overflow-hidden rounded-full border shadow-md"
+                        >
+                            <img
+                                v-if="selectedSuspect.suspect_photo_path"
+                                :src="selectedSuspect.suspect_photo_path"
+                                alt="Suspect Photo"
+                                class="object-contain w-full h-full"
+                            />
+                            <div v-else class="text-gray-500">
+                                No Photo Available
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-12 md:col-6">
                         <label for="suspects" class="block font-bold mb-2"
                             >Suspect</label
@@ -423,6 +455,87 @@
                     </div>
                 </template>
             </Dialog>
+
+            <Dialog
+                v-model:visible="viewDialog"
+                modal
+                header="Confiscate Details"
+                :style="{ width: '450px' }"
+            >
+                <div class="p-6 space-y-6">
+                    <!-- Grid Container for Image and Details -->
+                    <div class="grid grid-cols-1 gap-6">
+                        <div
+                            class="col-span-1 flex justify-center items-center"
+                        >
+                            <div
+                                class="w-full h-48 overflow-hidden rounded-lg border shadow-md"
+                            >
+                                <img
+                                    v-if="arrest.suspect.suspect_photo_path"
+                                    :src="arrest.suspect.suspect_photo_path"
+                                    alt="Suspect Photo"
+                                    class="object-contain w-full h-full"
+                                />
+                                <div v-else class="text-gray-500">
+                                    No Photo Available
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 flex flex-col space-y-3">
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Suspect</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ arrest.suspect.name || "N/A" }}
+                                </div>
+                            </div>
+                            <Divider />
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Crime</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ arrest.crime.name || "N/A" }}
+                                </div>
+                            </div>
+                            <Divider />
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Penalty</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ arrest.crime.penalty || "N/A" }}
+                                </div>
+                            </div>
+                            <Divider />
+                            <div class="space-y-1">
+                                <span
+                                    class="font-semibold text-lg text-gray-800"
+                                    >Date Arrested</span
+                                >
+                                <div class="text-base text-gray-600">
+                                    {{ arrest.date || "N/A" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <template #footer>
+                    <Button
+                        label="Close"
+                        icon="pi pi-times"
+                        text
+                        @click="viewDialog = false"
+                    />
+                </template>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
@@ -431,6 +544,7 @@ import { ref, onMounted, watch } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
+import Divider from "primevue/divider";
 
 import Textarea from "primevue/textarea";
 import { format } from "date-fns";
@@ -457,10 +571,14 @@ const toast = useToast();
 const dt = ref();
 const arrestDialog = ref(false);
 const editDialog = ref(false);
+const viewDialog = ref(false);
+const showSelectedSuspect = ref(false);
+
 const loading = ref(false);
 const deleteArrestDialog = ref(false);
 const deleteArrestsDialog = ref(false);
 const arrest = ref({});
+const selectedSuspect = ref({});
 const selectedArrests = ref([]);
 const submitted = ref(false);
 const filters = ref({
@@ -505,6 +623,23 @@ watch(
     (newVal) => {
         if (newVal && typeof newVal === "string" && newVal.includes("T")) {
             arrest.value.date = format(new Date(newVal), "dd/MM/yyyy");
+        }
+    },
+    { immediate: true }
+);
+
+watch(
+    () => arrest.value.suspect_id,
+    (newVal) => {
+        if (newVal) {
+            showSelectedSuspect.value = true;
+
+            // const suspect = arrests.value.find(
+            //     (arrest) => arrest.suspect.id === newVal
+            // );
+            const suspect = suspects.value.find((r) => r.id === newVal);
+
+            selectedSuspect.value = suspect;
         }
     },
     { immediate: true }
@@ -586,6 +721,11 @@ const editArrest = (arrestData) => {
     editDialog.value = true;
     arrest.value = { ...arrestData };
     arrestDialog.value = true;
+};
+
+const viewArrest = (arrestData) => {
+    arrest.value = { ...arrestData };
+    viewDialog.value = true;
 };
 
 const deleteArrest = async () => {
