@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('area_id');
             $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('encroachment_type');
+            $table->string('estimated_area');
+            $table->string('remarks');
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->softDeletes(); 

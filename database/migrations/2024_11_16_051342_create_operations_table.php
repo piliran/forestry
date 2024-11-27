@@ -28,7 +28,6 @@ return new class extends Migration
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('operation_type_id');
             $table->foreign('operation_type_id')->references('id')->on('operation_types')->onDelete('cascade')->onUpdate('cascade');
-        
             $table->softDeletes(); 
             $table->timestamps();
         });
