@@ -208,12 +208,11 @@
             <!-- Add/Edit suspect Dialog -->
             <Dialog
                 v-model:visible="suspectDialog"
-                :style="{ width: '450px' }"
+                :style="{ width: '500px' }"
                 :header="editDialog ? 'Edit suspect' : 'Add New suspect'"
                 :modal="true"
             >
-                <div class="flex flex-col gap-6">
-                    <!-- suspect Name -->
+                <!-- <div class="flex flex-col gap-6">
                     <div>
                         <label for="name" class="block font-bold mb-3"
                             >Suspect Name</label
@@ -249,7 +248,6 @@
                             @upload="onUpload"
                         />
 
-                        <!-- Image Preview -->
                         <div v-if="previewUrl" class="mt-3 flex justify-center">
                             <img
                                 :src="previewUrl"
@@ -270,7 +268,6 @@
                             />
                         </div>
 
-                        <!-- Error Message -->
                         <small
                             v-if="submitted && !fileupload"
                             class="text-red-500"
@@ -299,7 +296,6 @@
                         </small>
                     </div>
 
-                    <!-- districts -->
                     <div>
                         <label for="districts" class="block font-bold mb-3">
                             District
@@ -353,8 +349,265 @@
                             Suspect T/A is required.
                         </small>
                     </div>
+                </div> -->
+
+                <div class="card flex justify-center">
+                    <Stepper value="1" linear class="basis-[40rem]">
+                        <StepList>
+                            <Step value="1">Suspect</Step>
+                            <Step value="2">Crimes</Step>
+                            <Step value="3">Confiscates</Step>
+                        </StepList>
+                        <StepPanels>
+                            <StepPanel v-slot="{ activateCallback }" value="1">
+                                <div
+                                    class="flex flex-col w-full gap-6 p-4 border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950"
+                                >
+                                    <!-- Suspect Name -->
+                                    <div class="flex flex-col w-full">
+                                        <label
+                                            for="name"
+                                            class="block font-bold mb-2"
+                                            >Suspect Name</label
+                                        >
+                                        <InputText
+                                            id="name"
+                                            v-model.trim="suspect.name"
+                                            required="true"
+                                            autofocus
+                                            :invalid="
+                                                submitFirst && !suspect.name
+                                            "
+                                            class="w-full"
+                                        />
+                                        <small
+                                            v-if="submitFirst && !suspect.name"
+                                            class="text-red-500"
+                                        >
+                                            Suspect Name is required.
+                                        </small>
+                                    </div>
+
+                                    <!-- Suspect National ID -->
+                                    <div class="flex flex-col w-full">
+                                        <label
+                                            for="national_id"
+                                            class="block font-bold mb-2"
+                                            >Suspect National ID</label
+                                        >
+                                        <InputText
+                                            id="national_id"
+                                            v-model.trim="suspect.national_id"
+                                            required="true"
+                                            autofocus
+                                            :invalid="
+                                                submitFirst &&
+                                                !suspect.national_id
+                                            "
+                                            class="w-full"
+                                        />
+                                        <small
+                                            v-if="
+                                                submitFirst &&
+                                                !suspect.national_id
+                                            "
+                                            class="text-red-500"
+                                        >
+                                            Suspect National ID is required.
+                                        </small>
+                                    </div>
+
+                                    <div class="flex flex-col w-full">
+                                        <label
+                                            for="dob"
+                                            class="block font-bold mb-2"
+                                            >Date of Birth</label
+                                        >
+
+                                        <DatePicker
+                                            fluid
+                                            v-model="suspect.DOB"
+                                            dateFormat="dd/mm/yy"
+                                            placeholder="YYYY-MM-DD"
+                                            :invalid="
+                                                submitFirst && !suspect.DOB
+                                            "
+                                        />
+                                        <small
+                                            v-if="submitFirst && !suspect.DOB"
+                                            class="text-red-500"
+                                        >
+                                            Date of birth is required.
+                                        </small>
+                                    </div>
+
+                                    <div class="col-12 md:col-6">
+                                        <label
+                                            for="gender"
+                                            class="block font-bold mb-2"
+                                            >Gender</label
+                                        >
+                                        <Select
+                                            id="gender"
+                                            v-model="suspect.gender"
+                                            :options="genderOptions"
+                                            placeholder="Select gender"
+                                            fluid
+                                            :invalid="
+                                                submitFirst && !suspect.gender
+                                            "
+                                        />
+                                        <small
+                                            v-if="
+                                                submitFirst && !suspect.gender
+                                            "
+                                            class="text-red-500"
+                                        >
+                                            Gender is required.
+                                        </small>
+                                    </div>
+
+                                    <div class="flex flex-col w-full">
+                                        <label
+                                            for="districts"
+                                            class="block font-bold mb-3"
+                                        >
+                                            District
+                                        </label>
+                                        <Select
+                                            id="districts"
+                                            v-model="suspect.district_id"
+                                            :options="props.districts"
+                                            optionLabel="name"
+                                            optionValue="id"
+                                            placeholder="Select district"
+                                            fluid
+                                            :invalid="
+                                                submitFirst &&
+                                                !suspect.district_id
+                                            "
+                                        />
+
+                                        <small
+                                            v-if="
+                                                submitFirst &&
+                                                !suspect.district_id
+                                            "
+                                            class="text-red-500"
+                                        >
+                                            District is required.
+                                        </small>
+                                    </div>
+
+                                    <div class="flex flex-col w-full">
+                                        <label
+                                            for="village"
+                                            class="block font-bold mb-3"
+                                            >Suspect Village</label
+                                        >
+                                        <InputText
+                                            id="village"
+                                            v-model.trim="suspect.village"
+                                            required="true"
+                                            autofocus
+                                            :invalid="
+                                                submitFirst && !suspect.village
+                                            "
+                                            fluid
+                                        />
+                                        <small
+                                            v-if="
+                                                submitFirst && !suspect.village
+                                            "
+                                            class="text-red-500"
+                                        >
+                                            Suspect Village is required.
+                                        </small>
+                                    </div>
+                                    <div class="flex flex-col w-full">
+                                        <label
+                                            for="TA"
+                                            class="block font-bold mb-3"
+                                            >Suspect T/A</label
+                                        >
+                                        <InputText
+                                            id="TA"
+                                            v-model.trim="suspect.TA"
+                                            required="true"
+                                            autofocus
+                                            :invalid="
+                                                submitFirst && !suspect.TA
+                                            "
+                                            fluid
+                                        />
+                                        <small
+                                            v-if="submitFirst && !suspect.TA"
+                                            class="text-red-500"
+                                        >
+                                            Suspect T/A is required.
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Next Button -->
+                                <div class="flex pt-6 justify-end">
+                                    <Button
+                                        label="Next"
+                                        icon="pi pi-arrow-right"
+                                        @click="
+                                            () => {
+                                                if (validateStep1())
+                                                    activateCallback('2');
+                                            }
+                                        "
+                                    />
+                                </div>
+                            </StepPanel>
+
+                            <StepPanel v-slot="{ activateCallback }" value="2">
+                                <div class="flex flex-col h-48">
+                                    <div
+                                        class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
+                                    >
+                                        Content II
+                                    </div>
+                                </div>
+                                <div class="flex pt-6 justify-between">
+                                    <Button
+                                        label="Back"
+                                        severity="secondary"
+                                        icon="pi pi-arrow-left"
+                                        @click="activateCallback('1')"
+                                    />
+                                    <Button
+                                        label="Next"
+                                        icon="pi pi-arrow-right"
+                                        iconPos="right"
+                                        @click="activateCallback('3')"
+                                    />
+                                </div>
+                            </StepPanel>
+                            <StepPanel v-slot="{ activateCallback }" value="3">
+                                <div class="flex flex-col h-48">
+                                    <div
+                                        class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
+                                    >
+                                        Content III
+                                    </div>
+                                </div>
+                                <div class="pt-6">
+                                    <Button
+                                        label="Back"
+                                        severity="secondary"
+                                        icon="pi pi-arrow-left"
+                                        @click="activateCallback('2')"
+                                    />
+                                </div>
+                            </StepPanel>
+                        </StepPanels>
+                    </Stepper>
                 </div>
-                <template #footer>
+                <!-- <template #footer>
                     <Button
                         label="Cancel"
                         icon="pi pi-times"
@@ -377,7 +630,7 @@
                             @click="saveSuspect"
                         />
                     </div>
-                </template>
+                </template> -->
             </Dialog>
 
             <!-- Delete Single suspect Confirmation Dialog -->
@@ -584,14 +837,14 @@ import axios from "axios";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
 import Divider from "primevue/divider";
+import DatePicker from "primevue/datepicker";
 
-import Stepper from 'primevue/stepper';
-import StepList from 'primevue/steplist';
-import StepPanels from 'primevue/steppanels';
-import StepItem from 'primevue/stepitem';
-import Step from 'primevue/step';
-import StepPanel from 'primevue/steppanel';
-
+import Stepper from "primevue/stepper";
+import StepList from "primevue/steplist";
+import StepPanels from "primevue/steppanels";
+import StepItem from "primevue/stepitem";
+import Step from "primevue/step";
+import StepPanel from "primevue/steppanel";
 
 const toast = useToast();
 
@@ -606,6 +859,10 @@ const deleteRolesDialog = ref(false);
 const suspect = ref({});
 const selectedRoles = ref([]);
 const submitted = ref(false);
+const submitFirst = ref(false);
+const submitSecond = ref(false);
+const submitThird = ref(false);
+
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -617,6 +874,7 @@ const home = ref({
 });
 
 const breadCumbItems = ref([{ label: "Suspects" }]);
+const genderOptions = ["Male", "Female", "Other"];
 
 const fileupload = ref();
 
@@ -650,14 +908,45 @@ const countries = ref(props.countries);
 
 const previewUrl = ref(null);
 const onFileSelect = (event) => {
-    const file = event.files[0]; // Get the first selected file
+    const file = event.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            previewUrl.value = e.target.result; // Set the preview URL
+            previewUrl.value = e.target.result;
         };
-        reader.readAsDataURL(file); // Read the file as a data URL
+        reader.readAsDataURL(file);
     }
+};
+
+const validate = (step) => {
+    if (step === "1") {
+        submitFirst.value = true;
+        activateCallback("2");
+
+        if (
+            !suspect.value.national_id &&
+            !suspect.value.name &&
+            !suspect.value.village &&
+            !suspect.value.TA &&
+            !suspect.value.district
+        ) {
+            activateCallback("2");
+        }
+    }
+};
+
+const validateStep1 = () => {
+    submitFirst.value = true;
+    if (
+        !suspect.value.name ||
+        !suspect.value.national_id ||
+        !suspect.value.district_id ||
+        !suspect.value.village ||
+        !suspect.value.TA
+    ) {
+        return false;
+    }
+    return true;
 };
 
 // CRUD Methods
