@@ -127,11 +127,11 @@ public function hasPermissionTo($permission)
     }
 
   
-    foreach ($this->roles as $role) {
-        if ($role->permissions->contains('name', $permission)) {
-            return true;
-        }
-    }
+    // foreach ($this->roles as $role) {
+    //     if ($role->permissions->contains('name', $permission)) {
+    //         return true;
+    //     }
+    // }
 
     return false;
 }
