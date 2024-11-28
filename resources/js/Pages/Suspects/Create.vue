@@ -308,7 +308,7 @@
 
                                     <!-- List of Items with Checkboxes -->
                                     <div
-                                        v-for="item in confiscatedItems"
+                                        v-for="item in confiscates"
                                         :key="item.id"
                                         class="flex flex-col gap-2 border border-surface-200 dark:border-surface-700 rounded p-2 bg-surface-50 dark:bg-surface-950"
                                     >
@@ -491,6 +491,7 @@ const props = defineProps({
 
     districts: Array,
     crimes: Array,
+    confiscates: Array,
 });
 
 const suspects = ref(props.suspects);

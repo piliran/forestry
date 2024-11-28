@@ -231,7 +231,7 @@
                         </small>
                     </div>
 
-                    <!-- <div>
+                    <div>
                         <label for="quantity" class="block font-bold mb-3">
                             Quantity
                         </label>
@@ -276,7 +276,7 @@
                             >Proof</label
                         >
 
-                   
+                        <!-- File Upload -->
                         <FileUpload
                             ref="fileupload"
                             mode="basic"
@@ -286,6 +286,7 @@
                             :maxFileSize="9000000"
                         />
 
+                        <!-- Image Preview -->
                         <div
                             v-if="previewType === 'image'"
                             class="mt-3 flex justify-center"
@@ -298,7 +299,7 @@
                             />
                         </div>
 
-                       
+                        <!-- Video Preview -->
                         <div
                             v-if="previewType === 'video'"
                             class="mt-3 flex justify-center"
@@ -313,12 +314,12 @@
                             </video>
                         </div>
 
-                       
+                        <!-- Existing Proof Preview -->
                         <div
                             v-if="confiscate.proof"
                             class="mt-3 flex justify-center items-center space-x-3"
                         >
-                      
+                            <!-- Display the image if the proof is an image -->
                             <img
                                 v-if="isImage(confiscate.proof)"
                                 :src="confiscate.proof"
@@ -327,7 +328,7 @@
                                 width="250"
                             />
 
-                   
+                            <!-- Display the video if the proof is a video -->
                             <video
                                 v-else
                                 controls
@@ -342,14 +343,14 @@
                             </video>
                         </div>
 
-              
+                        <!-- Error Message -->
                         <small
                             v-if="submitted && !fileupload"
                             class="text-red-500"
                         >
                             Proof is required.
                         </small>
-                    </div> -->
+                    </div>
                 </div>
                 <template #footer>
                     <Button

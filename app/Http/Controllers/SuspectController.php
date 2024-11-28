@@ -6,6 +6,7 @@ use App\Models\Suspect;
 use App\Models\User;
 use App\Models\Country;
 use App\Models\Crime;
+use App\Models\Confiscate;
 use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,7 +21,7 @@ class SuspectController extends Controller
     {
         // Fetch non-deleted suspects
         $suspects = Suspect::with('district')->whereNull('deleted_at')->get();
-        $districts = District::all();
+        $districts = District::whereNull('deleted_at')->get();
 
         return Inertia::render('Suspects/Index', [
             'suspects' => $suspects,
@@ -33,12 +34,14 @@ class SuspectController extends Controller
      */
     public function create()
     {
-        $districts = District::all();
-        $crimes = Crime::all();
+        $districts = District::whereNull('deleted_at')->get();
+        $crimes = Crime::whereNull('deleted_at')->get();
+        $confiscates = Confiscate::whereNull('deleted_at')->get();
 
         return Inertia::render('Suspects/Create', [          
             'districts' => $districts,
             'crimes' => $crimes,
+            'confiscates' => $confiscates,
         ]);
     }
 

@@ -49,18 +49,28 @@ class ConfiscateController extends Controller
         // Validate the request data
         $validated = $request->validate([
             'item' => 'required|string|max:255',
-          
+            'quantity' => 'required|numeric|max:255',
+            'suspect_id' => 'required|exists:suspects,id',
+            'proof' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov|max:20480', // Max 20MB
         ]);
     
-     
+        // Handle file upload for the proof field
+        if ($request->hasFile('proof')) {
+            $validated['proof'] = $request
+                ->file('proof')
+                ->store('proofs', 'public'); // Save in 'public/confiscates/proofs'
+        }
     
         // Create the confiscate record
         $confiscate = Confiscate::create([
             'item' => $validated['item'],
-          
+            'quantity' => $validated['quantity'],
+            'suspect_id' => $validated['suspect_id'],
+            'proof' => $validated['proof'] ?? null, // Default to null if no file
         ]);
     
- 
+        // Load related suspect data
+        $confiscate->load('suspect');
     
         // Return the created confiscate as JSON
         return response()->json($confiscate, 201);
@@ -94,17 +104,39 @@ class ConfiscateController extends Controller
         // Validate the incoming request
         $validated = $request->validate([
             'item' => 'required|string|max:255',
-           
+            'quantity' => 'required|numeric|max:255',
+            'suspect_id' => 'required|exists:suspects,id',
+            'proof' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov|max:20480', // Max 20MB
         ]);
     
-        
+        // Handle file upload if a new proof file is provided
+        if ($request->hasFile('proof')) {
+            // Delete the old proof file if it exists
+            if ($confiscate->proof) {
+                Storage::disk('public')->delete($confiscate->proof);
+            }
+    
+            // Store the new file
+            $validated['proof'] = $request
+                ->file('proof')
+                ->store('proofs', 'public');
+        }
+    
+        // Update the confiscate record with validated data
         $confiscate->update([
             'item' => $validated['item'],
-
+            'quantity' => $validated['quantity'],
+            'suspect_id' => $validated['suspect_id'],
           
         ]);
 
-;
+        
+        if ($request->hasFile('proof')) {
+            $confiscate->update(['proof' => $validated['proof']]);
+        }
+    
+        // Load related suspect data
+        $confiscate->load('suspect');
     
         // Return the updated confiscate as JSON
         return response()->json($confiscate, 200);
