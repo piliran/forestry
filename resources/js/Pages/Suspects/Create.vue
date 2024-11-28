@@ -255,29 +255,33 @@
                             </StepPanel>
 
                             <StepPanel v-slot="{ activateCallback }" value="2">
-                                <div
-                                    class="flex flex-col gap-2 p-4 mx-auto"
-                                    style="min-height: 16rem; max-width: 24rem"
-                                >
+                                <div class="flex flex-col gap-2 p-4 mx-auto">
                                     <div
                                         class="text-center mt-4 mb-4 text-xl font-semibold"
                                     >
                                         Choose suspect crimes
                                     </div>
-                                    <div
-                                        class="flex flex-wrap justify-center gap-4"
-                                    >
+
+                                    <div class="flex flex-wrap gap-4">
                                         <div
                                             v-for="(
                                                 crime, index
                                             ) in forestryCrimes"
                                             :key="index"
+                                            class="flex items-center space-x-2"
                                         >
-                                            <ToggleButton
+                                            <input
+                                                type="checkbox"
                                                 v-model="crime.value"
-                                                :onLabel="crime.label"
-                                                :offLabel="crime.label"
+                                                :id="`crime-${index}`"
+                                                class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                                             />
+                                            <label
+                                                :for="`crime-${index}`"
+                                                class="text-sm font-medium"
+                                            >
+                                                {{ crime.label }}
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -395,6 +399,7 @@ import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
+import Checkbox from "primevue/checkbox";
 
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
@@ -522,9 +527,9 @@ const selectedItems = ref([]);
 
 const handleCheckboxChange = (item) => {
     if (selectedItems.value[item.id]) {
-        delete selectedItems.value[item.id]; // Remove item if unchecked
+        delete selectedItems.value[item.id];
     } else {
-        selectedItems.value[item.id] = 1; // Initialize quantity to 1 when checked
+        selectedItems.value[item.id] = 1;
     }
 };
 
@@ -545,7 +550,7 @@ const validateStep1 = () => {
         !suspect.value.village ||
         !suspect.value.TA
     ) {
-        return false;
+        return true;
     }
     return true;
 };

@@ -212,6 +212,14 @@ const items = ref([
         allowedRoles: ["Admin", "User"],
     },
     {
+        label: "Teams",
+        icon: "team",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/teams",
+        allowedRoles: ["Admin", "User"],
+    },
+    {
         label: "Crimes",
         icon: "crimes",
         forwardIcon: false,
