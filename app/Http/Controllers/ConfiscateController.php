@@ -20,7 +20,7 @@ class ConfiscateController extends Controller
     {
         // Fetch only non-deleted confiscates
         
-        $confiscates = Confiscate::whereNull('deleted_at')->with('suspect')->get();
+        $confiscates = Confiscate::whereNull('deleted_at')->get();
         $suspects = Suspect::all();
         $encroached_areas = Encroached::all();
  

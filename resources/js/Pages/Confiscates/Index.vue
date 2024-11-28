@@ -105,67 +105,6 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                    <Column
-                        field="quantity"
-                        header="Quantity"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="suspect.name"
-                        header="Suspect"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-
-                    <Column header="Proof">
-                        <template #body="slotProps">
-                            <!-- Check if the proof exists and is not null -->
-                            <div
-                                v-if="
-                                    slotProps.data.proof &&
-                                    !slotProps.data.proof.endsWith('/null')
-                                "
-                            >
-                                <!-- Render an Image Preview if the file is an image -->
-                                <Image
-                                    v-if="isImage(slotProps.data.proof)"
-                                    :src="`${slotProps.data.proof}`"
-                                    :alt="slotProps.data.proof"
-                                    preview
-                                >
-                                    <template #image>
-                                        <img
-                                            :src="slotProps.data.proof"
-                                            alt="proof"
-                                            style="
-                                                width: 60px;
-                                                height: 40px;
-                                                object-fit: cover;
-                                            "
-                                        />
-                                    </template>
-                                </Image>
-
-                                <!-- Render a Video Player if the file is a video -->
-                                <video
-                                    v-else
-                                    controls
-                                    style="
-                                        width: 60px;
-                                        height: 40px;
-                                        object-fit: cover;
-                                    "
-                                >
-                                    <source
-                                        :src="slotProps.data.proof"
-                                        type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </template>
-                    </Column>
 
                     <Column
                         header="Action"

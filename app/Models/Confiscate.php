@@ -16,9 +16,9 @@ class Confiscate extends Model
     // Define fillable fields
     protected $fillable = [
         'item',
-        'quantity',        
-        'suspect_id',   
-        'proof',
+        // 'quantity',        
+        // 'suspect_id',   
+        // 'proof',
     ];
 
 
