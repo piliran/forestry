@@ -292,6 +292,27 @@
                             Remarks is required.
                         </small>
                     </div>
+                    <div class="col-12">
+                        <label for="remarks" class="block font-bold mb-3"
+                            >Remarks</label
+                        >
+                        <Textarea
+                            id="remarks"
+                            v-model="encroached.remarks"
+                            required="true"
+                            rows="3"
+                            cols="20"
+                            autofocus
+                            :invalid="submitted && !encroached.remarks"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !encroached.remarks"
+                            class="text-red-500"
+                        >
+                            Remarks is required.
+                        </small>
+                    </div>
                     
                 </div>
                 <template #footer>
@@ -422,6 +443,8 @@ import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
+
+import Textarea from 'primevue/textarea';
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";

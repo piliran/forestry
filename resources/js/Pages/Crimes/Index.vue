@@ -171,14 +171,17 @@
                             Crime Name is required.
                         </small>
                     </div>
-                    <div>
-                        <label for="description" class="block font-bold mb-3">
-                            Description
-                        </label>
-                        <InputText
+                    
+                    <div class="col-12">
+                        <label for="description" class="block font-bold mb-3"
+                            >Description</label
+                        >
+                        <Textarea
                             id="description"
-                            v-model.trim="crime.description"
+                            v-model="crime.description"
                             required="true"
+                            rows="3"
+                            cols="20"
                             autofocus
                             :invalid="submitted && !crime.description"
                             fluid
@@ -187,7 +190,7 @@
                             v-if="submitted && !crime.description"
                             class="text-red-500"
                         >
-                            Description is required.
+                            Crime Description is required.
                         </small>
                     </div>
                     <div>
@@ -333,6 +336,7 @@ import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
+import Textarea from 'primevue/textarea';
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
