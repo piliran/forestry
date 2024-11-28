@@ -405,67 +405,12 @@
                 :style="{ width: '450px' }"
             >
                 <div class="p-6 space-y-6">
-                    <!-- Grid Container for Image and Details -->
-                    <div class="grid grid-cols-1 gap-6">
-                        <div
-                            v-if="confiscate.proof"
-                            class="col-span-1 flex justify-center items-center"
+                    <div class="space-y-1">
+                        <span class="font-semibold text-lg text-gray-800"
+                            >Item</span
                         >
-                            <div
-                                class="w-full h-48 overflow-hidden rounded-lg border shadow-md"
-                            >
-                                <img
-                                    v-if="isImage(confiscate.proof)"
-                                    :src="confiscate.proof"
-                                    alt="proof"
-                                    class="object-contain w-full h-full border rounded-md"
-                                />
-
-                                <!-- Display the video if the proof is a video -->
-                                <video
-                                    v-else
-                                    controls
-                                    class="object-cover w-full h-full border rounded-md"
-                                >
-                                    <source
-                                        :src="confiscate.proof"
-                                        type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                        <!-- Suspect Data on the Right -->
-                        <div class="col-span-1 flex flex-col space-y-3">
-                            <div class="space-y-1">
-                                <span
-                                    class="font-semibold text-lg text-gray-800"
-                                    >Item</span
-                                >
-                                <div class="text-base text-gray-600">
-                                    {{ confiscate.item || "N/A" }}
-                                </div>
-                            </div>
-                            <Divider />
-                            <div class="space-y-1">
-                                <span
-                                    class="font-semibold text-lg text-gray-800"
-                                    >Quantity</span
-                                >
-                                <div class="text-base text-gray-600">
-                                    {{ confiscate.quantity || "N/A" }}
-                                </div>
-                            </div>
-                            <Divider />
-                            <div class="space-y-1">
-                                <span
-                                    class="font-semibold text-lg text-gray-800"
-                                    >Suspect</span
-                                >
-                                <div class="text-base text-gray-600">
-                                    {{ confiscate.suspect.name || "N/A" }}
-                                </div>
-                            </div>
+                        <div class="text-base text-gray-600">
+                            {{ confiscate.item || "N/A" }}
                         </div>
                     </div>
                 </div>
@@ -591,12 +536,11 @@ const hideDialog = () => {
 const saveConfiscate = async () => {
     submitted.value = true;
 
-    // Validation: Ensure the item name and quantity are provided
-    if (!confiscate.value.item?.trim() || !confiscate.value.quantity) {
+    if (!confiscate.value.item?.trim()) {
         toast.add({
             severity: "error",
             summary: "Validation Error",
-            detail: "Item Name and Quantity are required.",
+            detail: "Item Name required.",
             life: 3000,
         });
         return;
@@ -610,14 +554,6 @@ const saveConfiscate = async () => {
 
         // Add confiscate details to formData
         formData.append("item", confiscate.value.item);
-        formData.append("quantity", confiscate.value.quantity);
-        formData.append("suspect_id", confiscate.value.suspect_id || "");
-
-        // Add proof file if selected
-        const file = fileupload.value?.files?.[0]; // Get the first file
-        if (file) {
-            formData.append("proof", file);
-        }
 
         let response;
         if (confiscate.value.id) {

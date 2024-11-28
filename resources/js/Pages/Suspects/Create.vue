@@ -325,7 +325,7 @@
                                             <label
                                                 :for="`checkbox-${item.id}`"
                                                 class="text-base"
-                                                >{{ item.name }}</label
+                                                >{{ item.item }}</label
                                             >
                                         </div>
 
@@ -339,7 +339,7 @@
                                                 class="block font-semibold mb-1"
                                             >
                                                 Enter quantity for
-                                                {{ item.name }}:
+                                                {{ item.item }}:
                                             </label>
                                             <input
                                                 type="number"
@@ -369,7 +369,6 @@
                                                 :key="id"
                                                 class="text-base"
                                             >
-                                                <!-- Safely access item name by checking for existence -->
                                                 {{ getItemNameById(id) }}:
                                                 {{ quantity }}
                                             </li>
@@ -496,6 +495,7 @@ const props = defineProps({
 
 const suspects = ref(props.suspects);
 const countries = ref(props.countries);
+const confiscates = ref(props.confiscates);
 
 const previewUrl = ref(null);
 const onFileSelect = (event) => {
@@ -509,22 +509,6 @@ const onFileSelect = (event) => {
     }
 };
 
-const forestryCrimes = ref([
-    { label: "Illegal Logging", value: false },
-    { label: "Wildlife Poaching", value: false },
-    { label: "Forest Encroachment", value: false },
-    { label: "Timber Smuggling", value: false },
-    { label: "Unlawful Burning", value: false },
-]);
-
-const confiscatedItems = ref([
-    { id: 1, name: "Chainsaw" },
-    { id: 2, name: "Truckloads of Timber" },
-    { id: 3, name: "Animal Skins" },
-    { id: 4, name: "Hunting Rifles" },
-    { id: 5, name: "Unlicensed Vehicles" },
-]);
-
 const selectedItems = ref([]);
 
 const handleCheckboxChange = (item) => {
@@ -537,10 +521,8 @@ const handleCheckboxChange = (item) => {
 
 // Method to safely get item name by id
 const getItemNameById = (id) => {
-    const item = confiscatedItems.value.find(
-        (item) => item.id === parseInt(id)
-    );
-    return item ? item.name : "Item not found";
+    const item = confiscates.value.find((item) => item.id === parseInt(id));
+    return item ? item.item : "Item not found";
 };
 
 const validateStep1 = () => {
