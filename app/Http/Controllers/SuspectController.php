@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Suspect;
 use App\Models\User;
 use App\Models\Country;
+use App\Models\Crime;
 use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -33,10 +34,11 @@ class SuspectController extends Controller
     public function create()
     {
         $districts = District::all();
+        $crimes = Crime::all();
 
-        return Inertia::render('Suspects/Create', [
-          
+        return Inertia::render('Suspects/Create', [          
             'districts' => $districts,
+            'crimes' => $crimes,
         ]);
     }
 

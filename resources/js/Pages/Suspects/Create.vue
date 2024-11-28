@@ -266,21 +266,21 @@
                                         <div
                                             v-for="(
                                                 crime, index
-                                            ) in forestryCrimes"
+                                            ) in props.crimes"
                                             :key="index"
                                             class="flex items-center space-x-2"
                                         >
                                             <input
                                                 type="checkbox"
                                                 v-model="crime.value"
-                                                :id="`crime-${index}`"
+                                                id="id"
                                                 class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                                             />
                                             <label
                                                 :for="`crime-${index}`"
                                                 class="text-sm font-medium"
                                             >
-                                                {{ crime.label }}
+                                                {{ crime.name }}
                                             </label>
                                         </div>
                                     </div>
@@ -490,6 +490,7 @@ const props = defineProps({
     suspects: Array,
 
     districts: Array,
+    crimes: Array,
 });
 
 const suspects = ref(props.suspects);

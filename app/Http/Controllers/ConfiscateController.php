@@ -24,7 +24,7 @@ class ConfiscateController extends Controller
         $suspects = Suspect::all();
         $encroached_areas = Encroached::all();
  
-        return Inertia::render('Department/Confiscates', [
+        return Inertia::render('Confiscates/Index', [
             'confiscates' => $confiscates,
             'suspects' => $suspects,
             'encroached_areas' => $encroached_areas,
