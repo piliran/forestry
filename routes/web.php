@@ -110,6 +110,7 @@ Route::post('/species-list/bulk-delete', [SpeciesController::class, 'batchDelete
 Route::resource('suspects', SuspectController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/suspects/bulk-delete', [SuspectController::class, 'batchDelete']);
 Route::post('/update-suspect', [SuspectController::class, 'updateSuspect']);
+Route::get('/add-suspect', [SuspectController::class, 'create']);
 
 
 

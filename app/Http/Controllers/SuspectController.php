@@ -32,7 +32,12 @@ class SuspectController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/CreateSuspect');
+        $districts = District::all();
+
+        return Inertia::render('Suspects/Create', [
+          
+            'districts' => $districts,
+        ]);
     }
 
     /**
