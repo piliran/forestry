@@ -166,21 +166,25 @@
                             Permission Name is required.
                         </small>
                     </div>
-                    <div>
-                        <label for="description" class="block font-bold mb-3">
-                            Description
-                        </label>
-                        <InputText
+                    <div class="col-12">
+                        <label for="description" class="block font-bold mb-3"
+                            >Description</label
+                        >
+                        <Textarea
                             id="description"
-                            v-model.trim="permission.description"
+                            v-model="permission.description"
                             required="true"
+                            rows="3"
+                            cols="20"
+                            autofocus
+                            :invalid="submitted && !permission.description"
                             fluid
                         />
                         <small
                             v-if="submitted && !permission.description"
                             class="text-red-500"
                         >
-                            Description is required.
+                            Permission Description is required.
                         </small>
                     </div>
                 </div>
@@ -307,6 +311,9 @@ import Button from "primevue/button";
 import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
+
+import Textarea from 'primevue/textarea';
+
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import ProgressSpinner from "primevue/progressspinner";

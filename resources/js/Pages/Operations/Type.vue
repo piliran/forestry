@@ -172,14 +172,16 @@
                             Name is required.
                         </small>
                     </div>
-                    <div>
+                    <div class="col-12">
                         <label for="description" class="block font-bold mb-3"
                             >Description</label
                         >
-                        <InputText
+                        <Textarea
                             id="description"
-                            v-model.trim="operation.description"
-                            required
+                            v-model="operation.description"
+                            required="true"
+                            rows="3"
+                            cols="20"
                             autofocus
                             :invalid="submitted && !operation.description"
                             fluid
@@ -188,7 +190,7 @@
                             v-if="submitted && !operation.description"
                             class="text-red-500"
                         >
-                            Description is required.
+                            Operation Type Description is required.
                         </small>
                     </div>
                 </div>
@@ -322,6 +324,8 @@ import {
     InputText,
     IconField,
     ProgressSpinner,
+    Textarea,
+
 } from "primevue";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";

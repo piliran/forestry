@@ -235,6 +235,27 @@
                             Operation Description is required.
                         </small>
                     </div>
+                    <div class="col-12">
+                        <label for="description" class="block font-bold mb-3"
+                            >Operation Description</label
+                        >
+                        <Textarea
+                            id="description"
+                            v-model="operation.description"
+                            required="true"
+                            rows="3"
+                            cols="20"
+                            autofocus
+                            :invalid="submitted && !operation.description"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !operation.description"
+                            class="text-red-500"
+                        >
+                            Operation Type Description is required.
+                        </small>
+                    </div>
 
                     <!-- Operation Category -->
                     <div>
@@ -538,6 +559,8 @@ import ProgressSpinner from "primevue/progressspinner";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 import Breadcrumb from "primevue/breadcrumb";
+import Textarea from 'primevue/textarea';
+
 import { Link } from "@inertiajs/vue3";
 
 const toast = useToast();

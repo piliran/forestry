@@ -167,14 +167,17 @@
                             Route Type Name is required.
                         </small>
                     </div>
-                    <div>
-                        <label for="description" class="block font-bold mb-3">
-                            Description
-                        </label>
-                        <InputText
+                    
+                    <div class="col-12">
+                        <label for="description" class="block font-bold mb-3"
+                            >Description</label
+                        >
+                        <Textarea
                             id="description"
-                            v-model.trim="routeType.description"
+                            v-model="routeType.description"
                             required="true"
+                            rows="3"
+                            cols="20"
                             autofocus
                             :invalid="submitted && !routeType.description"
                             fluid
@@ -183,9 +186,11 @@
                             v-if="submitted && !routeType.description"
                             class="text-red-500"
                         >
-                            Description is required.
+                            Route Type Description is required.
                         </small>
                     </div>
+
+
                 </div>
                 <template #footer>
                     <Button
@@ -312,6 +317,9 @@ import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
+
+import Textarea from 'primevue/textarea';
+
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
