@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schedules', function (Blueprint $table) {
+        Schema::create('suspect_to_operations', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('suspect_id');
+            $table->foreign('suspect_id')->references('id')->on('suspects')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('operation_id');
             $table->foreign('operation_id')->references('id')->on('operations')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('deployment_time');
-            $table->string('withdrawal_time');
-            $table->softDeletes(); 
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('suspect_to_operations');
     }
 };
