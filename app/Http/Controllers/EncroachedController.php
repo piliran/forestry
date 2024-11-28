@@ -33,8 +33,11 @@ class EncroachedController extends Controller
     {
         $validated = $request->validate([
             'area_id' => 'required|exists:areas,id',
-           'latitude' => 'nullable|numeric|between:-90,90',
+            'encroachment_type' => 'required|string|max:255',
+            'estimated_area' => 'required|string|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
+            'remarks' => 'required|string|max:255',
         ]);
 
         $encroached = Encroached::create($validated);
@@ -50,8 +53,11 @@ class EncroachedController extends Controller
     {
         $validated = $request->validate([
             'area_id' => 'required|exists:areas,id',
+            'encroachment_type' => 'required|string|max:255',
+            'estimated_area' => 'required|string|max:255',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
+            'remarks' => 'required|string|max:255',
         ]);
 
         $encroached->update($validated);

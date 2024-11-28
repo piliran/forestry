@@ -107,6 +107,18 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
+                        field="encroachment_type"
+                        header="Encroachment Type"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="estimated_area"
+                        header="Estimated Area"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
                         field="latitude"
                         header="Latitude"
                         sortable
@@ -115,6 +127,12 @@
                     <Column
                         field="longitude"
                         header="Longitude"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="remarks"
+                        header="Remarks"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -180,6 +198,44 @@
                         </small>
                     </div>
                     <div>
+                        <label for="encroachment_type" class="block font-bold mb-3">
+                            Encroachment Type
+                        </label>
+                        <InputText
+                            id="encroachment_type"
+                            v-model.trim="encroached.encroachment_type"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !encroached.encroachment_type"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !encroached.encroachment_type"
+                            class="text-red-500"
+                        >
+                            Encroachment Type is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="estimated_area" class="block font-bold mb-3">
+                            Estimated Area
+                        </label>
+                        <InputText
+                            id="estimated_area"
+                            v-model.trim="encroached.estimated_area"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !encroached.estimated_area"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !encroached.estimated_area"
+                            class="text-red-500"
+                        >
+                            Estimated Area is required.
+                        </small>
+                    </div>
+                    <div>
                         <label for="latitude" class="block font-bold mb-3">
                             Latitude
                         </label>
@@ -217,6 +273,26 @@
                             Longitude is required.
                         </small>
                     </div>
+                    <div>
+                        <label for="remarks" class="block font-bold mb-3">
+                            Remarks
+                        </label>
+                        <InputText
+                            id="longitude"
+                            v-model.trim="encroached.remarks"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !encroached.remarks"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !encroached.remarks"
+                            class="text-red-500"
+                        >
+                            Remarks is required.
+                        </small>
+                    </div>
+                    
                 </div>
                 <template #footer>
                     <Button
@@ -397,7 +473,7 @@ const hideDialog = () => {
 
 const saveEncroached = async () => {
     submitted.value = true;
-    if (encroached?.value?.latitude?.trim()) {
+    if (encroached?.value?.encroachment_type?.trim()) {
         loading.value = true;
 
         try {
