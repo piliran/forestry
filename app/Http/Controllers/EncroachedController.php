@@ -51,6 +51,7 @@ class EncroachedController extends Controller
      */
     public function update(Request $request, Encroached $encroached)
     {
+        $encroached=Encroached::find($request->id);
         $validated = $request->validate([
             'area_id' => 'required|exists:areas,id',
             'encroachment_type' => 'required|string|max:255',
