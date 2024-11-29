@@ -138,7 +138,7 @@
 
             <!-- Add/Edit Team Dialog -->
             <Dialog
-                v-model:visible="team"
+                v-model:visible="teamDialog"
                 :style="{ width: '450px' }"
                 :header="editDialog ? 'Edit Team' : 'Add New Team'"
                 :modal="true"
