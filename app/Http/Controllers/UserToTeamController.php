@@ -3,105 +3,124 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserToTeam;
-use App\Models\UserToUserToTeam;
+use App\Models\Team;
+use App\Models\Staff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class UserToTeamController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of users and their associated teams.
      */
     public function index()
     {
-        //
-        $userToUserToTeams = UserToTeam::all();
+        $userToTeams = UserToTeam::with(['staff', 'team'])
+            ->whereNull('deleted_at')
+            ->get();
 
-        return Inertia::render('UserToUserToTeam/Index');
+        return Inertia::render('UserToTeams/Index', [
+            'userToTeams' => $userToTeams,
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created association in the database.
      */
     public function store(Request $request)
     {
-        //
-        $request->validate([
-            'user_id' => 'exists:users,id',
-            'UserToTeam_id' => 'exists:UserToTeams,id'
+        $validated = $request->validate([
+            'staff_id' => 'required|exists:staff,id',
+            'team_id' => 'required|exists:teams,id',
+            'is_team_lead' => 'nullable|boolean',
         ]);
 
-        $userToUserToTeam = UserToTeam::create($request->all());
+        DB::beginTransaction();
+        try {
+            $userToTeam = UserToTeam::create([
+                'staff_id' => $validated['staff_id'],
+                'team_id' => $validated['team_id'],
+                'is_team_lead' => $validated['is_team_lead'] ?? 0,
+            ]);
 
-        return response()->json($userToUserToTeam, 201);
+            DB::commit();
+            return response()->json($userToTeam, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to create association.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
-     * Display the specified resource.
+     * Update the specified association in the database.
      */
-    public function show(UserToTeam $userToUserToTeam)
+    public function update(Request $request, UserToTeam $userToTeam)
     {
-        //
-        return Inertia::render('UserToUserToTeam/Show',[
-            'userToUserToTeam' => $userToUserToTeam->load(['user', 'UserToTeam'])
+        $validated = $request->validate([
+            'staff_id' => 'required|exists:staff,id',
+            'team_id' => 'required|exists:teams,id',
+            'is_team_lead' => 'nullable|boolean',
         ]);
+
+        $userToTeam->update($validated);
+
+        return response()->json($userToTeam, 200);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Soft delete the specified association.
      */
-    public function update(Request $request, UserToTeam $userToUserToTeam)
+    public function destroy(UserToTeam $userToTeam)
     {
-        //
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'UserToTeam_id' => 'required|exists:UserToTeams,id'
-        ]);
+        $userToTeam->delete();
 
-        $userToUserToTeam->update($request->all());
-
-        return response()->json($userToUserToTeam);
+        return response()->json(['message' => 'Association soft-deleted'], 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Batch soft delete associations.
      */
-    public function destroy(UserToTeam $userToUserToTeam)
-    {
-        //
-        $userToUserToTeam->delete();
-
-        return response()->json('User to UserToTeam deleted successfully');
-    }
-
     public function batchDelete(Request $request)
     {
         $validated = $request->validate(['ids' => 'required|array']);
-        UserToTeam::whereIn('id', $validated['ids'])->delete(); // Soft delete
+        UserToTeam::whereIn('id', $validated['ids'])->delete();
 
-        return response()->json(['message' => 'User To Teams soft-deleted'], 200);
+        return response()->json(['message' => 'Associations soft-deleted'], 200);
     }
 
+    /**
+     * Restore a soft-deleted association.
+     */
     public function restore($id)
     {
-        $UserToTeam = UserToTeam::withTrashed()->findOrFail($id);
-        $UserToTeam->restore(); // Restore soft-deleted UserToTeam
+        $userToTeam = UserToTeam::withTrashed()->findOrFail($id);
+        $userToTeam->restore();
 
-        return response()->json(['message' => 'User To Team restored successfully.'], 200);
+        return response()->json(['message' => 'Association restored successfully.'], 200);
     }
 
+    /**
+     * Bulk restore soft-deleted associations.
+     */
     public function bulkRestore(Request $request)
     {
         $request->validate(['ids' => 'required|array']);
-        UserToTeam::withTrashed()->whereIn('id', $request->ids)->restore(); // Restore soft-deleted UserToTeams
+        UserToTeam::withTrashed()->whereIn('id', $request->ids)->restore();
 
-        return response()->json(['message' => 'Selected UserToTeams restored successfully.'], 200);
+        return response()->json(['message' => 'Selected associations restored successfully.'], 200);
     }
 
+    /**
+     * Display all soft-deleted associations.
+     */
     public function trashed()
     {
-        $trashedUserToTeams = UserToTeam::onlyTrashed()->get(); // Fetch all soft-deleted UserToTeams
+        $trashed = UserToTeam::onlyTrashed()->with(['staff', 'team'])->get();
 
-        return response()->json($trashedUserToTeams, 200);
+        return response()->json($trashed, 200);
     }
 }

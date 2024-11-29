@@ -164,6 +164,14 @@ const items = ref([
         allowedRoles: ["Admin", "User"],
     },
     {
+        label: "Staff",
+        icon: "team",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/staff",
+        allowedRoles: ["Admin", "User"],
+    },
+    {
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
 
@@ -210,6 +218,26 @@ const items = ref([
         route: "/suspects",
         allowedRoles: ["Admin", "User"],
     },
+    {
+        label: "Operations",
+        icon: "operations",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
+        allowedRoles: ["Admin", "User"],
+
+        items: [
+            {
+                label: "Types",
+                icon: "dot",
+                route: "/operations-types",
+            },
+            {
+                label: "List",
+                icon: "dot",
+                route: "/operations-list",
+            },
+        ],
+    },
 
     {
         label: "Teams",
@@ -225,9 +253,14 @@ const items = ref([
                 route: "/teams",
             },
             {
-                label: "Team members",
+                label: "Team Members",
                 icon: "dot",
                 route: "/team-members",
+            },
+            {
+                label: "Team Operations",
+                icon: "dot",
+                route: "/team-operations",
             },
         ],
     },
@@ -250,6 +283,15 @@ const items = ref([
         allowedRoles: ["Admin", "User"],
     },
     {
+        label: "Convictions",
+        icon: "arrests",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        route: "/convictions",
+        allowedRoles: ["Admin", "User"],
+    },
+    {
         label: "Confiscates",
         icon: "confiscated-items",
         class: "parent-link-with-no-sublinks",
@@ -257,26 +299,6 @@ const items = ref([
 
         route: "/confiscates",
         allowedRoles: ["Admin", "User"],
-    },
-    {
-        label: "Operations",
-        icon: "operations",
-        class: "parent-link-with-sublinks",
-        forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
-
-        items: [
-            {
-                label: "Types",
-                icon: "dot",
-                route: "/operations-types",
-            },
-            {
-                label: "List",
-                icon: "dot",
-                route: "/operations-list",
-            },
-        ],
     },
 
     {

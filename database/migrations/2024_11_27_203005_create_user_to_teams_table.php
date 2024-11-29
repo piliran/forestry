@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('user_to_teams', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('staff_id');
+            $table->foreign('staff_id')->references('id')->on('staff')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('team_id');
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('is_team_lead')->default(0);
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

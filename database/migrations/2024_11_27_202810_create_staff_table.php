@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('station_to_operations', function (Blueprint $table) {
+        Schema::create('staff', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('level_id');
+            $table->foreign('level_id')->references('id')->on('role_categories')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('station_id');
             $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('operation_id');
-            $table->foreign('operation_id')->references('id')->on('operations')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes(); 
             $table->timestamps();
         });
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('station_to_operations');
+        Schema::dropIfExists('staff');
     }
 };

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('national_id');
             $table->unsignedBigInteger('district_id');
             $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('operation_id');
+            $table->foreign('operation_id')->references('id')->on('operation_to_teams')->onDelete('cascade')->onUpdate('cascade');
             $table->string('village');
             $table->string('TA');
             $table->string('suspect_photo_path', 2048)->nullable();   
