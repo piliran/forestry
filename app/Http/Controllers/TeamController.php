@@ -14,12 +14,9 @@ class TeamController extends Controller
     {
         // Fetch non-deleted teams with their team lead details
         $teams = Team::whereNull('deleted_at')->with('teamLead')->get();
-        $users = User::all();
-
-
+    
         return Inertia::render('Teams/Index', [
             'teams' => $teams,
-            'users' => $users,
         ]);
     }
 
@@ -28,7 +25,6 @@ class TeamController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'team_lead' => 'required|exists:users,id',
         ]);
 
         DB::beginTransaction();
@@ -36,7 +32,6 @@ class TeamController extends Controller
             $team = Team::create([
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
-                'team_lead' => $request->input('team_lead'),
             ]);
 
             DB::commit();
@@ -56,7 +51,6 @@ class TeamController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'team_lead' => 'required|exists:users,id',
         ]);
 
         $team->update($validated);

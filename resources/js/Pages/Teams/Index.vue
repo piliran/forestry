@@ -109,12 +109,6 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="team_lead.name"
-                        header="Team Lead"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
                         header="Action"
                         :exportable="false"
                         style="min-width: 12rem"
@@ -192,27 +186,6 @@
                         </small>
                     </div>
 
-
-                    <div class="col-12 md:col-6">
-                        <label for="district" class="block font-bold mb-2"
-                            >Team Lead</label
-                        >
-                        <Select
-                            id="id"
-                            v-model="team.team_lead"
-                            :options="users"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select Team Lead"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !team.team_lead"
-                            class="text-red-500"
-                        >
-                            Team Lead is required.
-                        </small>
-                    </div>
                 </div>
                 <template #footer>
                     <Button
@@ -372,11 +345,9 @@ const filters = ref({
 
 const props = defineProps({
     teams: Array,
-    users: Array,
 });
 
 const teams = ref(props.teams);
-const users = ref(props.users);
 
 // CRUD Methods
 const openNew = () => {

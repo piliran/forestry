@@ -17,23 +17,22 @@ class Team extends Model
     protected $fillable = [
         'name',
         'description',
-        'team_lead',
     ];
 
     /**
      * The attributes that should be mutated to dates.
      *
-     * @var array
+    //  * @var array
      */
-    protected $dates = ['deleted_at'];
+    // protected $dates = ['deleted_at'];
 
     /**
      * Get the team lead for the team.
      */
-    public function teamLead()
-    {
-        return $this->belongsTo(User::class, 'team_lead');
-    }
+    // public function teamLead()
+    // {
+    //     return $this->belongsTo(User::class, 'team_lead');
+    // }
 
     /**
      * Define other relationships or methods here if needed.
