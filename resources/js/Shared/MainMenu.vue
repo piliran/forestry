@@ -156,6 +156,14 @@ const items = ref([
         allowedRoles: ["Admin", "User"],
     },
     {
+        label: "Stations",
+        icon: "stations",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/stations",
+        allowedRoles: ["Admin", "User"],
+    },
+    {
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
 
@@ -204,20 +212,24 @@ const items = ref([
     },
 
     {
-        label: "Stations",
-        icon: "stations",
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
-        route: "/stations",
-        allowedRoles: ["Admin", "User"],
-    },
-    {
         label: "Teams",
         icon: "team",
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
-        route: "/teams",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
         allowedRoles: ["Admin", "User"],
+
+        items: [
+            {
+                label: "Team List",
+                icon: "dot",
+                route: "/teams",
+            },
+            {
+                label: "Team members",
+                icon: "dot",
+                route: "/team-members",
+            },
+        ],
     },
     {
         label: "Crimes",
