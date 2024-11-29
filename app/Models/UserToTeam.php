@@ -10,6 +10,7 @@ class UserToTeam extends Model
     protected $fillable = [
         'user_id',
         'team_id',
+        'is_team_lead'
     ];
 
     /**
