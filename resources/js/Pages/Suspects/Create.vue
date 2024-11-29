@@ -301,18 +301,17 @@
                                 </div>
                             </StepPanel>
                             <StepPanel v-slot="{ activateCallback }" value="3">
-                                <div class="flex flex-col gap-4 p-4">
+                                <div class="flex flex-col gap-2 p-4 mx-auto">
                                     <p class="font-bold text-lg">
                                         Select Confiscated Items
                                     </p>
 
-                                    <!-- List of Items with Checkboxes -->
-                                    <div
-                                        v-for="item in confiscates"
-                                        :key="item.id"
-                                        class="flex flex-col gap-2 border border-surface-200 dark:border-surface-700 rounded p-2 bg-surface-50 dark:bg-surface-950"
-                                    >
-                                        <div class="flex items-center gap-3">
+                                    <div class="flex gap-4 items-center">
+                                        <div
+                                            v-for="item in confiscates"
+                                            :key="item.id"
+                                            class="flex items-center space-x-2"
+                                        >
                                             <input
                                                 type="checkbox"
                                                 :value="item.id"
@@ -320,36 +319,14 @@
                                                 @change="
                                                     handleCheckboxChange(item)
                                                 "
-                                                class="h-5 w-5"
+                                                class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                                             />
                                             <label
                                                 :for="`checkbox-${item.id}`"
-                                                class="text-base"
-                                                >{{ item.item }}</label
+                                                class="text-sm font-medium"
                                             >
-                                        </div>
-
-                                        <!-- Quantity Input -->
-                                        <div
-                                            v-if="selectedItems[item.id]"
-                                            class="mt-2"
-                                        >
-                                            <label
-                                                for="quantity"
-                                                class="block font-semibold mb-1"
-                                            >
-                                                Enter quantity for
-                                                {{ item.item }}:
+                                                {{ item.item }}
                                             </label>
-                                            <input
-                                                type="number"
-                                                v-model.number="
-                                                    selectedItems[item.id]
-                                                "
-                                                min="1"
-                                                placeholder="Enter quantity"
-                                                class="border rounded p-2 w-full"
-                                            />
                                         </div>
                                     </div>
 
@@ -390,6 +367,106 @@
                     </Stepper>
                 </div>
             </div>
+
+            <Dialog
+                v-model:visible="addConfiscateDialog"
+                :style="{ width: '450px' }"
+                header="Confirm"
+                :modal="true"
+            >
+                <div class="grid gap-4">
+                    <!-- Quantity Input Section -->
+                    <div class="flex flex-col flex-1">
+                        <label for="quantity" class="block font-semibold mb-1">
+                            Enter quantity for {{ checkedItem.item }}:
+                        </label>
+                        <input
+                            type="number"
+                            v-model.number="selectedItems[checkedItem.id]"
+                            min="1"
+                            placeholder="Enter quantity"
+                            class="border rounded p-2 w-full"
+                        />
+                    </div>
+
+                    <!-- Proof Section -->
+                    <div class="flex flex-col flex-1">
+                        <label for="proof" class="block font-bold mb-3">
+                            Proof
+                        </label>
+
+                        <FileUpload
+                            ref="fileupload"
+                            mode="basic"
+                            name="proof[]"
+                            @select="onFileSelect"
+                            accept="image/*,video/*"
+                            :maxFileSize="9000000"
+                        />
+
+                        <!-- Image Preview -->
+                        <div
+                            v-if="previewType === 'image'"
+                            class="mt-3 flex justify-center"
+                        >
+                            <img
+                                :src="previewUrl"
+                                alt="Selected proof"
+                                width="250"
+                                class="border rounded-md"
+                            />
+                        </div>
+
+                        <!-- Video Preview -->
+                        <div
+                            v-if="previewType === 'video'"
+                            class="mt-3 flex justify-center"
+                        >
+                            <video
+                                controls
+                                width="250"
+                                class="border rounded-md"
+                            >
+                                <source :src="previewUrl" type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+
+                        <!-- Validation Error -->
+                        <small
+                            v-if="submitted && !fileupload"
+                            class="text-red-500"
+                        >
+                            Proof is required.
+                        </small>
+                    </div>
+                </div>
+
+                <template #footer>
+                    <Button
+                        label="No"
+                        icon="pi pi-times"
+                        text
+                        @click="addConfiscateDialog = false"
+                    />
+                    <div>
+                        <ProgressSpinner
+                            v-if="loading"
+                            style="width: 30px; height: 30px"
+                            strokeWidth="4"
+                            fill="transparent"
+                            animationDuration=".5s"
+                            aria-label="Custom ProgressSpinner"
+                        />
+                        <Button
+                            v-else
+                            label="Yes"
+                            icon="pi pi-check"
+                            @click="addConfiscate"
+                        />
+                    </div>
+                </template>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
@@ -437,11 +514,13 @@ const toast = useToast();
 const dt = ref();
 const suspectDialog = ref(false);
 const editDialog = ref(false);
+const addConfiscateDialog = ref(false);
 const viewDialog = ref(false);
 const loading = ref(false);
 const deleteSuspectDialog = ref(false);
 const deleteRolesDialog = ref(false);
 const suspect = ref({});
+const checkedItem = ref({});
 const selectedRoles = ref([]);
 const submitted = ref(false);
 const submitFirst = ref(false);
@@ -470,11 +549,19 @@ const upload = () => {
     fileupload.value.upload();
 };
 
-const onUpload = () => {
+const previewUrl = ref(null); // URL for preview
+const previewType = ref(null); // Type of preview (image or video)
+
+const isImage = (proof) => {
+    const imageExtensions = [".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"];
+    return imageExtensions.some((ext) => proof.toLowerCase().endsWith(ext));
+};
+
+const addConfiscate = () => {
     toast.add({
         severity: "info",
         summary: "Success",
-        detail: "File Uploaded",
+        detail: "Add successfully",
         life: 3000,
     });
 };
@@ -494,13 +581,25 @@ const props = defineProps({
 });
 
 const suspects = ref(props.suspects);
-const countries = ref(props.countries);
+
 const confiscates = ref(props.confiscates);
 
-const previewUrl = ref(null);
 const onFileSelect = (event) => {
     const file = event.files[0];
     if (file) {
+        const fileType = file.type;
+
+        if (fileType.startsWith("image/")) {
+            previewType.value = "image";
+        } else if (fileType.startsWith("video/")) {
+            previewType.value = "video";
+        } else {
+            previewType.value = null;
+            previewUrl.value = null;
+            console.error("Unsupported file type");
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = (e) => {
             previewUrl.value = e.target.result;
@@ -512,10 +611,13 @@ const onFileSelect = (event) => {
 const selectedItems = ref([]);
 
 const handleCheckboxChange = (item) => {
+    console.log(selectedItems.value);
     if (selectedItems.value[item.id]) {
         delete selectedItems.value[item.id];
     } else {
         selectedItems.value[item.id] = 1;
+        addConfiscateDialog.value = true;
+        checkedItem.value = item;
     }
 };
 
