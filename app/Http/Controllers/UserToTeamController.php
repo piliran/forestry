@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserToTeam;
+use App\Models\UserToUserToTeam;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,9 +15,9 @@ class UserToTeamController extends Controller
     public function index()
     {
         //
-        $userToTeams = UserToTeam::all();
+        $userToUserToTeams = UserToTeam::all();
 
-        return Inertia::render('UserToTeam/Index');
+        return Inertia::render('UserToUserToTeam/Index');
     }
 
     /**
@@ -27,49 +28,80 @@ class UserToTeamController extends Controller
         //
         $request->validate([
             'user_id' => 'exists:users,id',
-            'team_id' => 'exists:teams,id'
+            'UserToTeam_id' => 'exists:UserToTeams,id'
         ]);
 
-        $userToTeam = UserToTeam::create($request->all());
+        $userToUserToTeam = UserToTeam::create($request->all());
 
-        return response()->json($userToTeam, 201);
+        return response()->json($userToUserToTeam, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(UserToTeam $userToTeam)
+    public function show(UserToTeam $userToUserToTeam)
     {
         //
-        return Inertia::render('UserToTeam/Show',[
-            'userToTeam' => $userToTeam->load(['user', 'team'])
+        return Inertia::render('UserToUserToTeam/Show',[
+            'userToUserToTeam' => $userToUserToTeam->load(['user', 'UserToTeam'])
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, UserToTeam $userToTeam)
+    public function update(Request $request, UserToTeam $userToUserToTeam)
     {
         //
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'team_id' => 'required|exists:teams,id'
+            'UserToTeam_id' => 'required|exists:UserToTeams,id'
         ]);
 
-        $userToTeam->update($request->all());
+        $userToUserToTeam->update($request->all());
 
-        return response()->json($userToTeam);
+        return response()->json($userToUserToTeam);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UserToTeam $userToTeam)
+    public function destroy(UserToTeam $userToUserToTeam)
     {
         //
-        $userToTeam->delete();
+        $userToUserToTeam->delete();
 
-        return response()->json('User to Team deleted successfully');
+        return response()->json('User to UserToTeam deleted successfully');
+    }
+
+    public function batchDelete(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        UserToTeam::whereIn('id', $validated['ids'])->delete(); // Soft delete
+
+        return response()->json(['message' => 'User To Teams soft-deleted'], 200);
+    }
+
+    public function restore($id)
+    {
+        $UserToTeam = UserToTeam::withTrashed()->findOrFail($id);
+        $UserToTeam->restore(); // Restore soft-deleted UserToTeam
+
+        return response()->json(['message' => 'User To Team restored successfully.'], 200);
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        UserToTeam::withTrashed()->whereIn('id', $request->ids)->restore(); // Restore soft-deleted UserToTeams
+
+        return response()->json(['message' => 'Selected UserToTeams restored successfully.'], 200);
+    }
+
+    public function trashed()
+    {
+        $trashedUserToTeams = UserToTeam::onlyTrashed()->get(); // Fetch all soft-deleted UserToTeams
+
+        return response()->json($trashedUserToTeams, 200);
     }
 }
