@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserToTeam;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UserToTeamController extends Controller
 {
@@ -13,14 +14,9 @@ class UserToTeamController extends Controller
     public function index()
     {
         //
-    }
+        $userToTeams = UserToTeam::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return Inertia::render('UserToTeam/Index');
     }
 
     /**
@@ -29,6 +25,14 @@ class UserToTeamController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'user_id' => 'exists:users,id',
+            'team_id' => 'exists:teams,id'
+        ]);
+
+        $userToTeam = UserToTeam::create($request->all());
+
+        return response()->json($userToTeam, 201);
     }
 
     /**
@@ -37,14 +41,9 @@ class UserToTeamController extends Controller
     public function show(UserToTeam $userToTeam)
     {
         //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(UserToTeam $userToTeam)
-    {
-        //
+        return Inertia::render('UserToTeam/Show',[
+            'userToTeam' => $userToTeam->load(['user', 'team'])
+        ]);
     }
 
     /**
@@ -53,6 +52,14 @@ class UserToTeamController extends Controller
     public function update(Request $request, UserToTeam $userToTeam)
     {
         //
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'team_id' => 'required|exists:teams,id'
+        ]);
+
+        $userToTeam->update($request->all());
+
+        return response()->json($userToTeam);
     }
 
     /**
@@ -61,5 +68,8 @@ class UserToTeamController extends Controller
     public function destroy(UserToTeam $userToTeam)
     {
         //
+        $userToTeam->delete();
+
+        return response()->json('User to Team deleted successfully');
     }
 }
