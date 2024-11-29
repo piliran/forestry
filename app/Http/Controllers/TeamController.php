@@ -13,8 +13,8 @@ class TeamController extends Controller
     public function index()
     {
         // Fetch non-deleted teams with their team lead details
-        $teams = Team::whereNull('deleted_at')->with('teamLead')->get();
-    
+        $teams = Team::whereNull('deleted_at')->get();
+        
         return Inertia::render('Teams/Index', [
             'teams' => $teams,
         ]);
