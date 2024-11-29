@@ -60,7 +60,7 @@ class TeamController extends Controller
         ]);
 
         $team->update($validated);
-        $team->load('team_lead');
+        $team->load('teamLead');
 
         return response()->json($team, 200);
     }
