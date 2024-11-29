@@ -14,9 +14,12 @@ class TeamController extends Controller
     {
         // Fetch non-deleted teams with their team lead details
         $teams = Team::whereNull('deleted_at')->with('teamLead')->get();
+        $users = User::all();
+
 
         return Inertia::render('Teams/Index', [
             'teams' => $teams,
+            'users' => $users,
         ]);
     }
 
@@ -57,6 +60,7 @@ class TeamController extends Controller
         ]);
 
         $team->update($validated);
+        $team->load('team_lead');
 
         return response()->json($team, 200);
     }
