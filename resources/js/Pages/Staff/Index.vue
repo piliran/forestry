@@ -392,10 +392,10 @@ const saveStaff = async () => {
             const staffPayload = new FormData();
             staffPayload.append("level_id", staff.value.level_id);
             staffPayload.append("user_id", staff.value.user_id);
+
             if (staff.value.station_id) {
                 staffPayload.append("station_id", staff.value.station_id);
             }
-
             // If staff already exists, we don't need to re-append staff_photo_path unless it's new
             if (staff.value.id) {
                 staffPayload.append("id", staff.value.id);
@@ -592,11 +592,9 @@ const confirmDeleteSelected = () => {
 };
 
 const updatestaff = (updatedstaff) => {
-    const index = staffsstaffList.value.findIndex(
-        (r) => r.id === updatedstaff.id
-    );
+    const index = staffList.value.findIndex((r) => r.id === updatedstaff.id);
     if (index !== -1) {
-        staffsstaffList.value[index] = updatedstaff;
+        staffList.value[index] = updatedstaff;
     }
 };
 </script>

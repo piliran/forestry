@@ -136,6 +136,7 @@ Route::post('/teams/delete-multiple', [TeamController::class, 'batchDelete']);
 
 Route::resource('staff', StaffController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/staff/delete-multiple', [StaffController::class, 'batchDelete']);
+Route::post('/update-staff', [StaffController::class, 'update']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [

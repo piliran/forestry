@@ -13,10 +13,10 @@ class TeamController extends Controller
 {
     public function index()
 {
-    // Get the authenticated user's ID
+ 
     $userId = auth()->id();
 
-    // Check if the user exists in the Staff table and fetch the associated station_id
+   
     $staff = Staff::where('user_id', $userId)->first();
 
     if (!$staff) {
@@ -31,9 +31,9 @@ class TeamController extends Controller
         ]);
     }
 
-    // Retrieve teams belonging to the user's station
+
     $teams = Team::with('station')
-        ->where('station_id', $staff->station_id) // Filter by the station_id
+        ->where('station_id', $staff->station_id)
         ->whereNull('deleted_at')
         ->get();
 

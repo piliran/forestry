@@ -9,21 +9,50 @@ use App\Models\RoleCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StaffController extends Controller
 {
     public function index()
     {
-        // Fetch non-deleted staff with their associated relationships
-        $staffList = Staff::with(['level', 'user.roles', 'station'])->whereNull('deleted_at')->get();
+        $userId = auth()->id();
+    
+        // Fetch the staff member for the authenticated user
+        $staff = Staff::where('user_id', $userId)->first();
+    
+        // If no staff found, return an error
+        if (!$staff) {
+            return redirect()->back()->withErrors([
+                'message' => 'The authenticated user is not a registered staff member.',
+            ]);
+        }
+    
+        // Query staff list based on the staff's level and station (if present)
+        if ($staff->station_id) {
+            $staffList = Staff::with(['level', 'user.roles', 'station'])
+                ->where('level_id', $staff->level_id)
+                ->where('station_id', $staff->station_id)
+                ->whereNull('deleted_at')
+                ->get();
+        } else {
+            $staffList = Staff::with(['level', 'user.roles', 'station'])
+                ->where('level_id', $staff->level_id)
+                ->whereNull('deleted_at')
+                ->get();
+        }
+    
+        // Fetch users, role categories, and stations (including relationships)
         $users = User::with(['roles', 'district', 'permissions'])
-        ->whereNull('deleted_at')
-        ->get();
+            ->whereNull('deleted_at')
+            ->get();
+    
         $roleCategories = RoleCategory::whereNull('deleted_at')->get();
-        $stations = Station::with('district')->whereNull('deleted_at')->get();
-
-
-
+    
+        $stations = Station::with('district')
+            ->whereNull('deleted_at')
+            ->get();
+    
+        // Return the data to the view
         return Inertia::render('Staff/Index', [
             'staffList' => $staffList,
             'users' => $users,
@@ -31,6 +60,7 @@ class StaffController extends Controller
             'stations' => $stations,
         ]);
     }
+    
 
     public function store(Request $request)
     {
@@ -74,6 +104,8 @@ class StaffController extends Controller
 
     public function update(Request $request, Staff $staff)
     {
+        $staff = Staff::findOrFail($request->id);
+    
         $request->validate([
             'level_id' => 'required|exists:role_categories,id',
             'user_id' => 'required|exists:users,id',
@@ -88,9 +120,12 @@ class StaffController extends Controller
                 'user_id' => $request->input('user_id'),
             ];
     
-            // Include station_id only if it exists in the request
+            // Check if the incoming request includes 'station_id'
             if ($request->has('station_id') && $request->filled('station_id')) {
                 $data['station_id'] = $request->input('station_id');
+            } else {
+                // If 'station_id' is not provided, set it to null
+                $data['station_id'] = null;
             }
     
             // Update the staff record
