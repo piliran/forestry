@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Staff;
+use App\Models\User;
+use App\Models\Station;
+use App\Models\RoleCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -12,10 +15,20 @@ class StaffController extends Controller
     public function index()
     {
         // Fetch non-deleted staff with their associated relationships
-        $staff = Staff::with(['level', 'user', 'station'])->whereNull('deleted_at')->get();
+        $staffList = Staff::with(['level', 'user', 'station'])->whereNull('deleted_at')->get();
+        $users = User::with(['roles', 'district', 'permissions'])
+        ->whereNull('deleted_at')
+        ->get();
+        $roleCategories = RoleCategory::whereNull('deleted_at')->get();
+        $stations = Station::with('district')->whereNull('deleted_at')->get();
+
+
 
         return Inertia::render('Staff/Index', [
-            'staff' => $staff,
+            'staffList' => $staffList,
+            'users' => $users,
+            'levels' => $roleCategories,
+            'stations' => $stations,
         ]);
     }
 
@@ -24,7 +37,7 @@ class StaffController extends Controller
         $request->validate([
             'level_id' => 'required|exists:role_categories,id',
             'user_id' => 'required|exists:users,id',
-            'station_id' => 'required|exists:stations,id',
+            'station_id' => 'nullable|exists:stations,id',
         ]);
 
         DB::beginTransaction();
@@ -53,7 +66,7 @@ class StaffController extends Controller
         $validated = $request->validate([
             'level_id' => 'required|exists:role_categories,id',
             'user_id' => 'required|exists:users,id',
-            'station_id' => 'required|exists:stations,id',
+            'station_id' => 'nullable|exists:stations,id',
         ]);
 
         $staff->update($validated);

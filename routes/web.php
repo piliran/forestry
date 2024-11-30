@@ -17,6 +17,7 @@ use App\Http\Controllers\OperationController;
 
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\StaffController;
 
 
 use App\Http\Controllers\ZoneController;
@@ -132,6 +133,9 @@ Route::post('/schedules/delete-multiple', [ScheduleController::class, 'batchDele
 
 Route::resource('teams', TeamController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/teams/delete-multiple', [TeamController::class, 'batchDelete']);
+
+Route::resource('staff', StaffController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/staff/delete-multiple', [StaffController::class, 'batchDelete']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [

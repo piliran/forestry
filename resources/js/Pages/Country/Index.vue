@@ -160,6 +160,42 @@
                             Country Name is required.
                         </small>
                     </div>
+
+                    <Select
+                        v-model="selectedCountry"
+                        :options="countriesArray"
+                        filter
+                        optionLabel="name"
+                        placeholder="Select a Country"
+                        class="w-full"
+                    >
+                        <template #value="slotProps">
+                            <div
+                                v-if="slotProps.value"
+                                class="flex items-center"
+                            >
+                                <img
+                                    :alt="slotProps.value.name"
+                                    :src="slotProps.value.flag"
+                                    class="mr-2"
+                                    style="width: 18px"
+                                />
+                                <div>{{ slotProps.value.name }}</div>
+                            </div>
+                            <span v-else>{{ slotProps.placeholder }}</span>
+                        </template>
+                        <template #option="slotProps">
+                            <div class="flex items-center">
+                                <img
+                                    :alt="slotProps.option.name"
+                                    :src="slotProps.option.flag"
+                                    class="mr-2"
+                                    style="width: 18px"
+                                />
+                                <div>{{ slotProps.option.name }}</div>
+                            </div>
+                        </template>
+                    </Select>
                 </div>
                 <template #footer>
                     <Button
@@ -516,6 +552,92 @@ const updateCountry = (updatedCountry) => {
 const exportCSV = () => {
     dt.value?.exportCSV();
 };
+
+const selectedCountry = ref();
+const countriesArray = ref([
+    { name: "Afghanistan", code: "AF", flag: "https://flagcdn.com/w40/af.png" },
+    { name: "Albania", code: "AL", flag: "https://flagcdn.com/w40/al.png" },
+    { name: "Algeria", code: "DZ", flag: "https://flagcdn.com/w40/dz.png" },
+    { name: "Andorra", code: "AD", flag: "https://flagcdn.com/w40/ad.png" },
+    { name: "Angola", code: "AO", flag: "https://flagcdn.com/w40/ao.png" },
+    { name: "Argentina", code: "AR", flag: "https://flagcdn.com/w40/ar.png" },
+    { name: "Australia", code: "AU", flag: "https://flagcdn.com/w40/au.png" },
+    { name: "Austria", code: "AT", flag: "https://flagcdn.com/w40/at.png" },
+    { name: "Bahamas", code: "BS", flag: "https://flagcdn.com/w40/bs.png" },
+    { name: "Bahrain", code: "BH", flag: "https://flagcdn.com/w40/bh.png" },
+    { name: "Bangladesh", code: "BD", flag: "https://flagcdn.com/w40/bd.png" },
+    { name: "Belgium", code: "BE", flag: "https://flagcdn.com/w40/be.png" },
+    { name: "Brazil", code: "BR", flag: "https://flagcdn.com/w40/br.png" },
+    { name: "Bulgaria", code: "BG", flag: "https://flagcdn.com/w40/bg.png" },
+    { name: "Cameroon", code: "CM", flag: "https://flagcdn.com/w40/cm.png" },
+    { name: "Canada", code: "CA", flag: "https://flagcdn.com/w40/ca.png" },
+    { name: "China", code: "CN", flag: "https://flagcdn.com/w40/cn.png" },
+    { name: "Colombia", code: "CO", flag: "https://flagcdn.com/w40/co.png" },
+    { name: "Croatia", code: "HR", flag: "https://flagcdn.com/w40/hr.png" },
+    { name: "Cuba", code: "CU", flag: "https://flagcdn.com/w40/cu.png" },
+    { name: "Denmark", code: "DK", flag: "https://flagcdn.com/w40/dk.png" },
+    { name: "Egypt", code: "EG", flag: "https://flagcdn.com/w40/eg.png" },
+    { name: "Ethiopia", code: "ET", flag: "https://flagcdn.com/w40/et.png" },
+    { name: "Finland", code: "FI", flag: "https://flagcdn.com/w40/fi.png" },
+    { name: "France", code: "FR", flag: "https://flagcdn.com/w40/fr.png" },
+    { name: "Germany", code: "DE", flag: "https://flagcdn.com/w40/de.png" },
+    { name: "Ghana", code: "GH", flag: "https://flagcdn.com/w40/gh.png" },
+    { name: "Greece", code: "GR", flag: "https://flagcdn.com/w40/gr.png" },
+    { name: "India", code: "IN", flag: "https://flagcdn.com/w40/in.png" },
+    { name: "Indonesia", code: "ID", flag: "https://flagcdn.com/w40/id.png" },
+    { name: "Ireland", code: "IE", flag: "https://flagcdn.com/w40/ie.png" },
+    { name: "Israel", code: "IL", flag: "https://flagcdn.com/w40/il.png" },
+    { name: "Italy", code: "IT", flag: "https://flagcdn.com/w40/it.png" },
+    { name: "Japan", code: "JP", flag: "https://flagcdn.com/w40/jp.png" },
+    { name: "Kenya", code: "KE", flag: "https://flagcdn.com/w40/ke.png" },
+    { name: "Malawi", code: "MW", flag: "https://flagcdn.com/w40/mw.png" },
+
+    { name: "Mexico", code: "MX", flag: "https://flagcdn.com/w40/mx.png" },
+    { name: "Netherlands", code: "NL", flag: "https://flagcdn.com/w40/nl.png" },
+    { name: "New Zealand", code: "NZ", flag: "https://flagcdn.com/w40/nz.png" },
+    { name: "Nigeria", code: "NG", flag: "https://flagcdn.com/w40/ng.png" },
+    { name: "Norway", code: "NO", flag: "https://flagcdn.com/w40/no.png" },
+    { name: "Pakistan", code: "PK", flag: "https://flagcdn.com/w40/pk.png" },
+    { name: "Philippines", code: "PH", flag: "https://flagcdn.com/w40/ph.png" },
+    { name: "Poland", code: "PL", flag: "https://flagcdn.com/w40/pl.png" },
+    { name: "Portugal", code: "PT", flag: "https://flagcdn.com/w40/pt.png" },
+    { name: "Romania", code: "RO", flag: "https://flagcdn.com/w40/ro.png" },
+    { name: "Russia", code: "RU", flag: "https://flagcdn.com/w40/ru.png" },
+    {
+        name: "Saudi Arabia",
+        code: "SA",
+        flag: "https://flagcdn.com/w40/sa.png",
+    },
+    {
+        name: "South Africa",
+        code: "ZA",
+        flag: "https://flagcdn.com/w40/za.png",
+    },
+    { name: "South Korea", code: "KR", flag: "https://flagcdn.com/w40/kr.png" },
+    { name: "Spain", code: "ES", flag: "https://flagcdn.com/w40/es.png" },
+    { name: "Sweden", code: "SE", flag: "https://flagcdn.com/w40/se.png" },
+    { name: "Switzerland", code: "CH", flag: "https://flagcdn.com/w40/ch.png" },
+    { name: "Thailand", code: "TH", flag: "https://flagcdn.com/w40/th.png" },
+    { name: "Turkey", code: "TR", flag: "https://flagcdn.com/w40/tr.png" },
+    {
+        name: "United Arab Emirates",
+        code: "AE",
+        flag: "https://flagcdn.com/w40/ae.png",
+    },
+    {
+        name: "United Kingdom",
+        code: "GB",
+        flag: "https://flagcdn.com/w40/gb.png",
+    },
+    {
+        name: "United States",
+        code: "US",
+        flag: "https://flagcdn.com/w40/us.png",
+    },
+    { name: "Vietnam", code: "VN", flag: "https://flagcdn.com/w40/vn.png" },
+    { name: "Zambia", code: "ZM", flag: "https://flagcdn.com/w40/zm.png" },
+    { name: "Zimbabwe", code: "ZW", flag: "https://flagcdn.com/w40/zw.png" },
+]);
 </script>
 <style scoped>
 ::v-deep(.p-breadcrumb) {
