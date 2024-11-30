@@ -349,7 +349,7 @@ const levels = ref(props.levels);
 const stations = ref(props.stations);
 const users = ref(props.users);
 
-const rowsPerPage = ref(10);
+const rowsPerPage = ref(5);
 const currentPage = ref(0);
 
 // Paginated Staff

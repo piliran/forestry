@@ -302,9 +302,14 @@
                             </StepPanel>
                             <StepPanel v-slot="{ activateCallback }" value="3">
                                 <div class="flex flex-col gap-2 p-4 mx-auto">
-                                    <p class="font-bold text-lg">
-                                        Select Confiscated Items
-                                    </p>
+                                    
+
+                                    <div
+                                        class="text-center mt-4 mb-4 text-xl font-semibold"
+                                    >
+                                    Select Confiscated Items
+
+                                    </div>
 
                                     <div class="flex gap-4 items-center">
                                         <div

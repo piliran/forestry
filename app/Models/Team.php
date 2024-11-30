@@ -17,6 +17,7 @@ class Team extends Model
     protected $fillable = [
         'name',
         'description',
+        'station_id',
     ];
 
     /**
@@ -37,4 +38,9 @@ class Team extends Model
     /**
      * Define other relationships or methods here if needed.
      */
+
+     public function station()
+    {
+        return $this->belongsTo(Station::class);
+    }
 }

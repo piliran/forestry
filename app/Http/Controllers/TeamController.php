@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use App\Models\User;
+use App\Models\Staff;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -11,14 +12,36 @@ use Illuminate\Support\Facades\DB;
 class TeamController extends Controller
 {
     public function index()
-    {
-        // Fetch non-deleted teams with their team lead details
-        $teams = Team::whereNull('deleted_at')->get();
-        
-        return Inertia::render('Teams/Index', [
-            'teams' => $teams,
+{
+    // Get the authenticated user's ID
+    $userId = auth()->id();
+
+    // Check if the user exists in the Staff table and fetch the associated station_id
+    $staff = Staff::where('user_id', $userId)->first();
+
+    if (!$staff) {
+        return redirect()->back()->withErrors([
+            'message' => 'The authenticated user is not a registered staff member.',
         ]);
     }
+
+    if (!$staff->station_id) {
+        return redirect()->back()->withErrors([
+            'message' => 'The authenticated user is not assigned to a station.',
+        ]);
+    }
+
+    // Retrieve teams belonging to the user's station
+    $teams = Team::with('station')
+        ->where('station_id', $staff->station_id) // Filter by the station_id
+        ->whereNull('deleted_at')
+        ->get();
+
+    return Inertia::render('Teams/Index', [
+        'teams' => $teams,
+    ]);
+}
+
 
     public function store(Request $request)
     {
@@ -26,16 +49,36 @@ class TeamController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
-
+    
+        // Get the authenticated user's ID
+        $userId = auth()->id();
+    
+        // Check if the user exists in the Staff table and fetch the associated station_id
+        $staff = Staff::where('user_id', $userId)->first();
+    
+        if (!$staff) {
+            return response()->json([
+                'message' => 'The authenticated user is not a registered staff member.',
+            ], 403);
+        }
+    
+        if (!$staff->station_id) {
+            return response()->json([
+                'message' => 'The authenticated user is not assigned to a station.',
+            ], 403);
+        }
+    
         DB::beginTransaction();
         try {
+            // Create the team and assign the station_id from the Staff table
             $team = Team::create([
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
+                'station_id' => $staff->station_id, // Extracted station_id
             ]);
-
+    
             DB::commit();
-
+    
             return response()->json($team, 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -45,6 +88,7 @@ class TeamController extends Controller
             ], 500);
         }
     }
+    
 
     public function update(Request $request, Team $team)
     {

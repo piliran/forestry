@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
+            $table->unsignedBigInteger('station_id');
+            $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes(); 
             $table->timestamps();
         });
