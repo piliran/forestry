@@ -31,180 +31,178 @@
             </div>
 
             <div class="card">
-                <div class="mb-6 ml-4 inline-block">
-                    <Button
-                        label="New Staff"
-                        icon="pi pi-plus"
-                        class="mr-2"
-                        @click="openNewStaff"
-                    />
-                </div>
+                <Toolbar class="mb-6">
+                    <template #start>
+                        <Button
+                            label="New Team Member"
+                            icon="pi pi-plus"
+                            class="mr-2"
+                            @click="openNewTeamMember"
+                        />
+                        <Button
+                            label="Delete"
+                            icon="pi pi-trash"
+                            severity="danger"
+                            outlined
+                            @click="confirmDeleteSelected"
+                            :disabled="
+                                !selectedTeamMember ||
+                                !selectedTeamMember.length
+                            "
+                        />
+                    </template>
+                </Toolbar>
 
                 <Toast />
 
-                <div v-if="staffList.length > 0" class="p-4">
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"
-                    >
+                <DataTable
+                    v-if="teamMembers.length > 0"
+                    ref="dt"
+                    v-model:selection="selectedTeamMember"
+                    :value="teamMembers"
+                    dataKey="id"
+                    :paginator="true"
+                    :rows="10"
+                    :filters="filters"
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    :rowsPerPageOptions="[5, 10, 25]"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} staff"
+                >
+                    <template #header>
                         <div
-                            v-for="staff in paginatedStaff"
-                            :key="staff.id"
-                            class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+                            class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <div
-                                class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
-                            >
-                                <!-- <img
-                                    :src="staff.user.profile_photo_url"
-                                    :alt="staff.user.name"
-                                    class="h-full w-full object-cover"
-                                /> -->
-
-                                <Image
-                                    :src="`${staff.user.profile_photo_url}`"
-                                    :alt="staff.user.name"
-                                    preview
-                                >
-                                    <template #image>
-                                        <img
-                                            :src="staff.user.profile_photo_url"
-                                            alt="Profile"
-                                            style="
-                                                width: 100%;
-                                                height: 100%;
-                                                object-fit: cover;
-                                            "
-                                        />
-                                    </template>
-                                </Image>
-                            </div>
-                            <h2 class="mt-4 font-bold text-xl">
-                                {{ staff.user.name }}
-                            </h2>
-                            <h6 class="mt-2 text-sm font-medium">
-                                {{
-                                    staff.user.roles
-                                        .map((role) => role.name)
-                                        .join(", ")
-                                }}
-                            </h6>
-                            <p class="text-xs text-gray-500 text-center mt-3">
-                                {{ staff.user.email }}
-                            </p>
-                            <div
-                                class="flex flex-row mt-4 space-x-2 justify-between"
-                            >
-                                <Button
-                                    icon="pi pi-pencil"
-                                    outlined
-                                    rounded
-                                    class="mr-2"
-                                    @click="editStaff(staff)"
+                            <h4 class="m-0">Manage Team Members</h4>
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
+                                <InputText
+                                    v-model="filters['global'].value"
+                                    placeholder="Search..."
                                 />
-                                <Button
-                                    icon="pi pi-trash"
-                                    outlined
-                                    rounded
-                                    severity="danger"
-                                    @click="confirmDeleteStaff(staff)"
-                                />
-                            </div>
+                            </IconField>
                         </div>
-                    </div>
+                    </template>
+                    <Column
+                        selectionMode="multiple"
+                        style="width: 3rem"
+                        :exportable="false"
+                    ></Column>
 
-                    <!-- Paginator -->
-                    <Paginator
-                        :rows="rowsPerPage"
-                        :totalRecords="staffList.length"
-                        :rowsPerPageOptions="[4, 8, 16]"
-                        :currentPage="currentPage"
-                        @page="onPageChange"
-                        class="mt-4"
-                    />
-                </div>
+                    <Column
+                        field="staff.user.name"
+                        header="Member"
+                        sortable
+                        style="min-width: 12rem"
+                    ></Column>
+
+                    <Column
+                        field="team.name"
+                        header="Team"
+                        sortable
+                        style="min-width: 15rem"
+                    ></Column>
+
+                    <Column header="Team Leader" style="min-width: 10rem">
+                        <template #body="slotProps">
+                            <span
+                                v-if="slotProps.data.is_team_lead"
+                                class="text-green-500 font-bold"
+                            >
+                                Yes
+                            </span>
+                            <span v-else class="text-gray-500"> No </span>
+                        </template>
+                    </Column>
+                    <Column
+                        header="Action"
+                        :exportable="false"
+                        style="min-width: 12rem"
+                    >
+                        <template #body="slotProps">
+                            <Button
+                                icon="pi pi-pencil"
+                                outlined
+                                rounded
+                                class="mr-2"
+                                @click="editStaff(slotProps.data)"
+                            />
+                            <Button
+                                icon="pi pi-trash"
+                                outlined
+                                rounded
+                                severity="danger"
+                                @click="confirmDeleteTeamMember(slotProps.data)"
+                            />
+                        </template>
+                    </Column>
+                </DataTable>
+
                 <div v-else class="flex items-center justify-center">
-                    <h2>No staff members found</h2>
+                    <h2>No team members found</h2>
                 </div>
             </div>
 
             <Dialog
-                v-model:visible="staffDialog"
+                v-model:visible="teamMemberDialog"
                 :style="{ width: '450px' }"
-                :header="editDialog ? 'Edit Staff' : 'Add New Staff'"
+                :header="editDialog ? 'Edit Team Member' : 'Add Team Member'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
-                    <!-- Level Selection -->
+                    <!-- Team Selection -->
                     <div>
-                        <label for="level" class="block font-bold mb-3"
-                            >Level</label
+                        <label for="team" class="block font-bold mb-3"
+                            >Team Name</label
                         >
                         <Select
-                            id="level"
-                            v-model="staff.level_id"
-                            :options="levels"
+                            id="team"
+                            v-model="staff.team_id"
+                            :options="teams"
                             optionLabel="name"
                             optionValue="id"
-                            placeholder="Select Level"
+                            placeholder="Select Team"
                             fluid
                             filter
                         />
                         <small
-                            v-if="submitted && !staff.level_id"
+                            v-if="submitted && !staff.team_id"
                             class="text-red-500"
                         >
-                            Level is required.
+                            Team is required.
                         </small>
                     </div>
 
-                    <!-- Member Selection -->
+                    <!-- Staff Member Selection -->
                     <div>
                         <label for="member" class="block font-bold mb-3"
-                            >Member</label
+                            >Staff Member</label
                         >
                         <Select
                             id="member"
-                            v-model="staff.user_id"
-                            :options="users"
-                            optionLabel="name"
+                            v-model="staff.staff_id"
+                            :options="staffList"
+                            optionLabel="user.name"
                             optionValue="id"
-                            placeholder="Select Member"
+                            placeholder="Select Staff Member"
                             fluid
                             filter
                         />
                         <small
-                            v-if="submitted && !staff.user_id"
+                            v-if="submitted && !staff.staff_id"
                             class="text-red-500"
                         >
                             Member is required.
                         </small>
                     </div>
 
-                    <!-- Station Selection (conditionally rendered) -->
-                    <div
-                        v-if="
-                            selectedLevel && selectedLevel.name === 'District'
-                        "
-                    >
-                        <label for="station" class="block font-bold mb-3"
-                            >Station</label
+                    <!-- Is Team Lead -->
+                    <div class="flex items-center gap-4">
+                        <label for="is_team_lead" class="font-bold"
+                            >Team Lead</label
                         >
-                        <Select
-                            id="station"
-                            v-model="staff.station_id"
-                            :options="stations"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select Station"
-                            fluid
-                            filter
-                        />
-                        <small
-                            v-if="submitted && !staff.station_id"
-                            class="text-red-500"
-                        >
-                            Station is required.
-                        </small>
+                        <ToggleSwitch v-model="staff.is_team_lead" />
                     </div>
                 </div>
 
@@ -213,7 +211,7 @@
                         label="Cancel"
                         icon="pi pi-times"
                         text
-                        @click="hideDialog"
+                        @click="teamMemberDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -226,14 +224,14 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveStaff"
+                            @click="saveTeamMember"
                         />
                     </div>
                 </template>
             </Dialog>
 
             <Dialog
-                v-model:visible="deletestaffDialog"
+                v-model:visible="deleteteamMemberDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
@@ -251,7 +249,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deletestaffDialog = false"
+                        @click="deleteteamMemberDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -266,7 +264,7 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="deleteStaff"
+                            @click="deleteTeamMember"
                         />
                     </div>
                 </template>
@@ -274,7 +272,7 @@
 
             <!-- Delete Multiple suspects Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteStaffsDialog"
+                v-model:visible="deleteTeamMembersDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
@@ -290,7 +288,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteStaffsDialog = false"
+                        @click="deleteTeamMembersDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -306,7 +304,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedStaffs"
+                            @click="deleteSelectedTeamMembers"
                         />
                     </div>
                 </template>
@@ -335,16 +333,18 @@ import Breadcrumb from "primevue/breadcrumb";
 import axios from "axios";
 import { Link, router } from "@inertiajs/vue3";
 import Image from "primevue/image";
-import Paginator from "primevue/paginator";
+
+import ToggleSwitch from "primevue/toggleswitch";
+
 const toast = useToast();
-const staffDialog = ref(false);
+const teamMemberDialog = ref(false);
 const editDialog = ref(false);
-const deletestaffDialog = ref(false);
-const deleteStaffsDialog = ref(false);
+const deleteteamMemberDialog = ref(false);
+const deleteTeamMembersDialog = ref(false);
 const loading = ref(false);
 const submitted = ref(false);
 const staff = ref({});
-const selectedStaff = ref([]);
+const selectedTeamMember = ref([]);
 const filters = ref({
     global: { value: null, matchMode: "contains" },
 });
@@ -353,94 +353,79 @@ const home = ref({
     label: "Dashboard",
     route: "/dashboard",
 });
-const breadcrumbItems = ref([{ label: "Staff" }]);
+const breadcrumbItems = ref([{ label: "Team Members" }]);
 
 const props = defineProps({
+    teamMembers: Array,
     staffList: Array,
-    levels: Array,
-    stations: Array,
-    users: Array,
+    teams: Array,
 });
 
+const teamMembers = ref(props.teamMembers);
 const staffList = ref(props.staffList);
-const levels = ref(props.levels);
-const stations = ref(props.stations);
-const users = ref(props.users);
-
-const rowsPerPage = ref(8);
-const currentPage = ref(0);
-
-// Paginated Staff
-const paginatedStaff = computed(() => {
-    const start = currentPage.value * rowsPerPage.value;
-    const end = start + rowsPerPage.value;
-    return staffList.value.slice(start, end);
-});
-
-// Handle Page Change
-const onPageChange = (event) => {
-    currentPage.value = event.page;
-};
+const teams = ref(props.teams);
 
 const selectedLevel = computed(() => {
     return levels.value.find((level) => level.id === staff.value.level_id);
 });
 
-const openNewStaff = () => {
+const openNewTeamMember = () => {
     editDialog.value = false;
     staff.value = {};
     submitted.value = false;
-    staffDialog.value = true;
+    teamMemberDialog.value = true;
 };
 
 const hideDialog = () => {
-    staffDialog.value = false;
+    teamMemberDialog.value = false;
     submitted.value = false;
 };
 
-const saveStaff = async () => {
+const saveTeamMember = async () => {
     submitted.value = true;
 
     // Validate required fields
-    if (staff?.value?.user_id && staff?.value?.level_id) {
+    if (staff.value?.team_id && staff.value?.staff_id) {
         loading.value = true;
 
         try {
-            // Prepare staff payload
-            const staffPayload = new FormData();
-            staffPayload.append("level_id", staff.value.level_id);
-            staffPayload.append("user_id", staff.value.user_id);
+            const teamMemberPayload = new FormData();
+            teamMemberPayload.append("team_id", staff.value.team_id);
+            teamMemberPayload.append("staff_id", staff.value.staff_id);
+            teamMemberPayload.append(
+                "is_team_lead",
+                staff.value.is_team_lead ? 1 : 0
+            );
 
-            if (staff.value.station_id) {
-                staffPayload.append("station_id", staff.value.station_id);
-            }
-            // If staff already exists, we don't need to re-append staff_photo_path unless it's new
             if (staff.value.id) {
-                staffPayload.append("id", staff.value.id);
-
+                teamMemberPayload.append("id", staff.value.id);
                 const response = await axios.post(
-                    `/update-staff`,
-                    staffPayload,
-                    { headers: { "Content-Type": "multipart/form-data" } }
+                    `/update-team-member`,
+                    teamMemberPayload,
+                    {
+                        headers: { "Content-Type": "multipart/form-data" },
+                    }
                 );
-
-                updatestaff(response.data);
+                updateTeamMember(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "staff Updated",
+                    detail: "Team member updated.",
                     life: 3000,
                 });
             } else {
-                // Create a new staff
-                const response = await axios.post("/staff", staffPayload, {
-                    headers: { "Content-Type": "multipart/form-data" },
-                });
-                staffList.value.push(response.data); // Add the new staff to the list
+                const response = await axios.post(
+                    `/team-members`,
+                    teamMemberPayload,
+                    {
+                        headers: { "Content-Type": "multipart/form-data" },
+                    }
+                );
+                teamMembers.value.push(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
-                    detail: "staff Created",
+                    detail: "Team member created.",
                     life: 3000,
                 });
             }
@@ -457,13 +442,6 @@ const saveStaff = async () => {
                         });
                     });
                 }
-            } else if (err.response && err.response.status === 403) {
-                toast.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "You are not allowed to perform this action",
-                    life: 5000,
-                });
             } else {
                 toast.add({
                     severity: "error",
@@ -474,7 +452,7 @@ const saveStaff = async () => {
             }
         } finally {
             loading.value = false;
-            staffDialog.value = false;
+            teamMemberDialog.value = false;
         }
     } else {
         toast.add({
@@ -502,16 +480,19 @@ const viewstaff = (staffData) => {
 
 const editStaff = (staffData) => {
     editDialog.value = true;
-    staff.value = { ...staffData };
+    staff.value = {
+        ...staffData,
+        is_team_lead: !!staffData.is_team_lead, // Convert 1/0 to true/false
+    };
 
-    staffDialog.value = true;
+    teamMemberDialog.value = true;
 };
 
-const deleteStaff = async () => {
+const deleteTeamMember = async () => {
     loading.value = true;
     try {
-        await axios.delete(`/staff/${staff.value.id}`);
-        staffList.value = staffList.value.filter(
+        await axios.delete(`/team-members/${staff.value.id}`);
+        teamMembers.value = teamMembers.value.filter(
             (r) => r.id !== staff.value.id
         );
         toast.add({
@@ -549,26 +530,28 @@ const deleteStaff = async () => {
             });
         }
     } finally {
-        deletestaffDialog.value = false;
+        deleteteamMemberDialog.value = false;
         loading.value = false;
     }
 };
 
-const confirmDeleteStaff = (roleData) => {
+const confirmDeleteTeamMember = (roleData) => {
     staff.value = roleData;
-    deletestaffDialog.value = true;
+    deleteteamMemberDialog.value = true;
 };
 
-const deleteSelectedStaffs = async () => {
-    const ids = selectedStaff.value.map((staff) => staff.id);
+const deleteSelectedTeamMembers = async () => {
+    const ids = selectedTeamMember.value.map((staff) => staff.id);
     loading.value = true;
     try {
-        await axios.post("/staff/bulk-delete", { ids });
-        staffList.value = staffList.value.filter((r) => !ids.includes(r.id));
+        await axios.post("/team-members/bulk-delete", { ids });
+        teamMembers.value = teamMembers.value.filter(
+            (r) => !ids.includes(r.id)
+        );
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Selected staffsstaffList Deleted",
+            detail: "Selected staffsteamMembers Deleted",
             life: 3000,
         });
     } catch (err) {
@@ -600,19 +583,19 @@ const deleteSelectedStaffs = async () => {
             });
         }
     } finally {
-        deleteStaffsDialog.value = false;
+        deleteTeamMembersDialog.value = false;
         loading.value = false;
     }
 };
 
 const confirmDeleteSelected = () => {
-    deleteStaffsDialog.value = true;
+    deleteTeamMembersDialog.value = true;
 };
 
-const updatestaff = (updatedstaff) => {
-    const index = staffList.value.findIndex((r) => r.id === updatedstaff.id);
+const updateTeamMember = (updatedstaff) => {
+    const index = teamMembers.value.findIndex((r) => r.id === updatedstaff.id);
     if (index !== -1) {
-        staffList.value[index] = updatedstaff;
+        teamMembers.value[index] = updatedstaff;
     }
 };
 </script>

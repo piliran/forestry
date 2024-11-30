@@ -16,12 +16,42 @@ class UserToTeamController extends Controller
      */
     public function index()
     {
-        $userToTeams = UserToTeam::with(['staff', 'team'])
+
+        $userId = auth()->id();
+
+   
+            $staff = Staff::where('user_id', $userId)->first();
+
+            if (!$staff) {
+                return redirect()->back()->withErrors([
+                    'message' => 'The authenticated user is not a registered staff member.',
+                ]);
+            }
+
+            if (!$staff->station_id) {
+                return redirect()->back()->withErrors([
+                    'message' => 'The authenticated user is not assigned to a station.',
+                ]);
+            }
+        $teamMembers = UserToTeam::with(['staff.user', 'team'])
             ->whereNull('deleted_at')
             ->get();
 
-        return Inertia::render('UserToTeams/Index', [
-            'userToTeams' => $userToTeams,
+            $teams = Team::with('station')
+            ->where('station_id', $staff->station_id)
+            ->whereNull('deleted_at')
+            ->get();
+
+            $staffList = Staff::with(['level', 'user.roles', 'station'])
+         
+            ->where('station_id', $staff->station_id)
+            ->whereNull('deleted_at')
+            ->get();
+
+        return Inertia::render('Teams/Members', [
+            'teamMembers' => $teamMembers,
+            'teams' => $teams,
+            'staffList' => $staffList,
         ]);
     }
 
