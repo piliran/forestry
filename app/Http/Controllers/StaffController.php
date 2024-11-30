@@ -15,7 +15,7 @@ class StaffController extends Controller
     public function index()
     {
         // Fetch non-deleted staff with their associated relationships
-        $staffList = Staff::with(['level', 'user', 'station'])->whereNull('deleted_at')->get();
+        $staffList = Staff::with(['level', 'user.roles', 'station'])->whereNull('deleted_at')->get();
         $users = User::with(['roles', 'district', 'permissions'])
         ->whereNull('deleted_at')
         ->get();
@@ -39,40 +39,79 @@ class StaffController extends Controller
             'user_id' => 'required|exists:users,id',
             'station_id' => 'nullable|exists:stations,id',
         ]);
-
+    
         DB::beginTransaction();
         try {
-            $staff = Staff::create([
+            // Prepare data for the staff record
+            $data = [
                 'level_id' => $request->input('level_id'),
                 'user_id' => $request->input('user_id'),
-                'station_id' => $request->input('station_id'),
-            ]);
+            ];
+    
+            // Include station_id only if it exists in the request
+            if ($request->has('station_id') && $request->filled('station_id')) {
+                $data['station_id'] = $request->input('station_id');
+            }
+    
+            // Create the staff record
+            $staff = Staff::create($data);
+    
+        $staff->load(['level', 'user.roles', 'station']);
 
             DB::commit();
-
+    
             return response()->json($staff, 200);
         } catch (\Exception $e) {
             DB::rollBack();
-
+    
             return response()->json([
                 'message' => 'Failed to create staff record.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
+    
 
     public function update(Request $request, Staff $staff)
     {
-        $validated = $request->validate([
+        $request->validate([
             'level_id' => 'required|exists:role_categories,id',
             'user_id' => 'required|exists:users,id',
             'station_id' => 'nullable|exists:stations,id',
         ]);
-
-        $staff->update($validated);
-
-        return response()->json($staff, 200);
+    
+        DB::beginTransaction();
+        try {
+            // Prepare data for the update
+            $data = [
+                'level_id' => $request->input('level_id'),
+                'user_id' => $request->input('user_id'),
+            ];
+    
+            // Include station_id only if it exists in the request
+            if ($request->has('station_id') && $request->filled('station_id')) {
+                $data['station_id'] = $request->input('station_id');
+            }
+    
+            // Update the staff record
+            $staff->update($data);
+    
+            // Load relationships
+            $staff->load(['level', 'user.roles', 'station']);
+    
+            DB::commit();
+    
+            return response()->json($staff, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+    
+            return response()->json([
+                'message' => 'Failed to update staff record.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+    
 
     public function destroy(Staff $staff)
     {

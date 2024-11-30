@@ -31,81 +31,336 @@
             </div>
 
             <div class="card">
-                <div class="mb-6 ml-4 inline-block">
-                    <Button
-                        label="New Staff"
-                        icon="pi pi-plus"
-                        class="mr-2"
-                        @click="openNewStaff"
-                    />
-                </div>
+                <Toolbar class="mb-6">
+                    <template #start>
+                        <Button
+                            label="New Staff"
+                            icon="pi pi-plus"
+                            class="mr-2"
+                            @click="openNewStaff"
+                        />
+                        <Button
+                            label="Delete"
+                            icon="pi pi-trash"
+                            severity="danger"
+                            outlined
+                            @click="confirmDeleteSelected"
+                            :disabled="!selectedStaff || !selectedStaff.length"
+                        />
+                    </template>
+                </Toolbar>
 
                 <Toast />
 
-                <div v-if="staffList.length > 0" class="p-4">
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"
-                    >
+                <DataTable
+                    v-if="staffList.length > 0"
+                    ref="dt"
+                    v-model:selection="selectedStaff"
+                    :value="staffList"
+                    dataKey="id"
+                    :paginator="true"
+                    :rows="10"
+                    :filters="filters"
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    :rowsPerPageOptions="[5, 10, 25]"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} staff"
+                >
+                    <template #header>
                         <div
-                            v-for="staff in paginatedStaff"
-                            :key="staff.id"
-                            class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+                            class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <div
-                                class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
-                            >
-                                <img
-                                    :src="staff.user.profile_photo_url"
-                                    :alt="staff.user.name"
-                                    class="h-full w-full object-cover"
+                            <h4 class="m-0">Manage Staff</h4>
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
+                                <InputText
+                                    v-model="filters['global'].value"
+                                    placeholder="Search..."
                                 />
-                            </div>
-                            <h2 class="mt-4 font-bold text-xl">
-                                {{ staff.user.name }}
-                            </h2>
-                            <h6 class="mt-2 text-sm font-medium">
+                            </IconField>
+                        </div>
+                    </template>
+                    <Column
+                        selectionMode="multiple"
+                        style="width: 3rem"
+                        :exportable="false"
+                    ></Column>
+                    <Column header="Image">
+                        <template #body="slotProps">
+                            <Image
+                                :src="`${slotProps.data.user.profile_photo_url}`"
+                                :alt="slotProps.data.user.profile_photo_url"
+                                preview
+                            >
+                                <template #image>
+                                    <img
+                                        :src="
+                                            slotProps.data.user
+                                                .profile_photo_url
+                                        "
+                                        alt="Profile"
+                                        style="
+                                            border-radius: 50%;
+                                            width: 50px;
+                                            height: 50px;
+                                            object-fit: cover;
+                                        "
+                                    />
+                                </template>
+                            </Image>
+                        </template>
+                    </Column>
+                    <Column
+                        field="user.name"
+                        header="Staff Name"
+                        sortable
+                        style="min-width: 12rem"
+                    ></Column>
+                    <Column header="Role" style="min-width: 12rem">
+                        <template #body="slotProps">
+                            <div>
                                 {{
-                                    staff.user.roles
+                                    slotProps.data.user.roles
                                         .map((role) => role.name)
                                         .join(", ")
                                 }}
-                            </h6>
-                            <p class="text-xs text-gray-500 text-center mt-3">
-                                {{ staff.user.email }}
-                            </p>
-                            <div
-                                class="flex flex-row mt-4 space-x-2 justify-between"
-                            >
-                                <Button
-                                    icon="pi pi-pencil"
-                                    outlined
-                                    rounded
-                                    class="mr-2"
-                                    @click="editStaff(staff)"
-                                />
-                                <Button
-                                    icon="pi pi-trash"
-                                    outlined
-                                    rounded
-                                    severity="danger"
-                                    @click="confirmDeleteStaff(staff)"
-                                />
                             </div>
-                        </div>
-                    </div>
+                        </template>
+                    </Column>
+                    <Column
+                        field="user.email"
+                        header="Email"
+                        sortable
+                        style="min-width: 15rem"
+                    ></Column>
+                    <Column
+                        header="Action"
+                        :exportable="false"
+                        style="min-width: 12rem"
+                    >
+                        <template #body="slotProps">
+                            <Button
+                                icon="pi pi-pencil"
+                                outlined
+                                rounded
+                                class="mr-2"
+                                @click="editStaff(slotProps.data)"
+                            />
+                            <Button
+                                icon="pi pi-trash"
+                                outlined
+                                rounded
+                                severity="danger"
+                                @click="confirmDeleteStaff(slotProps.data)"
+                            />
+                        </template>
+                    </Column>
+                </DataTable>
 
-                    <!-- Paginator -->
-                    <Paginator
-                        :rows="rowsPerPage"
-                        :totalRecords="staffList.length"
-                        :rowsPerPageOptions="[5, 10, 25]"
-                        :currentPage="currentPage"
-                        @page="onPageChange"
-                        class="mt-4"
-                    />
-                </div>
                 <div v-else class="flex items-center justify-center">
                     <h2>No staff members found</h2>
+                </div>
+            </div>
+
+            <!-- component -->
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"
+            >
+                <div
+                    class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+                >
+                    <div
+                        class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&w=128&h=128&q=60&facepad=2"
+                            alt=""
+                            class="h-full w-full"
+                        />
+                    </div>
+
+                    <h2 class="mt-4 font-bold text-xl">Sebastian Bennett</h2>
+                    <h6 class="mt-2 text-sm font-medium">Founder</h6>
+
+                    <p class="text-xs text-gray-500 text-center mt-3">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Ab enim molestiae nulla.
+                    </p>
+
+                    <ul class="flex flex-row mt-4 space-x-2">
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div
+                    class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+                >
+                    <div
+                        class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&w=128&h=128&q=60&facepad=2"
+                            alt=""
+                            class="h-full w-full"
+                        />
+                    </div>
+
+                    <h2 class="mt-4 font-bold text-xl">Sebastian Bennett</h2>
+                    <h6 class="mt-2 text-sm font-medium">Founder</h6>
+
+                    <p class="text-xs text-gray-500 text-center mt-3">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Ab enim molestiae nulla.
+                    </p>
+
+                    <ul class="flex flex-row mt-4 space-x-2">
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div
+                    class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+                >
+                    <div
+                        class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&w=128&h=128&q=60&facepad=2"
+                            alt=""
+                            class="h-full w-full"
+                        />
+                    </div>
+
+                    <h2 class="mt-4 font-bold text-xl">Sebastian Bennett</h2>
+                    <h6 class="mt-2 text-sm font-medium">Founder</h6>
+
+                    <p class="text-xs text-gray-500 text-center mt-3">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Ab enim molestiae nulla.
+                    </p>
+
+                    <ul class="flex flex-row mt-4 space-x-2">
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div
+                    class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+                >
+                    <div
+                        class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&w=128&h=128&q=60&facepad=2"
+                            alt=""
+                            class="h-full w-full"
+                        />
+                    </div>
+
+                    <h2 class="mt-4 font-bold text-xl">Sebastian Bennett</h2>
+                    <h6 class="mt-2 text-sm font-medium">Founder</h6>
+
+                    <p class="text-xs text-gray-500 text-center mt-3">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Ab enim molestiae nulla.
+                    </p>
+
+                    <ul class="flex flex-row mt-4 space-x-2">
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href=""
+                                class="flex items-center justify-center h-8 w-8 border rounded-full text-gray-800 border-gray-800"
+                            >
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
@@ -317,7 +572,7 @@ import Breadcrumb from "primevue/breadcrumb";
 import axios from "axios";
 import { Link, router } from "@inertiajs/vue3";
 import Image from "primevue/image";
-import Paginator from "primevue/paginator";
+
 const toast = useToast();
 const staffDialog = ref(false);
 const editDialog = ref(false);
@@ -348,21 +603,7 @@ const staffList = ref(props.staffList);
 const levels = ref(props.levels);
 const stations = ref(props.stations);
 const users = ref(props.users);
-
-const rowsPerPage = ref(10);
-const currentPage = ref(0);
-
-// Paginated Staff
-const paginatedStaff = computed(() => {
-    const start = currentPage.value * rowsPerPage.value;
-    const end = start + rowsPerPage.value;
-    return staffList.value.slice(start, end);
-});
-
-// Handle Page Change
-const onPageChange = (event) => {
-    currentPage.value = event.page;
-};
+console.log(staffList.value);
 
 const selectedLevel = computed(() => {
     return levels.value.find((level) => level.id === staff.value.level_id);
