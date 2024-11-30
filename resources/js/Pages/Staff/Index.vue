@@ -54,11 +54,29 @@
                             <div
                                 class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
                             >
-                                <img
+                                <!-- <img
                                     :src="staff.user.profile_photo_url"
                                     :alt="staff.user.name"
                                     class="h-full w-full object-cover"
-                                />
+                                /> -->
+
+                                <Image
+                                    :src="`${staff.user.profile_photo_url}`"
+                                    :alt="staff.user.name"
+                                    preview
+                                >
+                                    <template #image>
+                                        <img
+                                            :src="staff.user.profile_photo_url"
+                                            alt="Profile"
+                                            style="
+                                                width: 100%;
+                                                height: 100%;
+                                                object-fit: cover;
+                                            "
+                                        />
+                                    </template>
+                                </Image>
                             </div>
                             <h2 class="mt-4 font-bold text-xl">
                                 {{ staff.user.name }}
