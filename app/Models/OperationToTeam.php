@@ -17,7 +17,7 @@ class OperationToTeam extends Model
      */
     public function operation()
     {
-        return $this->belongsTo(Suspect::class);
+        return $this->belongsTo(Operation::class);
     }
 
     /**
@@ -25,6 +25,6 @@ class OperationToTeam extends Model
      */
     public function team()
     {
-        return $this->belongsTo(Operation::class);
+        return $this->belongsTo(Team::class);
     }
 }
