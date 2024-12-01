@@ -27,37 +27,32 @@ class StaffController extends Controller
             ]);
         }
     
-        // Query staff list based on the staff's level and station (if present)
-        if ($staff->station_id) {
-            $staffList = Staff::with(['level', 'user.roles', 'station'])
+        // Query staff list based on the staff's level (if present)
+        if ($staff->level_id) {
+            $staffList = Staff::with(['level', 'user.roles'])
                 ->where('level_id', $staff->level_id)
-                ->where('station_id', $staff->station_id)
                 ->whereNull('deleted_at')
                 ->get();
         } else {
-            $staffList = Staff::with(['level', 'user.roles', 'station'])
+            $staffList = Staff::with(['level', 'user.roles'])
                 ->where('level_id', $staff->level_id)
                 ->whereNull('deleted_at')
                 ->get();
         }
     
-        // Fetch users, role categories, and stations (including relationships)
+        // Fetch users, role categories (including relationships)
         $users = User::with(['roles', 'district', 'permissions'])
             ->whereNull('deleted_at')
             ->get();
     
         $roleCategories = RoleCategory::whereNull('deleted_at')->get();
     
-        $stations = Station::with('district')
-            ->whereNull('deleted_at')
-            ->get();
-    
+      
         // Return the data to the view
         return Inertia::render('Staff/Index', [
             'staffList' => $staffList,
             'users' => $users,
             'levels' => $roleCategories,
-            'stations' => $stations,
         ]);
     }
     
@@ -67,7 +62,6 @@ class StaffController extends Controller
         $request->validate([
             'level_id' => 'required|exists:role_categories,id',
             'user_id' => 'required|exists:users,id',
-            'station_id' => 'nullable|exists:stations,id',
         ]);
     
         DB::beginTransaction();
@@ -78,15 +72,10 @@ class StaffController extends Controller
                 'user_id' => $request->input('user_id'),
             ];
     
-            // Include station_id only if it exists in the request
-            if ($request->has('station_id') && $request->filled('station_id')) {
-                $data['station_id'] = $request->input('station_id');
-            }
-    
             // Create the staff record
             $staff = Staff::create($data);
     
-        $staff->load(['level', 'user.roles', 'station']);
+        $staff->load(['level', 'user.roles']);
 
             DB::commit();
     
@@ -109,7 +98,6 @@ class StaffController extends Controller
         $request->validate([
             'level_id' => 'required|exists:role_categories,id',
             'user_id' => 'required|exists:users,id',
-            'station_id' => 'nullable|exists:stations,id',
         ]);
     
         DB::beginTransaction();
@@ -120,19 +108,11 @@ class StaffController extends Controller
                 'user_id' => $request->input('user_id'),
             ];
     
-            // Check if the incoming request includes 'station_id'
-            if ($request->has('station_id') && $request->filled('station_id')) {
-                $data['station_id'] = $request->input('station_id');
-            } else {
-                // If 'station_id' is not provided, set it to null
-                $data['station_id'] = null;
-            }
-    
             // Update the staff record
             $staff->update($data);
     
             // Load relationships
-            $staff->load(['level', 'user.roles', 'station']);
+            $staff->load(['level', 'user.roles']);
     
             DB::commit();
     
@@ -181,7 +161,7 @@ class StaffController extends Controller
 
     public function trashed()
     {
-        $trashedStaff = Staff::onlyTrashed()->with(['level', 'user', 'station'])->get(); // Fetch all soft-deleted staff records
+        $trashedStaff = Staff::onlyTrashed()->with(['level', 'user'])->get(); // Fetch all soft-deleted staff records
 
         return response()->json($trashedStaff, 200);
     }
