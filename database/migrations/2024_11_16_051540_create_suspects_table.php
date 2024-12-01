@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('national_id');
             $table->unsignedBigInteger('district_id');
             $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('operation_team_id');
+            $table->unsignedBigInteger('operation_team_id')->nullable();
             $table->foreign('operation_team_id')->references('id')->on('operation_to_teams')->onDelete('cascade')->onUpdate('cascade');
             $table->string('village');
             $table->string('TA');

@@ -21,6 +21,7 @@ class Suspect extends Model
         'sex',
         'national_id',
         'district_id',
+        'operation_team_id',
         'village',
         'TA',
         'suspect_photo_path',
