@@ -44,11 +44,8 @@ class OperationController extends Controller
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',    
-          
             'date_of_operation' => 'nullable|string',
             'route_id' => 'required|exists:routes,id',
-            'date_time_of_deployment' => 'nullable|string',
-            'date_time_of_withdrawal' => 'nullable|string',
             'team_leader' => 'nullable|string',
             'funded_by' => 'nullable|string',
         ]);
