@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('staff_to_stations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('staff_id');
-            $table->foreign('staff_id')->references('id')->on('staff')->onDelete('cascade')->onUpdate('casacde');
+            $table->foreign('staff_id')->references('id')->on('staff')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('station_id');
-            $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade')->onUpdate('casacde');
+            $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade')->onUpdate('cascade');
 
             $table->timestamps();
         });
