@@ -1028,9 +1028,9 @@ const selectedItems = ref([]);
 
 const handleCheckboxChange = (item) => {
     if (selectedItems.value[item.id]) {
-        delete selectedItems.value[item.id]; // Remove item if unchecked
+        delete selectedItems.value[item.id]; 
     } else {
-        selectedItems.value[item.id] = 1; // Initialize quantity to 1 when checked
+        selectedItems.value[item.id] = 1;
     }
 };
 

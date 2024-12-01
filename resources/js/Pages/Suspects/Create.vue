@@ -302,13 +302,10 @@
                             </StepPanel>
                             <StepPanel v-slot="{ activateCallback }" value="3">
                                 <div class="flex flex-col gap-2 p-4 mx-auto">
-                                    
-
                                     <div
                                         class="text-center mt-4 mb-4 text-xl font-semibold"
                                     >
-                                    Select Confiscated Items
-
+                                        Select Confiscated Items
                                     </div>
 
                                     <div class="flex gap-4 items-center">
@@ -376,70 +373,66 @@
             <Dialog
                 v-model:visible="addConfiscateDialog"
                 :style="{ width: '450px' }"
-                header="Confirm"
+                header="Add Confiscate Details"
                 :modal="true"
             >
                 <div class="grid gap-4">
-                    <!-- Quantity Input Section -->
+                    <!-- Quantity Input -->
                     <div class="flex flex-col flex-1">
                         <label for="quantity" class="block font-semibold mb-1">
-                            Enter quantity for {{ checkedItem.item }}:
+                            Enter quantity for {{ checkedItem?.item }}:
                         </label>
                         <input
                             type="number"
-                            v-model.number="selectedItems[checkedItem.id]"
+                            v-model.number="
+                                selectedItems[checkedItem?.id]?.quantity
+                            "
                             min="1"
                             placeholder="Enter quantity"
                             class="border rounded p-2 w-full"
                         />
                     </div>
 
-                    <!-- Proof Section -->
+                    <!-- Proof Upload -->
                     <div class="flex flex-col flex-1">
-                        <label for="proof" class="block font-bold mb-3">
-                            Proof
-                        </label>
-
+                        <label class="block font-bold mb-3">Proof</label>
                         <FileUpload
-                            ref="fileupload"
+                            ref="fileUpload"
                             mode="basic"
                             name="proof[]"
                             @select="onFileSelect"
                             accept="image/*,video/*"
                             :maxFileSize="9000000"
                         />
-
-                        <!-- Image Preview -->
-                        <div
-                            v-if="previewType === 'image'"
-                            class="mt-3 flex justify-center"
-                        >
-                            <img
-                                :src="previewUrl"
-                                alt="Selected proof"
-                                width="250"
-                                class="border rounded-md"
-                            />
+                        <!-- Preview Section -->
+                        <div v-if="previewUrl" class="mt-3 flex justify-center">
+                            <template v-if="previewType === 'image'">
+                                <img
+                                    :src="previewUrl"
+                                    alt="Selected proof"
+                                    width="250"
+                                    class="border rounded-md"
+                                />
+                            </template>
+                            <template v-else-if="previewType === 'video'">
+                                <video
+                                    controls
+                                    width="250"
+                                    class="border rounded-md"
+                                >
+                                    <source
+                                        :src="previewUrl"
+                                        type="video/mp4"
+                                    />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </template>
                         </div>
-
-                        <!-- Video Preview -->
-                        <div
-                            v-if="previewType === 'video'"
-                            class="mt-3 flex justify-center"
-                        >
-                            <video
-                                controls
-                                width="250"
-                                class="border rounded-md"
-                            >
-                                <source :src="previewUrl" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-
-                        <!-- Validation Error -->
                         <small
-                            v-if="submitted && !fileupload"
+                            v-if="
+                                submitted &&
+                                !selectedItems[checkedItem?.id]?.files?.length
+                            "
                             class="text-red-500"
                         >
                             Proof is required.
@@ -447,29 +440,19 @@
                     </div>
                 </div>
 
+                <!-- Dialog Footer -->
                 <template #footer>
                     <Button
-                        label="No"
+                        label="Cancel"
                         icon="pi pi-times"
                         text
-                        @click="addConfiscateDialog = false"
+                        @click="closeDialog"
                     />
-                    <div>
-                        <ProgressSpinner
-                            v-if="loading"
-                            style="width: 30px; height: 30px"
-                            strokeWidth="4"
-                            fill="transparent"
-                            animationDuration=".5s"
-                            aria-label="Custom ProgressSpinner"
-                        />
-                        <Button
-                            v-else
-                            label="Yes"
-                            icon="pi pi-check"
-                            @click="addConfiscate"
-                        />
-                    </div>
+                    <Button
+                        label="Save"
+                        icon="pi pi-check"
+                        @click="saveConfiscate"
+                    />
                 </template>
             </Dialog>
         </div>
@@ -589,40 +572,39 @@ const suspects = ref(props.suspects);
 
 const confiscates = ref(props.confiscates);
 
-const onFileSelect = (event) => {
-    const file = event.files[0];
-    if (file) {
-        const fileType = file.type;
-
-        if (fileType.startsWith("image/")) {
-            previewType.value = "image";
-        } else if (fileType.startsWith("video/")) {
-            previewType.value = "video";
-        } else {
-            previewType.value = null;
-            previewUrl.value = null;
-            console.error("Unsupported file type");
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            previewUrl.value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-};
-
 const selectedItems = ref([]);
 
 const handleCheckboxChange = (item) => {
-    console.log(selectedItems.value);
-    if (selectedItems.value[item.id]) {
-        delete selectedItems.value[item.id];
+    if (selectedItems[item.id]) {
+        // Uncheck: Remove from state
+        delete selectedItems[item.id];
     } else {
-        selectedItems.value[item.id] = 1;
-        addConfiscateDialog.value = true;
-        checkedItem.value = item;
+        // Check: Add item and open dialog
+        checkedItem.value = { ...item };
+        selectedItems[item.id] = { quantity: 1, files: [] };
+        openDialog();
+    }
+};
+
+// Open dialog
+const openDialog = () => {
+    addConfiscateDialog.value = true;
+};
+
+// Close dialog
+const closeDialog = () => {
+    checkedItem.value = null;
+    addConfiscateDialog.value = false;
+};
+
+// Handle file selection
+const onFileSelect = (event) => {
+    const files = Array.from(event.files || []);
+    if (files.length) {
+        selectedItems[checkedItem.value.id].files = files;
+        const file = files[0];
+        previewType.value = file.type.startsWith("image") ? "image" : "video";
+        previewUrl.value = URL.createObjectURL(file);
     }
 };
 
