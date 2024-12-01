@@ -18,6 +18,7 @@ class SuspectToConfiscate extends Model
         'suspect_id',
         'confiscate_id',
         'quantity',
+        'reason'
     ];
 
     // Define the relationship with the Suspect model
