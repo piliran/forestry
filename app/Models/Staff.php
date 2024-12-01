@@ -19,7 +19,6 @@ class Staff extends Model
     protected $fillable = [
         'level_id',
         'user_id',
-        'station_id',
     ];
 
     /**
