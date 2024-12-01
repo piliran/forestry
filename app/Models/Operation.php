@@ -16,8 +16,6 @@ class Operation extends Model
         'description',
         'date_of_operation',
         'funded_by',
-        'route_id',
-        'team_leader',
         'operation_type_id',
     ];
 
@@ -28,26 +26,12 @@ class Operation extends Model
      */
     protected $casts = [
         'date_of_operation' => 'date',
-        'date_time_of_deployment' => 'datetime',
-        'date_time_of_withdrawal' => 'datetime',
     ];
 
     // Relationship with Station
     public function station()
     {
         return $this->belongsTo(Station::class);
-    }
-
-    // Relationship with Route
-    public function route()
-    {
-        return $this->belongsTo(Route::class);
-    }
-
-    // Relationship with Team Leader (User)
-    public function teamLeader()
-    {
-        return $this->belongsTo(User::class, 'team_leader');
     }
 
     // Relationship with Operation Type
