@@ -237,6 +237,70 @@
                                             Suspect T/A is required.
                                         </small>
                                     </div>
+                                    <div class="flex flex-col flex-1">
+                                        <label
+                                            for="suspect"
+                                            class="block font-bold mb-3"
+                                        >
+                                            Suspect Photo
+                                        </label>
+
+                                        <FileUpload
+                                            ref="suspectfileupload"
+                                            mode="basic"
+                                            name="suspect[]"
+                                            @select="onSuspectFileSelect"
+                                            accept="image/*,video/*"
+                                            :maxFileSize="9000000"
+                                            multiple
+                                        />
+
+                                        <!-- Image Preview -->
+                                        <div
+                                            v-if="
+                                                previewSuspectType === 'image'
+                                            "
+                                            class="mt-3 flex justify-center"
+                                        >
+                                            <img
+                                                :src="previewSuspectUrl"
+                                                alt="Selected proof"
+                                                width="250"
+                                                class="border rounded-md"
+                                            />
+                                        </div>
+
+                                        <!-- Video Preview -->
+                                        <div
+                                            v-if="
+                                                previewSuspectType === 'video'
+                                            "
+                                            class="mt-3 flex justify-center"
+                                        >
+                                            <video
+                                                controls
+                                                width="250"
+                                                class="border rounded-md"
+                                            >
+                                                <source
+                                                    :src="previewSuspectUrl"
+                                                    type="video/mp4"
+                                                />
+                                                Your browser does not support
+                                                the video tag.
+                                            </video>
+                                        </div>
+
+                                        <!-- Validation Error -->
+                                        <small
+                                            v-if="
+                                                submitted && !suspectfileupload
+                                            "
+                                            class="text-red-500"
+                                        >
+                                            Suspect photo is required.
+                                        </small>
+                                    </div>
                                 </div>
 
                                 <!-- Next Button -->
@@ -540,13 +604,16 @@ const breadCumbItems = ref([
 const genderOptions = ["Male", "Female", "Other"];
 
 const fileupload = ref();
+const suspectfileupload = ref();
 
 const upload = () => {
     fileupload.value.upload();
 };
 
-const previewUrl = ref(null); // URL for preview
-const previewType = ref(null); // Type of preview (image or video)
+const previewUrl = ref(null);
+const previewType = ref(null);
+const previewSuspectUrl = ref(null);
+const previewSuspectType = ref(null);
 
 const isImage = (proof) => {
     const imageExtensions = [".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"];
@@ -599,6 +666,30 @@ const onFileSelect = (event) => {
         const reader = new FileReader();
         reader.onload = (e) => {
             previewUrl.value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+const onSuspectFileSelect = (event) => {
+    const file = event.files[0];
+    if (file) {
+        const fileType = file.type;
+
+        if (fileType.startsWith("image/")) {
+            previewSuspectType.value = "image";
+        } else if (fileType.startsWith("video/")) {
+            previewSuspectType.value = "video";
+        } else {
+            previewSuspectType.value = null;
+            previewSuspectUrl.value = null;
+            console.error("Unsupported file type");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewSuspectUrl.value = e.target.result;
         };
         reader.readAsDataURL(file);
     }
