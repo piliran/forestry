@@ -369,7 +369,7 @@
                                     <div
                                         class="text-center mt-4 mb-4 text-xl font-semibold"
                                     >
-                                        Choose suspect crimes
+                                        Select confiscates
                                     </div>
 
                                     <div class="flex gap-4 items-center">
@@ -426,7 +426,10 @@
                                         icon="pi pi-arrow-left"
                                         @click="activateCallback('2')"
                                     />
-                                    <Button label="Submit" />
+                                    <Button
+                                        label="Submit"
+                                        @click="submitSuspect"
+                                    />
                                 </div>
                             </StepPanel>
                         </StepPanels>
@@ -625,6 +628,15 @@ const addConfiscate = () => {
         severity: "info",
         summary: "Success",
         detail: "Add successfully",
+        life: 3000,
+    });
+};
+
+const submitSuspect = () => {
+    toast.add({
+        severity: "info",
+        summary: "Success",
+        detail: "Submitted successfully",
         life: 3000,
     });
 };
