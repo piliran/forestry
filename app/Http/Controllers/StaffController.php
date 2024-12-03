@@ -19,7 +19,8 @@ class StaffController extends Controller
     {
         $authUserId = auth()->id(); // Get the authenticated user's ID
         $staffList = [];
-        $stations = [];
+        $stations = Station::with('district')->whereNull('deleted_at')->get();
+
     
         // Check if the authenticated user exists in the Staff table
         $staff = Staff::where('user_id', $authUserId)->first();
