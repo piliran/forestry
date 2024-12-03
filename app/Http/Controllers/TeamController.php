@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use App\Models\User;
+use App\Models\StaffToStation;
 use App\Models\Staff;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,36 +13,40 @@ use Illuminate\Support\Facades\DB;
 class TeamController extends Controller
 {
     public function index()
-{
- 
-    $userId = auth()->id();
-
-   
-    $staff = Staff::where('user_id', $userId)->first();
-
-    if (!$staff) {
-        return redirect()->back()->withErrors([
-            'message' => 'The authenticated user is not a registered staff member.',
+    {
+        $userId = auth()->id(); // Get the authenticated user's ID
+    
+        // Check if the user exists in Staff
+        $staff = Staff::where('user_id', $userId)->first();
+    
+        if (!$staff) {
+            return redirect()->back()->withErrors([
+                'message' => 'The authenticated user is not a registered staff member.',
+            ]);
+        }
+    
+        // Check if the staff ID is in StaffToStation
+        $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
+    
+        if (!$staffToStation) {
+            // Return an empty team array if staff is not assigned to any station
+            return Inertia::render('Teams/Index', [
+                'teams' => [],
+            ]);
+        }
+    
+        // Use the station ID from StaffToStation to retrieve teams
+        $teams = Team::with('station')
+            ->where('station_id', $staffToStation->station_id)
+            ->whereNull('deleted_at')
+            ->get();
+    
+        // Return the teams to the view
+        return Inertia::render('Teams/Index', [
+            'teams' => $teams,
         ]);
     }
-
-    if (!$staff->station_id) {
-        return redirect()->back()->withErrors([
-            'message' => 'The authenticated user is not assigned to a station.',
-        ]);
-    }
-
-
-    $teams = Team::with('station')
-        ->where('station_id', $staff->station_id)
-        ->whereNull('deleted_at')
-        ->get();
-
-    return Inertia::render('Teams/Index', [
-        'teams' => $teams,
-    ]);
-}
-
+    
 
     public function store(Request $request)
     {

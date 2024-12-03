@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OperationToTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\StaffToStation;
 use Inertia\Inertia;
 
 use Illuminate\Support\Facades\Log;
@@ -19,26 +20,33 @@ class OperationToTeamController extends Controller
     public function index()
     {
 
-        $userId = auth()->id();
-
-   
+        $userId = auth()->id(); // Get the authenticated user's ID
+    
+        // Check if the user exists in Staff
         $staff = Staff::where('user_id', $userId)->first();
-
+    
         if (!$staff) {
             return redirect()->back()->withErrors([
                 'message' => 'The authenticated user is not a registered staff member.',
             ]);
         }
-
-        if (!$staff->station_id) {
-            return redirect()->back()->withErrors([
-                'message' => 'The authenticated user is not assigned to a station.',
+    
+        // Check if the staff ID is in StaffToStation
+        $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
+    
+        if (!$staffToStation) {
+            return Inertia::render('TeamOperations/Index', [
+                'operationToTeams' => [],
+                'teams' => [],
+                'operations' => [],
+               
             ]);
         }
    
 
         $teams = Team::with('station')
-        ->where('station_id', $staff->station_id)
+            ->where('station_id', $staffToStation->station_id)
+      
         ->whereNull('deleted_at')
         ->get();
         $operations = Operation::with(['type', 'station','route',])->whereNull('deleted_at')->get();

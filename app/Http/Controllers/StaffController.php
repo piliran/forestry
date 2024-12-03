@@ -20,7 +20,6 @@ class StaffController extends Controller
         $authUserId = auth()->id(); // Get the authenticated user's ID
         $staffList = [];
         $stations = Station::with('district')->whereNull('deleted_at')->get();
-
     
         $staff = Staff::where('user_id', $authUserId)->first();
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserToTeam;
 use App\Models\Team;
+use App\Models\StaffToStation;
 use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,34 +18,40 @@ class UserToTeamController extends Controller
     public function index()
     {
 
-        $userId = auth()->id();
+        $userId = auth()->id(); // Get the authenticated user's ID
+    
+        // Check if the user exists in Staff
+        $staff = Staff::where('user_id', $userId)->first();
+    
+        if (!$staff) {
+            return redirect()->back()->withErrors([
+                'message' => 'The authenticated user is not a registered staff member.',
+            ]);
+        }
+    
+        // Check if the staff ID is in StaffToStation
+        $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
+    
+        if (!$staffToStation) {
+            return Inertia::render('Teams/Members', [
+                'teamMembers' => [],
+                'teams' => [],
+                'staffList' => [],
+            ]);
+        }
 
-   
-            $staff = Staff::where('user_id', $userId)->first();
-
-            if (!$staff) {
-                return redirect()->back()->withErrors([
-                    'message' => 'The authenticated user is not a registered staff member.',
-                ]);
-            }
-
-            if (!$staff->station_id) {
-                return redirect()->back()->withErrors([
-                    'message' => 'The authenticated user is not assigned to a station.',
-                ]);
-            }
         $teamMembers = UserToTeam::with(['staff.user', 'team'])
             ->whereNull('deleted_at')
             ->get();
 
             $teams = Team::with('station')
-            ->where('station_id', $staff->station_id)
+            ->where('station_id', $staffToStation->station_id)
             ->whereNull('deleted_at')
             ->get();
 
             $staffList = Staff::with(['level', 'user.roles', 'station'])
          
-            ->where('station_id', $staff->station_id)
+            ->where('level_id', $staff->level_id)
             ->whereNull('deleted_at')
             ->get();
 
