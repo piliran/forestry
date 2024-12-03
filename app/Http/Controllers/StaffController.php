@@ -6,6 +6,8 @@ use App\Models\Staff;
 use App\Models\User;
 use App\Models\Station;
 use App\Models\RoleCategory;
+use App\Models\StaffToStation;
+
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -15,46 +17,52 @@ class StaffController extends Controller
 {
     public function index()
     {
-        $userId = auth()->id();
+        $authUserId = auth()->id(); // Get the authenticated user's ID
+        $staffList = [];
+        $stations = [];
     
-        // Fetch the staff member for the authenticated user
-        $staff = Staff::where('user_id', $userId)->first();
+        // Check if the authenticated user exists in the Staff table
+        $staff = Staff::where('user_id', $authUserId)->first();
     
-        // If no staff found, return an error
-        if (!$staff) {
-            return redirect()->back()->withErrors([
-                'message' => 'The authenticated user is not a registered staff member.',
-            ]);
+        if ($staff) {
+            // Check if the staff ID exists in the StaffToStation table
+            $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
+    
+            if ($staffToStation) {
+                // Retrieve the staff list with stations the user belongs to
+                $staffList = Staff::with(['level', 'user.roles'])
+                    ->where('id', $staff->id)
+                    ->whereNull('deleted_at')
+                    ->get();
+    
+                $stations = Station::with('district')
+                    ->where('id', $staffToStation->station_id)
+                    ->whereNull('deleted_at')
+                    ->get();
+            } else {
+                // Retrieve only the staff details
+                $staffList = Staff::with(['level', 'user.roles'])
+                    ->where('id', $staff->id)
+                    ->whereNull('deleted_at')
+                    ->get();
+            }
         }
     
-        // Query staff list based on the staff's level (if present)
-        if ($staff->level_id) {
-            $staffList = Staff::with(['level', 'user.roles'])
-                ->where('level_id', $staff->level_id)
-                ->whereNull('deleted_at')
-                ->get();
-        } else {
-            $staffList = Staff::with(['level', 'user.roles'])
-                ->where('level_id', $staff->level_id)
-                ->whereNull('deleted_at')
-                ->get();
-        }
-    
-        // Fetch users, role categories (including relationships)
-        $users = User::with(['roles', 'district', 'permissions'])
+        $users = User::with(['roles', 'district'])
             ->whereNull('deleted_at')
             ->get();
     
         $roleCategories = RoleCategory::whereNull('deleted_at')->get();
     
-      
         // Return the data to the view
         return Inertia::render('Staff/Index', [
             'staffList' => $staffList,
             'users' => $users,
             'levels' => $roleCategories,
+            'stations' => $stations,
         ]);
     }
+    
     
 
     public function store(Request $request)
@@ -62,21 +70,30 @@ class StaffController extends Controller
         $request->validate([
             'level_id' => 'required|exists:role_categories,id',
             'user_id' => 'required|exists:users,id',
+            'station_id' => 'nullable|exists:stations,id', // Validate station_id if provided
         ]);
     
         DB::beginTransaction();
         try {
-            // Prepare data for the staff record
+            // Create the staff record
             $data = [
                 'level_id' => $request->input('level_id'),
                 'user_id' => $request->input('user_id'),
             ];
     
-            // Create the staff record
             $staff = Staff::create($data);
     
-        $staff->load(['level', 'user.roles']);
-
+            // If station_id is provided, add entry to StaffToStation
+            if ($request->filled('station_id')) {
+                StaffToStation::create([
+                    'staff_id' => $staff->id,
+                    'station_id' => $request->input('station_id'),
+                ]);
+            }
+    
+            // Load related data
+            $staff->load(['level', 'user.roles']);
+    
             DB::commit();
     
             return response()->json($staff, 200);
@@ -90,6 +107,7 @@ class StaffController extends Controller
         }
     }
     
+    
 
     public function update(Request $request, Staff $staff)
     {
@@ -98,6 +116,7 @@ class StaffController extends Controller
         $request->validate([
             'level_id' => 'required|exists:role_categories,id',
             'user_id' => 'required|exists:users,id',
+            'station_id' => 'nullable|exists:stations,id', // Validate station_id if provided
         ]);
     
         DB::beginTransaction();
@@ -110,6 +129,25 @@ class StaffController extends Controller
     
             // Update the staff record
             $staff->update($data);
+    
+            // Update or insert into StaffToStation if station_id is provided
+            if ($request->filled('station_id')) {
+                // Check if staff already has an entry in StaffToStation
+                $existingEntry = StaffToStation::where('staff_id', $staff->id)->first();
+    
+                if ($existingEntry) {
+                    // Update the existing entry
+                    $existingEntry->update([
+                        'station_id' => $request->input('station_id'),
+                    ]);
+                } else {
+                    // Create a new entry
+                    StaffToStation::create([
+                        'staff_id' => $staff->id,
+                        'station_id' => $request->input('station_id'),
+                    ]);
+                }
+            }
     
             // Load relationships
             $staff->load(['level', 'user.roles']);
@@ -126,6 +164,7 @@ class StaffController extends Controller
             ], 500);
         }
     }
+    
     
 
     public function destroy(Staff $staff)
