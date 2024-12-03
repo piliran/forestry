@@ -22,33 +22,15 @@ class StaffController extends Controller
         $stations = Station::with('district')->whereNull('deleted_at')->get();
 
     
-        // Check if the authenticated user exists in the Staff table
         $staff = Staff::where('user_id', $authUserId)->first();
-    
-        if ($staff) {
-            // Check if the staff ID exists in the StaffToStation table
-            $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
-    
-            if ($staffToStation) {
-                // Retrieve the staff list with stations the user belongs to
-                $staffList = Staff::with(['level', 'user.roles'])
-                    ->where('id', $staff->id)
-                    ->whereNull('deleted_at')
-                    ->get();
-    
-                $stations = Station::with('district')
-                    ->where('id', $staffToStation->station_id)
-                    ->whereNull('deleted_at')
-                    ->get();
-            } else {
-                // Retrieve only the staff details
-                $staffList = Staff::with(['level', 'user.roles'])
-                    ->where('id', $staff->id)
-                    ->whereNull('deleted_at')
-                    ->get();
-            }
-        }
-    
+
+    if ($staff) {
+        // Retrieve the staff list including the station the user belongs to
+        $staffList = Staff::with(['level', 'user.roles', 'station.district'])
+            ->where('id', $staff->id)
+            ->whereNull('deleted_at')
+            ->get();
+    }
         $users = User::with(['roles', 'district'])
             ->whereNull('deleted_at')
             ->get();

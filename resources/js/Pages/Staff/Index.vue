@@ -366,7 +366,7 @@ const staffList = ref(props.staffList);
 const levels = ref(props.levels);
 const stations = ref(props.stations);
 const users = ref(props.users);
-
+// console.log(staffList);
 const rowsPerPage = ref(8);
 const currentPage = ref(0);
 
@@ -503,7 +503,8 @@ const viewstaff = (staffData) => {
 const editStaff = (staffData) => {
     editDialog.value = true;
     staff.value = { ...staffData };
-
+    staff.value.station_id = staffData.station.id;
+    console.log(staffData.station.id);
     staffDialog.value = true;
 };
 

@@ -42,6 +42,13 @@ class Staff extends Model
      */
     public function station()
     {
-        return $this->belongsTo(Station::class, 'station_id');
+        return $this->hasOneThrough(
+            Station::class,
+            StaffToStation::class,
+            'staff_id', // Foreign key on StaffToStation
+            'id',       // Foreign key on Station
+            'id',       // Local key on Staff
+            'station_id'// Local key on StaffToStation
+        );
     }
 }
