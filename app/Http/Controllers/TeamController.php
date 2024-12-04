@@ -61,25 +61,22 @@ class TeamController extends Controller
         // Check if the user exists in the Staff table and fetch the associated station_id
         $staff = Staff::where('user_id', $userId)->first();
     
-        if (!$staff) {
-            return response()->json([
-                'message' => 'The authenticated user is not a registered staff member.',
-            ], 403);
-        }
+        // Check if the staff ID is in StaffToStation
+        $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
     
-        if (!$staff->station_id) {
-            return response()->json([
-                'message' => 'The authenticated user is not assigned to a station.',
-            ], 403);
+        if (!$staffToStation) {
+            // Return an empty team array if staff is not assigned to any station
+            return Inertia::render('Teams/Index', [
+                'teams' => [],
+            ]);
         }
-    
         DB::beginTransaction();
         try {
             // Create the team and assign the station_id from the Staff table
             $team = Team::create([
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
-                'station_id' => $staff->station_id, // Extracted station_id
+                'station_id' => $staffToStation->station_id, // Extracted station_id
             ]);
     
             DB::commit();

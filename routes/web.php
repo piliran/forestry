@@ -15,6 +15,7 @@ use App\Http\Controllers\UserPermissionsController;
 use App\Http\Controllers\OperationTypeController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationToTeamController;
+use App\Http\Controllers\FunderController;
 
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TeamController;
@@ -147,6 +148,9 @@ Route::post('/update-team-member', [UserToTeamController::class, 'update']);
 Route::resource('team-operations', OperationToTeamController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/team-operations/delete-multiple', [OperationToTeamController::class, 'batchDelete']);
 Route::post('/update-team-operations', [OperationToTeamController::class, 'update']);
+
+Route::resource('funders', FunderController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/funders/delete-multiple', [FunderController::class, 'batchDelete']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [

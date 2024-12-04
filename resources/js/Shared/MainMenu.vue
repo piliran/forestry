@@ -131,6 +131,14 @@ const items = ref([
         allowedRoles: ["Admin", "User"],
     },
     {
+        label: "Funders",
+        icon: "funders",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/funders",
+        allowedRoles: ["Admin", "User"],
+    },
+    {
         label: "Department",
         icon: "department",
         class: "parent-link-with-no-sublinks",

@@ -82,6 +82,7 @@ class UserToTeamController extends Controller
             ]);
 
             DB::commit();
+            $userToTeam->load(['staff.user', 'team']);
             return response()->json($userToTeam, 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -104,6 +105,7 @@ class UserToTeamController extends Controller
         ]);
 
         $userToTeam->update($validated);
+        $userToTeam->load(['staff.user', 'team']);
 
         return response()->json($userToTeam, 200);
     }
