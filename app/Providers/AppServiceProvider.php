@@ -61,7 +61,7 @@ use App\Policies\SchedulePolicy;
 use App\Policies\SpeciesPolicy;
 use App\Policies\SpeciesCategoryPolicy;
 use App\Policies\StationPolicy;
-use App\Policies\StationToOperationPolicy;
+// use App\Policies\StationToOperationPolicy;
 use App\Policies\SuspectPolicy;
 
 class AppServiceProvider extends ServiceProvider
@@ -114,7 +114,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Species::class, SpeciesPolicy::class);
         Gate::policy(SpeciesCategory::class, SpeciesCategoryPolicy::class);
         Gate::policy(Station::class, StationPolicy::class);
-        Gate::policy(StationToOperation::class, StationToOperationPolicy::class);
+        // Gate::policy(StationToOperation::class, StationToOperationPolicy::class);
         Gate::policy(Suspect::class, SuspectPolicy::class);
     }
 }
