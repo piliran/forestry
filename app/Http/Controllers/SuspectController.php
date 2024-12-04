@@ -76,6 +76,7 @@ class SuspectController extends Controller
             'village' => $validated['village'],
             'TA' => $validated['TA'],
             'suspect_photo_path' => $validated['suspect_photo_path'] ?? null,
+            'created_by' => auth()->id(),
         ]);
         $suspect->load('district');
     

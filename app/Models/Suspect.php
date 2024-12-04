@@ -26,6 +26,7 @@ class Suspect extends Model
         'TA',
         'suspect_photo_path',
         'status',
+        'created_by'
     ];
 
     /**
@@ -54,24 +55,24 @@ class Suspect extends Model
     // ];
 
     const STATUS_UNDER_INVESTIGATION = 'Under Investigation';
-const STATUS_ARRESTED = 'Arrested';
-const STATUS_RELEASED_WITHOUT_CHARGE = 'Released Without Charge';
-const STATUS_COURT_HEARING_PENDING = 'Court Hearing Pending';
-const STATUS_ACQUITTED = 'Acquitted';
-const STATUS_CONVICTED = 'Convicted';
+    const STATUS_ARRESTED = 'Arrested';
+    const STATUS_RELEASED_WITHOUT_CHARGE = 'Released Without Charge';
+    const STATUS_COURT_HEARING_PENDING = 'Court Hearing Pending';
+    const STATUS_ACQUITTED = 'Acquitted';
+    const STATUS_CONVICTED = 'Convicted';
 
 
-public static function getStatuses()
-{
-    return [
-        self::STATUS_UNDER_INVESTIGATION,
-        self::STATUS_ARRESTED,
-        self::STATUS_RELEASED_WITHOUT_CHARGE,
-        self::STATUS_COURT_HEARING_PENDING,
-        self::STATUS_ACQUITTED,
-        self::STATUS_CONVICTED,
-    ];
-}
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_UNDER_INVESTIGATION,
+            self::STATUS_ARRESTED,
+            self::STATUS_RELEASED_WITHOUT_CHARGE,
+            self::STATUS_COURT_HEARING_PENDING,
+            self::STATUS_ACQUITTED,
+            self::STATUS_CONVICTED,
+        ];
+    }
 
 
    
@@ -90,5 +91,10 @@ public static function getStatuses()
     public function getSuspectPhotoPathAttribute($value)
     {
         return $value ? asset('storage/' . $value) : null;
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

@@ -77,6 +77,7 @@ class TeamController extends Controller
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
                 'station_id' => $staffToStation->station_id, // Extracted station_id
+                'created_by' => auth()->id(),
             ]);
     
             DB::commit();

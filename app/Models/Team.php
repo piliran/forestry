@@ -18,12 +18,13 @@ class Team extends Model
         'name',
         'description',
         'station_id',
+        'created_by'
     ];
 
     /**
      * The attributes that should be mutated to dates.
      *
-    //  * @var array
+     * @var array
      */
     // protected $dates = ['deleted_at'];
 
@@ -42,5 +43,10 @@ class Team extends Model
      public function station()
     {
         return $this->belongsTo(Station::class);
+    }
+    
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

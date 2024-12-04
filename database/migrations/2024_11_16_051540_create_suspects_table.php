@@ -31,7 +31,9 @@ return new class extends Migration
                 'Court Hearing Pending',   // Awaiting court proceedings
                 'Acquitted',            // Found not guilty and released by the court
                 'Convicted'             // Found guilty and convicted in court
-            ])->default('Under Investigation');       
+            ])->default('Under Investigation');
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');       
             $table->softDeletes(); 
             $table->timestamps();
         });
