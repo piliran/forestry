@@ -273,12 +273,12 @@ const items = ref([
         ],
     },
     {
-        label: "Crimes",
+        label: "Offenses",
         icon: "crimes",
         forwardIcon: false,
         class: "parent-link-with-no-sublinks",
 
-        route: "/crimes",
+        route: "/offenses",
         allowedRoles: ["Admin", "User"],
     },
     {

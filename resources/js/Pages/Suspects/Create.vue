@@ -38,7 +38,7 @@
                     <Stepper value="1" linear class="basis-full">
                         <StepList>
                             <Step value="1">Suspect</Step>
-                            <Step value="2">Crimes</Step>
+                            <Step value="2">Offenses</Step>
                             <Step value="3">Confiscated</Step>
                         </StepList>
                         <StepPanels>
@@ -323,7 +323,7 @@
                                     <div
                                         class="text-center mt-4 mb-4 text-xl font-semibold"
                                     >
-                                        Choose suspect crimes
+                                        Choose suspect offenses
                                     </div>
 
                                     <div class="flex flex-wrap gap-4">
