@@ -189,6 +189,7 @@
                             optionValue="id"
                             placeholder="Select Area"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !encroached.area_id"
@@ -273,25 +274,7 @@
                             Longitude is required.
                         </small>
                     </div>
-                    <div>
-                        <label for="remarks" class="block font-bold mb-3">
-                            Remarks
-                        </label>
-                        <InputText
-                            id="longitude"
-                            v-model.trim="encroached.remarks"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !encroached.remarks"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !encroached.remarks"
-                            class="text-red-500"
-                        >
-                            Remarks is required.
-                        </small>
-                    </div>
+                
                     <div class="col-12">
                         <label for="remarks" class="block font-bold mb-3"
                             >Remarks</label

@@ -180,6 +180,7 @@
                             autofocus
                             :invalid="submitted && !area.name"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !area.name"
@@ -200,6 +201,7 @@
                             optionValue="id"
                             placeholder="Select Station"
                             fluid
+                            filter
                         />
                     </div>
                     <div>

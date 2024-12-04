@@ -220,6 +220,7 @@
                             optionValue="id"
                             placeholder="Select Suspect"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !arrest.suspect_id"
@@ -241,6 +242,7 @@
                             optionValue="id"
                             placeholder="Select Crime"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !arrest.crime_id"

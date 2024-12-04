@@ -179,6 +179,7 @@
                             optionValue="id"
                             placeholder="Select zone"
                             fluid
+							filter
                         />
                         <small
                             v-if="submitted && !district.zone_id"
