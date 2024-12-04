@@ -61,7 +61,7 @@ use App\Policies\SchedulePolicy;
 use App\Policies\SpeciesPolicy;
 use App\Policies\SpeciesCategoryPolicy;
 use App\Policies\StationPolicy;
-use App\Policies\StationToOperationPolicy;
+// use App\Policies\StationToOperationPolicy;
 use App\Policies\SuspectPolicy;
 
 class AppServiceProvider extends ServiceProvider
@@ -91,7 +91,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Zone::class, ZonePolicy::class);
         Gate::policy(Area::class, AreaPolicy::class);
         Gate::policy(Team::class, TeamPolicy::class);
-        Gate::policy(UserPermissiom::class, UserPermissionPolicy::class);
+        // Gate::policy(UserPermissiom::class, UserPermissionPolicy::class);
         Gate::policy(UserRole::class, UserRolePolicy::class);
 
         Gate::policy(City::class, CityPolicy::class);
@@ -104,7 +104,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Encroached::class, EncroachedPolicy::class);
         Gate::policy(Operation::class, OperationPolicy::class);
         Gate::policy(OperationType::class, OperationTypePolicy::class);
-        Gate::policy(Permissiom::class, PermissionPolicy::class);
+        // Gate::policy(Permissiom::class, PermissionPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(RoleCategory::class, RoleCategoryPolicy::class);
         Gate::policy(RoleToPermission::class, RoleToPermissionPolicy::class);
@@ -114,7 +114,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Species::class, SpeciesPolicy::class);
         Gate::policy(SpeciesCategory::class, SpeciesCategoryPolicy::class);
         Gate::policy(Station::class, StationPolicy::class);
-        Gate::policy(StationToOperation::class, StationToOperationPolicy::class);
+        // Gate::policy(StationToOperation::class, StationToOperationPolicy::class);
         Gate::policy(Suspect::class, SuspectPolicy::class);
     }
 }
