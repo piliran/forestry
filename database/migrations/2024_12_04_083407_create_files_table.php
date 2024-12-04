@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('suspect_to_confiscates_id');
             $table->foreign('suspect_to_confiscates_id')->references('id')->on('suspect_to_confiscates')->onDelete('cascade')->onUpdate('cascade');
             $table->string('file');
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

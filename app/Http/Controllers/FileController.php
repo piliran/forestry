@@ -48,6 +48,7 @@ class FileController extends Controller
             $file = File::create([
                 'suspect_to_confiscates_id' => $validated['suspect_to_confiscates_id'],
                 'file' => $filePath,
+                'created_by' => auth()->id(),
             ]);
 
             DB::commit(); // Commit transaction

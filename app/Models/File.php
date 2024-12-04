@@ -18,6 +18,7 @@ class File extends Model
     protected $fillable = [
         'suspect_to_confiscates_id',
         'file',
+        'created_by'
     ];
 
     /**
@@ -26,5 +27,10 @@ class File extends Model
     public function suspectToConfiscate()
     {
         return $this->belongsTo(SuspectToConfiscate::class, 'suspect_to_confiscates_id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }
