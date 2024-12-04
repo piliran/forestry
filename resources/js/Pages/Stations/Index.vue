@@ -216,6 +216,7 @@
                             optionValue="id"
                             placeholder="Select District"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !station.district_id"

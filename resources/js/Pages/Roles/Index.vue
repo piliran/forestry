@@ -178,6 +178,7 @@
                             optionValue="id"
                             placeholder="Select a Role Category"
                             fluid
+                            filter
                         />
                     </div>
 
