@@ -211,6 +211,7 @@
                             optionValue="id"
                             placeholder="Select Specie Category"
                             fluid
+                            filter
                         />
 
                         <small
@@ -224,13 +225,17 @@
                         <label for="description" class="block font-bold mb-3">
                             Description
                         </label>
-                        <InputText
+                        
+                        <Textarea
                             id="description"
                             v-model.trim="specie.description"
                             required="true"
+                            rows="3"
+                            cols="20"
                             autofocus
                             :invalid="submitted && !specie.description"
                             fluid
+                            placeholder="Enter Description"
                         />
                         <small
                             v-if="submitted && !specie.description"
@@ -460,6 +465,7 @@ import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
+import Textarea from "primevue/textarea";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";

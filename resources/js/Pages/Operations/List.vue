@@ -215,26 +215,7 @@
                             Operation Name is required.
                         </small>
                     </div>
-
-                    <div>
-                        <label for="description" class="block font-bold mb-3"
-                            >Operation Description</label
-                        >
-                        <InputText
-                            id="description"
-                            v-model.trim="operation.description"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !operation.description"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !operation.description"
-                            class="text-red-500"
-                        >
-                            Operation Description is required.
-                        </small>
-                    </div>
+                    
                     <div class="col-12">
                         <label for="description" class="block font-bold mb-3"
                             >Operation Description</label
@@ -270,6 +251,7 @@
                             optionValue="id"
                             placeholder="Select a Category"
                             fluid
+                            filter
                         />
                     </div>
                     <!-- Operation Station -->
@@ -285,6 +267,7 @@
                             optionValue="id"
                             placeholder="Select a Station"
                             fluid
+                            filter
                         />
                     </div>
 
@@ -344,6 +327,7 @@
                             optionValue="id"
                             placeholder="Select a Route"
                             fluid
+                            filter
                         />
                     </div>
 
@@ -359,6 +343,7 @@
                             autofocus
                             :invalid="submitted && !operation.date_time_of_deployment"
                             fluid
+                            placeholder="Enter Time of Deployment"
                             
                         />
                         <small
@@ -380,7 +365,7 @@
                             autofocus
                             :invalid="submitted && !operation.date_time_of_withdrawal"
                             fluid
-                            
+                            placeholder="Enter Time of Withdraw"
                         />
                         <small
                             v-if="submitted && !operation.date_time_of_withdrawal"

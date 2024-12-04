@@ -194,6 +194,7 @@
                             optionValue="id"
                             placeholder="Select Department"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !zone.department_id"

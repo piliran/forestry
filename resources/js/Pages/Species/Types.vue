@@ -168,16 +168,19 @@
                 </div>
                 <div class="flex flex-col gap-6">
                     <div>
-                        <label for="description" class="block font-bold mb-3"
+                        <label for="description" class="block font-bold mb-3 mt-3"
                             >Description</label
                         >
-                        <InputText
+                        <Textarea
                             id="description"
                             v-model.trim="category.description"
                             required="true"
+                            rows="3"
+                            cols="20"
                             autofocus
                             :invalid="submitted && !category.description"
                             fluid
+                            placeholder="Enter Description"
                         />
                         <small
                             v-if="submitted && !category.description"
@@ -311,6 +314,7 @@ import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
+import Textarea from "primevue/textarea";
 import IconField from "primevue/iconfield";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";

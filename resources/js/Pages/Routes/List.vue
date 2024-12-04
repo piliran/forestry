@@ -196,6 +196,7 @@
                             optionValue="id"
                             placeholder="Select Area"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !route.area_id"
@@ -255,6 +256,7 @@
                             optionValue="id"
                             placeholder="Select Route Type"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !route.area_id"
