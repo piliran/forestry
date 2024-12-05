@@ -9,6 +9,7 @@ use App\Models\Crime;
 use App\Models\Offense;
 use App\Models\Confiscate;
 use App\Models\SuspectToConfiscate;
+use App\Models\SuspectToOffense;
 use App\Models\File;
 use App\Models\District;
 use Illuminate\Http\Request;
@@ -59,64 +60,76 @@ class SuspectController extends Controller
         //     abort(403, 'Unauthorized action.');
         // }
 
-        // Validate the suspect data
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'national_id' => 'required|string|max:255|unique:suspects,national_id',
             'district_id' => 'required|exists:districts,id',
             'village' => 'required|string|max:255',
+            'age' => 'nullable|string|max:255',
+            'sex' => 'required|string|max:255',
             'TA' => 'required|string|max:255',
             'suspect_photo_path' => 'nullable|image|max:2048',
             'confiscates' => 'required|array',
-            'confiscates.*.id' => 'required|exists:confiscates,id',
-            'confiscates.*.quantity' => 'nullable|string|min:1',
+            'offenses' => 'required|array',
+            'confiscates.*.id' => 'exists:confiscates,id',
+            'confiscates.*.quantity' => 'nullable|string',
             'confiscates.*.files' => 'array',
             'confiscates.*.files.*' => 'file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Handle suspect photo upload
+
         if ($request->hasFile('suspect_photo_path')) {
             $validated['suspect_photo_path'] = $request
                 ->file('suspect_photo_path')
                 ->store('suspects/photos', 'public');
         }
 
-        // Create the suspect
         $suspect = Suspect::create([
             'name' => $validated['name'],
             'national_id' => $validated['national_id'],
             'district_id' => $validated['district_id'],
             'village' => $validated['village'],
+            'sex' => $validated['sex'],
+            // 'age' => $validated['age'],
             'TA' => $validated['TA'],
             'suspect_photo_path' => $validated['suspect_photo_path'] ?? null,
             'created_by' => auth()->id(),
         ]);
 
-        // Load related district data
-        $suspect->load('district');
 
-        // Process confiscates and files
+        foreach ($validated['offenses'] as $offense) {
+
+            SuspectToOffense::create([
+                'suspect_id' => $suspect->id,
+                'offense_id' => $offense['id'],
+
+            ]);
+        }
+
+
         foreach ($validated['confiscates'] as $confiscate) {
-            // Save the confiscate to suspect association
+
             $suspectToConfiscate = SuspectToConfiscate::create([
                 'suspect_id' => $suspect->id,
                 'confiscate_id' => $confiscate['id'],
                 'quantity' => $confiscate['quantity'],
             ]);
 
-            // Save files associated with this confiscate
             if (!empty($confiscate['files'])) {
                 foreach ($confiscate['files'] as $file) {
                     $path = $file->store('confiscates/files', 'public');
                     File::create([
                         'suspect_to_confiscates_id' => $suspectToConfiscate->id,
                         'file' => $path,
+                         'created_by' => auth()->id(),
                     ]);
                 }
             }
         }
 
-        return response()->json($suspect, 201);
+        return response()->json(['message' => 'Suspect created successfully'], 200);
+
     }
 
 
@@ -275,3 +288,9 @@ class SuspectController extends Controller
         return response()->json($suspect, 200);
     }
 }
+
+
+
+
+
+

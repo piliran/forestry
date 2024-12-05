@@ -329,22 +329,27 @@
                                     <div class="flex flex-wrap gap-4">
                                         <div
                                             v-for="(
-                                                crime, index
+                                                offense, index
                                             ) in props.crimes"
                                             :key="index"
                                             class="flex items-center space-x-2"
                                         >
                                             <input
                                                 type="checkbox"
-                                                v-model="crime.value"
+                                                v-model="offense.value"
                                                 id="id"
+                                                @change="
+                                                    handleOffenseCheckboxChange(
+                                                        offense
+                                                    )
+                                                "
                                                 class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                                             />
                                             <label
-                                                :for="`crime-${index}`"
+                                                :for="`offense-${index}`"
                                                 class="text-sm font-medium"
                                             >
-                                                {{ crime.name }}
+                                                {{ offense.name }}
                                             </label>
                                         </div>
                                     </div>
@@ -462,14 +467,13 @@
                             Enter quantity for {{ checkedItem.item }}:
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             v-model="selectedItems[checkedItem.id].quantity"
                             v-if="
                                 checkedItem &&
                                 checkedItem.id &&
                                 selectedItems[checkedItem.id]
                             "
-                            min="1"
                             placeholder="Enter quantity"
                             class="border rounded p-2 w-full"
                         />
@@ -884,24 +888,6 @@ const isImage = (proof) => {
     return imageExtensions.some((ext) => proof.toLowerCase().endsWith(ext));
 };
 
-const addConfiscate = () => {
-    toast.add({
-        severity: "info",
-        summary: "Success",
-        detail: "Add successfully",
-        life: 3000,
-    });
-};
-
-const submitSuspect = () => {
-    toast.add({
-        severity: "info",
-        summary: "Success",
-        detail: "Submitted successfully",
-        life: 3000,
-    });
-};
-
 suspect.value = {
     name: "",
     role_category_id: null,
@@ -919,30 +905,6 @@ const props = defineProps({
 const suspects = ref(props.suspects);
 
 const confiscates = ref(props.confiscates);
-
-const onFileSelect = (event) => {
-    const file = event.files[0];
-    if (file) {
-        const fileType = file.type;
-
-        if (fileType.startsWith("image/")) {
-            previewType.value = "image";
-        } else if (fileType.startsWith("video/")) {
-            previewType.value = "video";
-        } else {
-            previewType.value = null;
-            previewUrl.value = null;
-            console.error("Unsupported file type");
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            previewUrl.value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-};
 
 const onSuspectFileSelect = (event) => {
     const file = event.files[0];
@@ -967,8 +929,10 @@ const onSuspectFileSelect = (event) => {
         reader.readAsDataURL(file);
     }
 };
+const offense = ref({});
 
 const selectedItems = reactive({});
+const selectedOffenses = reactive({});
 const checkedItem = ref(null);
 
 const handleCheckboxChange = (item) => {
@@ -978,12 +942,21 @@ const handleCheckboxChange = (item) => {
         selectedItems[item.id] = { id: item.id, quantity: 1, files: [] };
 
         checkedItem.value = item;
-        console.log(selectedItems);
 
         addConfiscateDialog.value = true;
 
         previewUrl.value = null;
         previewType.value = null;
+    }
+};
+
+const handleOffenseCheckboxChange = (item) => {
+    if (selectedOffenses[item.id]) {
+        delete selectedOffenses[item.id];
+    } else {
+        selectedOffenses[item.id] = { id: item.id };
+        offense.value = item;
+        console.log(selectedOffenses);
     }
 };
 
@@ -1028,8 +1001,18 @@ const saveSuspect = async () => {
             suspectPayload.append("district_id", suspect.value.district_id);
             suspectPayload.append("village", suspect.value.village);
             suspectPayload.append("TA", suspect.value.TA);
+            suspectPayload.append("sex", suspect.value.gender);
+            suspectPayload.append("age", suspect.value.DOB);
 
-            // Append confiscates data
+            const file = suspectfileupload.value.files[0];
+            if (file) {
+                suspectPayload.append("suspect_photo_path", file);
+            }
+
+            Object.entries(selectedOffenses).forEach(([id, offense]) => {
+                suspectPayload.append(`ofenses[${id}][id]`, offense.id);
+            });
+
             Object.entries(selectedItems).forEach(([id, confiscate]) => {
                 suspectPayload.append(`confiscates[${id}][id]`, confiscate.id);
                 suspectPayload.append(
@@ -1037,7 +1020,6 @@ const saveSuspect = async () => {
                     confiscate.quantity
                 );
 
-                // Append confiscate images
                 confiscate.files.forEach((file, index) => {
                     suspectPayload.append(
                         `confiscates[${id}][files][${index}]`,
@@ -1046,36 +1028,19 @@ const saveSuspect = async () => {
                 });
             });
 
-            if (suspect.value.id) {
-                // If suspect already exists, update them
-                suspectPayload.append("id", suspect.value.id);
+            const response = await axios.post("/suspects", suspectPayload, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
 
-                const response = await axios.post(
-                    `/update-suspect`,
-                    suspectPayload,
-                    { headers: { "Content-Type": "multipart/form-data" } }
-                );
-
-                updateSuspect(response.data);
-                toast.add({
-                    severity: "success",
-                    summary: "Successful",
-                    detail: "Suspect Updated",
-                    life: 3000,
-                });
-            } else {
-                // Create a new suspect
-                const response = await axios.post("/suspects", suspectPayload, {
-                    headers: { "Content-Type": "multipart/form-data" },
-                });
-                suspects.value.push(response.data); // Add the new suspect to the list
-                toast.add({
-                    severity: "success",
-                    summary: "Successful",
-                    detail: "Suspect Created",
-                    life: 3000,
-                });
-            }
+            toast.add({
+                severity: "success",
+                summary: "Successful",
+                detail: "Suspect Created",
+                life: 3000,
+            });
+            selectedItems = {};
+            suspect = {};
+            checkedItem.value = null;
         } catch (err) {
             if (err.response && err.response.status === 422) {
                 const errors = err.response.data.errors;
