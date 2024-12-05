@@ -158,7 +158,32 @@
                             autofocus
                             :invalid="submitted && !district.name"
                             fluid
+                            class="mb-3"
                         />
+                        <Select
+                            v-model="selectedDistrict"
+                            :options="districtsArray"
+                            filter
+                            optionLabel="name"
+                            placeholder="Select a District"
+                            class="w-full"
+                        >
+                            <template #value="slotProps">
+                                <div
+                                    v-if="slotProps.value"
+                                    class="flex items-center"
+                                >
+                                    
+                                    <div>{{ slotProps.value.name }}</div>
+                                </div>
+                                <span v-else>{{ slotProps.placeholder }}</span>
+                            </template>
+                            <template #option="slotProps">
+                                <div class="flex items-center">                                    
+                                    <div>{{ slotProps.option.name }}</div>
+                                </div>
+                            </template>
+                        </Select>
                         <small
                             v-if="submitted && !district.name"
                             class="text-red-500"
@@ -545,6 +570,42 @@ const updateDistrict = (updatedDistrict) => {
 const exportCSV = () => {
     dt.value?.exportCSV();
 };
+
+
+//District Array
+const selectedDistrict = ref(""); // Stores the selected district
+const districtsArray = ref([
+    { name: "Balaka" },
+    { name: "Blantyre" },
+    { name: "Chikwawa" },
+    { name: "Chiradzulu" },
+    { name: "Chitipa" },
+    { name: "Dedza" },
+    { name: "Dowa" },
+    { name: "Karonga" },
+    { name: "Kasungu" },
+    { name: "Likoma" },
+    { name: "Lilongwe" },
+    { name: "Machinga" },
+    { name: "Mangochi" },
+    { name: "Mchinji" },
+    { name: "Mulanje" },
+    { name: "Mwanza" },
+    { name: "Mzimba" },
+    { name: "Neno" },
+    { name: "Ntcheu" },
+    { name: "Ntchisi" },
+    { name: "Phalombe" },
+    { name: "Rumphi" },
+    { name: "Salima" },
+    { name: "Thyolo" },
+    { name: "Zomba" }
+]);
+
+
+
+
+
 </script>
 <style scoped>
 ::v-deep(.p-breadcrumb) {
