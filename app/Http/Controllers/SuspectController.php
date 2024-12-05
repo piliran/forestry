@@ -6,6 +6,7 @@ use App\Models\Suspect;
 use App\Models\User;
 use App\Models\Country;
 use App\Models\Crime;
+use App\Models\Offense;
 use App\Models\Confiscate;
 use App\Models\District;
 use Illuminate\Http\Request;
@@ -37,10 +38,11 @@ class SuspectController extends Controller
         $districts = District::whereNull('deleted_at')->get();
         $crimes = Crime::whereNull('deleted_at')->get();
         $confiscates = Confiscate::whereNull('deleted_at')->get();
+        $offenses = Offense::whereNull('deleted_at')->get();
 
-        return Inertia::render('Suspects/Create', [          
+        return Inertia::render('Suspects/Create', [
             'districts' => $districts,
-            'crimes' => $crimes,
+            'crimes' => $offenses,
             'confiscates' => $confiscates,
         ]);
     }
@@ -56,17 +58,17 @@ class SuspectController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'national_id' => 'required|string|max:255|unique:suspects,national_id',      
+            'national_id' => 'required|string|max:255|unique:suspects,national_id',
             'district_id' => 'required|exists:districts,id',
             'village' => 'required|string|max:255',
             'TA' => 'required|string|max:255',
-            'suspect_photo_path' => 'nullable|image|max:2048', 
+            'suspect_photo_path' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('suspect_photo_path')) {
             $validated['suspect_photo_path'] = $request
                 ->file('suspect_photo_path')
-                ->store('suspects/photos', 'public'); 
+                ->store('suspects/photos', 'public');
         }
 
         $suspect = Suspect::create([
@@ -79,7 +81,7 @@ class SuspectController extends Controller
             'created_by' => auth()->id(),
         ]);
         $suspect->load('district');
-    
+
         return response()->json($suspect, 201);
     }
 
@@ -88,7 +90,7 @@ class SuspectController extends Controller
      */
     public function show(Suspect $suspect)
     {
-        $suspect->load(['country', 'district']); 
+        $suspect->load(['country', 'district']);
         return Inertia::render('Admin/ShowSuspect', [
             'suspect' => $suspect,
         ]);
@@ -110,8 +112,8 @@ class SuspectController extends Controller
     public function update(Request $request, $id)
     {
 
-      
-        
+
+
         $suspect = Suspect::findOrFail($request->id);
 
 
@@ -121,7 +123,7 @@ class SuspectController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'national_id' => 'required|string|max:255|unique:suspects,national_id,' . $suspect->id,  
+            'national_id' => 'required|string|max:255|unique:suspects,national_id,' . $suspect->id,
             'district_id' => 'required|exists:districts,id',
             'village' => 'required|string|max:255',
             'TA' => 'required|string|max:255',
@@ -148,7 +150,7 @@ class SuspectController extends Controller
         ]);
 
         $suspect->load('district');
-    
+
         return response()->json($suspect, 200);
     }
 
@@ -157,12 +159,12 @@ class SuspectController extends Controller
      */
     public function destroy(Suspect $suspect)
     {
-      
+
         if (auth()->user()->cannot('delete', $suspect)) {
             abort(403, 'Unauthorized action.');
         }
 
-        
+
         // Perform soft delete by setting 'deleted_at'
         $suspect->delete();
         return response()->json(['message' => 'Suspect deleted successfully'], 200);
@@ -176,8 +178,8 @@ class SuspectController extends Controller
         if (auth()->user()->cannot('batchDelete', Suspect::class)) {
             abort(403, 'Unauthorized action.');
         }
-    
-        
+
+
         $validated = $request->validate(['ids' => 'required|array']);
         Suspect::whereIn('id', $validated['ids'])->delete();
         return response()->json(['message' => 'Selected suspects deleted successfully'], 200);
@@ -188,8 +190,8 @@ class SuspectController extends Controller
      */
     public function updateSuspect(Request $request)
     {
-     
-        
+
+
         $suspect = Suspect::findOrFail($request->id);
 
         if (auth()->user()->cannot('update', $suspect)) {
@@ -198,7 +200,7 @@ class SuspectController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'national_id' => 'required|string|max:255',  
+            'national_id' => 'required|string|max:255',
             'district_id' => 'required|exists:districts,id',
             'village' => 'required|string|max:255',
             'TA' => 'required|string|max:255',
@@ -229,10 +231,10 @@ class SuspectController extends Controller
             $suspect->update(['suspect_photo_path' => $validated['suspect_photo_path']]);
         }
 
-        $suspect->load('district');  
+        $suspect->load('district');
 
-        $suspect->suspect_photo_url = $suspect->suspect_photo_path 
-            ? asset('storage/' . $suspect->suspect_photo_path) 
+        $suspect->suspect_photo_url = $suspect->suspect_photo_path
+            ? asset('storage/' . $suspect->suspect_photo_path)
             : null;
 
         return response()->json($suspect, 200);

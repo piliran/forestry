@@ -33,6 +33,7 @@ use App\Http\Controllers\RouteController;
 use App\Http\Controllers\RouteTypeController;
 
 use App\Http\Controllers\CrimeController;
+use App\Http\Controllers\OffenseController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\StationController;
 use App\Http\Controllers\ConfiscateController;
@@ -83,6 +84,10 @@ Route::resource('users', UserController::class)->middleware([HandlePrecognitiveR
 
 Route::resource('crimes', CrimeController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/crimes/bulk-delete', [CrimeController::class, 'batchDelete']);
+
+Route::resource('offenses', OffenseController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/offenses/bulk-delete', [OffenseController::class, 'batchDelete']);
+
 
 Route::resource('districts', DistrictController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/districts/bulk-delete', [DistrictController::class, 'batchDelete']);
@@ -179,7 +184,7 @@ Route::get('/', function () {
 
 // Route::get('/encroached-areas', function () {
 //     return Inertia::render('Department/EncroachedAreas');
-// }); 
+// });
 
 // Route::get('/confiscates', function () {
 //     return Inertia::render('Department/Confiscates');
