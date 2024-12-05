@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade')->onUpdate('cascade');
             $table->string('description');
             $table->date('date_of_operation');
-            $table->unsignedBigInteger('funder_id');
-            $table->foreign('funder_id')->references('id')->on('funders')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('funded_by');
+            $table->foreign('funded_by')->references('id')->on('funders')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('operation_type_id');
             $table->foreign('operation_type_id')->references('id')->on('operation_types')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes(); 

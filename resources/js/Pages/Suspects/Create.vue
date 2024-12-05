@@ -426,10 +426,22 @@
                                         icon="pi pi-arrow-left"
                                         @click="activateCallback('2')"
                                     />
-                                    <Button
-                                        label="Submit"
-                                        @click="submitSuspect"
-                                    />
+
+                                    <div>
+                                        <ProgressSpinner
+                                            v-if="loading"
+                                            style="width: 30px; height: 30px"
+                                            strokeWidth="4"
+                                            fill="transparent"
+                                            animationDuration=".5s"
+                                            aria-label="Custom ProgressSpinner"
+                                        />
+                                        <Button
+                                            v-else
+                                            label="Submit"
+                                            @click="saveSuspect"
+                                        />
+                                    </div>
                                 </div>
                             </StepPanel>
                         </StepPanels>
@@ -451,7 +463,12 @@
                         </label>
                         <input
                             type="number"
-                            v-model.number="selectedItems[checkedItem.id]"
+                            v-model="selectedItems[checkedItem.id].quantity"
+                            v-if="
+                                checkedItem &&
+                                checkedItem.id &&
+                                selectedItems[checkedItem.id]
+                            "
                             min="1"
                             placeholder="Enter quantity"
                             class="border rounded p-2 w-full"
@@ -463,16 +480,198 @@
                         <label for="proof" class="block font-bold mb-3">
                             Proof
                         </label>
-
                         <FileUpload
+                            name="demo[]"
+                            url="/api/upload"
+                            @upload="onTemplatedUpload($event)"
+                            :multiple="true"
+                            accept="image/*"
+                            :maxFileSize="1000000"
+                            @select="onSelectedFiles"
+                        >
+                            <template
+                                #header="{
+                                    chooseCallback,
+                                    uploadCallback,
+                                    clearCallback,
+                                    files,
+                                }"
+                            >
+                                <div
+                                    class="flex flex-wrap justify-between items-center flex-1 gap-4"
+                                >
+                                    <div class="flex gap-2">
+                                        <Button
+                                            @click="chooseCallback()"
+                                            icon="pi pi-images"
+                                            rounded
+                                            outlined
+                                            severity="secondary"
+                                        ></Button>
+                                        <!-- <Button
+                                            @click="uploadEvent(uploadCallback)"
+                                            icon="pi pi-cloud-upload"
+                                            rounded
+                                            outlined
+                                            severity="success"
+                                            :disabled="
+                                                !files || files.length === 0
+                                            "
+                                        ></Button> -->
+                                        <Button
+                                            @click="clearCallback()"
+                                            icon="pi pi-times"
+                                            rounded
+                                            outlined
+                                            severity="danger"
+                                            :disabled="
+                                                !files || files.length === 0
+                                            "
+                                        ></Button>
+                                    </div>
+                                    <!-- <ProgressBar
+                                        :value="totalSizePercent"
+                                        :showValue="false"
+                                        class="md:w-20rem h-1 w-full md:ml-auto"
+                                    >
+                                        <span class="whitespace-nowrap"
+                                            >{{ totalSize }}B / 1Mb</span
+                                        >
+                                    </ProgressBar> -->
+                                </div>
+                            </template>
+                            <template
+                                #content="{
+                                    files,
+                                    uploadedFiles,
+                                    removeUploadedFileCallback,
+                                    removeFileCallback,
+                                }"
+                            >
+                                <div class="flex flex-col gap-8 pt-4">
+                                    <div v-if="files.length > 0">
+                                        <!-- <h5>Pending</h5> -->
+                                        <div class="flex flex-wrap gap-4">
+                                            <div
+                                                v-for="(file, index) of files"
+                                                :key="
+                                                    file.name +
+                                                    file.type +
+                                                    file.size
+                                                "
+                                                class="rounded-border flex flex-col items-center gap-4"
+                                            >
+                                                <div>
+                                                    <img
+                                                        role="presentation"
+                                                        :alt="file.name"
+                                                        :src="file.objectURL"
+                                                        width="100"
+                                                        height="50"
+                                                    />
+                                                </div>
+                                                <span
+                                                    class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden"
+                                                    >{{ file.name }}</span
+                                                >
+                                                <div>
+                                                    {{ formatSize(file.size) }}
+                                                </div>
+                                                <!-- <Badge
+                                                    value="Pending"
+                                                    severity="warn"
+                                                /> -->
+                                                <Button
+                                                    icon="pi pi-times"
+                                                    @click="
+                                                        onRemoveTemplatingFile(
+                                                            file,
+                                                            removeFileCallback,
+                                                            index
+                                                        )
+                                                    "
+                                                    outlined
+                                                    rounded
+                                                    severity="danger"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="uploadedFiles.length > 0">
+                                        <h5>Completed</h5>
+                                        <div class="flex flex-wrap gap-4">
+                                            <div
+                                                v-for="(
+                                                    file, index
+                                                ) of uploadedFiles"
+                                                :key="
+                                                    file.name +
+                                                    file.type +
+                                                    file.size
+                                                "
+                                                class="p-8 rounded-border flex flex-col border border-surface items-center gap-4"
+                                            >
+                                                <div>
+                                                    <img
+                                                        role="presentation"
+                                                        :alt="file.name"
+                                                        :src="file.objectURL"
+                                                        width="100"
+                                                        height="50"
+                                                    />
+                                                </div>
+                                                <span
+                                                    class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden"
+                                                    >{{ file.name }}</span
+                                                >
+                                                <div>
+                                                    {{ formatSize(file.size) }}
+                                                </div>
+                                                <Badge
+                                                    value="Completed"
+                                                    class="mt-4"
+                                                    severity="success"
+                                                />
+                                                <Button
+                                                    icon="pi pi-times"
+                                                    @click="
+                                                        removeUploadedFileCallback(
+                                                            index
+                                                        )
+                                                    "
+                                                    outlined
+                                                    rounded
+                                                    severity="danger"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template #empty>
+                                <div
+                                    class="flex items-center justify-center flex-col"
+                                >
+                                    <i
+                                        class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"
+                                    />
+                                    <p class="mt-6 mb-0">
+                                        Drag and drop files to here to upload.
+                                    </p>
+                                </div>
+                            </template>
+                        </FileUpload>
+
+                        <!-- <FileUpload
                             ref="fileupload"
-                            mode="basic"
                             name="proof[]"
                             @select="onFileSelect"
                             accept="image/*,video/*"
                             :maxFileSize="9000000"
-                            multiple
-                        />
+                            @upload="onAdvancedUpload($event)"
+                            customUpload
+                        /> -->
 
                         <!-- Image Preview -->
                         <div
@@ -532,7 +731,7 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="addConfiscate"
+                            @click="uploadEvent(uploadCallback)"
                         />
                     </div>
                 </template>
@@ -541,12 +740,13 @@
     </AppLayout>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
+import { usePrimeVue } from "primevue/config";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 import Checkbox from "primevue/checkbox";
-
+import CustomUpload from "./CustomUpload.vue";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
@@ -555,7 +755,8 @@ import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 
 import FileUpload from "primevue/fileupload";
-
+import ProgressBar from "primevue/progressbar";
+import Badge from "primevue/badge";
 import Image from "primevue/image";
 
 import InputText from "primevue/inputtext";
@@ -578,7 +779,62 @@ import StepItem from "primevue/stepitem";
 import Step from "primevue/step";
 import StepPanel from "primevue/steppanel";
 
+const $primevue = usePrimeVue();
 const toast = useToast();
+
+const totalSize = ref(0);
+const totalSizePercent = ref(0);
+const files = ref([]);
+
+const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
+    removeFileCallback(index);
+    totalSize.value -= parseInt(formatSize(file.size));
+    totalSizePercent.value = totalSize.value / 10;
+};
+
+const onClearTemplatingUpload = (clear) => {
+    clear();
+    totalSize.value = 0;
+    totalSizePercent.value = 0;
+};
+
+const onSelectedFiles = (event) => {
+    files.value = event.files;
+    selectedItems[checkedItem.value.id].files = event.files;
+    files.value.forEach((file) => {
+        totalSize.value += parseInt(formatSize(file.size));
+    });
+};
+
+const uploadEvent = (callback) => {
+    // totalSizePercent.value = totalSize.value / 10;
+    // callback();
+    console.log(files.value);
+};
+
+const onTemplatedUpload = () => {
+    toast.add({
+        severity: "info",
+        summary: "Success",
+        detail: "File Uploaded",
+        life: 3000,
+    });
+};
+
+const formatSize = (bytes) => {
+    const k = 1024;
+    const dm = 3;
+    const sizes = $primevue.config.locale.fileSizeTypes;
+
+    if (bytes === 0) {
+        return `0 ${sizes[0]}`;
+    }
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+
+    return `${formattedSize} ${sizes[i]}`;
+};
 
 const suspectDialog = ref(false);
 
@@ -587,7 +843,7 @@ const addConfiscateDialog = ref(false);
 const loading = ref(false);
 
 const suspect = ref({});
-const checkedItem = ref({});
+// const checkedItem = ref({});
 const selectedRoles = ref([]);
 const submitted = ref(false);
 const submitFirst = ref(false);
@@ -609,8 +865,13 @@ const genderOptions = ["Male", "Female", "Other"];
 const fileupload = ref();
 const suspectfileupload = ref();
 
-const upload = () => {
-    fileupload.value.upload();
+const onAdvancedUpload = () => {
+    toast.add({
+        severity: "info",
+        summary: "Success",
+        detail: "File Uploaded",
+        life: 3000,
+    });
 };
 
 const previewUrl = ref(null);
@@ -707,16 +968,22 @@ const onSuspectFileSelect = (event) => {
     }
 };
 
-const selectedItems = ref([]);
+const selectedItems = reactive({});
+const checkedItem = ref(null);
 
 const handleCheckboxChange = (item) => {
-    console.log(selectedItems.value);
-    if (selectedItems.value[item.id]) {
-        delete selectedItems.value[item.id];
+    if (selectedItems[item.id]) {
+        delete selectedItems[item.id];
     } else {
-        selectedItems.value[item.id] = 1;
-        addConfiscateDialog.value = true;
+        selectedItems[item.id] = { id: item.id, quantity: 1, files: [] };
+
         checkedItem.value = item;
+        console.log(selectedItems);
+
+        addConfiscateDialog.value = true;
+
+        previewUrl.value = null;
+        previewType.value = null;
     }
 };
 
@@ -762,14 +1029,25 @@ const saveSuspect = async () => {
             suspectPayload.append("village", suspect.value.village);
             suspectPayload.append("TA", suspect.value.TA);
 
-            // Append the image file if selected
-            const file = fileupload.value.files[0]; // Get the first selected file
-            if (file) {
-                suspectPayload.append("suspect_photo_path", file);
-            }
+            // Append confiscates data
+            Object.entries(selectedItems).forEach(([id, confiscate]) => {
+                suspectPayload.append(`confiscates[${id}][id]`, confiscate.id);
+                suspectPayload.append(
+                    `confiscates[${id}][quantity]`,
+                    confiscate.quantity
+                );
 
-            // If suspect already exists, we don't need to re-append suspect_photo_path unless it's new
+                // Append confiscate images
+                confiscate.files.forEach((file, index) => {
+                    suspectPayload.append(
+                        `confiscates[${id}][files][${index}]`,
+                        file
+                    );
+                });
+            });
+
             if (suspect.value.id) {
+                // If suspect already exists, update them
                 suspectPayload.append("id", suspect.value.id);
 
                 const response = await axios.post(
