@@ -20,4 +20,10 @@ class Funder extends Model
         'address',
         'funded_by'
     ];
+
+    public function operations()
+    {
+        return $this->hasMany(Operation::class, 'funder_id');
+    }
 }
+

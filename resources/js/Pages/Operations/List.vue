@@ -336,9 +336,9 @@
                             >Deployment Date</label
                         >
                         <DatePicker 
-                            id="type_of_patrol"
+                            id="date_time_of_deployment"
                             v-model.trim="operation.date_time_of_deployment"
-                            dateFormat="dd/mm/yy"
+                            dateFormat="yyy/mm/dd"
                             required="true"
                             autofocus
                             :invalid="submitted && !operation.date_time_of_deployment"
@@ -360,7 +360,7 @@
                         <DatePicker 
                             id="date_time_of_withdrawal"
                             v-model.trim="operation.date_time_of_withdrawal"
-                            dateFormat="dd/mm/yy"
+                            dateFormat="yyy/mm/dd"
                             required="true"
                             autofocus
                             :invalid="submitted && !operation.date_time_of_withdrawal"
@@ -374,26 +374,7 @@
                             Withdraw Time is required.
                         </small>
                     </div>
-                    <div>
-                        <label for="team_leader" class="block font-bold mb-3"
-                            >Team Leader</label
-                        >
-                        <InputText
-                            id="type_of_patrol"
-                            v-model.trim="operation.team_leader"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !operation.team_leader"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !operation.team_leader"
-                            class="text-red-500"
-                        >
-                            Team Leader is required.
-                        </small>
-                    </div>
-                
+                                    
                     <div>
                         <label for="funder" class="block font-bold mb-3"
                             >Funded By</label
@@ -402,13 +383,12 @@
                             id="funder"
                             v-model="operation.funder_id"
                             :options="funders"
-                            optionLabel="name"
+                            optionLabel="organization"
                             optionValue="id"
                             placeholder="Select a Funder"
                             fluid
                             filter
                         />
-                            filter
                         <small
                             v-if="submitted && !operation.funder_id"
                             class="text-red-500"
@@ -583,7 +563,7 @@ const props = defineProps({
 });
 
 const operations = ref(props.operations);
-const funders = ref(props.operations);
+const funders = ref(props.funders);
 const types = ref(props.types);
 const stations = ref(props.stations);
 const routes = ref(props.routes);
@@ -617,8 +597,7 @@ const saveOperation = async () => {
                 route_id: operation.value.route_id,
                 date_time_of_deployment: operation.value.date_time_of_deployment,
                 date_time_of_withdrawal: operation.value.date_time_of_withdrawal,
-                team_leader: operation.value.team_leader,
-                funded_by: operation.value.funded_by,
+                funder_id: operation.value.funder_id,
                 
 
             };
@@ -637,8 +616,7 @@ const saveOperation = async () => {
                         route_id: operation.value.route_id,
                         date_time_of_deployment: operation.value.date_time_of_deployment,
                         date_time_of_withdrawal: operation.value.date_time_of_withdrawal,
-                        team_leader: operation.value.team_leader,
-                        funded_by: operation.value.funded_by,
+                        funder_id: operation.value.funder_id,
                     }
                 );
                 updateOperation(response.data);
