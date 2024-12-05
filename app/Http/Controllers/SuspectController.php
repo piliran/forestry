@@ -98,16 +98,18 @@ class SuspectController extends Controller
         ]);
 
 
-        foreach ($validated['offenses'] as $offense) {
+        if ($request->input('offenses')) {
+            foreach ($validated['offenses'] as $offense) {
 
-            SuspectToOffense::create([
-                'suspect_id' => $suspect->id,
-                'offense_id' => $offense['id'],
+                SuspectToOffense::create([
+                    'suspect_id' => $suspect->id,
+                    'offense_id' => $offense['id'],
 
-            ]);
+                ]);
+            }
         }
 
-
+       if ($request->input('confiscates')) {
         foreach ($validated['confiscates'] as $confiscate) {
 
             $suspectToConfiscate = SuspectToConfiscate::create([
@@ -127,6 +129,10 @@ class SuspectController extends Controller
                 }
             }
         }
+       }
+
+
+
 
         return response()->json(['message' => 'Suspect created successfully'], 200);
 

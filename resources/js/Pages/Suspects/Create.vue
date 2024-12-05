@@ -185,6 +185,30 @@
                                             District is required.
                                         </small>
                                     </div>
+                                    <!-- Suspect T/A -->
+                                    <div class="flex flex-col">
+                                        <label
+                                            for="TA"
+                                            class="block font-bold mb-3"
+                                            >Suspect T/A</label
+                                        >
+                                        <InputText
+                                            id="TA"
+                                            v-model.trim="suspect.TA"
+                                            required="true"
+                                            autofocus
+                                            :invalid="
+                                                submitFirst && !suspect.TA
+                                            "
+                                            fluid
+                                        />
+                                        <small
+                                            v-if="submitFirst && !suspect.TA"
+                                            class="text-red-500"
+                                        >
+                                            Suspect T/A is required.
+                                        </small>
+                                    </div>
 
                                     <!-- Suspect Village -->
                                     <div class="flex flex-col">
@@ -213,30 +237,6 @@
                                         </small>
                                     </div>
 
-                                    <!-- Suspect T/A -->
-                                    <div class="flex flex-col">
-                                        <label
-                                            for="TA"
-                                            class="block font-bold mb-3"
-                                            >Suspect T/A</label
-                                        >
-                                        <InputText
-                                            id="TA"
-                                            v-model.trim="suspect.TA"
-                                            required="true"
-                                            autofocus
-                                            :invalid="
-                                                submitFirst && !suspect.TA
-                                            "
-                                            fluid
-                                        />
-                                        <small
-                                            v-if="submitFirst && !suspect.TA"
-                                            class="text-red-500"
-                                        >
-                                            Suspect T/A is required.
-                                        </small>
-                                    </div>
                                     <div class="flex flex-col flex-1">
                                         <label
                                             for="suspect"
@@ -402,7 +402,7 @@
                                     </div>
 
                                     <!-- Display Selected Items and Quantities -->
-                                    <div
+                                    <!-- <div
                                         v-if="Object.keys(selectedItems).length"
                                         class="mt-4"
                                     >
@@ -421,7 +421,7 @@
                                                 {{ quantity }}
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> -->
                                 </div>
 
                                 <div class="flex pt-6 p-4 justify-between">
@@ -809,11 +809,12 @@ const onSelectedFiles = (event) => {
         totalSize.value += parseInt(formatSize(file.size));
     });
 };
+const addConfiscateDialog = ref(false);
 
 const uploadEvent = (callback) => {
     // totalSizePercent.value = totalSize.value / 10;
     // callback();
-    console.log(files.value);
+    addConfiscateDialog.value = false;
 };
 
 const onTemplatedUpload = () => {
@@ -841,8 +842,6 @@ const formatSize = (bytes) => {
 };
 
 const suspectDialog = ref(false);
-
-const addConfiscateDialog = ref(false);
 
 const loading = ref(false);
 
@@ -1008,25 +1007,30 @@ const saveSuspect = async () => {
             if (file) {
                 suspectPayload.append("suspect_photo_path", file);
             }
-
-            Object.entries(selectedOffenses).forEach(([id, offense]) => {
-                suspectPayload.append(`ofenses[${id}][id]`, offense.id);
-            });
-
-            Object.entries(selectedItems).forEach(([id, confiscate]) => {
-                suspectPayload.append(`confiscates[${id}][id]`, confiscate.id);
-                suspectPayload.append(
-                    `confiscates[${id}][quantity]`,
-                    confiscate.quantity
-                );
-
-                confiscate.files.forEach((file, index) => {
-                    suspectPayload.append(
-                        `confiscates[${id}][files][${index}]`,
-                        file
-                    );
+            if (selectedOffenses) {
+                Object.entries(selectedOffenses).forEach(([id, offense]) => {
+                    suspectPayload.append(`offenses[${id}][id]`, offense.id);
                 });
-            });
+            }
+            if (selectedItems) {
+                Object.entries(selectedItems).forEach(([id, confiscate]) => {
+                    suspectPayload.append(
+                        `confiscates[${id}][id]`,
+                        confiscate.id
+                    );
+                    suspectPayload.append(
+                        `confiscates[${id}][quantity]`,
+                        confiscate.quantity
+                    );
+
+                    confiscate.files.forEach((file, index) => {
+                        suspectPayload.append(
+                            `confiscates[${id}][files][${index}]`,
+                            file
+                        );
+                    });
+                });
+            }
 
             const response = await axios.post("/suspects", suspectPayload, {
                 headers: { "Content-Type": "multipart/form-data" },
