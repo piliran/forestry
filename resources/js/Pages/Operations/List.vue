@@ -154,7 +154,7 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="funded_by"
+                        field="funder.organization"
                         header="Funded By"
                         sortable
                         style="min-width: 10rem"
@@ -395,22 +395,25 @@
                     </div>
                 
                     <div>
-                        <label for="funded_by" class="block font-bold mb-3"
+                        <label for="funder" class="block font-bold mb-3"
                             >Funded By</label
                         >
-                        <InputText
-                            id="funded_by"
-                            v-model.trim="operation.funded_by"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !operation.funded_by"
+                        <Select
+                            id="funder"
+                            v-model="operation.funder_id"
+                            :options="funders"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select a Funder"
                             fluid
+                            filter
                         />
+                            filter
                         <small
-                            v-if="submitted && !operation.funded_by"
+                            v-if="submitted && !operation.funder_id"
                             class="text-red-500"
                         >
-                            Funded By is required.
+                            Funder is required.
                         </small>
                     </div>
 
@@ -576,9 +579,11 @@ const props = defineProps({
     types: Array,
     stations: Array,
     routes: Array,
+    funders: Array,
 });
 
 const operations = ref(props.operations);
+const funders = ref(props.operations);
 const types = ref(props.types);
 const stations = ref(props.stations);
 const routes = ref(props.routes);

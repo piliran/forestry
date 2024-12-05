@@ -40,4 +40,9 @@ class Operation extends Model
         return $this->belongsTo(OperationType::class);
     }
 
+    public function funder()
+    {
+        return $this->belongsTo(Funder::class, 'funded_by');
+    }
+
 }

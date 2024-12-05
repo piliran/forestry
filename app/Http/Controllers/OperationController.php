@@ -6,6 +6,7 @@ use App\Models\Operation;
 use App\Models\OperationType;
 use App\Models\Station;
 use App\Models\Route;
+use App\Models\Funder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -21,16 +22,17 @@ class OperationController extends Controller
     public function index()
     {
         // Fetch non-deleted operations
-        $operations = Operation::with(['type', 'station'])->whereNull('deleted_at')->get();
+        $operations = Operation::with(['type', 'station', 'funder'])->whereNull('deleted_at')->get();
         $types = OperationType::all();
         $stations = Station::all();
         $routes = Route::all();
-
+        $funders = Funder::all();
         return Inertia::render('Operations/List', [
             'operations' => $operations,
             'types' => $types,
             'stations' => $stations,
             'routes' => $routes,
+            'funders' => $funders,
         ]);
     }
 
@@ -45,7 +47,7 @@ class OperationController extends Controller
             'operation_type_id' => 'required|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',    
             'date_of_operation' => 'nullable|string',
-            'funded_by' => 'nullable|string',
+            'funded_by' => 'required|exists:funders,id',
         ]);
 
         $operation = Operation::create($validated);
@@ -77,7 +79,7 @@ class OperationController extends Controller
         ]);
 
         $operation->update($validated);
-        $operation->load(['type', 'station','route',]);
+        $operation->load(['type', 'station','route','funder',]);
         // $operation->load('Station');
         // $operation->load('Route');
 

@@ -18,5 +18,6 @@ class Funder extends Model
         'organization',
         'phone',
         'address',
+        'funded_by'
     ];
 }
