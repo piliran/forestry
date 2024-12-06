@@ -13,7 +13,7 @@ class Role extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 
+        'name',
         'role_category_id'
     ];
 
@@ -27,6 +27,11 @@ class Role extends Model
     {
         return $this->belongsToMany(Permission::class, 'role_to_permission', 'role_id', 'permission_id');
     }
-    
+
+    public function privileges()
+    {
+        return $this->belongsToMany(Privilege::class, 'role_to_privileges', 'role_id', 'privilege_id');
+    }
+
 
 }

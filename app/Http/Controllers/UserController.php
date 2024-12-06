@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Permission;
+use App\Models\Privilege;
 use App\Models\Role;
 use App\Models\District;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class UserController extends Controller
      * Display a listing of the resource.
      */
     // public function index()
-    // {      
+    // {
     //     $users = User::with(['roles', 'district', 'permissions'])->whereNull('deleted_at')->get();
     //     $userRoles = UserRole::with(['user', 'role'])->get();
     //     $permissions = Permission::all();
@@ -42,27 +43,33 @@ class UserController extends Controller
 
     public function index()
     {
-        
-        $users = User::with(['roles', 'district', 'permissions'])
+
+        // $users = User::with(['roles', 'district', 'permissions'])
+        //     ->whereNull('deleted_at')
+        //     ->get();
+            $users = User::with(['roles', 'district', 'privileges'])
             ->whereNull('deleted_at')
             ->get();
 
-    
-        $roles = Role::with('permissions')->get();
 
-      
+        $roles = Role::with('privileges')->get();
+        // $roles = Role::with('permissions')->get();
+
+
         $permissions = Permission::with('roles')->get();
+        $privileges = Privilege::with('roles')->get();
 
-   
+
         $districts = District::all();
 
-      
+
         $userRoles = UserRole::with(['user', 'role'])->get();
 
         return Inertia::render('User/UserList', [
             'users' => $users,
             'roles' => $roles,
             'permissions' => $permissions,
+            'privileges' => $privileges,
             'userRoles' => $userRoles,
             'districts' => $districts,
             'isAdmin' => auth()->user()->isAdministrator(),

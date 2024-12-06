@@ -27,6 +27,12 @@ class Permission extends Model
     {
         return $this->belongsToMany(User::class, 'user_permissions');
     }
-    
-    
+
+
+    public function tableToPermissions()
+    {
+        return $this->hasMany(TableToPermission::class);
+    }
+
+
 }

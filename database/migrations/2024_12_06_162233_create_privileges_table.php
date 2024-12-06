@@ -11,11 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('previleges', function (Blueprint $table) {
+
+
+        Schema::create('privileges', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->softDeletes();
+            $table->unsignedBigInteger('table_to_permission_id');
+            $table->string('privilege');
+
+
+            // Foreign key constraint
+            $table->foreign('table_to_permission_id')->references('id')->on('table_to_permissions')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
+
         });
     }
 
@@ -24,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('previleges');
+        Schema::dropIfExists('privileges');
     }
 };

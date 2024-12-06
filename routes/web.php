@@ -21,6 +21,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserToTeamController;
+use App\Http\Controllers\UserPrivilegeController;
 
 
 use App\Http\Controllers\ZoneController;
@@ -109,6 +110,9 @@ Route::post('/user-role/bulk-delete', [UserRoleController::class, 'batchDelete']
 
 Route::resource('user-permission', UserPermissionsController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/user-permission/bulk-delete', [UserPermissionsController::class, 'batchDelete']);
+
+Route::resource('user-privilege', UserPrivilegeController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/user-privilege/bulk-delete', [UserPrivilegeController::class, 'batchDelete']);
 
 Route::resource('species-types', SpeciesCategoryController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/species-types/bulk-delete', [SpeciesCategoryController::class, 'batchDelete']);

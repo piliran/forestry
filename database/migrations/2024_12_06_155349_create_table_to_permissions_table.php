@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('table_to_previleges', function (Blueprint $table) {
+        Schema::create('table_to_permissions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('table_id');
             $table->foreign('table_id')->references('id')->on('tables')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('previlege_id');
-            $table->foreign('previlege_id')->references('id')->on('previleges')->onDelete('cascade')->onUpdate('cascade');
-            $table->softDeletes();
+            $table->unsignedBigInteger('permission_id');
+            $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('table_to_previleges');
+        Schema::dropIfExists('table_to_permissions');
     }
 };

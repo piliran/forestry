@@ -164,13 +164,15 @@
                         </template>
                     </Column>
                     <Column
-                        header="privileges"
+                        header="Permissions"
                         :exportable="false"
                         style="min-width: 8rem"
                     >
                         <template #body="slotProps">
                             <Button
-                                @click="assignAndEditprivileges(slotProps.data)"
+                                @click="
+                                    assignAndEditPermissions(slotProps.data)
+                                "
                                 icon="pi pi-eye"
                                 outlined
                                 severity="info"
@@ -491,7 +493,7 @@
                 :modal="true"
             >
                 <!-- <div class="grid gap-4">
-
+                 
                     <div class="col-12">
                         <label for="role" class="block font-bold mb-2"
                             >Select Role</label
@@ -557,46 +559,46 @@
             </Dialog>
 
             <Dialog
-                v-model:visible="privilegeAssignmentDialog"
+                v-model:visible="permissionAssignmentDialog"
                 :style="{ width: '450px' }"
                 :header="user.name"
                 :modal="true"
             >
                 <!-- <div class="grid gap-4">
-
+                    
                     <div class="col-12">
-                        <label for="privilege" class="block font-bold mb-2"
-                            >Select privilege</label
+                        <label for="permission" class="block font-bold mb-2"
+                            >Select Permission</label
                         >
                         <MultiSelect
-                            id="privilege"
-                            v-model="userprivilege"
-                            :options="privileges"
+                            id="permission"
+                            v-model="userPermission"
+                            :options="permissions"
                             optionValue="id"
                             optionLabel="name"
-                            placeholder="Select privilege"
+                            placeholder="Select permission"
                             fluid
                         />
                     </div>
                 </div> -->
 
                 <div class="col-12">
-                    <label for="privileges" class="block font-bold mb-2">
-                        Select privilege
+                    <label for="permissions" class="block font-bold mb-2">
+                        Select Permission
                     </label>
                     <div class="card flex flex-wrap justify-start gap-4">
                         <div
-                            v-for="(privilege, index) in privileges"
-                            :key="privilege.id"
+                            v-for="(permission, index) in permissions"
+                            :key="permission.id"
                             class="flex items-center gap-2"
                         >
                             <Checkbox
-                                v-model="userprivilege"
-                                :inputId="'privilege' + index"
-                                :value="privilege.id"
+                                v-model="userPermission"
+                                :inputId="'permission' + index"
+                                :value="permission.id"
                             />
-                            <label :for="'privilege' + index">{{
-                                privilege.privilege
+                            <label :for="'permission' + index">{{
+                                permission.name
                             }}</label>
                         </div>
                     </div>
@@ -607,7 +609,7 @@
                         label="Cancel"
                         icon="pi pi-times"
                         text
-                        @click="privilegeAssignmentDialog = false"
+                        @click="permissionAssignmentDialog = false"
                     />
 
                     <div>
@@ -623,8 +625,8 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveUserprivilege"
-                            :disabled="!userprivilege"
+                            @click="saveUserPermission"
+                            :disabled="!userPermission"
                         />
                     </div>
                 </template>
@@ -828,7 +830,7 @@ const dt = ref();
 const userRolesDialog = ref(false);
 const viewUserDialog = ref(false);
 const roleAssignmentDialog = ref(false);
-const privilegeAssignmentDialog = ref(false);
+const permissionAssignmentDialog = ref(false);
 const selectedRole = ref(null);
 const editDialog = ref(false);
 const loading = ref(false);
@@ -836,8 +838,8 @@ const deletUserDialog = ref(false);
 const deleteUsersDialog = ref(false);
 const user = ref({});
 const userRole = ref([]);
-const userprivilege = ref([]);
-// const privileges = ref([]);
+const userPermission = ref([]);
+// const permissions = ref([]);
 
 const selectedRoles = ref([]);
 const submitted = ref(false);
@@ -859,8 +861,7 @@ const props = defineProps({
     userRoles: Array,
     districts: Array,
     can: Object,
-
-    privileges: Array,
+    permissions: Array,
     isAdmin: Boolean,
 });
 
@@ -870,7 +871,7 @@ const roles = ref(props.roles);
 const districts = ref(props.districts);
 const userRoles = ref(props.userRoles);
 const can = ref(props.can);
-const privileges = ref(props.privileges);
+const permissions = ref(props.permissions);
 
 // console.log(can.value.editUser);
 
@@ -958,32 +959,32 @@ async function saveUserRole() {
     }
 }
 
-async function saveUserprivilege() {
+async function saveUserPermission() {
     loading.value = true;
     try {
-        const response = await axios.post("/user-privilege", {
+        const response = await axios.post("/user-permission", {
             userId: user.value.id,
-            privilegeIds: userprivilege.value,
+            permissionIds: userPermission.value,
         });
 
         if (response.status === 200) {
             const targetUser = users.value.find((u) => u.id === user.value.id);
             if (targetUser) {
-                targetUser.privileges = response.data.privileges;
+                targetUser.permissions = response.data.permissions;
             }
 
-            userprivilege.value = response.data.privileges.map(
+            userPermission.value = response.data.permissions.map(
                 (role) => role.id
             );
 
             toast.add({
                 severity: "success",
                 summary: "Success",
-                detail: "Privileges assigned successfully",
+                detail: "Permissions assigned successfully",
                 life: 3000,
             });
         }
-        privilegeAssignmentDialog.value = false;
+        permissionAssignmentDialog.value = false;
     } catch (err) {
         if (err.response && err.response.status === 422) {
             const errors = err.response.data.errors;
@@ -1014,7 +1015,7 @@ async function saveUserprivilege() {
         }
     } finally {
         loading.value = false;
-        privilegeAssignmentDialog.value = false;
+        permissionAssignmentDialog.value = false;
     }
 }
 
@@ -1101,15 +1102,15 @@ const assignAndEditRoles = (userData) => {
     roleAssignmentDialog.value = true;
 };
 
-// const assignAndEditprivileges = (userData) => {
+// const assignAndEditPermissions = (userData) => {
 //     user.value = { ...userData };
 
-//     userprivilege.value = userData.privileges.map((p) => p.id);
+//     userPermission.value = userData.permissions.map((p) => p.id);
 
-//     privilegeAssignmentDialog.value = true;
+//     permissionAssignmentDialog.value = true;
 // };
 
-const assignAndEditprivileges = (userData) => {
+const assignAndEditPermissions = (userData) => {
     user.value = { ...userData };
 
     // Find the roles associated with the user
@@ -1117,21 +1118,21 @@ const assignAndEditprivileges = (userData) => {
         (role) => role.user_id === userData.id
     );
 
-    // Filter privileges based on the roles assigned to the user
-    const roleprivileges = props.privileges.filter((privilege) => {
-        // Check if any of the roles associated with the user have the privilege
-        return privilege.roles.some((role) =>
+    // Filter permissions based on the roles assigned to the user
+    const rolePermissions = props.permissions.filter((permission) => {
+        // Check if any of the roles associated with the user have the permission
+        return permission.roles.some((role) =>
             userRoles.some((userRole) => userRole.role_id === role.id)
         );
     });
 
-    // Now, userprivilege will contain all privileges for the selected user
-    userprivilege.value = userData.privileges.map((p) => p.id);
+    // Now, userPermission will contain all permissions for the selected user
+    userPermission.value = userData.permissions.map((p) => p.id);
 
-    // We can use the full privilege data to display the privileges in the template
-    privileges.value = roleprivileges;
+    // We can use the full permission data to display the permissions in the template
+    permissions.value = rolePermissions;
 
-    privilegeAssignmentDialog.value = true;
+    permissionAssignmentDialog.value = true;
 };
 
 const deleteUser = async () => {

@@ -99,6 +99,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Permission::class, 'user_permissions');
     }
 
+    public function privileges()
+    {
+        return $this->belongsToMany(Privilege::class, 'user_privileges');
+    }
+
 
 
 
@@ -119,22 +124,41 @@ class User extends Authenticatable
 //     return in_array($permissionName, $allPermissions);
 // }
 
-public function hasPermissionTo($permission)
+public function hasPermissionTo($previlege)
 {
 
-    if ($this->permissions->contains('name', $permission)) {
+    if ($this->privileges->contains('name', $previlege)) {
         return true;
     }
 
 
     // foreach ($this->roles as $role) {
-    //     if ($role->permissions->contains('name', $permission)) {
+    //     if ($role->privileges->contains('name', $previlege)) {
     //         return true;
     //     }
     // }
 
     return false;
 }
+
+
+// public function hasPermissionTo($permission)
+// {
+
+//     if ($this->permissions->contains('name', $permission)) {
+//         return true;
+//     }
+
+
+//     foreach ($this->roles as $role) {
+//         if ($role->permissions->contains('name', $permission)) {
+//             return true;
+//         }
+//     }
+
+//     return false;
+// }
+
 
 
 public function isAdministrator(): bool

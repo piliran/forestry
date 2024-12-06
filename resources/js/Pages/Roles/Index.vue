@@ -183,22 +183,23 @@
                     </div>
 
                     <!-- Permissions -->
-                    <!-- <div>
-                        <label for="permissions" class="block font-bold mb-3">
-                            Permissions
+                    <div>
+                        <label for="privileges" class="block font-bold mb-3">
+                            privileges
                         </label>
                         <MultiSelect
-                            id="permissions"
-                            v-model="role.permissions"
-                            :options="props.permissions"
-                            optionLabel="name"
+                            id="privileges"
+                            v-model="role.privileges"
+                            :options="props.privileges"
+                            optionLabel="privilege"
                             optionValue="id"
-                            placeholder="Select Permissions"
+                            placeholder="Select Privileges"
                             fluid
+                            filter
                         />
-                    </div> -->
+                    </div>
 
-                    <div class="col-12">
+                    <!-- <div class="col-12">
                         <label for="permissions" class="block font-bold mb-2">
                             Select Permissions
                         </label>
@@ -218,7 +219,29 @@
                                 }}</label>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
+
+                    <!-- <div class="col-12">
+                        <label for="privileges" class="block font-bold mb-2">
+                            Select Privileges
+                        </label>
+                        <div class="card flex flex-wrap justify-start gap-4">
+                            <div
+                                v-for="(privilege, index) in props.privileges"
+                                :key="privilege.id"
+                                class="flex items-center gap-2"
+                            >
+                                <Checkbox
+                                    v-model="role.privileges"
+                                    :inputId="'permission' + index"
+                                    :value="privilege.id"
+                                />
+                                <label :for="'privilege' + index">{{
+                                    privilege.privilege
+                                }}</label>
+                            </div>
+                        </div>
+                    </div> -->
                 </div>
                 <template #footer>
                     <Button
@@ -369,7 +392,7 @@ const filters = ref({
 role.value = {
     name: "",
     role_category_id: null,
-    permissions: [],
+    privileges: [],
 };
 
 const home = ref({
@@ -384,8 +407,9 @@ const props = defineProps({
     roles: Array,
     roleCategories: Array,
     permissions: Array,
+    privileges: Array,
 });
-
+// console.log(props.privileges);
 const roles = ref(props.roles);
 const roleCategories = ref(props.roleCategories);
 
@@ -410,7 +434,8 @@ const saveRole = async () => {
             const rolePayload = {
                 name: role.value.name,
                 role_category_id: role.value.role_category_id,
-                permissions: role.value.permissions, // Send permissions to the backend
+                privileges: role.value.privileges,
+                // permissions: role.value.permissions,
             };
 
             if (role.value.id) {
@@ -476,7 +501,8 @@ const editRole = (roleData) => {
     editDialog.value = true;
     role.value = { ...roleData };
     // Set the selected permissions for this role
-    role.value.permissions = roleData.permissions.map((p) => p.id); // Assuming permissions are objects with 'id' and 'name'
+    role.value.privileges = roleData.privileges.map((p) => p.id);
+    // role.value.permissions = roleData.permissions.map((p) => p.id);
     roleDialog.value = true;
 };
 

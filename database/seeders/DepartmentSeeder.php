@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use DB;
+
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
 class DepartmentSeeder extends Seeder
