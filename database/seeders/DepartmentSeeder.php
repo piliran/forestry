@@ -2,39 +2,60 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class DepartmentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
-        //
-        $userIds = User::pluck('id')->toArray();
+        $faker = Faker::create();
 
-        if(empty($userIds))
-        {
-            throw new \Exception('No users found. Please create some users first.');
-        }
-
+        // Insert static data (optional)
         DB::table('departments')->insert([
-            'name' => 'Department Of Forestry',
-            'code' => 'dof',
-            'location' => 'Building A',
-            'contact_person' => $userIds[array_rand($userIds)],
-            'phone' => '265999888777',
-            'email' => 'dof@example.com',
-            'website' => 'https://example.com/dof',
-            'created_at' => now(),
-            'updated_at' => now(),
+            [
+                'name' => 'Forestry',
+                'code' => 'HR001',
+                'location' => 'Main Building',
+                'contact_person' => 'test contact',
+                'phone' => '123-456-7890',
+                'email' => 'hr@example.com',
+                'website' => 'https://hr.example.com',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Finance',
+                'code' => 'FIN001',
+                'location' => 'Building B',
+                'contact_person' => 'sample contact',
+                'phone' => '234-567-8901',
+                'email' => 'finance@example.com',
+                'website' => 'https://finance.example.com',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
+
+        // Insert random data using Faker
+        for ($i = 0; $i < 10; $i++) {
+            DB::table('departments')->insert([
+                'name' => $faker->company,
+                'code' => $faker->unique()->bothify('???###'),
+                'location' => $faker->address,
+                'contact_person' => $faker->name,
+                'phone' => $faker->phoneNumber,
+                'email' => $faker->email,
+                'website' => $faker->url,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     }
 }
