@@ -47,14 +47,14 @@ class OperationController extends Controller
             'operation_type_id' => 'required|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',    
             'date_of_operation' => 'nullable|string',
-            'funded_by' => 'required|exists:funders,id',
+            'created_by' => 'requred|exists:users,id'
         ]);
 
         $operation = Operation::create($validated);
         // $operation->load('Type');
         // $operation->load('Station');
         // $operation->load('Route');
-        $operation->load(['station','route',]);
+        $operation->load(['station',]);
 
         return response()->json($operation, 201);
     }
@@ -69,17 +69,11 @@ class OperationController extends Controller
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',    
-            'type_of_patrol' => 'nullable|string',
             'date_of_operation' => 'nullable|string',
-            'route_id' => 'required|exists:routes,id',
-            'date_time_of_deployment' => 'nullable|string',
-            'date_time_of_withdrawal' => 'nullable|string',
-            'team_leader' => 'nullable|string',
-            'funded_by' => 'nullable|string',
         ]);
 
         $operation->update($validated);
-        $operation->load(['type', 'station','route','funder',]);
+        $operation->load(['type', 'station']);
         // $operation->load('Station');
         // $operation->load('Route');
 

@@ -15,8 +15,8 @@ class Operation extends Model
         'station_id',
         'description',
         'date_of_operation',
-        'funded_by',
         'operation_type_id',
+        'created_by'
     ];
 
     /**
@@ -40,9 +40,10 @@ class Operation extends Model
         return $this->belongsTo(OperationType::class);
     }
 
-    public function funder()
+
+    public function creator()
     {
-        return $this->belongsTo(Funder::class, 'funded_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
 }
