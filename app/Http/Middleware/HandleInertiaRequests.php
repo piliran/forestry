@@ -36,8 +36,8 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'can' => auth()->check() ? $this->getUserPermissions() : [],
-            'roles' => auth()->check() ? $this->getUserRoles() : [], 
+            'can' => auth()->check() ? $this->getUserPrivileges() : [],
+            'roles' => auth()->check() ? $this->getUserRoles() : [],
         ];
     }
 
@@ -46,15 +46,26 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array
      */
-    protected function getUserPermissions(): array
+    // protected function getUserPermissions(): array
+    // {
+    //     return auth()->user()
+    //         ->loadMissing('roles.permissions')
+    //         ->roles
+    //         ->flatMap(fn ($role) => $role->permissions)
+    //         ->mapWithKeys(fn ($permission) => [$permission->name => true])
+    //         ->toArray();
+    // }
+
+    protected function getUserPrivileges(): array
     {
         return auth()->user()
-            ->loadMissing('roles.permissions') // Eager load roles and permissions
+            ->loadMissing('roles.privileges')
             ->roles
-            ->flatMap(fn ($role) => $role->permissions) // Combine all permissions
-            ->mapWithKeys(fn ($permission) => [$permission->name => true]) // Flatten to key-value pairs
+            ->flatMap(fn ($role) => $role->privileges)
+            ->mapWithKeys(fn ($privilege) => [$privilege->privilege => true])
             ->toArray();
     }
+
 
     /**
      * Get the user's roles.
