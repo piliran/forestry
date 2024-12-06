@@ -179,15 +179,37 @@ const items = ref([
         route: "/staff",
         allowedRoles: ["Admin", "User"],
     },
-    {
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
 
+    {
         label: "Permissions",
         icon: "permissions",
-        route: "/permissions",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
         allowedRoles: ["Admin", "User"],
+
+        items: [
+            {
+                label: "Table Permissions",
+                icon: "dot",
+
+                route: "/table-permissions",
+            },
+            {
+                label: "Privileges",
+                icon: "dot",
+                route: "/privilege",
+            },
+        ],
     },
+    // {
+    //     class: "parent-link-with-no-sublinks",
+    //     forwardIcon: false,
+
+    //     label: "Permissions",
+    //     icon: "permissions",
+    //     route: "/permissions",
+    //     allowedRoles: ["Admin", "User"],
+    // },
 
     {
         label: "Roles",

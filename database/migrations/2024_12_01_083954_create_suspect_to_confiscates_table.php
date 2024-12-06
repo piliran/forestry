@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('confiscate_id');
             $table->foreign('confiscate_id')->references('id')->on('confiscates')->onDelete('cascade')->onUpdate('cascade');
             $table->string('quantity');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('operation_id')->references('id')->on('operations')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('funder_id');
             $table->foreign('funder_id')->references('id')->on('funders')->onDelete('cascade')->onUpdate('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
