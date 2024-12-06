@@ -17,7 +17,7 @@ class DepartmentSeeder extends Seeder
         //
         $userIds = User::pluck('id')->toArray();
 
-        if(empty($users))
+        if(empty($userIds))
         {
             throw new \Exception('No users found. Please create some users first.');
         }

@@ -53,7 +53,7 @@ class DepartmentController extends Controller
             'location' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'website' => 'nullable|string|max:255',
-            'contact_person' => 'nullable|exists:users,id',,
+            'contact_person' => 'exists:users,id',
         ]);
 
         $department->update($validated);
