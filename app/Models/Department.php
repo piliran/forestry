@@ -18,7 +18,7 @@ class Department extends Model
         'email',
         'website',
         'code',
-        'chairperson',
+        'contact_person',
     
     ];
 

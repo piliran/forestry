@@ -35,7 +35,7 @@ class StationController extends Controller
             'location' => 'required|string|max:255',
             'district_id' => 'required|exists:districts,id',
             'email' => 'required|email|max:255',
-            'chairperson' => 'required|string|max:255',
+            'contact_person' => 'required|string|max:255',
         ]);
 
         $station = Station::create($request->all());
@@ -54,7 +54,7 @@ class StationController extends Controller
             'location' => 'required|string|max:255',
             'district_id' => 'required|exists:districts,id',
             'email' => 'required|email|max:255',
-            'chairperson' => 'required|string|max:255',
+            'contact_person' => 'required|string|max:255',
         ]);
 
         $station->update($validated);

@@ -128,7 +128,7 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="chairperson"
+                        field="contact_person"
                         header="Chairperson"
                         sortable
                         style="min-width: 10rem"
@@ -281,19 +281,19 @@
                         </small>
                     </div>
                     <div>
-                        <label for="chairperson" class="block font-bold mb-3">
+                        <label for="contact_person" class="block font-bold mb-3">
                             Chairperson
                         </label>
                         <InputText
-                            id="chairperson"
-                            v-model.trim="area.chairperson"
+                            id="contact_person"
+                            v-model.trim="area.contact_person"
                             required="true"
                             autofocus
-                            :invalid="submitted && !area.chairperson"
+                            :invalid="submitted && !area.contact_person"
                             fluid
                         />
                         <small
-                            v-if="submitted && !area.chairperson"
+                            v-if="submitted && !area.contact_person"
                             class="text-red-500"
                         >
                             Chairperson is required.

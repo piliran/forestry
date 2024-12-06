@@ -18,7 +18,7 @@ class District extends Model
         'location',
         'phone',
         'email',
-        'chairperson',
+        'contact_person',
         'country_id',
         'zone_id',
     ];

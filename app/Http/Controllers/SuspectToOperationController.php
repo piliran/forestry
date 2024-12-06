@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SuspectToOperation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SuspectToOperationController extends Controller
 {
@@ -13,6 +14,10 @@ class SuspectToOperationController extends Controller
     public function index()
     {
         //
+        $suspectToOperations = SuspectToOperation::all();
+        return Inertia::render('SuspectToOperation/Index', [
+            'suspectToOperations' => $suspectToOperations,
+        ]);
     }
 
     /**
@@ -29,6 +34,14 @@ class SuspectToOperationController extends Controller
     public function store(Request $request)
     {
         //
+       $request->validate([
+            'suspect_id' => 'required|exists:suspects,id',
+            'operation_id' => 'required|exists:operations,id'
+        ]);
+
+        $suspectToOperqation = SuspectToOperation::create($request->all());
+
+        return response()->json($suspectToOperqation);
     }
 
     /**
@@ -53,6 +66,13 @@ class SuspectToOperationController extends Controller
     public function update(Request $request, SuspectToOperation $suspectToOperation)
     {
         //
+        $validated = $request->validate([
+            'suspect_id' => 'required|exists:suspects,id',
+            'operation_id' => 'required|exists:operations,id',
+        ]);
+
+        $suspectToOperation->update($validated);
+        return response()->json($validated);
     }
 
     /**
@@ -61,5 +81,39 @@ class SuspectToOperationController extends Controller
     public function destroy(SuspectToOperation $suspectToOperation)
     {
         //
+        $suspectToOperation->delete();
+
+        return response()->json(['message'=>'Record deleted Successfully']);
+    }
+
+    public function batchDelete(Request $request)
+    {
+        $validated = $request->validate(['ids' => 'required|array']);
+        SuspectToOperation::whereIn('id', $validated['ids'])->delete(); // Soft delete
+
+        return response()->json(['message' => 'SuspectToOperation soft-deleted'], 200);
+    }
+
+    public function restore($id)
+    {
+        $suspectToOperation = SuspectToOperation::withTrashed()->findOrFail($id);
+        $suspectToOperation->restore(); // Restore soft-deleted suspectToOperation$suspectToOperation
+
+        return response()->json(['message' => 'SuspectToOperation restored successfully.'], 200);
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        SuspectToOperation::withTrashed()->whereIn('id', $request->ids)->restore(); // Restore soft-deleted suspectToOperation
+
+        return response()->json(['message' => 'Selected suspectToOperation restored successfully.'], 200);
+    }
+
+    public function trashed()
+    {
+        $trashedSuspectToConfiscate = SuspectToOperation::onlyTrashed()->get(); // Fetch all soft-deleted suspectToOperation
+
+        return response()->json($trashedSuspectToConfiscate, 200);
     }
 }

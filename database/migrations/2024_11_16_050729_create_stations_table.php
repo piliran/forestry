@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('district_id');
             $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
             $table->string('email');
-            $table->string('chairperson');
+            $table->string('contact_person');
             $table->softDeletes(); 
             $table->timestamps();
         });

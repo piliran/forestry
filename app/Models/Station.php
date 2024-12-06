@@ -17,7 +17,7 @@ class Station extends Model
         'name',
         'location',
         'email',
-        'chairperson',
+        'contact_person',
         'district_id',
     ];
 

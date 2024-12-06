@@ -33,7 +33,7 @@ class DepartmentController extends Controller
             'location' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'website' => 'required|string|max:255',
-            'chairperson' => 'required|string|max:255',
+            'contact_person' => 'required|string|max:255',
         ]);
 
         $department = Department::create($validated);
@@ -53,7 +53,7 @@ class DepartmentController extends Controller
             'location' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'website' => 'nullable|string|max:255',
-            'chairperson' => 'nullable|string|max:255',
+            'contact_person' => 'nullable|string|max:255',
         ]);
 
         $department->update($validated);

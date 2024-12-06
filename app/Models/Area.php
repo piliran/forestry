@@ -20,7 +20,7 @@ class Area extends Model
         'coordinates',
         'latitude',
         'longitude',
-        'chairperson',
+        'contact_person',
     ];
 
     public function station()
