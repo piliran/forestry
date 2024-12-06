@@ -183,7 +183,7 @@
                     <!-- Station Selection (conditionally rendered) -->
                     <div
                         v-if="
-                            selectedLevel && selectedLevel.name === 'District'
+                            selectedLevel && selectedLevel.name === 'district'
                         "
                     >
                         <label for="station" class="block font-bold mb-3"
@@ -525,6 +525,7 @@ const deleteStaff = async () => {
         if (err.response && err.response.status === 422) {
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
+                F;
                 messages.forEach((message) => {
                     toast.add({
                         severity: "error",
