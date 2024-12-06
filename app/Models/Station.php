@@ -39,4 +39,9 @@ class Station extends Model
     {
         return $this->hasMany(Operation::class, 'station_id');
     }
+
+    public function contactPerson()
+    {
+        return $this->belongsTo(User::class, 'contact_person');
+    }
 }

@@ -42,4 +42,9 @@ class District extends Model
     {
         return $this->hasMany(Suspect::class);
     }
+
+    public function contactPerson()
+    {
+        return $this->belongsTo(User::class, 'contact_person');
+    }
 }

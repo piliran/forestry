@@ -46,7 +46,7 @@ class AreaController extends Controller
             'location' => 'nullable|string|max:255',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180', 
-            'contact_person' => 'required|string|max:255',
+            'contact_person' => 'required|exists:users,id',
         ]);
 
         $area = Area::create($request->all());
@@ -87,7 +87,7 @@ class AreaController extends Controller
             'location' => 'required|string|max:255',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-            'contact_person' => 'required|string|max:255',
+            'contact_person' => 'required|exists:users,id',
         ]);
 
         $area->update($request->all());

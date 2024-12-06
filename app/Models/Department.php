@@ -22,5 +22,10 @@ class Department extends Model
     
     ];
 
+    public function contactPerson()
+    {
+        return $this->belongsTo(User::class, 'contact_person');
+    }
+
 
 }
