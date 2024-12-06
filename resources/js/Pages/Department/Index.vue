@@ -311,6 +311,7 @@
                             Department is required.
                         </small>
                     </div>
+                    
                 </div>
                 <template #footer>
                     <Button
@@ -462,6 +463,7 @@ const filters = ref({
 
 const props = defineProps({
     departments: Array,
+    users: Array,
 });
 
 const home = ref({
@@ -473,6 +475,8 @@ const home = ref({
 const breadCumbItems = ref([{ label: "Department" }]);
 
 const departments = ref(props.departments);
+const users = ref(props.users);
+
 
 // CRUD Methods
 const openNew = () => {

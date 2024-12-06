@@ -378,7 +378,7 @@ const saveDistrict = async () => {
                     `/districts/${district.value.id}`,
                     district.value
                 );
-                updateDistrict(response.data);
+                updateDistr(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
@@ -578,6 +578,7 @@ const districtsArray = ref([
     { name: "Salima" },
     { name: "Thyolo" },
     { name: "Zomba" },
+    { name: "Nsanje" },
 ]);
 </script>
 <style scoped>
