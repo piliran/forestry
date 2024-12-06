@@ -129,7 +129,7 @@
                     ></Column>
                     <Column
                         field="contact_person"
-                        header="Chairperson"
+                        header="Contact Person"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -282,7 +282,7 @@
                     </div>
                     <div>
                         <label for="contact_person" class="block font-bold mb-3">
-                            Chairperson
+                            Contact Person
                         </label>
                         <InputText
                             id="contact_person"
@@ -296,7 +296,7 @@
                             v-if="submitted && !area.contact_person"
                             class="text-red-500"
                         >
-                            Chairperson is required.
+                            Contact Person is required.
                         </small>
                     </div>
                 </div>

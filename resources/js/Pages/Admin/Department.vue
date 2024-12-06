@@ -137,7 +137,7 @@
                     ></Column>
                     <Column
                         field="contact_person"
-                        header="Chairperson"
+                        header="Contact Person"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -294,7 +294,7 @@
 
                     <div>
                         <label for="contact_person" class="block font-bold mb-3">
-                            Chairperson
+                            Contact Person
                         </label>
                         <InputText
                             id="contact_person"
