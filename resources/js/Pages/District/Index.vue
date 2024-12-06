@@ -151,38 +151,16 @@
                         <label for="name" class="block font-bold mb-3">
                             District Name
                         </label>
-                        <InputText
-                            id="name"
-                            v-model.trim="district.name"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !district.name"
-                            fluid
-                            class="mb-3"
-                        />
+
                         <Select
-                            v-model="selectedDistrict"
+                            id="name"
+                            v-model="district.name"
                             :options="districtsArray"
                             filter
                             optionLabel="name"
                             placeholder="Select a District"
                             class="w-full"
                         >
-                            <template #value="slotProps">
-                                <div
-                                    v-if="slotProps.value"
-                                    class="flex items-center"
-                                >
-                                    
-                                    <div>{{ slotProps.value.name }}</div>
-                                </div>
-                                <span v-else>{{ slotProps.placeholder }}</span>
-                            </template>
-                            <template #option="slotProps">
-                                <div class="flex items-center">                                    
-                                    <div>{{ slotProps.option.name }}</div>
-                                </div>
-                            </template>
                         </Select>
                         <small
                             v-if="submitted && !district.name"
@@ -204,7 +182,7 @@
                             optionValue="id"
                             placeholder="Select zone"
                             fluid
-							filter
+                            filter
                         />
                         <small
                             v-if="submitted && !district.zone_id"
@@ -392,7 +370,7 @@ const hideDialog = () => {
 
 const saveDistrict = async () => {
     submitted.value = true;
-    if (district?.value?.name?.trim()) {
+    if (district?.value?.name?.name?.trim()) {
         loading.value = true;
         try {
             if (district.value.id) {
@@ -408,7 +386,10 @@ const saveDistrict = async () => {
                     life: 3000,
                 });
             } else {
-                const response = await axios.post("/districts", district.value);
+                const response = await axios.post("/districts", {
+                    name: district.value.name.name,
+                    zone_id: district.value.zone_id,
+                });
                 districts.value.push(response.data);
                 toast.add({
                     severity: "success",
@@ -571,9 +552,6 @@ const exportCSV = () => {
     dt.value?.exportCSV();
 };
 
-
-//District Array
-const selectedDistrict = ref(""); // Stores the selected district
 const districtsArray = ref([
     { name: "Balaka" },
     { name: "Blantyre" },
@@ -599,13 +577,8 @@ const districtsArray = ref([
     { name: "Rumphi" },
     { name: "Salima" },
     { name: "Thyolo" },
-    { name: "Zomba" }
+    { name: "Zomba" },
 ]);
-
-
-
-
-
 </script>
 <style scoped>
 ::v-deep(.p-breadcrumb) {
