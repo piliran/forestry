@@ -98,7 +98,7 @@ class UserController extends Controller
             'national_id' => 'nullable|string|max:255',
         ]);
 
-        if ($request->user()->cannot('create_user', User::class)) {
+        if ($request->user()->cannot('create', auth()->user())) {
             abort(403);
         }
 
@@ -134,7 +134,7 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:15',
         ]);
 
-        if ($request->user()->cannot('edit_user', User::class)) {
+        if ($request->user()->cannot('update', auth()->user())) {
             abort(403);
         }
 
@@ -159,7 +159,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if (auth()->user()->cannot('delete_user', User::class)) {
+        if (auth()->user()->cannot('delete', auth()->user())) {
             abort(403, 'Unauthorized action.');
         }
 
