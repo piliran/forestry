@@ -107,14 +107,20 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="type"
-                        header="Type"
+                        field="date_of_operation"
+                        header="Operation Date"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="time"
-                        header="Time"
+                        field="deployment_date"
+                        header="Deployment Date"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="withdraw_time"
+                        header="Withdraw Time"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -166,6 +172,7 @@
                             autofocus
                             :invalid="submitted && !schedule.name"
                             fluid
+                            placeholder="Enter Schedule Name"
                         />
                         <small
                             v-if="submitted && !schedule.name"
@@ -175,44 +182,93 @@
                         </small>
                     </div>
                     <div>
-                        <label for="type" class="block font-bold mb-3">
-                            Type
+                        <label for="operation" class="block font-bold mb-3">
+                            Operation
                         </label>
-                        <InputText
-                            id="type"
-                            v-model.trim="schedule.type"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !schedule.type"
+                        <Select
+                            id="operation"
+                            v-model="schedule.contact_person"
+                            :options="operations"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Operation"
                             fluid
+                            filter
                         />
                         <small
-                            v-if="submitted && !schedule.type"
+                            v-if="submitted && !schedule.operation"
                             class="text-red-500"
                         >
-                            Type is required.
+                            Schedule Name is required.
                         </small>
                     </div>
                     <div>
-                        <label for="time" class="block font-bold mb-3">
-                            Time
-                        </label>
-                        <InputText
-                            id="time"
-                            v-model.trim="schedule.time"
+                        <label for="date_of_operation" class="block font-bold mb-3"
+                            >Date of Operation</label
+                        >
+                        <DatePicker 
+                            id="date_of_operation"
+                            v-model.trim="schedule.date_of_operation"
+                            dateFormat="dd/mm/yy"
                             required="true"
                             autofocus
-                            :invalid="submitted && !schedule.time"
+                            :invalid="submitted && !schedule.date_of_operation"
                             fluid
+                            placeholder="Enter Time of Deployment"
+                            
                         />
                         <small
-                            v-if="submitted && !schedule.time"
+                            v-if="submitted && !schedule.date_of_operation"
                             class="text-red-500"
                         >
-                            Time is required.
+                            Date of Operation is required.
                         </small>
                     </div>
-                    
+                    <div>
+                        <label for="date_time_of_deployment" class="block font-bold mb-3"
+                            >Deployment Time</label
+                        >
+                        <DatePicker 
+                            id="date_time_of_deployment"
+                            v-model.trim="schedule.date_time_of_deployment"
+                            dateFormat="dd/mm/yy"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !schedule.date_time_of_deployment"
+                            fluid
+                            placeholder="Enter Time of Deployment"
+                            showTime hourFormat="24" 
+                        />
+                        <small
+                            v-if="submitted && !schedule.date_time_of_deployment"
+                            class="text-red-500"
+                        >
+                            Deployment Date is required.
+                        </small>
+                    </div>
+                    <div>
+                        <label for="date_time_of_withdrawal" class="block font-bold mb-3"
+                            >Withdraw Time</label
+                        >
+                        <DatePicker 
+                            id="date_time_of_withdrawal"
+                            v-model.trim="schedule.date_time_of_withdrawal"
+                            dateFormat="dd/mm/yy"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !schedule.date_time_of_withdrawal"
+                            fluid
+                            placeholder="Enter Time of Withdraw"
+                            showTime hourFormat="24" 
+                        
+                        />
+                        <small
+                            v-if="submitted && !schedule.date_time_of_withdrawal"
+                            class="text-red-500"
+                        >
+                            Withdraw Time is required.
+                        </small>
+                    </div>
 
                 </div>
                 <template #footer>
@@ -338,8 +394,11 @@ import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
+import DatePicker from 'primevue/datepicker';
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
+
+
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
@@ -374,6 +433,10 @@ const home = ref({
 });
 
 const breadCumbItems = ref([{ label: "Schedule" }]);
+
+const datetime12h = ref();
+const datetime24h = ref();
+const time = ref();
 
 const schedules = ref(props.schedules);
 
