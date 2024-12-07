@@ -49,6 +49,8 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', new Role());
+
         $request->validate([
             'name' => 'required|string|max:255',
             'role_category_id' => 'required|exists:role_categories,id',
@@ -96,6 +98,8 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
+        Gate::authorize('update', $role);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'role_category_id' => 'required|exists:role_categories,id',
@@ -163,6 +167,8 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
+        Gate::authorize('delete', $role);
+
         $role->delete();  // Soft delete
 
         return response()->json(['message' => 'Role soft-deleted'], 200);

@@ -39,6 +39,8 @@ class ZoneController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Zone());
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:255',
@@ -77,6 +79,8 @@ class ZoneController extends Controller
      */
     public function update(Request $request, Zone $zone)
     {
+        Gate::authorize('update', $zone);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:255',
@@ -99,6 +103,8 @@ class ZoneController extends Controller
      */
     public function destroy(Zone $zone)
     {
+        Gate::authorize('delete', $zone);
+
         // Perform a soft delete by setting 'deleted_at'
         $zone->delete();
 

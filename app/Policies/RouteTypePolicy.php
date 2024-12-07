@@ -4,17 +4,18 @@ namespace App\Policies;
 
 use App\Models\RouteType;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\PrivilegeChecker;
 
 class RouteTypePolicy
 {
+    use PrivilegeChecker;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        // Check if the user has permission to view any RouteType
-        return $user->hasPermissionTo('view_any_route_type');
+        return $this->hasPrivilege($user->id, 'view any', new RouteType());
     }
 
     /**
@@ -22,8 +23,7 @@ class RouteTypePolicy
      */
     public function view(User $user, RouteType $routeType): bool
     {
-        // Check if the user has permission to view a specific RouteType
-        return $user->hasPermissionTo('view_route_type');
+        return $this->hasPrivilege($user->id, 'view', $routeType);
     }
 
     /**
@@ -31,8 +31,7 @@ class RouteTypePolicy
      */
     public function create(User $user): bool
     {
-        // Check if the user has permission to create a RouteType
-        return $user->hasPermissionTo('create_route_type');
+        return $this->hasPrivilege($user->id, 'create', new RouteType());
     }
 
     /**
@@ -40,8 +39,7 @@ class RouteTypePolicy
      */
     public function update(User $user, RouteType $routeType): bool
     {
-        // Check if the user has permission to update a RouteType, or if they are the creator of the RouteType
-        return $user->hasPermissionTo('update_route_type');
+        return $this->hasPrivilege($user->id, 'update', $routeType);
     }
 
     /**
@@ -49,8 +47,7 @@ class RouteTypePolicy
      */
     public function delete(User $user, RouteType $routeType): bool
     {
-        // Check if the user has permission to delete the RouteType, or if they are the creator of the RouteType
-        return $user->hasPermissionTo('delete_route_type');
+        return $this->hasPrivilege($user->id, 'delete', $routeType);
     }
 
     /**
@@ -58,8 +55,7 @@ class RouteTypePolicy
      */
     public function restore(User $user, RouteType $routeType): bool
     {
-        // Check if the user has permission to restore the RouteType
-        return $user->hasPermissionTo('restore_route_type');
+        return $this->hasPrivilege($user->id, 'restore', $routeType);
     }
 
     /**
@@ -67,22 +63,27 @@ class RouteTypePolicy
      */
     public function forceDelete(User $user, RouteType $routeType): bool
     {
-        // Check if the user has permission to permanently delete the RouteType
-        return $user->hasPermissionTo('force_delete_route_type');
+        return $this->hasPrivilege($user->id, 'force delete', $routeType);
     }
 
+    /**
+     * Determine whether the user can delete multiple models.
+     */
+    public function batchDelete(User $user): bool
+    {
+        return $this->hasPrivilege($user->id, 'batch delete', new RouteType());
+    }
+
+    /**
+     * This method is called before any other policy method.
+     * It allows administrators to bypass all checks.
+     */
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {
             return true;
         }
-    
-        return null;
-    }
 
-    public function batchDelete(User $user): bool
-    {
-        return $user->hasPermissionTo('delete_route_types');
-        
+        return null;
     }
 }

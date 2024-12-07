@@ -44,17 +44,17 @@ class StationSeeder extends Seeder
         ]);
 
         // Insert random data using Faker for 10 more stations
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('stations')->insert([
-                'name' => 'Station ' . ($i + 3), // "Station 3", "Station 4", etc.
-                'location' => $faker->address, // Random location
-                'district_id' => District::inRandomOrder()->first()->id, // Random district reference
-                'email' => $faker->unique()->safeEmail, // Random unique email
-                'contact_person' => User::inRandomOrder()->first()->id, // Random user reference
-                'created_at' => now(),
-                'updated_at' => now(),
-                'deleted_at' => null,
-            ]);
-        }
+        // for ($i = 0; $i < 10; $i++) {
+        //     DB::table('stations')->insert([
+        //         'name' => 'Station ' . ($i + 3), // "Station 3", "Station 4", etc.
+        //         'location' => $faker->address, // Random location
+        //         'district_id' => District::inRandomOrder()->first()->id, // Random district reference
+        //         'email' => $faker->unique()->safeEmail, // Random unique email
+        //         'contact_person' => User::inRandomOrder()->first()->id, // Random user reference
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //         'deleted_at' => null,
+        //     ]);
+        // }
     }
 }

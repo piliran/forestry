@@ -28,6 +28,8 @@ class OperationTypeController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new OperationType());
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -53,6 +55,8 @@ class OperationTypeController extends Controller
      */
     public function update(Request $request, OperationType $operationType)
     {
+        Gate::authorize('update', $operationType);
+
         $operationType = OperationType::find($request->id);
         $request->validate([
             'name' => 'required|string|max:255',
@@ -69,6 +73,8 @@ class OperationTypeController extends Controller
      */
     public function destroy(OperationType $operationType)
     {
+        Gate::authorize('delete', $operationType);
+
         $operationType->delete(); // Soft delete
 
         return response()->json('Operation Type soft-deleted successfully.');

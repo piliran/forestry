@@ -15,6 +15,7 @@ use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 
 class SuspectController extends Controller
 {
@@ -55,10 +56,8 @@ class SuspectController extends Controller
      */
     public function store(Request $request)
     {
-        // Check permissions
-        // if (auth()->user()->cannot('create', Suspect::class)) {
-        //     abort(403, 'Unauthorized action.');
-        // }
+        Gate::authorize('create', new Suspect());
+
 
 
         $validated = $request->validate([
@@ -169,6 +168,7 @@ class SuspectController extends Controller
 
 
         $suspect = Suspect::findOrFail($request->id);
+        Gate::authorize('update', $suspect);
 
 
         if (auth()->user()->cannot('update',  $suspect)) {
@@ -213,6 +213,8 @@ class SuspectController extends Controller
      */
     public function destroy(Suspect $suspect)
     {
+        Gate::authorize('delete', $suspect);
+
 
         if (auth()->user()->cannot('delete', $suspect)) {
             abort(403, 'Unauthorized action.');
@@ -247,6 +249,8 @@ class SuspectController extends Controller
 
 
         $suspect = Suspect::findOrFail($request->id);
+        Gate::authorize('update', $suspect);
+
 
         if (auth()->user()->cannot('update', $suspect)) {
             abort(403, 'Unauthorized action.');

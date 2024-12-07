@@ -6,6 +6,7 @@ use App\Models\Funder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class FunderController extends Controller
 {
@@ -34,6 +35,8 @@ class FunderController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Funder());
+
         DB::beginTransaction();
 
         try {
@@ -60,6 +63,8 @@ class FunderController extends Controller
      */
     public function update(Request $request, Funder $funder)
     {
+        Gate::authorize('update', $funder);
+
         DB::beginTransaction();
 
         try {
@@ -86,6 +91,8 @@ class FunderController extends Controller
      */
     public function destroy(Funder $funder)
     {
+        Gate::authorize('delete', $funder);
+
         DB::beginTransaction();
 
         try {

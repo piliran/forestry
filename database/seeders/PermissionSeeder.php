@@ -31,6 +31,10 @@ class PermissionSeeder extends Seeder
                 'name' => 'delete',
                 'description' => 'Permission to delete a entity',
             ],
+            // [
+            //     'name' => 'batch delete',
+            //     'description' => 'Permission to delete a entity',
+            // ],
             [
                 'name' => 'view',
                 'description' => 'Permission to view entity details',

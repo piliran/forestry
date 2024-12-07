@@ -11,7 +11,8 @@ use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\RoleToPermission;
-
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -72,12 +73,12 @@ class UserController extends Controller
             'privileges' => $privileges,
             'userRoles' => $userRoles,
             'districts' => $districts,
-            'isAdmin' => auth()->user()->isAdministrator(),
-            'can' => [
-                'createUser' => auth()->user()->hasPermissionTo('create_user'),
-                'editUser' => auth()->user()->hasPermissionTo('edit_user'),
-                'deleteUser' => auth()->user()->hasPermissionTo('delete_user'),
-            ],
+            // 'isAdmin' => auth()->user()->isAdministrator(),
+            // 'can' => [
+            //     'createUser' => auth()->user()->hasPermissionTo('create_user'),
+            //     'editUser' => auth()->user()->hasPermissionTo('edit_user'),
+            //     'deleteUser' => auth()->user()->hasPermissionTo('delete_user'),
+            // ],
         ]);
     }
 
@@ -87,6 +88,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new User);
+
         $request->validate([
             'title' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',
@@ -98,9 +101,7 @@ class UserController extends Controller
             'national_id' => 'nullable|string|max:255',
         ]);
 
-        if ($request->user()->cannot('create', auth()->user())) {
-            abort(403);
-        }
+
 
         $user = User::create([
             'title' => $request->title,
@@ -123,6 +124,8 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        Gate::authorize('update',  $user);
+
         $request->validate([
             'title' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',
@@ -134,9 +137,7 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:15',
         ]);
 
-        if ($request->user()->cannot('update', auth()->user())) {
-            abort(403);
-        }
+
 
         $user->update([
             'title' => $request->title,
@@ -159,9 +160,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if (auth()->user()->cannot('delete', auth()->user())) {
-            abort(403, 'Unauthorized action.');
-        }
+
+        Gate::authorize('delete',  $user);
+
 
         $user->delete(); // Soft delete
         return response()->json('User deleted successfully.');

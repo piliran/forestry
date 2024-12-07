@@ -17,7 +17,7 @@ class RoleCategoryController extends Controller
     {
         // Fetch non-deleted categories
         $roleCategories = RoleCategory::whereNull('deleted_at')->get();
-        
+
         return Inertia::render('RoleCategories/Index', [
             'roleCategories' => $roleCategories
         ]);
@@ -28,12 +28,14 @@ class RoleCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new RoleCategory());
+
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
-    
+
         $category = RoleCategory::create($request->all());
-    
+
         return response()->json($category, 201);  // Return the created category
     }
 
@@ -52,6 +54,8 @@ class RoleCategoryController extends Controller
      */
     public function update(Request $request, RoleCategory $roleCategory)
     {
+        Gate::authorize('update', $roleCategory);
+
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
@@ -66,6 +70,8 @@ class RoleCategoryController extends Controller
      */
     public function destroy(RoleCategory $roleCategory)
     {
+        Gate::authorize('delete', $roleCategory);
+
         $roleCategory->delete();  // Soft delete
 
         return response()->json('Role Category soft-deleted successfully.');

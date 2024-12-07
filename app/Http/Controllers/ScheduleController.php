@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class ScheduleController extends Controller
 {
@@ -26,6 +27,8 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Schedule());
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
@@ -41,6 +44,8 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, Schedule $schedule)
     {
+        Gate::authorize('update', $schedule);
+
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
             'type' => 'nullable|string|max:255',
@@ -57,6 +62,8 @@ class ScheduleController extends Controller
      */
     public function destroy(Schedule $schedule)
     {
+        Gate::authorize('delete', $schedule);
+
         $schedule->delete(); // Soft delete
 
         return response()->json(['message' => 'Schedule soft-deleted successfully.'], 200);

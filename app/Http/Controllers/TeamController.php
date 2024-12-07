@@ -9,61 +9,64 @@ use App\Models\Staff;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class TeamController extends Controller
 {
     public function index()
     {
         $userId = auth()->id(); // Get the authenticated user's ID
-    
+
         // Check if the user exists in Staff
         $staff = Staff::where('user_id', $userId)->first();
-    
+
         if (!$staff) {
             return redirect()->back()->withErrors([
                 'message' => 'The authenticated user is not a registered staff member.',
             ]);
         }
-    
+
         // Check if the staff ID is in StaffToStation
         $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
-    
+
         if (!$staffToStation) {
             // Return an empty team array if staff is not assigned to any station
             return Inertia::render('Teams/Index', [
                 'teams' => [],
             ]);
         }
-    
+
         // Use the station ID from StaffToStation to retrieve teams
         $teams = Team::with('station')
             ->where('station_id', $staffToStation->station_id)
             ->whereNull('deleted_at')
             ->get();
-    
+
         // Return the teams to the view
         return Inertia::render('Teams/Index', [
             'teams' => $teams,
         ]);
     }
-    
+
 
     public function store(Request $request)
     {
+        Gate::authorize('create', new Staff());
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
-    
+
         // Get the authenticated user's ID
         $userId = auth()->id();
-    
+
         // Check if the user exists in the Staff table and fetch the associated station_id
         $staff = Staff::where('user_id', $userId)->first();
-    
+
         // Check if the staff ID is in StaffToStation
         $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
-    
+
         if (!$staffToStation) {
             // Return an empty team array if staff is not assigned to any station
             return Inertia::render('Teams/Index', [
@@ -79,9 +82,9 @@ class TeamController extends Controller
                 'station_id' => $staffToStation->station_id, // Extracted station_id
                 'created_by' => auth()->id(),
             ]);
-    
+
             DB::commit();
-    
+
             return response()->json($team, 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -91,10 +94,12 @@ class TeamController extends Controller
             ], 500);
         }
     }
-    
+
 
     public function update(Request $request, Team $team)
     {
+        Gate::authorize('update', $team);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -108,6 +113,8 @@ class TeamController extends Controller
 
     public function destroy(Team $team)
     {
+        Gate::authorize('delete', $team);
+
         $team->delete(); // Soft delete
 
         return response()->json(['message' => 'Team soft-deleted'], 200);

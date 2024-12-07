@@ -4,16 +4,18 @@ namespace App\Policies;
 
 use App\Models\Department;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\PrivilegeChecker;
 
 class DepartmentPolicy
 {
+    use PrivilegeChecker;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_departments');
+        return $this->hasPrivilege($user->id, 'view any', new Department());
     }
 
     /**
@@ -21,7 +23,7 @@ class DepartmentPolicy
      */
     public function view(User $user, Department $department): bool
     {
-        return $user->hasPermissionTo('view_department');
+        return $this->hasPrivilege($user->id, 'view', $department);
     }
 
     /**
@@ -29,7 +31,7 @@ class DepartmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_department');
+        return $this->hasPrivilege($user->id, 'create', new Department());
     }
 
     /**
@@ -37,7 +39,7 @@ class DepartmentPolicy
      */
     public function update(User $user, Department $department): bool
     {
-        return $user->hasPermissionTo('update_department');
+        return $this->hasPrivilege($user->id, 'update', $department);
     }
 
     /**
@@ -45,7 +47,7 @@ class DepartmentPolicy
      */
     public function delete(User $user, Department $department): bool
     {
-        return $user->hasPermissionTo('delete_department');
+        return $this->hasPrivilege($user->id, 'delete', $department);
     }
 
     /**
@@ -53,7 +55,7 @@ class DepartmentPolicy
      */
     public function restore(User $user, Department $department): bool
     {
-        return $user->hasPermissionTo('restore_department');
+        return $this->hasPrivilege($user->id, 'restore', $department);
     }
 
     /**
@@ -61,21 +63,27 @@ class DepartmentPolicy
      */
     public function forceDelete(User $user, Department $department): bool
     {
-        return $user->hasPermissionTo('force_delete_department');
+        return $this->hasPrivilege($user->id, 'force delete', $department);
     }
 
+    /**
+     * Determine whether the user can delete multiple models.
+     */
+    public function batchDelete(User $user): bool
+    {
+        return $this->hasPrivilege($user->id, 'batch delete', new Department());
+    }
+
+    /**
+     * This method is called before any other policy method.
+     * It allows administrators to bypass all checks.
+     */
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {
             return true;
         }
-    
-        return null;
-    }
 
-    public function batchDelete(User $user): bool
-    {
-        return $user->hasPermissionTo('delete_departments');
-        
+        return null;
     }
 }

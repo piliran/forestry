@@ -45,14 +45,14 @@ class DistrictSeeder extends Seeder
         ]);
 
         // Insert random data using Faker for 10 more districts
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('districts')->insert([
-                'name' => 'District ' . ($i + 3), // "District 3", "District 4", etc.
-                'zone_id' => Zone::inRandomOrder()->first()->id, // Random zone reference
-                'created_at' => now(),
-                'updated_at' => now(),
-                'deleted_at' => null,
-            ]);
-        }
+        // for ($i = 0; $i < 10; $i++) {
+        //     DB::table('districts')->insert([
+        //         'name' => 'District ' . ($i + 3), // "District 3", "District 4", etc.
+        //         'zone_id' => Zone::inRandomOrder()->first()->id, // Random zone reference
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //         'deleted_at' => null,
+        //     ]);
+        // }
     }
 }
