@@ -76,6 +76,7 @@ const clearPhotoFileInput = () => {
 </script>
 
 <template>
+    
     <FormSection @submitted="updateProfileInformation">
         <!-- <template #title>
             Profile Information
@@ -86,6 +87,8 @@ const clearPhotoFileInput = () => {
         </template> -->
 
         <template #form>
+
+            
             <!-- Profile Photo -->
                 <div v-if="$page.props.jetstream.managesProfilePhotos" class=" col-span-6">
                     <!-- Profile Photo File Input -->
