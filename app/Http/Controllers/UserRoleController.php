@@ -39,7 +39,7 @@ class UserRoleController extends Controller
 
     public function store(Request $request)
     {
-        Gate::authorize('create', new UserRole());
+        // Gate::authorize('create', new UserRole());
 
         DB::beginTransaction();
 

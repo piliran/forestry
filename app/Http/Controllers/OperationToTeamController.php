@@ -20,7 +20,7 @@ class OperationToTeamController extends Controller
     public function index()
     {
 
-        $userId = auth()->id(); // Get the authenticated user's ID
+        $userId = auth()->id();
 
         // Check if the user exists in Staff
         $staff = Staff::where('user_id', $userId)->first();
