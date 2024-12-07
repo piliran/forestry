@@ -1,6 +1,5 @@
 <template>
-    <AppLayout title="Schedule
-    ">
+    <AppLayout title="Operations">
         <div>
             <div class="-mt-6 inline-block bg-transparent">
                 <Breadcrumb :home="home" :model="breadCumbItems">
@@ -47,8 +46,8 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedSchedules ||
-                                !selectedSchedules.length
+                                !selectedOperations ||
+                                !selectedOperations.length
                             "
                         />
                     </template>
@@ -67,23 +66,23 @@
 
                 <!-- Data Table -->
                 <DataTable
-                    v-if="schedules.length > 0"
+                    v-if="operations.length > 0"
                     ref="dt"
-                    v-model:selection="selectedSchedules"
-                    :value="schedules"
+                    v-model:selection="selectedOperations"
+                    :value="operations"
                     dataKey="id"
                     :paginator="true"
                     :rows="10"
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} schedules"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} operations"
                 >
                     <template #header>
                         <div
                             class="flex flex-wrap gap-2 items-center justify-between"
                         >
-                            <h4 class="m-0">Manage Schedules</h4>
+                            <h4 class="m-0">Manage Operations</h4>
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
@@ -102,7 +101,31 @@
                     ></Column>
                     <Column
                         field="name"
-                        header="Schedule Name"
+                        header="Operation Name"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="description"
+                        header="Description"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        header="Type"
+                        field="type.name"
+                        sortable
+                        style="min-width: 12rem"
+                    ></Column>
+                    <Column
+                        field="station.name"
+                        header="Station"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="type_of_patrol"
+                        header="Patrol Type"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -113,18 +136,29 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="deployment_date"
-                        header="Deployment Date"
+                        field="route.name"
+                        header="Route"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="withdraw_time"
-                        header="Withdraw Time"
+                        field="date_time_of_deployment"
+                        header="Time of Deployment"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                    
+                    <Column
+                        field="date_time_of_withdraw"
+                        header="Time of Withdraw"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
+                    <Column
+                        field="funder.organization"
+                        header="Funded By"
+                        sortable
+                        style="min-width: 10rem"
+                    ></Column>
                     <Column
                         header="Action"
                         :exportable="false"
@@ -136,111 +170,184 @@
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editSchedule(slotProps.data)"
+                                @click="editOperation(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
                                 outlined
                                 rounded
                                 severity="danger"
-                                @click="confirmDeleteSchedule(slotProps.data)"
+                                @click="confirmDeleteOperation(slotProps.data)"
                             />
                         </template>
                     </Column>
                 </DataTable>
                 <div v-else class="flex items-center justify-center">
-                    <h2>No Schedules Found</h2>
+                    <h2>No operations found</h2>
                 </div>
             </div>
 
-            <!-- Add/Edit Schedule Dialog -->
+            <!-- Add/Edit Operation Dialog -->
             <Dialog
-                v-model:visible="scheduleDialog"
+                v-model:visible="operationDialog"
                 :style="{ width: '450px' }"
-                :header="editDialog ? 'Edit Schedule' : 'Add New Schedule'"
+                :header="editDialog ? 'Edit Operation' : 'Add New Operation'"
                 :modal="true"
             >
                 <div class="flex flex-col gap-6">
+                    <!-- Operation Name -->
                     <div>
-                        <label for="name" class="block font-bold mb-3">
-                            Schedule Name
-                        </label>
+                        <label for="name" class="block font-bold mb-3"
+                            >Operation Name</label
+                        >
                         <InputText
                             id="name"
-                            v-model.trim="schedule.name"
+                            v-model.trim="operation.name"
                             required="true"
                             autofocus
-                            :invalid="submitted && !schedule.name"
+                            :invalid="submitted && !operation.name"
                             fluid
-                            placeholder="Enter Schedule Name"
                         />
                         <small
-                            v-if="submitted && !schedule.name"
+                            v-if="submitted && !operation.name"
                             class="text-red-500"
                         >
-                            Schedule Name is required.
+                            Operation Name is required.
                         </small>
                     </div>
+                    
+                    <div class="col-12">
+                        <label for="description" class="block font-bold mb-3"
+                            >Operation Description</label
+                        >
+                        <Textarea
+                            id="description"
+                            v-model="operation.description"
+                            required="true"
+                            rows="3"
+                            cols="20"
+                            autofocus
+                            :invalid="submitted && !operation.description"
+                            fluid
+                        />
+                        <small
+                            v-if="submitted && !operation.description"
+                            class="text-red-500"
+                        >
+                            Operation Type Description is required.
+                        </small>
+                    </div>
+
+                    <!-- Operation Category -->
                     <div>
-                        <label for="operation" class="block font-bold mb-3">
-                            Operation
+                        <label for="category" class="block font-bold mb-3">
+                            Type
                         </label>
                         <Select
-                            id="operation"
-                            v-model="schedule.contact_person"
-                            :options="operations"
+                            id="category"
+                            v-model="operation.operation_type_id"
+                            :options="types"
                             optionLabel="name"
                             optionValue="id"
-                            placeholder="Select Operation"
+                            placeholder="Select a Category"
                             fluid
                             filter
                         />
+                    </div>
+                    <!-- Operation Station -->
+                    <div>
+                        <label for="station" class="block font-bold mb-3">
+                            Station
+                        </label>
+                        <Select
+                            id="station"
+                            v-model="operation.station_id"
+                            :options="stations"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select a Station"
+                            fluid
+                            filter
+                        />
+                    </div>
+
+                    <div>
+                        <label for="type_of_patrol" class="block font-bold mb-3"
+                            >Patrol Type</label
+                        >
+                        <InputText
+                            id="type_of_patrol"
+                            v-model.trim="operation.type_of_patrol"
+                            required="true"
+                            autofocus
+                            :invalid="submitted && !operation.type_of_patrol"
+                            fluid
+                        />
                         <small
-                            v-if="submitted && !schedule.operation"
+                            v-if="submitted && !operation.type_of_patrol"
                             class="text-red-500"
                         >
-                            Schedule Name is required.
+                            Type of Patrol is required.
                         </small>
                     </div>
+
                     <div>
                         <label for="date_of_operation" class="block font-bold mb-3"
                             >Date of Operation</label
                         >
                         <DatePicker 
                             id="date_of_operation"
-                            v-model.trim="schedule.date_of_operation"
+                            v-model.trim="operation.date_of_operation"
                             dateFormat="dd/mm/yy"
                             required="true"
                             autofocus
-                            :invalid="submitted && !schedule.date_of_operation"
+                            :invalid="submitted && !operation.date_of_operation"
                             fluid
-                            placeholder="Enter Time of Deployment"
                             
                         />
                         <small
-                            v-if="submitted && !schedule.date_of_operation"
+                            v-if="submitted && !operation.date_of_operation"
                             class="text-red-500"
                         >
                             Date of Operation is required.
                         </small>
                     </div>
+
+
+                    <!-- Operation Route -->
+                    <div>
+                        <label for="route" class="block font-bold mb-3">
+                            Route
+                        </label>
+                        <Select
+                            id="route"
+                            v-model="operation.route_id"
+                            :options="routes"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select a Route"
+                            fluid
+                            filter
+                        />
+                    </div>
+
                     <div>
                         <label for="date_time_of_deployment" class="block font-bold mb-3"
-                            >Deployment Time</label
+                            >Deployment Date</label
                         >
                         <DatePicker 
                             id="date_time_of_deployment"
-                            v-model.trim="schedule.date_time_of_deployment"
-                            dateFormat="dd/mm/yy"
+                            v-model.trim="operation.date_time_of_deployment"
+                            dateFormat="yyy/mm/dd"
                             required="true"
                             autofocus
-                            :invalid="submitted && !schedule.date_time_of_deployment"
+                            :invalid="submitted && !operation.date_time_of_deployment"
                             fluid
                             placeholder="Enter Time of Deployment"
-                            showTime hourFormat="24" 
+                            
                         />
                         <small
-                            v-if="submitted && !schedule.date_time_of_deployment"
+                            v-if="submitted && !operation.date_time_of_deployment"
                             class="text-red-500"
                         >
                             Deployment Date is required.
@@ -252,21 +359,41 @@
                         >
                         <DatePicker 
                             id="date_time_of_withdrawal"
-                            v-model.trim="schedule.date_time_of_withdrawal"
-                            dateFormat="dd/mm/yy"
+                            v-model.trim="operation.date_time_of_withdrawal"
+                            dateFormat="yyy/mm/dd"
                             required="true"
                             autofocus
-                            :invalid="submitted && !schedule.date_time_of_withdrawal"
+                            :invalid="submitted && !operation.date_time_of_withdrawal"
                             fluid
                             placeholder="Enter Time of Withdraw"
-                            showTime hourFormat="24" 
-                        
                         />
                         <small
-                            v-if="submitted && !schedule.date_time_of_withdrawal"
+                            v-if="submitted && !operation.date_time_of_withdrawal"
                             class="text-red-500"
                         >
                             Withdraw Time is required.
+                        </small>
+                    </div>
+                                    
+                    <div>
+                        <label for="funder" class="block font-bold mb-3"
+                            >Funded By</label
+                        >
+                        <Select
+                            id="funder"
+                            v-model="operation.funder_id"
+                            :options="funders"
+                            optionLabel="organization"
+                            optionValue="id"
+                            placeholder="Select a Funder"
+                            fluid
+                            filter
+                        />
+                        <small
+                            v-if="submitted && !operation.funder_id"
+                            class="text-red-500"
+                        >
+                            Funder is required.
                         </small>
                     </div>
 
@@ -291,24 +418,24 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveSchedule"
+                            @click="saveOperation"
                         />
                     </div>
                 </template>
             </Dialog>
 
-            <!-- Delete Single Schedule Confirmation Dialog -->
+            <!-- Delete Single Operation Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteScheduleDialog"
+                v-model:visible="deleteOperationDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="schedule">
+                    <span v-if="operation">
                         Are you sure you want to delete
-                        <b>{{ schedule.name }}</b
+                        <b>{{ operation.name }}</b
                         >?
                     </span>
                 </div>
@@ -317,7 +444,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteScheduleDialog = false"
+                        @click="deleteOperationDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -332,15 +459,15 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="deleteSchedule"
+                            @click="deleteOperation"
                         />
                     </div>
                 </template>
             </Dialog>
 
-            <!-- Delete Multiple Schedule Confirmation Dialog -->
+            <!-- Delete Multiple Operations Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteSchedulesDialog"
+                v-model:visible="deleteOperationsDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
@@ -348,8 +475,7 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span>
-                        Are you sure you want to delete the selected
-                        Schedules?
+                        Are you sure you want to delete the selected operations?
                     </span>
                 </div>
                 <template #footer>
@@ -357,7 +483,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteSchedulesDialog = false"
+                        @click="deleteOperationsDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -373,7 +499,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedSchedule"
+                            @click="deleteSelectedOperations"
                         />
                     </div>
                 </template>
@@ -381,12 +507,12 @@
         </div>
     </AppLayout>
 </template>
+
 <script setup>
 import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
-
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
@@ -397,33 +523,27 @@ import InputText from "primevue/inputtext";
 import DatePicker from 'primevue/datepicker';
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
-
-
 import ProgressSpinner from "primevue/progressspinner";
-import Breadcrumb from "primevue/breadcrumb";
-import { Link } from "@inertiajs/vue3";
-
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
+import Breadcrumb from "primevue/breadcrumb";
+import Textarea from 'primevue/textarea';
+
+import { Link } from "@inertiajs/vue3";
 
 const toast = useToast();
-
-// Reactive State Variables
 const dt = ref();
-const scheduleDialog = ref(false);
+const date = ref();
+const operationDialog = ref(false);
 const editDialog = ref(false);
 const loading = ref(false);
-const deleteScheduleDialog = ref(false);
-const deleteSchedulesDialog = ref(false);
-const schedule = ref({});
-const selectedSchedules = ref([]);
+const deleteOperationDialog = ref(false);
+const deleteOperationsDialog = ref(false);
+const operation = ref({});
+const selectedOperations = ref([]);
 const submitted = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
-const props = defineProps({
-    schedules: Array,
 });
 
 const home = ref({
@@ -432,59 +552,96 @@ const home = ref({
     route: "/dashboard",
 });
 
-const breadCumbItems = ref([{ label: "Schedule" }]);
+const breadCumbItems = ref([{ label: "Operations" }]);
 
-const datetime12h = ref();
-const datetime24h = ref();
-const time = ref();
+const props = defineProps({
+    operations: Array,
+    types: Array,
+    stations: Array,
+    routes: Array,
+    funders: Array,
+});
 
-const schedules = ref(props.schedules);
+const operations = ref(props.operations);
+const funders = ref(props.funders);
+const types = ref(props.types);
+const stations = ref(props.stations);
+const routes = ref(props.routes);
+
 
 // CRUD Methods
 const openNew = () => {
     editDialog.value = false;
-    schedule.value = {};
+    operation.value = {};
     submitted.value = false;
-    scheduleDialog.value = true;
+    operationDialog.value = true;
 };
 
 const hideDialog = () => {
-    scheduleDialog.value = false;
+    operationDialog.value = false;
     submitted.value = false;
-}; 
+};
 
-const saveSchedule = async () => {
+const saveOperation = async () => {
     submitted.value = true;
-    if (schedule?.value?.name?.trim()) {
+    if (operation?.value?.name?.trim()) {
         loading.value = true;
         try {
-            if (schedule.value.id) {
+            const operationPayload = {
+                name: operation.value.name,
+                description: operation.value.description,
+                operation_type_id: operation.value.operation_type_id,
+                station_id: operation.value.station_id,
+                type_of_patrol: operation.value.type_of_patrol,
+                date_of_operation: operation.value.date_of_operation,
+                route_id: operation.value.route_id,
+                date_time_of_deployment: operation.value.date_time_of_deployment,
+                date_time_of_withdrawal: operation.value.date_time_of_withdrawal,
+                funder_id: operation.value.funder_id,
+                
+
+            };
+            console.log(operationPayload);
+            if (operation.value.id) {
                 const response = await axios.put(
-                    `/schedules/${schedule.value.id}`,
-                    schedule.value
+                    `/operations-list/${operation.value.id}`,
+                    {
+                        id: operation.value.id,
+                        name: operation.value.name,
+                        description: operation.value.description,
+                        operation_type_id: operation.value.operation_type_id,
+                        station_id: operation.value.station_id,
+                        type_of_patrol: operation.value.type_of_patrol,
+                        date_of_operation: operation.value.date_of_operation,
+                        route_id: operation.value.route_id,
+                        date_time_of_deployment: operation.value.date_time_of_deployment,
+                        date_time_of_withdrawal: operation.value.date_time_of_withdrawal,
+                        funder_id: operation.value.funder_id,
+                    }
                 );
-                updateSchedule(response.data);
+                updateOperation(response.data);
                 toast.add({
                     severity: "success",
-                    summary: "Successful",
-                    detail: "Schedule Updated",
-                    life: 3000,
+                    summary: "Success",
+                    detail: "Operation updated successfully.",
                 });
             } else {
                 const response = await axios.post(
-                    "/schedules",
-                    schedule.value
+                    "/operations-list",
+                    operationPayload
                 );
-                schedules.value.push(response.data);
+                operations.value.push(response.data);
                 toast.add({
                     severity: "success",
-                    summary: "Successful",
-                    detail: "Schedule Created",
-                    life: 3000,
+                    summary: "Success",
+                    detail: "Operation added successfully.",
                 });
             }
+
+            hideDialog();
         } catch (err) {
             if (err.response && err.response.status === 422) {
+                // Display validation errors
                 const errors = err.response.data.errors;
                 for (const [field, messages] of Object.entries(errors)) {
                     messages.forEach((message) => {
@@ -496,13 +653,6 @@ const saveSchedule = async () => {
                         });
                     });
                 }
-            } else if (err.response && err.response.status === 403) {
-                toast.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "You are not allowed to perform this action",
-                    life: 5000,
-                });
             } else {
                 toast.add({
                     severity: "error",
@@ -513,85 +663,54 @@ const saveSchedule = async () => {
             }
         } finally {
             loading.value = false;
-            scheduleDialog.value = false;
         }
     }
 };
 
-const editSchedule = (scheduleData) => {
+const editOperation = (operationData) => {
     editDialog.value = true;
-    schedule.value = { ...scheduleData };
-    scheduleDialog.value = true;
-};
 
-const deleteSchedule = async () => {
-    loading.value = true;
-    try {
-        await axios.delete(`/schedules/${schedule.value.id}`);
-        schedules.value = schedules.value.filter(
-            (r) => r.id !== schedule.value.id
-        );
-        toast.add({
-            severity: "success",
-            summary: "Successful",
-            detail: "Schedule Deleted",
-            life: 3000,
-        });
-    } catch (err) {
-        if (err.response && err.response.status === 422) {
-            const errors = err.response.data.errors;
-            for (const [field, messages] of Object.entries(errors)) {
-                messages.forEach((message) => {
-                    toast.add({
-                        severity: "error",
-                        summary: "Validation Error",
-                        detail: message,
-                        life: 5000,
-                    });
-                });
-            }
-        } else if (err.response && err.response.status === 403) {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "You are not allowed to perform this action",
-                life: 5000,
-            });
-        } else {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "An unexpected error occurred.",
-                life: 5000,
-            });
-        }
-    } finally {
-        deleteScheduleDialog.value = false;
-        loading.value = false;
+    operation.value = { ...operationData };
+
+    // operation.value.districts = operationData.district.map((p) => p.id);
+    // operation.value.type = operationData.type.map((p) => p.id);
+    if (Array.isArray(operationData.type)) {
+        operation.value.type = operationData.type.map((p) => p.id); // Assuming districts are objects with 'id' and 'name'
+    } else if (operationData.type && typeof operationData.type === "object") {
+        // Handle the case where operationData.district is a single object
+        operation.value.type = [operationData.type.id];
+    } else {
+        // Handle the case where operationData.district is null or undefined
+        operation.value.type = [];
     }
+
+    operationDialog.value = true;
 };
 
-const confirmDeleteSchedule = (scheduleData) => {
-    schedule.value = scheduleData;
-    deleteScheduleDialog.value = true;
+const confirmDeleteOperation = (op) => {
+    operation.value = op;
+    deleteOperationDialog.value = true;
 };
 
-const deleteSelectedSchedule = async () => {
-    const ids = selectedSchedules.value.map((schedule) => schedule.id);
+const deleteOperation = async () => {
     loading.value = true;
+
     try {
-        await axios.post("/schedules/bulk-delete", { ids });
-        schedules.value = schedules.value.filter(
-            (r) => !ids.includes(r.id)
+        await axios.delete(`/operations-list/${operation.value.id}`);
+        operations.value = operations.value.filter(
+            (val) => val.id !== operation.value.id
         );
+        deleteOperationDialog.value = false;
+        operation.value = {};
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Selected Schedules Deleted",
+            detail: "Operation Deleted",
             life: 3000,
         });
     } catch (err) {
         if (err.response && err.response.status === 422) {
+            // Display validation errors
             const errors = err.response.data.errors;
             for (const [field, messages] of Object.entries(errors)) {
                 messages.forEach((message) => {
@@ -603,13 +722,6 @@ const deleteSelectedSchedule = async () => {
                     });
                 });
             }
-        } else if (err.response && err.response.status === 403) {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "You are not allowed to perform this action",
-                life: 5000,
-            });
         } else {
             toast.add({
                 severity: "error",
@@ -619,26 +731,76 @@ const deleteSelectedSchedule = async () => {
             });
         }
     } finally {
-        deleteSchedulesDialog.value = false;
         loading.value = false;
     }
 };
 
 const confirmDeleteSelected = () => {
-    deleteSchedulesDialog.value = true;
+    deleteOperationsDialog.value = true;
 };
 
-const updateSchedule = (updatedSchedule) => {
-    const index = schedules.value.findIndex(
-        (r) => r.id === updatedSchedule.id
+const deleteSelectedOperations = async () => {
+    loading.value = true;
+
+    try {
+        const idsToDelete = selectedOperations.value.map((cat) => cat.id);
+        await axios.post(`/operations-list/bulk-delete`, { ids: idsToDelete });
+        operations.value = operations.value.filter(
+            (val) => !selectedOperations.value.includes(val)
+        );
+        deleteOperationsDialog.value = false;
+        selectedOperations.value = null;
+        toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "Selected Operations Deleted",
+            life: 3000,
+        });
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            // Display validation errors
+            const errors = err.response.data.errors;
+            for (const [field, messages] of Object.entries(errors)) {
+                messages.forEach((message) => {
+                    toast.add({
+                        severity: "error",
+                        summary: "Validation Error",
+                        detail: message,
+                        life: 5000,
+                    });
+                });
+            }
+        } else {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected error occurred.",
+                life: 5000,
+            });
+        }
+    } finally {
+        loading.value = false;
+    }
+};
+
+const updateOperation = (updatedOperations) => {
+    const index = operations.value.findIndex(
+        (r) => r.id === updatedOperations.id
     );
     if (index !== -1) {
-        schedules.value[index] = updatedSchedule;
+        operations.value[index] = updatedOperations;
+    }
+};
+
+const updateRole = (updatedRole) => {
+    const index = roles.value.findIndex((r) => r.id === updatedRole.id);
+    if (index !== -1) {
+        roles.value[index] = updatedRole;
     }
 };
 
 const exportCSV = () => {
-    dt.value?.exportCSV();
+    dt.value.exportCSV();
 };
 </script>
 <style scoped>

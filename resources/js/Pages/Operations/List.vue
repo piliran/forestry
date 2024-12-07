@@ -215,7 +215,7 @@
                             Operation Name is required.
                         </small>
                     </div>
-                    
+
                     <div class="col-12">
                         <label for="description" class="block font-bold mb-3"
                             >Operation Description</label
@@ -271,48 +271,9 @@
                         />
                     </div>
 
-                    <div>
-                        <label for="type_of_patrol" class="block font-bold mb-3"
-                            >Patrol Type</label
-                        >
-                        <InputText
-                            id="type_of_patrol"
-                            v-model.trim="operation.type_of_patrol"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !operation.type_of_patrol"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !operation.type_of_patrol"
-                            class="text-red-500"
-                        >
-                            Type of Patrol is required.
-                        </small>
-                    </div>
 
-                    <div>
-                        <label for="date_of_operation" class="block font-bold mb-3"
-                            >Date of Operation</label
-                        >
-                        <DatePicker 
-                            id="date_of_operation"
-                            v-model.trim="operation.date_of_operation"
-                            dateFormat="dd/mm/yy"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !operation.date_of_operation"
-                            fluid
-                            
-                        />
-                        <small
-                            v-if="submitted && !operation.date_of_operation"
-                            class="text-red-500"
-                        >
-                            Date of Operation is required.
-                        </small>
-                    </div>
 
+                    
 
                     <!-- Operation Route -->
                     <div>
@@ -331,50 +292,7 @@
                         />
                     </div>
 
-                    <div>
-                        <label for="date_time_of_deployment" class="block font-bold mb-3"
-                            >Deployment Date</label
-                        >
-                        <DatePicker 
-                            id="date_time_of_deployment"
-                            v-model.trim="operation.date_time_of_deployment"
-                            dateFormat="yyy/mm/dd"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !operation.date_time_of_deployment"
-                            fluid
-                            placeholder="Enter Time of Deployment"
-                            
-                        />
-                        <small
-                            v-if="submitted && !operation.date_time_of_deployment"
-                            class="text-red-500"
-                        >
-                            Deployment Date is required.
-                        </small>
-                    </div>
-                    <div>
-                        <label for="date_time_of_withdrawal" class="block font-bold mb-3"
-                            >Withdraw Time</label
-                        >
-                        <DatePicker 
-                            id="date_time_of_withdrawal"
-                            v-model.trim="operation.date_time_of_withdrawal"
-                            dateFormat="yyy/mm/dd"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !operation.date_time_of_withdrawal"
-                            fluid
-                            placeholder="Enter Time of Withdraw"
-                        />
-                        <small
-                            v-if="submitted && !operation.date_time_of_withdrawal"
-                            class="text-red-500"
-                        >
-                            Withdraw Time is required.
-                        </small>
-                    </div>
-                                    
+
                     <div>
                         <label for="funder" class="block font-bold mb-3"
                             >Funded By</label
@@ -592,13 +510,9 @@ const saveOperation = async () => {
                 description: operation.value.description,
                 operation_type_id: operation.value.operation_type_id,
                 station_id: operation.value.station_id,
-                type_of_patrol: operation.value.type_of_patrol,
-                date_of_operation: operation.value.date_of_operation,
                 route_id: operation.value.route_id,
-                date_time_of_deployment: operation.value.date_time_of_deployment,
-                date_time_of_withdrawal: operation.value.date_time_of_withdrawal,
                 funder_id: operation.value.funder_id,
-                
+
 
             };
             console.log(operationPayload);
@@ -611,11 +525,7 @@ const saveOperation = async () => {
                         description: operation.value.description,
                         operation_type_id: operation.value.operation_type_id,
                         station_id: operation.value.station_id,
-                        type_of_patrol: operation.value.type_of_patrol,
-                        date_of_operation: operation.value.date_of_operation,
                         route_id: operation.value.route_id,
-                        date_time_of_deployment: operation.value.date_time_of_deployment,
-                        date_time_of_withdrawal: operation.value.date_time_of_withdrawal,
                         funder_id: operation.value.funder_id,
                     }
                 );
