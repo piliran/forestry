@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,9 +16,13 @@ class DepartmentController extends Controller
     {
         // Fetch non-deleted departments
         $departments = Department::whereNull('deleted_at')->get();
+       //$departments = Department::whereNull('deleted_at')->with('user')->get();
+        //$users = User::all();
 
         return Inertia::render('Department/Index', [
             'departments' => $departments,
+            //'users' => $users,
+            
         ]);
     }
 
@@ -33,11 +38,12 @@ class DepartmentController extends Controller
             'location' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'website' => 'required|string|max:255',
-            'contact_person' => 'required|exists:users,id',
+            //'contact_person' => 'required|exists:users,id',
+            'contact_person' => 'nullable|string|max:255',
         ]);
 
         $department = Department::create($validated);
-
+        
         return response()->json($department, 201);
     }
 
@@ -53,7 +59,8 @@ class DepartmentController extends Controller
             'location' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'website' => 'nullable|string|max:255',
-            'contact_person' => 'exists:users,id',
+            //'contact_person' => 'exists:users,id',
+            'contact_person' => 'nullable|string|max:255',
         ]);
 
         $department->update($validated);

@@ -145,14 +145,17 @@
                         <label for="name" class="block font-bold mb-3">
                             Country Name
                         </label>
-                        <InputText
+
+                        <Select
                             id="name"
-                            v-model.trim="country.name"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !country.name"
-                            fluid
-                        />
+                            v-model="country.name"
+                            :options="countriesArray"
+                            filter
+                            optionLabel="name"
+                            placeholder="Select Country"
+                            class="w-full"
+                        >
+                        </Select>
                         <small
                             v-if="submitted && !country.name"
                             class="text-red-500"
@@ -160,42 +163,6 @@
                             Country Name is required.
                         </small>
                     </div>
-
-                    <Select
-                        v-model="selectedCountry"
-                        :options="countriesArray"
-                        filter
-                        optionLabel="name"
-                        placeholder="Select a Country"
-                        class="w-full"
-                    >
-                        <template #value="slotProps">
-                            <div
-                                v-if="slotProps.value"
-                                class="flex items-center"
-                            >
-                                <img
-                                    :alt="slotProps.value.name"
-                                    :src="slotProps.value.flag"
-                                    class="mr-2"
-                                    style="width: 18px"
-                                />
-                                <div>{{ slotProps.value.name }}</div>
-                            </div>
-                            <span v-else>{{ slotProps.placeholder }}</span>
-                        </template>
-                        <template #option="slotProps">
-                            <div class="flex items-center">
-                                <img
-                                    :alt="slotProps.option.name"
-                                    :src="slotProps.option.flag"
-                                    class="mr-2"
-                                    style="width: 18px"
-                                />
-                                <div>{{ slotProps.option.name }}</div>
-                            </div>
-                        </template>
-                    </Select>
                 </div>
                 <template #footer>
                     <Button
@@ -342,7 +309,6 @@ const breadCumbItems = ref([{ label: "Countries" }]);
 const dt = ref();
 const countryDialog = ref(false);
 const editDialog = ref(false);
-
 const loading = ref(false);
 const deleteCountryDialog = ref(false);
 const deleteCountriesDialog = ref(false);
@@ -374,7 +340,7 @@ const hideDialog = () => {
 
 const saveCountry = async () => {
     submitted.value = true;
-    if (country?.value?.name?.trim()) {
+    if (country?.value?.name?.name?.trim()) {
         loading.value = true;
         try {
             if (country.value.id) {
@@ -390,7 +356,9 @@ const saveCountry = async () => {
                     life: 3000,
                 });
             } else {
-                const response = await axios.post("/countries", country.value);
+                const response = await axios.post("/countries", {
+                    name: country.value.name.name,
+                });
                 countries.value.push(response.data);
                 toast.add({
                     severity: "success",
@@ -433,6 +401,7 @@ const saveCountry = async () => {
         }
     }
 };
+
 
 const editCountry = (countryData) => {
     editDialog.value = true;
@@ -553,7 +522,7 @@ const exportCSV = () => {
     dt.value?.exportCSV();
 };
 
-const selectedCountry = ref();
+//const selectedCountry = ref();
 const countriesArray = ref([
     { name: "Afghanistan", code: "AF", flag: "https://flagcdn.com/w40/af.png" },
     { name: "Albania", code: "AL", flag: "https://flagcdn.com/w40/al.png" },
