@@ -47,7 +47,7 @@ class OperationController extends Controller
             'operation_type_id' => 'required|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',    
             'date_of_operation' => 'nullable|string',
-            'created_by' => 'requred|exists:users,id'
+            'created_by' => auth()->id(),
         ]);
 
         $operation = Operation::create($validated);
