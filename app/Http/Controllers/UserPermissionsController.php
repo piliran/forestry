@@ -33,7 +33,9 @@ class UserPermissionsController extends Controller
      */
     public function store(Request $request)
     {
-      
+        Gate::authorize('create', new User());
+
+
         DB::beginTransaction();
 
         try {
@@ -42,13 +44,13 @@ class UserPermissionsController extends Controller
 
             // Retrieve the array of role IDs from the request
             $permissionIds = $request->input('permissionIds');
-      
+
             // Sync roles with the user (this will add new roles and remove any removed roles)
             $user->permissions()->sync($permissionIds);  // Assuming User has a many-to-many relationship with Role
 
             DB::commit();
 
-          
+
             $user->load('permissions');
 
             return response()->json($user, 200);

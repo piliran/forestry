@@ -4,16 +4,18 @@ namespace App\Policies;
 
 use App\Models\OperationType;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\PrivilegeChecker;
 
 class OperationTypePolicy
 {
+    use PrivilegeChecker;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_any_operation_type');
+        return $this->hasPrivilege($user->id, 'view any', new OperationType());
     }
 
     /**
@@ -21,8 +23,7 @@ class OperationTypePolicy
      */
     public function view(User $user, OperationType $operationType): bool
     {
-        // User can view an operation type if they have the appropriate permission
-        return $user->hasPermissionTo('view_operation_type');
+        return $this->hasPrivilege($user->id, 'view', $operationType);
     }
 
     /**
@@ -30,7 +31,7 @@ class OperationTypePolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_operation_type');
+        return $this->hasPrivilege($user->id, 'create', new OperationType());
     }
 
     /**
@@ -38,8 +39,7 @@ class OperationTypePolicy
      */
     public function update(User $user, OperationType $operationType): bool
     {
-        // Only users with permission to update or the owner of the operation type can update it
-        return $user->hasPermissionTo('update_operation_type');
+        return $this->hasPrivilege($user->id, 'update', $operationType);
     }
 
     /**
@@ -47,8 +47,7 @@ class OperationTypePolicy
      */
     public function delete(User $user, OperationType $operationType): bool
     {
-        // Only users with permission to delete or the owner of the operation type can delete it
-        return $user->hasPermissionTo('delete_operation_type');
+        return $this->hasPrivilege($user->id, 'delete', $operationType);
     }
 
     /**
@@ -56,7 +55,7 @@ class OperationTypePolicy
      */
     public function restore(User $user, OperationType $operationType): bool
     {
-        return $user->hasPermissionTo('restore_operation_type');
+        return $this->hasPrivilege($user->id, 'restore', $operationType);
     }
 
     /**
@@ -64,21 +63,27 @@ class OperationTypePolicy
      */
     public function forceDelete(User $user, OperationType $operationType): bool
     {
-        return $user->hasPermissionTo('force_delete_operation_type');
+        return $this->hasPrivilege($user->id, 'force delete', $operationType);
     }
 
+    /**
+     * Determine whether the user can delete multiple models.
+     */
+    public function batchDelete(User $user): bool
+    {
+        return $this->hasPrivilege($user->id, 'batch delete', new OperationType());
+    }
+
+    /**
+     * This method is called before any other policy method.
+     * It allows administrators to bypass all checks.
+     */
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {
             return true;
         }
-    
-        return null;
-    }
 
-    public function batchDelete(User $user): bool
-    {
-        return $user->hasPermissionTo('delete_operation_types');
-        
+        return null;
     }
 }

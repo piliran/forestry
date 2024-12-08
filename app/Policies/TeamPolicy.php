@@ -4,17 +4,18 @@ namespace App\Policies;
 
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\PrivilegeChecker;
 
 class TeamPolicy
 {
+    use PrivilegeChecker;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        // Check if the user has permission to view any teams
-        return $user->hasPermissionTo('view_any_team');
+        return $this->hasPrivilege($user->id, 'view any', new Team());
     }
 
     /**
@@ -22,9 +23,7 @@ class TeamPolicy
      */
     public function view(User $user, Team $team): bool
     {
-        // Check if the user has permission to view a specific team
-        // You can also check if the user is a member of the team or if they are the team owner
-        return $user->hasPermissionTo('view_team');
+        return $this->hasPrivilege($user->id, 'view', $team);
     }
 
     /**
@@ -32,8 +31,7 @@ class TeamPolicy
      */
     public function create(User $user): bool
     {
-        // Check if the user has permission to create a new team
-        return $user->hasPermissionTo('create_team');
+        return $this->hasPrivilege($user->id, 'create', new Team());
     }
 
     /**
@@ -41,9 +39,7 @@ class TeamPolicy
      */
     public function update(User $user, Team $team): bool
     {
-        // Check if the user has permission to update the team
-        // You can also check if the user is the owner of the team or has a special role
-        return $user->hasPermissionTo('update_team');
+        return $this->hasPrivilege($user->id, 'update', $team);
     }
 
     /**
@@ -51,9 +47,7 @@ class TeamPolicy
      */
     public function delete(User $user, Team $team): bool
     {
-        // Check if the user has permission to delete the team
-        // You can also check if the user is the owner or has a special role
-        return $user->hasPermissionTo('delete_team');
+        return $this->hasPrivilege($user->id, 'delete', $team);
     }
 
     /**
@@ -61,9 +55,7 @@ class TeamPolicy
      */
     public function restore(User $user, Team $team): bool
     {
-        // Check if the user has permission to restore a team
-        // You can also check if the user is the owner or has a special role
-        return $user->hasPermissionTo('restore_team');
+        return $this->hasPrivilege($user->id, 'restore', $team);
     }
 
     /**
@@ -71,23 +63,27 @@ class TeamPolicy
      */
     public function forceDelete(User $user, Team $team): bool
     {
-        // Check if the user has permission to permanently delete a team
-        // You can also check if the user is the owner or has a special role
-        return $user->hasPermissionTo('force_delete_team');
+        return $this->hasPrivilege($user->id, 'force delete', $team);
     }
 
+    /**
+     * Determine whether the user can delete multiple models.
+     */
+    public function batchDelete(User $user): bool
+    {
+        return $this->hasPrivilege($user->id, 'batch delete', new Team());
+    }
+
+    /**
+     * This method is called before any other policy method.
+     * It allows administrators to bypass all checks.
+     */
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {
             return true;
         }
-    
-        return null;
-    }
 
-    public function batchDelete(User $user): bool
-    {
-        return $user->hasPermissionTo('delete_teams');
-        
+        return null;
     }
 }

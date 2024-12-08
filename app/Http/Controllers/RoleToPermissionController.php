@@ -28,6 +28,8 @@ class RoleToPermissionController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new RoleToPermission());
+
         $request->validate([
             'role_id' => 'required|exists:roles,id',
             'permission_id' => 'required|exists:permissions,id',
@@ -53,6 +55,8 @@ class RoleToPermissionController extends Controller
      */
     public function update(Request $request, RoleToPermission $roleToPermission)
     {
+        Gate::authorize('update', $roleToPermission);
+
         $request->validate([
             'role_id' => 'required|exists:roles,id',
             'permission_id' => 'required|exists:permissions,id',
@@ -68,6 +72,8 @@ class RoleToPermissionController extends Controller
      */
     public function destroy(RoleToPermission $roleToPermission)
     {
+        Gate::authorize('delete', $roleToPermission);
+
         $roleToPermission->delete();  // Soft delete
 
         return response()->json('Role-to-Permission relationship soft-deleted successfully.');

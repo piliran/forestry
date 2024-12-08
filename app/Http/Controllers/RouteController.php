@@ -7,6 +7,7 @@ use App\Models\Area;
 use App\Models\RouteType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class RouteController extends Controller
 {
@@ -42,6 +43,8 @@ class RouteController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Route());
+
         $request->validate([
             'area_id' => 'required|exists:areas,id',
             'name' => 'required|string|max:255',
@@ -84,6 +87,8 @@ class RouteController extends Controller
      */
     public function update(Request $request, Route $route)
     {
+        Gate::authorize('update', $route);
+
         $request->validate([
             'area_id' => 'required|exists:areas,id',
             'name' => 'required|string|max:255',
@@ -94,7 +99,7 @@ class RouteController extends Controller
         $route->update($request->all());
         $route->load('area');
         $route->load('routeType');
-        
+
         return response()->json($route); // Return the updated route
     }
 
@@ -103,6 +108,8 @@ class RouteController extends Controller
      */
     public function destroy(Route $route)
     {
+        Gate::authorize('delete', $route);
+
         $route->delete();  // Soft delete
 
         return response()->json('Route soft-deleted successfully.');

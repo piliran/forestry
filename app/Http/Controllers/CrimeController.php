@@ -28,6 +28,8 @@ class CrimeController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Crime);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
@@ -44,6 +46,8 @@ class CrimeController extends Controller
      */
     public function update(Request $request, Crime $crime)
     {
+        Gate::authorize('update', $crime);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
@@ -60,6 +64,8 @@ class CrimeController extends Controller
      */
     public function destroy(Crime $crime)
     {
+        Gate::authorize('delete', $crime);
+
         $crime->delete(); // Soft delete
 
         return response()->json(['message' => 'Crime soft-deleted successfully.'], 200);

@@ -31,6 +31,8 @@ class EncroachedController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Encroached());
+
         $validated = $request->validate([
             'area_id' => 'required|exists:areas,id',
             'encroachment_type' => 'required|string|max:255',
@@ -51,6 +53,8 @@ class EncroachedController extends Controller
      */
     public function update(Request $request, Encroached $encroached)
     {
+        Gate::authorize('update', $encroached);
+
         $encroached=Encroached::find($request->id);
         $validated = $request->validate([
             'area_id' => 'required|exists:areas,id',
@@ -72,6 +76,8 @@ class EncroachedController extends Controller
      */
     public function destroy(Encroached $encroached)
     {
+        Gate::authorize('delete', $encroached);
+
         $encroached->delete(); // Soft delete
 
         return response()->json('Encroached area soft-deleted successfully.');

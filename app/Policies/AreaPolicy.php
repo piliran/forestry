@@ -4,17 +4,18 @@ namespace App\Policies;
 
 use App\Models\Area;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\PrivilegeChecker;
 
 class AreaPolicy
 {
+    use PrivilegeChecker;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        // Check if the user has permission to view any area
-        return $user->hasPermissionTo('view_any_area');
+        return $this->hasPrivilege($user->id, 'view any', new Area());
     }
 
     /**
@@ -22,8 +23,7 @@ class AreaPolicy
      */
     public function view(User $user, Area $area): bool
     {
-        // Check if the user has permission to view the specific area
-        return $user->hasPermissionTo('view_area');
+        return $this->hasPrivilege($user->id, 'view', $area);
     }
 
     /**
@@ -31,8 +31,7 @@ class AreaPolicy
      */
     public function create(User $user): bool
     {
-        // Check if the user has permission to create an area
-        return $user->hasPermissionTo('create_area');
+        return $this->hasPrivilege($user->id, 'create', new Area());
     }
 
     /**
@@ -40,8 +39,7 @@ class AreaPolicy
      */
     public function update(User $user, Area $area): bool
     {
-        // Check if the user has permission to update the area or if the user owns the area
-        return $user->hasPermissionTo('update_area');
+        return $this->hasPrivilege($user->id, 'update', $area);
     }
 
     /**
@@ -49,8 +47,7 @@ class AreaPolicy
      */
     public function delete(User $user, Area $area): bool
     {
-        // Check if the user has permission to delete the area or if the user owns the area
-        return $user->hasPermissionTo('delete_area') ;
+        return $this->hasPrivilege($user->id, 'delete', $area);
     }
 
     /**
@@ -58,8 +55,7 @@ class AreaPolicy
      */
     public function restore(User $user, Area $area): bool
     {
-        // Check if the user has permission to restore the area or if the user owns the area
-        return $user->hasPermissionTo('restore_area');
+        return $this->hasPrivilege($user->id, 'restore', $area);
     }
 
     /**
@@ -67,15 +63,15 @@ class AreaPolicy
      */
     public function forceDelete(User $user, Area $area): bool
     {
-        // Check if the user has permission to permanently delete the area or if the user owns the area
-        return $user->hasPermissionTo('force_delete_area');
+        return $this->hasPrivilege($user->id, 'force delete', $area);
     }
 
-
+    /**
+     * Determine whether the user can delete multiple models.
+     */
     public function batchDelete(User $user): bool
     {
-        return $user->hasPermissionTo('delete_areas');
-        
+        return $this->hasPrivilege($user->id, 'batch delete', new Area());
     }
 
     /**
@@ -84,12 +80,10 @@ class AreaPolicy
      */
     public function before(User $user, string $ability): bool|null
     {
-        // If the user is an administrator, they can perform any action
         if ($user->isAdministrator()) {
-            return true; // Allow all actions for administrators
+            return true;
         }
-    
-        // Otherwise, proceed with the usual checks
+
         return null;
     }
 }

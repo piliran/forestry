@@ -9,6 +9,7 @@ use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class UserToTeamController extends Controller
 {
@@ -19,19 +20,19 @@ class UserToTeamController extends Controller
     {
 
         $userId = auth()->id(); // Get the authenticated user's ID
-    
+
         // Check if the user exists in Staff
         $staff = Staff::where('user_id', $userId)->first();
-    
+
         if (!$staff) {
             return redirect()->back()->withErrors([
                 'message' => 'The authenticated user is not a registered staff member.',
             ]);
         }
-    
+
         // Check if the staff ID is in StaffToStation
         $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
-    
+
         if (!$staffToStation) {
             return Inertia::render('Teams/Members', [
                 'teamMembers' => [],
@@ -50,7 +51,7 @@ class UserToTeamController extends Controller
             ->get();
 
             $staffList = Staff::with(['level', 'user.roles', 'station'])
-         
+
             ->where('level_id', $staff->level_id)
             ->whereNull('deleted_at')
             ->get();
@@ -67,6 +68,8 @@ class UserToTeamController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new UserToTeam());
+
         $validated = $request->validate([
             'staff_id' => 'required|exists:staff,id',
             'team_id' => 'required|exists:teams,id',
@@ -98,6 +101,8 @@ class UserToTeamController extends Controller
      */
     public function update(Request $request, UserToTeam $userToTeam)
     {
+        Gate::authorize('update', $userToTeam);
+
         $validated = $request->validate([
             'staff_id' => 'required|exists:staff,id',
             'team_id' => 'required|exists:teams,id',
@@ -115,6 +120,8 @@ class UserToTeamController extends Controller
      */
     public function destroy(UserToTeam $userToTeam)
     {
+        Gate::authorize('delete', $userToTeam);
+
         $userToTeam->delete();
 
         return response()->json(['message' => 'Association soft-deleted'], 200);

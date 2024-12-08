@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\RouteType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class RouteTypeController extends Controller
 {
@@ -33,6 +34,8 @@ class RouteTypeController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new RouteType());
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:500',
@@ -68,6 +71,8 @@ class RouteTypeController extends Controller
      */
     public function update(Request $request, RouteType $routeType)
     {
+        Gate::authorize('update', $routeType);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:500',
@@ -83,6 +88,8 @@ class RouteTypeController extends Controller
      */
     public function destroy(RouteType $routeType)
     {
+        Gate::authorize('delete', $routeType);
+
         $routeType->delete();  // Soft delete
 
         return response()->json('Route Type soft-deleted successfully.');

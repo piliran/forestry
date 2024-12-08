@@ -54,17 +54,17 @@ class ZoneSeeder extends Seeder
         ]);
 
         // Insert random data using Faker for 10 more zones
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('zones')->insert([
-                'name' => 'Zone ' . ($i + 3), // "Zone 3", "Zone 4", etc.
-                'department_id' => Department::inRandomOrder()->first()->id, // Random department reference
-                'phone' => $faker->phoneNumber,
-                'location' => $faker->city,
-                'website' => $faker->url,
-                'created_at' => now(),
-                'updated_at' => now(),
-                'deleted_at' => null,
-            ]);
-        }
+        // for ($i = 0; $i < 10; $i++) {
+        //     DB::table('zones')->insert([
+        //         'name' => 'Zone ' . ($i + 3), // "Zone 3", "Zone 4", etc.
+        //         'department_id' => Department::inRandomOrder()->first()->id, // Random department reference
+        //         'phone' => $faker->phoneNumber,
+        //         'location' => $faker->city,
+        //         'website' => $faker->url,
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //         'deleted_at' => null,
+        //     ]);
+        // }
     }
 }

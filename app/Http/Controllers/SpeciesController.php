@@ -7,6 +7,7 @@ use App\Models\SpeciesCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 
 class SpeciesController extends Controller
 {
@@ -38,6 +39,8 @@ class SpeciesController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Species());
+
         $request->validate([
             'name' => 'required|string|max:255',
             'unplanted_seedlings_count' => 'required|numeric',
@@ -75,6 +78,8 @@ class SpeciesController extends Controller
      */
     public function update(Request $request, Species $species)
     {
+        Gate::authorize('update', $species);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'unplanted_seedlings_count' => 'required|numeric',
@@ -88,7 +93,7 @@ class SpeciesController extends Controller
         $species = Species::find($request->id);
         $species->update($request->all());
         $species->load('category');
-        \Log::info($request->all());
+
 
         return response()->json($species);
     }
@@ -98,6 +103,8 @@ class SpeciesController extends Controller
      */
     public function destroy(Species $species)
     {
+        Gate::authorize('delete', $species);
+
         $species->delete();  // Soft delete
 
         return response()->json(['message' => 'Species soft-deleted successfully.'], 200);

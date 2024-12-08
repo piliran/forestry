@@ -7,6 +7,7 @@ use App\Models\Suspect;
 use App\Models\Offense;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class SuspectToOffenseController extends Controller
 {
@@ -25,6 +26,8 @@ class SuspectToOffenseController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new SuspectToOffense());
+
         $validated = $request->validate([
             'suspect_id' => 'required|exists:suspects,id',
             'offense_id' => 'required|exists:offenses,id',
@@ -51,6 +54,8 @@ class SuspectToOffenseController extends Controller
      */
     public function update(Request $request, SuspectToOffense $suspectToOffense)
     {
+        Gate::authorize('update', $suspectToOffense);
+
         $validated = $request->validate([
             'suspect_id' => 'required|exists:suspects,id',
             'offense_id' => 'required|exists:offenses,id',
@@ -77,6 +82,8 @@ class SuspectToOffenseController extends Controller
      */
     public function destroy(SuspectToOffense $suspectToOffense)
     {
+        Gate::authorize('delete', $suspectToOffense);
+
         $suspectToOffense->delete();
 
         return response()->json(['message' => 'Association soft-deleted'], 200);

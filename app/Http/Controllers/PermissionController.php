@@ -28,6 +28,8 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Permission());
+
         $request->validate([
             'name' => 'required|string|max:255|unique:permissions,name',
             'description' => 'nullable|string|max:255',
@@ -53,6 +55,8 @@ class PermissionController extends Controller
      */
     public function update(Request $request, Permission $permission)
     {
+        Gate::authorize('update', $permission);
+
         $request->validate([
             'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
             'description' => 'nullable|string|max:255',
@@ -68,6 +72,8 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
+        Gate::authorize('delete', $permission);
+
         $permission->delete(); // Soft delete
 
         return response()->json('Permission soft-deleted successfully.');

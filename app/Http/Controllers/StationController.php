@@ -7,6 +7,7 @@ use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 
 class StationController extends Controller
 {
@@ -30,6 +31,8 @@ class StationController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Station());
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
@@ -49,6 +52,8 @@ class StationController extends Controller
      */
     public function update(Request $request, Station $station)
     {
+        Gate::authorize('update', $station);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
@@ -68,6 +73,8 @@ class StationController extends Controller
      */
     public function destroy(Station $station)
     {
+        Gate::authorize('delete', $station);
+
         $station->delete();  // Soft delete
 
         return response()->json(['message' => 'Station soft-deleted successfully.'], 200);

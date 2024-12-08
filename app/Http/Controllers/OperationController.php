@@ -41,11 +41,13 @@ class OperationController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Operation());
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
-            'station_id' => 'required|exists:stations,id',    
+            'station_id' => 'required|exists:stations,id',
             'date_of_operation' => 'nullable|string',
             'created_by' => 'requred|exists:users,id'
         ]);
@@ -64,11 +66,14 @@ class OperationController extends Controller
      */
     public function update(Request $request, Operation $operation)
     {
+        Gate::authorize('update', $operation);
+
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
-            'station_id' => 'required|exists:stations,id',    
+            'station_id' => 'required|exists:stations,id',
             'date_of_operation' => 'nullable|string',
         ]);
 
@@ -85,6 +90,8 @@ class OperationController extends Controller
      */
     public function destroy(Operation $operation)
     {
+        Gate::authorize('delete', $operation);
+
         $operation->delete(); // Soft delete
 
         return response()->json(['message' => 'Operation soft-deleted successfully'], 200);
