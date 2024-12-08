@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('operation_id');
             $table->foreign('operation_id')->references('id')->on('operations')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('date_of_operation');
             $table->string('deployment_time');
             $table->string('withdrawal_time');
             $table->softDeletes(); 

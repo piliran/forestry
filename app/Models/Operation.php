@@ -14,7 +14,6 @@ class Operation extends Model
         'name',
         'station_id',
         'description',
-        'date_of_operation',
         'operation_type_id',
         'created_by'
     ];
@@ -25,7 +24,6 @@ class Operation extends Model
      * @var array
      */
     protected $casts = [
-        'date_of_operation' => 'date',
     ];
 
     // Relationship with Station
