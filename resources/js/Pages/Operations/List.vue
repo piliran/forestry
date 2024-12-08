@@ -273,28 +273,7 @@
 
 
 
-                    <div>
-                        <label for="date_of_operation" class="block font-bold mb-3"
-                            >Date of Operation</label
-                        >
-                        <DatePicker
-                            id="date_of_operation"
-                            v-model.trim="operation.date_of_operation"
-                            dateFormat="dd/mm/yy"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !operation.date_of_operation"
-                            fluid
-
-                        />
-                        <small
-                            v-if="submitted && !operation.date_of_operation"
-                            class="text-red-500"
-                        >
-                            Date of Operation is required.
-                        </small>
-                    </div>
-
+                    
 
                     <!-- Operation Route -->
                     <div>
@@ -531,7 +510,6 @@ const saveOperation = async () => {
                 description: operation.value.description,
                 operation_type_id: operation.value.operation_type_id,
                 station_id: operation.value.station_id,
-                date_of_operation: operation.value.date_of_operation,
                 route_id: operation.value.route_id,
                 funder_id: operation.value.funder_id,
 
@@ -547,7 +525,6 @@ const saveOperation = async () => {
                         description: operation.value.description,
                         operation_type_id: operation.value.operation_type_id,
                         station_id: operation.value.station_id,
-                        date_of_operation: operation.value.date_of_operation,
                         route_id: operation.value.route_id,
                         funder_id: operation.value.funder_id,
                     }
