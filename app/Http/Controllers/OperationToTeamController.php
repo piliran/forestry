@@ -20,33 +20,33 @@ class OperationToTeamController extends Controller
     public function index()
     {
 
-        $userId = auth()->id(); // Get the authenticated user's ID
-    
+        $userId = auth()->id();
+
         // Check if the user exists in Staff
         $staff = Staff::where('user_id', $userId)->first();
-    
+
         if (!$staff) {
             return redirect()->back()->withErrors([
                 'message' => 'The authenticated user is not a registered staff member.',
             ]);
         }
-    
+
         // Check if the staff ID is in StaffToStation
         $staffToStation = StaffToStation::where('staff_id', $staff->id)->first();
-    
+
         if (!$staffToStation) {
             return Inertia::render('TeamOperations/Index', [
                 'operationToTeams' => [],
                 'teams' => [],
                 'operations' => [],
-               
+
             ]);
         }
-   
+
 
         $teams = Team::with('station')
             ->where('station_id', $staffToStation->station_id)
-      
+
         ->whereNull('deleted_at')
         ->get();
         $operations = Operation::with(['type', 'station','route',])->whereNull('deleted_at')->get();
@@ -59,14 +59,16 @@ class OperationToTeamController extends Controller
                 'operationToTeams' => $operationToTeams,
                 'teams' => $teams,
                 'operations' => $operations,
-               
+
             ]);
 
-        return response()->json($operationToTeams, 200);
+
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('create', new OperationToTeam());
+
         $validated = $request->validate([
             'operation_id' => 'required|exists:operations,id',
             'team_id' => 'required|exists:teams,id',
@@ -91,6 +93,8 @@ class OperationToTeamController extends Controller
 
     public function update(Request $request, OperationToTeam $operationToTeam)
     {
+        Gate::authorize('update', $operationToTeam);
+
         $validated = $request->validate([
             'operation_id' => 'sometimes|exists:operations,id',
             'team_id' => 'sometimes|exists:teams,id',
@@ -103,6 +107,8 @@ class OperationToTeamController extends Controller
 
     public function destroy(OperationToTeam $operationToTeam)
     {
+        Gate::authorize('delete', $operationToTeam);
+
         $operationToTeam->delete(); // Soft delete
 
         return response()->json(['message' => 'Mapping soft-deleted'], 200);

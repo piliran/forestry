@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SuspectToOperation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class SuspectToOperationController extends Controller
 {
@@ -33,7 +34,9 @@ class SuspectToOperationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Gate::authorize('create', new SuspectToOperation());
+
+
        $request->validate([
             'suspect_id' => 'required|exists:suspects,id',
             'operation_id' => 'required|exists:operations,id'
@@ -65,7 +68,8 @@ class SuspectToOperationController extends Controller
      */
     public function update(Request $request, SuspectToOperation $suspectToOperation)
     {
-        //
+        Gate::authorize('update', $suspectToOperation);
+
         $validated = $request->validate([
             'suspect_id' => 'required|exists:suspects,id',
             'operation_id' => 'required|exists:operations,id',
@@ -80,7 +84,8 @@ class SuspectToOperationController extends Controller
      */
     public function destroy(SuspectToOperation $suspectToOperation)
     {
-        //
+        Gate::authorize('delete', $suspectToOperation);
+
         $suspectToOperation->delete();
 
         return response()->json(['message'=>'Record deleted Successfully']);

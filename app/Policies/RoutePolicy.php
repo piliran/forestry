@@ -4,17 +4,18 @@ namespace App\Policies;
 
 use App\Models\Route;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\PrivilegeChecker;
 
 class RoutePolicy
 {
+    use PrivilegeChecker;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        // Check if the user has permission to view any routes
-        return $user->hasPermissionTo('view_any_route');
+        return $this->hasPrivilege($user->id, 'view any', new Route());
     }
 
     /**
@@ -22,8 +23,7 @@ class RoutePolicy
      */
     public function view(User $user, Route $route): bool
     {
-        // Check if the user has permission to view a specific route
-        return $user->hasPermissionTo('view_route');
+        return $this->hasPrivilege($user->id, 'view', $route);
     }
 
     /**
@@ -31,8 +31,7 @@ class RoutePolicy
      */
     public function create(User $user): bool
     {
-        // Check if the user has permission to create a new route
-        return $user->hasPermissionTo('create_route');
+        return $this->hasPrivilege($user->id, 'create', new Route());
     }
 
     /**
@@ -40,8 +39,7 @@ class RoutePolicy
      */
     public function update(User $user, Route $route): bool
     {
-        // Check if the user has permission to update a route, or if they are the creator of the route
-        return $user->hasPermissionTo('update_route') ;
+        return $this->hasPrivilege($user->id, 'update', $route);
     }
 
     /**
@@ -49,8 +47,7 @@ class RoutePolicy
      */
     public function delete(User $user, Route $route): bool
     {
-        // Check if the user has permission to delete the route, or if they are the creator of the route
-        return $user->hasPermissionTo('delete_route');
+        return $this->hasPrivilege($user->id, 'delete', $route);
     }
 
     /**
@@ -58,8 +55,7 @@ class RoutePolicy
      */
     public function restore(User $user, Route $route): bool
     {
-        // Check if the user has permission to restore the route
-        return $user->hasPermissionTo('restore_route');
+        return $this->hasPrivilege($user->id, 'restore', $route);
     }
 
     /**
@@ -67,22 +63,27 @@ class RoutePolicy
      */
     public function forceDelete(User $user, Route $route): bool
     {
-        // Check if the user has permission to permanently delete the route
-        return $user->hasPermissionTo('force_delete_route');
+        return $this->hasPrivilege($user->id, 'force delete', $route);
     }
 
+    /**
+     * Determine whether the user can delete multiple models.
+     */
+    public function batchDelete(User $user): bool
+    {
+        return $this->hasPrivilege($user->id, 'batch delete', new Route());
+    }
+
+    /**
+     * This method is called before any other policy method.
+     * It allows administrators to bypass all checks.
+     */
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {
             return true;
         }
-    
-        return null;
-    }
 
-    public function batchDelete(User $user): bool
-    {
-        return $user->hasPermissionTo('delete_routes');
-        
+        return null;
     }
 }

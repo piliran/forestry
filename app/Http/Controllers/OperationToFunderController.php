@@ -8,6 +8,7 @@ use App\Models\Funder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class OperationToFunderController extends Controller
 {
@@ -35,6 +36,8 @@ class OperationToFunderController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new OperationToFunder());
+
         $validated = $request->validate([
             'operation_id' => 'required|exists:operations,id',
             'funder_id' => 'required|exists:funders,id',
@@ -61,6 +64,8 @@ class OperationToFunderController extends Controller
      */
     public function update(Request $request, OperationToFunder $operationToFunder)
     {
+        Gate::authorize('update', $operationToFunder);
+
         $validated = $request->validate([
             'operation_id' => 'required|exists:operations,id',
             'funder_id' => 'required|exists:funders,id',
@@ -77,6 +82,8 @@ class OperationToFunderController extends Controller
      */
     public function destroy(OperationToFunder $operationToFunder)
     {
+        Gate::authorize('delete', $operationToFunder);
+
         $operationToFunder->delete();
 
         return response()->json(['message' => 'Association soft-deleted'], 200);

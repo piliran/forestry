@@ -4,17 +4,18 @@ namespace App\Policies;
 
 use App\Models\Species;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\PrivilegeChecker;
 
 class SpeciesPolicy
 {
+    use PrivilegeChecker;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        // Check if the user has permission to view any Species
-        return $user->hasPermissionTo('view_any_species');
+        return $this->hasPrivilege($user->id, 'view any', new Species());
     }
 
     /**
@@ -22,9 +23,7 @@ class SpeciesPolicy
      */
     public function view(User $user, Species $species): bool
     {
-        // Check if the user has permission to view a specific Species
-        // You can also add additional checks, such as ensuring the user is the creator of the species
-        return $user->hasPermissionTo('view_species');
+        return $this->hasPrivilege($user->id, 'view', $species);
     }
 
     /**
@@ -32,8 +31,7 @@ class SpeciesPolicy
      */
     public function create(User $user): bool
     {
-        // Check if the user has permission to create a new Species
-        return $user->hasPermissionTo('create_species');
+        return $this->hasPrivilege($user->id, 'create', new Species());
     }
 
     /**
@@ -41,9 +39,7 @@ class SpeciesPolicy
      */
     public function update(User $user, Species $species): bool
     {
-        // Check if the user has permission to update the Species
-        // You can also add additional checks, such as ensuring the user is the creator
-        return $user->hasPermissionTo('update_species');
+        return $this->hasPrivilege($user->id, 'update', $species);
     }
 
     /**
@@ -51,9 +47,7 @@ class SpeciesPolicy
      */
     public function delete(User $user, Species $species): bool
     {
-        // Check if the user has permission to delete the Species
-        // You can also add additional checks, such as ensuring the user is the creator
-        return $user->hasPermissionTo('delete_species');
+        return $this->hasPrivilege($user->id, 'delete', $species);
     }
 
     /**
@@ -61,8 +55,7 @@ class SpeciesPolicy
      */
     public function restore(User $user, Species $species): bool
     {
-        // Check if the user has permission to restore the Species
-        return $user->hasPermissionTo('restore_species');
+        return $this->hasPrivilege($user->id, 'restore', $species);
     }
 
     /**
@@ -70,22 +63,27 @@ class SpeciesPolicy
      */
     public function forceDelete(User $user, Species $species): bool
     {
-        // Check if the user has permission to permanently delete the Species
-        return $user->hasPermissionTo('force_delete_species');
+        return $this->hasPrivilege($user->id, 'force delete', $species);
     }
 
+    /**
+     * Determine whether the user can delete multiple models.
+     */
+    public function batchDelete(User $user): bool
+    {
+        return $this->hasPrivilege($user->id, 'batch delete', new Species());
+    }
+
+    /**
+     * This method is called before any other policy method.
+     * It allows administrators to bypass all checks.
+     */
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {
             return true;
         }
-    
-        return null;
-    }
 
-    public function batchDelete(User $user): bool
-    {
-        return $user->hasPermissionTo('delete_cspecies');
-        
+        return null;
     }
 }

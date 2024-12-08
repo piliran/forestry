@@ -39,6 +39,8 @@ class UserRoleController extends Controller
 
     public function store(Request $request)
     {
+        // Gate::authorize('create', new UserRole());
+
         DB::beginTransaction();
 
         try {
@@ -126,6 +128,8 @@ class UserRoleController extends Controller
      */
     public function update(Request $request, UserRole $userRole)
     {
+        Gate::authorize('update', $userRole);
+
         // Validate the incoming data
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
@@ -147,6 +151,8 @@ class UserRoleController extends Controller
      */
     public function destroy(UserRole $userRole)
     {
+        Gate::authorize('delete', $userRole);
+
         // Perform soft delete by setting 'deleted_at'
         $userRole->delete();
 

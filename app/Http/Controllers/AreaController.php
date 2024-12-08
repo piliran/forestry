@@ -39,13 +39,15 @@ class AreaController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Area);
+
         $request->validate([
             'station_id' => 'required|exists:stations,id',
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'latitude' => 'nullable|numeric|between:-90,90',
-            'longitude' => 'nullable|numeric|between:-180,180', 
+            'longitude' => 'nullable|numeric|between:-180,180',
             'contact_person' => 'required|exists:users,id',
         ]);
 
@@ -78,7 +80,9 @@ class AreaController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $area = Area::findOrFail($id);
+        Gate::authorize('update',  $area);
 
         $request->validate([
             'station_id' => 'required|exists:stations,id',
@@ -102,6 +106,8 @@ class AreaController extends Controller
     public function destroy($id)
     {
         $area = Area::findOrFail($id);
+        Gate::authorize('delete',  $area);
+
         $area->delete(); // Soft delete
 
         return response()->json('Area deleted successfully.');

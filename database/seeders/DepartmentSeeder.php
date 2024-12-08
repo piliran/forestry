@@ -44,18 +44,18 @@ class DepartmentSeeder extends Seeder
         ]);
 
         // Insert random data using Faker
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('departments')->insert([
-                'name' => $faker->company,
-                'code' => $faker->unique()->bothify('???###'),
-                'location' => $faker->address,
-                'contact_person' => $faker->name,
-                'phone' => $faker->phoneNumber,
-                'email' => $faker->email,
-                'website' => $faker->url,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+        // for ($i = 0; $i < 10; $i++) {
+        //     DB::table('departments')->insert([
+        //         'name' => $faker->company,
+        //         'code' => $faker->unique()->bothify('???###'),
+        //         'location' => $faker->address,
+        //         'contact_person' => $faker->name,
+        //         'phone' => $faker->phoneNumber,
+        //         'email' => $faker->email,
+        //         'website' => $faker->url,
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ]);
+        // }
     }
 }

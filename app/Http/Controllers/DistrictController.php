@@ -6,6 +6,7 @@ use App\Models\District;
 use App\Models\Zone;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class DistrictController extends Controller
 {
@@ -29,6 +30,8 @@ class DistrictController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new District());
+
         $validated = $request->validate([
             'zone_id' => 'required|exists:zones,id',
             'name' => 'required|string|max:255',
@@ -45,6 +48,8 @@ class DistrictController extends Controller
      */
     public function update(Request $request, District $district)
     {
+        Gate::authorize('update', $district);
+
         $validated = $request->validate([
             'zone_id' => 'required|exists:zones,id',
             'name' => 'required|string|max:255',
@@ -61,6 +66,8 @@ class DistrictController extends Controller
      */
     public function destroy(District $district)
     {
+        Gate::authorize('delete', $district);
+
         $district->delete(); // Soft delete
 
         return response()->json(['message' => 'District soft-deleted successfully.'], 200);

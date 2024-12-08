@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StaffToStation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class StaffToStationController extends Controller
 {

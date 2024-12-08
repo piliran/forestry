@@ -4,16 +4,18 @@ namespace App\Policies;
 
 use App\Models\Encroached;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\PrivilegeChecker;
 
 class EncroachedPolicy
 {
+    use PrivilegeChecker;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_any_encroached');
+        return $this->hasPrivilege($user->id, 'view any', new Encroached());
     }
 
     /**
@@ -21,7 +23,7 @@ class EncroachedPolicy
      */
     public function view(User $user, Encroached $encroached): bool
     {
-        return $user->hasPermissionTo('view_encroached');
+        return $this->hasPrivilege($user->id, 'view', $encroached);
     }
 
     /**
@@ -29,7 +31,7 @@ class EncroachedPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_encroached');
+        return $this->hasPrivilege($user->id, 'create', new Encroached());
     }
 
     /**
@@ -37,7 +39,7 @@ class EncroachedPolicy
      */
     public function update(User $user, Encroached $encroached): bool
     {
-        return $user->hasPermissionTo('update_encroached');
+        return $this->hasPrivilege($user->id, 'update', $encroached);
     }
 
     /**
@@ -45,7 +47,7 @@ class EncroachedPolicy
      */
     public function delete(User $user, Encroached $encroached): bool
     {
-        return $user->hasPermissionTo('delete_encroached');
+        return $this->hasPrivilege($user->id, 'delete', $encroached);
     }
 
     /**
@@ -53,7 +55,7 @@ class EncroachedPolicy
      */
     public function restore(User $user, Encroached $encroached): bool
     {
-        return $user->hasPermissionTo('restore_encroached');
+        return $this->hasPrivilege($user->id, 'restore', $encroached);
     }
 
     /**
@@ -61,21 +63,27 @@ class EncroachedPolicy
      */
     public function forceDelete(User $user, Encroached $encroached): bool
     {
-        return $user->hasPermissionTo('force_delete_encroached');
+        return $this->hasPrivilege($user->id, 'force delete', $encroached);
     }
 
+    /**
+     * Determine whether the user can delete multiple models.
+     */
+    public function batchDelete(User $user): bool
+    {
+        return $this->hasPrivilege($user->id, 'batch delete', new Encroached());
+    }
+
+    /**
+     * This method is called before any other policy method.
+     * It allows administrators to bypass all checks.
+     */
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {
             return true;
         }
-    
-        return null;
-    }
 
-    public function batchDelete(User $user): bool
-    {
-        return $user->hasPermissionTo('delete_encroaches');
-        
+        return null;
     }
 }

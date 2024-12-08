@@ -4,16 +4,18 @@ namespace App\Policies;
 
 use App\Models\Operation;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\PrivilegeChecker;
 
 class OperationPolicy
 {
+    use PrivilegeChecker;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_any_operation');
+        return $this->hasPrivilege($user->id, 'view any', new Operation());
     }
 
     /**
@@ -21,7 +23,7 @@ class OperationPolicy
      */
     public function view(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('view_operation');
+        return $this->hasPrivilege($user->id, 'view', $operation);
     }
 
     /**
@@ -29,7 +31,7 @@ class OperationPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_operation');
+        return $this->hasPrivilege($user->id, 'create', new Operation());
     }
 
     /**
@@ -37,7 +39,7 @@ class OperationPolicy
      */
     public function update(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('update_operation');
+        return $this->hasPrivilege($user->id, 'update', $operation);
     }
 
     /**
@@ -45,7 +47,7 @@ class OperationPolicy
      */
     public function delete(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('delete_operation');
+        return $this->hasPrivilege($user->id, 'delete', $operation);
     }
 
     /**
@@ -53,7 +55,7 @@ class OperationPolicy
      */
     public function restore(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('restore_operation');
+        return $this->hasPrivilege($user->id, 'restore', $operation);
     }
 
     /**
@@ -61,21 +63,27 @@ class OperationPolicy
      */
     public function forceDelete(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('force_delete_operation');
+        return $this->hasPrivilege($user->id, 'force delete', $operation);
     }
 
+    /**
+     * Determine whether the user can delete multiple models.
+     */
+    public function batchDelete(User $user): bool
+    {
+        return $this->hasPrivilege($user->id, 'batch delete', new Operation());
+    }
+
+    /**
+     * This method is called before any other policy method.
+     * It allows administrators to bypass all checks.
+     */
     public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdministrator()) {
             return true;
         }
-    
-        return null;
-    }
 
-    public function batchDelete(User $user): bool
-    {
-        return $user->hasPermissionTo('delete_operations');
-        
+        return null;
     }
 }

@@ -24,7 +24,7 @@ class ArrestController extends Controller
         $confiscates = Confiscate::all();
         $crimes = Crime::all();
 
-        
+
         return Inertia::render('Arrests/Index', [
             'arrests' => $arrests,
             'suspects' => $suspects,
@@ -48,6 +48,8 @@ class ArrestController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Arrest);
+
 
       $validated=  $request->validate([
             'description' => 'required|string|max:255',
@@ -62,7 +64,7 @@ class ArrestController extends Controller
 
         ]);
 
-       
+
         $arrest = Arrest::create($validated);
         $arrest->load('suspect');
         // $arrest->load('confiscate');
@@ -99,6 +101,7 @@ class ArrestController extends Controller
     public function update(Request $request, $id)
     {
         $arrest = Arrest::findOrFail($id);
+        Gate::authorize('update', $arrest);
 
         $request->validate([
             'description' => 'required|string|max:255',
@@ -113,7 +116,7 @@ class ArrestController extends Controller
         $arrest->update($request->all());
         $arrest->load(['suspect','crimes']); // Return the updated arrest
 
-        return response()->json($arrest, 201); 
+        return response()->json($arrest, 201);
     }
 
     /**
@@ -122,6 +125,8 @@ class ArrestController extends Controller
     public function destroy($id)
     {
         $arrest = Arrest::findOrFail($id);
+        Gate::authorize('delete', $arrest);
+
         $arrest->delete(); // Soft delete
 
         return response()->json('Arrest deleted successfully.');

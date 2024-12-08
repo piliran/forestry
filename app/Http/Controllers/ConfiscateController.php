@@ -19,11 +19,11 @@ class ConfiscateController extends Controller
     public function index()
     {
         // Fetch only non-deleted confiscates
-        
+
         $confiscates = Confiscate::whereNull('deleted_at')->get();
         $suspects = Suspect::all();
         $encroached_areas = Encroached::all();
- 
+
         return Inertia::render('Confiscates/Index', [
             'confiscates' => $confiscates,
             'suspects' => $suspects,
@@ -44,28 +44,29 @@ class ConfiscateController extends Controller
      */
     public function store(Request $request)
     {
-        
-    
+
+        Gate::authorize('create', new Confiscate);
+
         // Validate the request data
         $validated = $request->validate([
             'item' => 'required|string|max:255',
-          
+
         ]);
-    
-     
-    
+
+
+
         // Create the confiscate record
         $confiscate = Confiscate::create([
             'item' => $validated['item'],
-          
+
         ]);
-    
- 
-    
+
+
+
         // Return the created confiscate as JSON
         return response()->json($confiscate, 201);
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -91,25 +92,27 @@ class ConfiscateController extends Controller
     public function updateConfiscate(Request $request)
     {
         $confiscate = Confiscate::findOrFail($request->id);
+        Gate::authorize('update', $confiscate);
+
         // Validate the incoming request
         $validated = $request->validate([
             'item' => 'required|string|max:255',
-           
+
         ]);
-    
-        
+
+
         $confiscate->update([
             'item' => $validated['item'],
 
-          
+
         ]);
 
 ;
-    
+
         // Return the updated confiscate as JSON
         return response()->json($confiscate, 200);
     }
-    
+
 
     /**
      * Soft delete the specified resource from storage.
@@ -117,6 +120,8 @@ class ConfiscateController extends Controller
     public function destroy($id)
     {
         $confiscate = Confiscate::findOrFail($id);
+        Gate::authorize('delete', $confiscate);
+
         $confiscate->delete(); // Soft delete
 
         return response()->json('Confiscate deleted successfully.');

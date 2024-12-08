@@ -8,6 +8,7 @@ use App\Models\Staff;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class SuspectToConfiscateController extends Controller
 {
@@ -23,6 +24,8 @@ class SuspectToConfiscateController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', new SuspectToConfiscate);
+
         $request->validate([
             'suspect_id' => 'required|exists:suspects,id',
             'confiscate_id' => 'required|exists:confiscates,id',
@@ -31,13 +34,15 @@ class SuspectToConfiscateController extends Controller
         ]);
 
         $suspectToConfiscates = SuspectToConfiscate::create($request->all());
-    
+
         return response()->json($suspectToConfiscates);
     }
-    
+
 
     public function update(Request $request, SuspectToConfiscate $suspectToConfiscate)
     {
+        Gate::authorize('update', $suspectToConfiscate);
+
         $validated = $request->validate([
             'suspect_id' => 'required|exists:suspects,id',
             'confiscate_id' => 'required|exists:confiscates,id',
@@ -52,6 +57,8 @@ class SuspectToConfiscateController extends Controller
 
     public function destroy(SuspectToConfiscate $suspectToConfiscate)
     {
+        Gate::authorize('delete', $suspectToConfiscate);
+
         $suspectToConfiscate->delete(); // Soft delete
 
         return response()->json(['message' => 'SuspectToConfiscate soft-deleted'], 200);

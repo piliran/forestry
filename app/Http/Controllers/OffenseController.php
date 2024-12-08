@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Offense;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Gate; // Preserved for potential future use
+use Illuminate\Support\Facades\Gate;
 use App\Models\User; // Preserved for potential future use
 
 class OffenseController extends Controller
@@ -28,11 +28,17 @@ class OffenseController extends Controller
      */
     public function store(Request $request)
     {
+
+        Gate::authorize('create', new Offense);
+
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'penalty' => 'required|string|max:255',
         ]);
+
+
 
         $Offense = Offense::create($validated);
 
@@ -44,6 +50,10 @@ class OffenseController extends Controller
      */
     public function update(Request $request, Offense $Offense)
     {
+
+        Gate::authorize('update', $Offense);
+
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
@@ -60,6 +70,9 @@ class OffenseController extends Controller
      */
     public function destroy(Offense $Offense)
     {
+
+        Gate::authorize('delete', $Offense);
+
         $Offense->delete(); // Soft delete
 
         return response()->json(['message' => 'Offense soft-deleted successfully.'], 200);

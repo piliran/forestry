@@ -89,29 +89,29 @@ class UserSeeder extends Seeder
         ]);
 
         // Insert random data using Faker for 10 more users
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('users')->insert([
-                'title' => $faker->title,
-                'name' => $faker->name,
-                'email' => $faker->unique()->safeEmail,
-                'gender' => $faker->randomElement(['Male', 'Female']),
-                'DOB' => $faker->date,
-                'district_id' => District::inRandomOrder()->first()->id, // Random district reference
-                'age' => $faker->numberBetween(18, 60),
-                'position' => $faker->jobTitle,
-                'national_id' => $faker->unique()->numerify('#########'),
-                'phone' => $faker->phoneNumber,
-                'account_status' => $faker->randomElement(['Active', 'Inactive']),
-                'marital_status' => $faker->randomElement(['Single', 'Married']),
-                'email_verified_at' => now(),
-                'password' => bcrypt('secret'), // Example encrypted password
-                'remember_token' => null,
-                'current_team_id' => null,
-                'profile_photo_path' => $faker->imageUrl,
-                'created_at' => now(),
-                'updated_at' => now(),
-                'deleted_at' => null,
-            ]);
-        }
+        // for ($i = 0; $i < 10; $i++) {
+        //     DB::table('users')->insert([
+        //         'title' => $faker->title,
+        //         'name' => $faker->name,
+        //         'email' => $faker->unique()->safeEmail,
+        //         'gender' => $faker->randomElement(['Male', 'Female']),
+        //         'DOB' => $faker->date,
+        //         'district_id' => District::inRandomOrder()->first()->id, // Random district reference
+        //         'age' => $faker->numberBetween(18, 60),
+        //         'position' => $faker->jobTitle,
+        //         'national_id' => $faker->unique()->numerify('#########'),
+        //         'phone' => $faker->phoneNumber,
+        //         'account_status' => $faker->randomElement(['Active', 'Inactive']),
+        //         'marital_status' => $faker->randomElement(['Single', 'Married']),
+        //         'email_verified_at' => now(),
+        //         'password' => bcrypt('secret'), // Example encrypted password
+        //         'remember_token' => null,
+        //         'current_team_id' => null,
+        //         'profile_photo_path' => $faker->imageUrl,
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //         'deleted_at' => null,
+        //     ]);
+        // }
     }
 }

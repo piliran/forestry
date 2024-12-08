@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class DepartmentController extends Controller
 {
@@ -22,7 +23,7 @@ class DepartmentController extends Controller
         return Inertia::render('Department/Index', [
             'departments' => $departments,
             //'users' => $users,
-            
+
         ]);
     }
 
@@ -31,6 +32,8 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new Department());
+
         $validated = $request->validate([
             'code' => 'required|string|max:255',
             'name' => 'required|string|max:255',
@@ -43,7 +46,7 @@ class DepartmentController extends Controller
         ]);
 
         $department = Department::create($validated);
-        
+
         return response()->json($department, 201);
     }
 
@@ -52,6 +55,8 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
+        Gate::authorize('update', $department);
+
         $validated = $request->validate([
             'code' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',

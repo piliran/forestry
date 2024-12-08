@@ -6,6 +6,7 @@ use App\Models\UserPrivilege;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 class UserPrivilegeController extends Controller
 {
@@ -30,6 +31,8 @@ class UserPrivilegeController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new User());
+
 
         DB::beginTransaction();
 

@@ -6,6 +6,7 @@ use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class FileController extends Controller
 {
@@ -35,6 +36,8 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', new File());
+
         DB::beginTransaction();
 
         try {
@@ -64,6 +67,8 @@ class FileController extends Controller
      */
     public function update(Request $request, File $file)
     {
+        Gate::authorize('update', $file);
+
         DB::beginTransaction();
 
         try {
@@ -96,6 +101,8 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
+        Gate::authorize('delete', $file);
+
         DB::beginTransaction();
 
         try {
