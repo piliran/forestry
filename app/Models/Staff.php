@@ -51,4 +51,5 @@ class Staff extends Model
             'station_id'// Local key on StaffToStation
         );
     }
+    
 }

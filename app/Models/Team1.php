@@ -40,17 +40,11 @@ class Team extends Model
      * Define other relationships or methods here if needed.
      */
 
-    public function station()
+     public function station()
     {
         return $this->belongsTo(Station::class);
     }
     
-    public function operationToTeam()
-    {
-        return $this->hasMany(OperationToTeam::class, 'team_id');
-    }
-
-
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');

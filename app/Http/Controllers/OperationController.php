@@ -22,7 +22,7 @@ class OperationController extends Controller
     public function index()
     {
         // Fetch non-deleted operations
-        $operations = Operation::with(['type', 'station', 'funder'])->whereNull('deleted_at')->get();
+        $operations = Operation::with(['operationType', 'station', 'funder'])->whereNull('deleted_at')->get();
         $types = OperationType::all();
         $stations = Station::all();
         $routes = Route::all();
@@ -49,7 +49,7 @@ class OperationController extends Controller
             'operation_type_id' => 'required|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',
             'date_of_operation' => 'nullable|string',
-            'created_by' => 'requred|exists:users,id'
+            'created_by' => 'required|exists:users,id'
         ]);
 
         $operation = Operation::create($validated);
@@ -78,7 +78,7 @@ class OperationController extends Controller
         ]);
 
         $operation->update($validated);
-        $operation->load(['type', 'station']);
+        $operation->load(['operationType', 'station']);
         // $operation->load('Station');
         // $operation->load('Route');
 

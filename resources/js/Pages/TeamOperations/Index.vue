@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Staff">
+    <AppLayout title="Team Operations">
         <div>
             <div class="-mt-6 inline-block bg-transparent">
                 <Breadcrumb :home="home" :model="breadcrumbItems">
@@ -37,7 +37,7 @@
                             label="New Team operation"
                             icon="pi pi-plus"
                             class="mr-2"
-                            @click="openNewTeamoperation"
+                            @click="openNewOperationToTeam"
                         />
                         <Button
                             label="Delete"
@@ -46,8 +46,8 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedTeamoperation ||
-                                !selectedTeamoperation.length
+                                !selectedOperationToTeam ||
+                                !selectedOperationToTeam.length
                             "
                         />
                     </template>
@@ -58,7 +58,7 @@
                 <DataTable
                     v-if="operationToTeams.length > 0"
                     ref="dt"
-                    v-model:selection="selectedTeamoperation"
+                    v-model:selection="selectedOperationToTeam"
                     :value="operationToTeams"
                     dataKey="id"
                     :paginator="true"
@@ -66,7 +66,7 @@
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} staff"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Team Operations"
                 >
                     <template #header>
                         <div
@@ -115,7 +115,7 @@
                                 outlined
                                 rounded
                                 class="mr-2"
-                                @click="editTeamOperation(slotProps.data)"
+                                @click="editOperationToTeam(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
@@ -123,7 +123,7 @@
                                 rounded
                                 severity="danger"
                                 @click="
-                                    confirmDeleteTeamOperation(slotProps.data)
+                                    confirmDeleteOperationToTeam(slotProps.data)
                                 "
                             />
                         </template>
@@ -136,7 +136,7 @@
             </div>
 
             <Dialog
-                v-model:visible="teamOperationDialog"
+                v-model:visible="operationToTeamDialog"
                 :style="{ width: '450px' }"
                 :header="
                     editDialog ? 'Edit Team Operation' : 'Add Team Operation'
@@ -151,7 +151,7 @@
                         >
                         <Select
                             id="team"
-                            v-model="staff.team_id"
+                            v-model="operationToTeam.team_id"
                             :options="teams"
                             optionLabel="name"
                             optionValue="id"
@@ -160,30 +160,30 @@
                             filter
                         />
                         <small
-                            v-if="submitted && !staff.team_id"
+                            v-if="submitted && !operationToTeam.team_id"
                             class="text-red-500"
                         >
                             Team is required.
                         </small>
                     </div>
 
-                    <!-- Staff operation Selection -->
+                    <!-- team operation Selection -->
                     <div>
                         <label for="operation" class="block font-bold mb-3"
                             >Operation</label
                         >
                         <Select
                             id="operation"
-                            v-model="staff.operation_id"
+                            v-model="operationToTeam.operation_id"
                             :options="operations"
-                            optionLabel="operation.name"
+                            optionLabel="name"
                             optionValue="id"
                             placeholder="Select operation"
                             fluid
                             filter
                         />
                         <small
-                            v-if="submitted && !staff.operation_id"
+                            v-if="submitted && !operationToTeam.operation_id"
                             class="text-red-500"
                         >
                             Operation is required.
@@ -196,7 +196,7 @@
                         label="Cancel"
                         icon="pi pi-times"
                         text
-                        @click="teamOperationDialog = false"
+                        @click="operationToTeamDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -209,23 +209,23 @@
                             v-else
                             label="Save"
                             icon="pi pi-check"
-                            @click="saveTeamoperation"
+                            @click="saveOperationToTeam"
                         />
                     </div>
                 </template>
             </Dialog>
 
             <Dialog
-                v-model:visible="deleteteamOperationDialog"
+                v-model:visible="deleteOperationToTeamDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
             >
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
-                    <span v-if="staff.user.name">
+                    <span v-if="operationToTeam.team.name">
                         Are you sure you want to remove
-                        <b>{{ staff.operation.name }}</b
+                        <b>{{ operationToTeam.operation.name }}</b
                         >?
                     </span>
                 </div>
@@ -234,7 +234,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteteamOperationDialog = false"
+                        @click="deleteOperationToTeamDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -249,7 +249,7 @@
                             v-else
                             label="Yes"
                             icon="pi pi-check"
-                            @click="deleteTeamoperation"
+                            @click="deleteOperationToTeam"
                         />
                     </div>
                 </template>
@@ -257,7 +257,7 @@
 
             <!-- Delete Multiple suspects Confirmation Dialog -->
             <Dialog
-                v-model:visible="deleteoperationToTeamsDialog"
+                v-model:visible="deleteOperationToTeamsDialog"
                 :style="{ width: '450px' }"
                 header="Confirm"
                 :modal="true"
@@ -274,7 +274,7 @@
                         label="No"
                         icon="pi pi-times"
                         text
-                        @click="deleteoperationToTeamsDialog = false"
+                        @click="deleteOperationToTeamsDialog = false"
                     />
                     <div>
                         <ProgressSpinner
@@ -290,7 +290,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedoperationToTeams"
+                            @click="deleteSelectedOperationToTeams"
                         />
                     </div>
                 </template>
@@ -323,14 +323,14 @@ import Image from "primevue/image";
 import ToggleSwitch from "primevue/toggleswitch";
 
 const toast = useToast();
-const teamOperationDialog = ref(false);
+const operationToTeamDialog = ref(false);
 const editDialog = ref(false);
-const deleteteamOperationDialog = ref(false);
-const deleteoperationToTeamsDialog = ref(false);
+const deleteOperationToTeamDialog = ref(false);
+const deleteOperationToTeamsDialog = ref(false);
 const loading = ref(false);
 const submitted = ref(false);
-const staff = ref({});
-const selectedTeamoperation = ref([]);
+const operationToTeam = ref({});
+const selectedOperationToTeam = ref([]);
 const filters = ref({
     global: { value: null, matchMode: "contains" },
 });
@@ -351,48 +351,43 @@ const operationToTeams = ref(props.operationToTeams);
 const operations = ref(props.operations);
 const teams = ref(props.teams);
 
-const selectedLevel = computed(() => {
-    return levels.value.find((level) => level.id === staff.value.level_id);
-});
+console.log(operationToTeams);
 
-const openNewTeamoperation = () => {
+const openNewOperationToTeam = () => {
     editDialog.value = false;
-    staff.value = {};
+    operationToTeam.value = {};
     submitted.value = false;
-    teamOperationDialog.value = true;
+    operationToTeamDialog.value = true;
 };
 
 const hideDialog = () => {
-    teamOperationDialog.value = false;
+    OperationToTeamDialog.value = false;
     submitted.value = false;
 };
 
-const saveTeamoperation = async () => {
+const saveOperationToTeam = async () => {
     submitted.value = true;
 
     // Validate required fields
-    if (staff.value?.team_id && staff.value?.staff_id) {
+    if (operationToTeam.value?.team_id && operationToTeam.value?.operation_id) {
         loading.value = true;
 
         try {
-            const teamoperationPayload = new FormData();
-            teamoperationPayload.append("team_id", staff.value.team_id);
-            teamoperationPayload.append("staff_id", staff.value.staff_id);
-            teamoperationPayload.append(
-                "is_team_lead",
-                staff.value.is_team_lead ? 1 : 0
-            );
+            const operationToTeamPayload = new FormData();
+            operationToTeamPayload.append("team_id", operationToTeam.value.team_id);
+            operationToTeamPayload.append("operation_id", operationToTeam.value.operation_id);
 
-            if (staff.value.id) {
-                teamoperationPayload.append("id", staff.value.id);
+
+            if (operationToTeam.value.id) {
+                operationToTeamPayload.append("id", operationToTeam.value.id);
                 const response = await axios.post(
                     `/update-team-operation`,
-                    teamoperationPayload,
+                    operationToTeamPayload,
                     {
                         headers: { "Content-Type": "multipart/form-data" },
                     }
                 );
-                updateTeamoperation(response.data);
+                updateOperationToTeam(response.data);
                 toast.add({
                     severity: "success",
                     summary: "Successful",
@@ -402,7 +397,7 @@ const saveTeamoperation = async () => {
             } else {
                 const response = await axios.post(
                     `/team-operations`,
-                    teamoperationPayload,
+                    operationToTeamPayload,
                     {
                         headers: { "Content-Type": "multipart/form-data" },
                     }
@@ -438,7 +433,7 @@ const saveTeamoperation = async () => {
             }
         } finally {
             loading.value = false;
-            teamOperationDialog.value = false;
+            operationToTeamDialog.value = false;
         }
     } else {
         toast.add({
@@ -450,41 +445,25 @@ const saveTeamoperation = async () => {
     }
 };
 
-const viewstaff = (staffData) => {
-    staff.value = { ...staffData };
-    if (Array.isArray(staffData.district)) {
-        staff.value.districts = staffData.district.map((p) => p.id); // Assuming districts are objects with 'id' and 'name'
-    } else if (staffData.district && typeof staffData.district === "object") {
-        // Handle the case where staffData.district is a single object
-        staff.value.districts = [staffData.district.id];
-    } else {
-        // Handle the case where staffData.district is null or undefined
-        staff.value.districts = [];
-    }
-    viewDialog.value = true;
-};
 
-const editTeamOperation = (staffData) => {
+const editOperationToTeam = (operationToTeamData) => {
     editDialog.value = true;
-    staff.value = {
-        ...staffData,
-        is_team_lead: !!staffData.is_team_lead, // Convert 1/0 to true/false
-    };
+    operationToTeam.value = { ...operationToTeamData };
 
-    teamOperationDialog.value = true;
+    operationToTeamDialog.value = true;
 };
 
-const deleteTeamoperation = async () => {
+const deleteOperationToTeam = async () => {
     loading.value = true;
     try {
-        await axios.delete(`/team-operations/${staff.value.id}`);
+        await axios.delete(`/team-operations/${operationToTeam.value.id}`);
         operationToTeams.value = operationToTeams.value.filter(
-            (r) => r.id !== staff.value.id
+            (r) => r.id !== operationToTeam.value.id
         );
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "staff Deleted",
+            detail: "Team Operation Deleted",
             life: 3000,
         });
     } catch (err) {
@@ -516,18 +495,18 @@ const deleteTeamoperation = async () => {
             });
         }
     } finally {
-        deleteteamOperationDialog.value = false;
+        deleteOperationToTeamDialog.value = false;
         loading.value = false;
     }
 };
 
-const confirmDeleteTeamOperation = (roleData) => {
-    staff.value = roleData;
-    deleteteamOperationDialog.value = true;
+const confirmDeleteOperationToTeam = (operationToTeamData) => {
+    operationToTeam.value = operationToTeamData;
+    deleteOperationToTeamDialog.value = true;
 };
 
-const deleteSelectedoperationToTeams = async () => {
-    const ids = selectedTeamoperation.value.map((staff) => staff.id);
+const deleteSelectedOperationToTeams = async () => {
+    const ids = selectedOperationToTeam.value.map((operationToTeam) => operationToTeam.id);
     loading.value = true;
     try {
         await axios.post("/team-operations/bulk-delete", { ids });
@@ -537,7 +516,7 @@ const deleteSelectedoperationToTeams = async () => {
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Selected staffsoperationToTeams Deleted",
+            detail: "Selected Team Operations Deleted",
             life: 3000,
         });
     } catch (err) {
@@ -569,21 +548,21 @@ const deleteSelectedoperationToTeams = async () => {
             });
         }
     } finally {
-        deleteoperationToTeamsDialog.value = false;
+        deleteOperationToTeamsDialog.value = false;
         loading.value = false;
     }
 };
 
 const confirmDeleteSelected = () => {
-    deleteoperationToTeamsDialog.value = true;
+    deleteOperationToTeamsDialog.value = true;
 };
 
-const updateTeamoperation = (updatedstaff) => {
+const updateOperationToTeam = (updatedOperationToTeam) => {
     const index = operationToTeams.value.findIndex(
-        (r) => r.id === updatedstaff.id
+        (r) => r.id === updatedOperationToTeam.id
     );
     if (index !== -1) {
-        operationToTeams.value[index] = updatedstaff;
+        operationToTeams.value[index] = updatedOperationToTeam;
     }
 };
 </script>
