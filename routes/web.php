@@ -170,9 +170,9 @@ Route::get('/', function () {
     ]);
 });
 
-// Route::get('/districts', function () {
-//     return Inertia::render('Department/Districts');
-// });
+Route::get('/convictions', function () {
+    return Inertia::render('Convictions/Index');
+});
 
 // Route::get('/crimes', function () {
 //     return Inertia::render('Department/Crimes');

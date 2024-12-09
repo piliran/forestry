@@ -49,7 +49,7 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
-        Gate::authorize('create', new Role());
+        // Gate::authorize('create', new Role());
 
         $request->validate([
             'name' => 'required|string|max:255',
