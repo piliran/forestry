@@ -54,6 +54,10 @@ class SpeciesCategoryController extends Controller
     public function show(SpeciesCategory $speciesCategory)
     {
         //
+        $speciesCategory->load('species');
+        return Inertia::render('SpeciesCategory/Show',[
+            'speciesCategory' => $speciesCategory
+        ]);
     }
 
     /**

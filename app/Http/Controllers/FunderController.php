@@ -86,6 +86,14 @@ class FunderController extends Controller
         }
     }
 
+    public function show(Funder $funder)
+    {
+        $funder->load('operations');
+        return Inertia::render('Funder/Show',[
+            'funder' => $funder
+        ]);
+    }
+
     /**
      * Soft delete the specified resource from storage.
      */

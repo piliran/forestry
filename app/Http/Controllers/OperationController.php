@@ -83,6 +83,14 @@ class OperationController extends Controller
         return response()->json($operation, 200);
     }
 
+    public function show(Operation $operation)
+    {
+        $operation->load(['station', 'operationType', 'funder', 'operationToTeam']);
+        return Inertia::render('Operation/Show',[
+            'operation' => $operation
+        ]);
+    }
+
     /**
      * Soft delete the specified resource.
      */

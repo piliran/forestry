@@ -165,6 +165,14 @@ class RoleController extends Controller
     //     return response()->json($role, 200);
     // }
 
+    public function show(Role $role)
+    {
+        $role->load(['category', 'permissions', 'privileges']);
+        return Inertia::render('Role/Show',[
+            'role' => $role
+        ]);
+    }
+
     public function destroy(Role $role)
     {
         Gate::authorize('delete', $role);

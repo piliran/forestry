@@ -68,6 +68,14 @@ class StationController extends Controller
         return response()->json($station, 200);
     }
 
+    public function show(Station $station)
+    {
+        $station->load(['area', 'district', 'operations', 'contactPerson']);
+        return Inertia::render('Station/Show', [
+            'Station' => $station
+        ]);
+    }
+
     /**
      * Soft delete the specified resource from storage.
      */

@@ -105,6 +105,14 @@ class OperationToTeamController extends Controller
         return response()->json($operationToTeam, 200);
     }
 
+    public function show(OperationToTeam $operationToTeam)
+    {
+        $operationToTeam->load(['operation', 'team']);
+        return Inertia::render('OperationToTeam', [
+            'operationToTeam' => $operationToTeam
+        ]);
+    }
+
     public function destroy(OperationToTeam $operationToTeam)
     {
         Gate::authorize('delete', $operationToTeam);

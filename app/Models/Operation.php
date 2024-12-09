@@ -42,12 +42,6 @@ class Operation extends Model
         return $this->belongsTo(OperationType::class);
     }
 
-    // Relationship with Route
-    public function route()
-    {
-        return $this->belongsTo(Route::class);
-    }
-
     // Relationship with Funder
     public function funder()
     {

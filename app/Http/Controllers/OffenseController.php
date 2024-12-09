@@ -65,6 +65,13 @@ class OffenseController extends Controller
         return response()->json($Offense, 200);
     }
 
+    public function show(Offense $offense)
+    {
+        return Inertia::render('Offense/Show', [
+            'offense' => $offense
+        ]);
+    }
+
     /**
      * Soft delete the specified resource from storage.
      */

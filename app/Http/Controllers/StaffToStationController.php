@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\StaffToStation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class StaffToStationController extends Controller
 {
@@ -38,6 +39,10 @@ class StaffToStationController extends Controller
     public function show(StaffToStation $staffToStation)
     {
         //
+        $staffToStation->load(['staff', 'station']);
+        return Inertia::render('StaffToStation/Show',[
+            'staffToStation' => $staffToStation
+        ]);
     }
 
     /**

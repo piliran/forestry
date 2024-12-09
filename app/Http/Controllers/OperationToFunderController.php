@@ -77,6 +77,14 @@ class OperationToFunderController extends Controller
         return response()->json($operationToFunder, 200);
     }
 
+    public function show(OperationToFunder $operationToFunder)
+    {
+        $operationToFunder->load(['operation', 'funder']);
+        return Inertia::render('OperationToFunder/Show',[
+            'operationToFunder' => $operationToFunder
+        ]);
+    }
+
     /**
      * Soft delete the specified association.
      */
