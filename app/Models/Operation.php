@@ -8,20 +8,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Operation extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
+    protected $fillable = [
+        'name',
+        'station_id',
+        'description',
+        'operation_type_id',
+        'created_by'
+    ];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'name',
-        'station_id',
-        'route_id',
-        'description',
-        'funded_by',
-        'operation_type_id',
+    protected $casts = [
     ];
 
     /**

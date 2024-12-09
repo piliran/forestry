@@ -48,8 +48,7 @@ class OperationController extends Controller
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',
-            'date_of_operation' => 'nullable|string',
-            'created_by' => 'required|exists:users,id'
+            'created_by' => auth()->id(),
         ]);
 
         $operation = Operation::create($validated);
@@ -74,7 +73,6 @@ class OperationController extends Controller
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',
-            'date_of_operation' => 'nullable|string',
         ]);
 
         $operation->update($validated);

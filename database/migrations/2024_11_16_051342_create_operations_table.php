@@ -17,7 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('station_id');
             $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade')->onUpdate('cascade');
             $table->string('description');
-            $table->date('date_of_operation');
             $table->unsignedBigInteger('operation_type_id');
             $table->foreign('operation_type_id')->references('id')->on('operation_types')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('created_by');
