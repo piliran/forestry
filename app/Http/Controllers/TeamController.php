@@ -111,6 +111,14 @@ class TeamController extends Controller
         return response()->json($team, 200);
     }
 
+    public function show(Team $team)
+    {
+        $team->load(['station', 'creator']);
+        return Inertia::render('Team/Show',[
+            'team' => $team
+        ]);
+    }
+
     public function destroy(Team $team)
     {
         Gate::authorize('delete', $team);

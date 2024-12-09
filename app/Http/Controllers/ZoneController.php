@@ -64,6 +64,10 @@ class ZoneController extends Controller
     public function show(Zone $zone)
     {
         // Implementation if necessary
+        $zone->load('department');
+        return Inertia::render('Zone/Show',[
+            'department' => $zone,
+        ]);
     }
 
     /**

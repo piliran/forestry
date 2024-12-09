@@ -8,6 +8,7 @@ use App\Models\Offense;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class SuspectToOffenseController extends Controller
 {
@@ -75,6 +76,14 @@ class SuspectToOffenseController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function show(SuspectToOffense $suspectToOffense)
+    {
+        $suspectToOffense->load(['suspect', 'offense']);
+        return Inertia::render('SuspectToOffense', [
+            'suspectToOffense' => $suspectToOffense
+        ]);
     }
 
     /**

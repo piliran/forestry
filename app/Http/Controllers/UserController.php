@@ -155,6 +155,14 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public function show(User $user)
+    {
+        $user->load(['district', 'roles', 'permissions', 'privileges']);
+        return Inertia::render('User/Show', [
+            'user' => $user
+        ]);
+    }
+
     /**
      * Soft delete the specified resource from storage.
      */

@@ -70,6 +70,10 @@ class UserPrivilegeController extends Controller
     public function show(UserPrivilege $userPrivilege)
     {
         //
+        $userPrivilege->load(['user', 'privilege']);
+        return Inertia::render('UserPrivilege/Show', [
+            'userPrivilege' => $userPrivilege
+        ]);
     }
 
     /**

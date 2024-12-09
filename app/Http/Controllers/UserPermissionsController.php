@@ -74,6 +74,10 @@ class UserPermissionsController extends Controller
     public function show(UserPermission $userPermission)
     {
         //
+        $userPermission->load(['user', 'permission']);
+        return Inertia::render('UserPermission/Show', [
+            'userPermission' => $userPermission
+        ]);
     }
 
     /**

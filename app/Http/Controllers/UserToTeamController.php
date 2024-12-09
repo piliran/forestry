@@ -96,6 +96,14 @@ class UserToTeamController extends Controller
         }
     }
 
+    public function show(UserToTeam $userToTeam)
+    {
+        $userToTeam->load(['staff', 'team']);
+        return Inertia::render('UserToTeam/Show',[
+            'userToTeam' => $userToTeam
+        ]);
+    }
+
     /**
      * Update the specified association in the database.
      */
