@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Permissions">
+    <AppLayout title="Privileges">
         <div>
             <!-- Breadcrumb -->
             <div class="-mt-6 inline-block bg-transparent">
@@ -48,10 +48,19 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="!selectedPermissions || !selectedPermissions.length"
+                            :disabled="!selectedPrivileges || !selectedPrivileges.length"
                         />
                     </template>
                     <template #end>
+                        <ToggleButton 
+                            v-model="checked" 
+                            onLabel="Locked" 
+                            offLabel="Unlocked" 
+                            onIcon="pi pi-lock" 
+                            offIcon="pi pi-lock-open" 
+                            class="w-30 mr-2" 
+                            aria-label="Do you confirm" 
+                        />
                         <Button
                             label="Export"
                             icon="pi pi-upload"
@@ -73,6 +82,7 @@
                     class="card"
                 >
                     <Panel :header="tab.title" toggleable>
+                        
                         <div class="card flex flex-wrap justify-center gap-4">
                             <div
                                 v-for="permission in tab.permissions"
@@ -88,6 +98,7 @@
                                 <label :for="permission.key">
                                     {{ permission.name }}
                                 </label>
+
                             </div>
                         </div>
                     </Panel>
@@ -104,6 +115,8 @@ import Button from "primevue/button";
 import Toolbar from "primevue/toolbar";
 import Checkbox from "primevue/checkbox";
 
+import ToggleButton from 'primevue/togglebutton';
+
 import Panel from "primevue/panel";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
@@ -118,6 +131,8 @@ const home = ref({
 });
 
 const breadCumbItems = ref([{ label: "Permissions" }]);
+
+const checked = ref(false);
 
 // Define tabs and their respective permissions dynamically
 const tabs = ref([
