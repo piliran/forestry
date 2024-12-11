@@ -59,9 +59,7 @@ class OperationToTeamController extends Controller
                 'operationToTeams' => $operationToTeams,
                 'teams' => $teams,
                 'operations' => $operations,
-
             ]);
-
 
     }
 
