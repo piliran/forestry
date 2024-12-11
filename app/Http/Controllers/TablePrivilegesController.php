@@ -91,8 +91,11 @@ public function store(Request $request)
             );
         }
     }
+    $tables = Table::with('tableToPermissions.permission')->get();
 
-    return response()->json(['message' => 'Permissions and privileges synchronized successfully']);
+    return response()->json( $tables, 200);
+
+
 }
 
 

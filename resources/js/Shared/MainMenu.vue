@@ -181,41 +181,15 @@ const items = ref([
     },
 
     {
-        label: "Permissions",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        label: "Privileges",
         icon: "permissions",
-        class: "parent-link-with-sublinks",
-        forwardIcon: true,
+        route: "/privileges",
+
         allowedRoles: ["Admin", "User"],
-
-        items: [
-            {
-                label: "Permissions",
-                icon: "dot",
-
-                route: "/permissions",
-            },
-            {
-                label: "Table Permissions",
-                icon: "dot",
-
-                route: "/table-permissions",
-            },
-            {
-                label: "Privileges",
-                icon: "dot",
-                route: "/privileges",
-            },
-        ],
     },
-    // {
-    //     class: "parent-link-with-no-sublinks",
-    //     forwardIcon: false,
-
-    //     label: "Permissions",
-    //     icon: "permissions",
-    //     route: "/permissions",
-    //     allowedRoles: ["Admin", "User"],
-    // },
 
     {
         label: "Roles",

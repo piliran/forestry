@@ -130,14 +130,25 @@
                             </div>
                         </div>
                     </Panel>
-                    <div class="absolute bottom-4 right-4">
-                        <Button
-                            label="Save"
-                            icon="pi pi-check"
-                            @click="saveTablePermission"
-                        />
-                    </div>
                 </div>
+            </div>
+        </div>
+        <div class="absolute bottom-4 right-8">
+            <div>
+                <ProgressSpinner
+                    v-if="loading"
+                    style="width: 40px; height: 40px"
+                    strokeWidth="4"
+                    fill="transparent"
+                    animationDuration=".5s"
+                    aria-label="Custom ProgressSpinner"
+                />
+                <Button
+                    v-else
+                    label="Save"
+                    icon="pi pi-check"
+                    @click="saveTablePermission"
+                />
             </div>
         </div>
     </AppLayout>
@@ -152,6 +163,7 @@ import Checkbox from "primevue/checkbox";
 
 import { useToast } from "primevue/usetoast";
 import ToggleButton from "primevue/togglebutton";
+import ProgressSpinner from "primevue/progressspinner";
 
 import Panel from "primevue/panel";
 import Breadcrumb from "primevue/breadcrumb";
@@ -176,11 +188,9 @@ const props = defineProps({
     tables: Array,
     permissions: Array,
 });
-const tablePermission = ref([]);
 
 const selectedPermissions = ref({});
-const tablePrivileges = ref(props.tablePrivileges);
-const tablePermissions = ref(props.tablePermissions);
+
 const tables = ref(props.tables);
 const permissions = ref(props.permissions);
 
@@ -239,8 +249,6 @@ const handleCheckboxChange = (tableId, permissionId, isChecked) => {
             delete selectedPermissions[tableId];
         }
     }
-
-    console.log(selectedPermissions);
 };
 
 const saveTablePermission = async () => {
@@ -274,6 +282,7 @@ const saveTablePermission = async () => {
                     headers: { "Content-Type": "multipart/form-data" },
                 }
             );
+            tables.value = response.data;
 
             // Handle success
             toast.add({
