@@ -36,7 +36,13 @@ class RoleController extends Controller
         // Fetch non-deleted roles
         $roles = Role::whereNull('deleted_at')->with(['category','privileges'])->get();
         $permissions = Permission::all();
-        $privileges = Privilege::with('tableToPermission')->get();
+        $privileges = Privilege::with('tableToPermission.table')
+    ->join('table_to_permissions', 'table_to_permissions.id', '=', 'privileges.table_to_permission_id')
+    ->join('tables', 'tables.id', '=', 'table_to_permissions.table_id')
+    ->orderBy('tables.name')
+    ->get();
+
+
         $roleCategories = RoleCategory::all();
 
         return Inertia::render('Roles/Index', [
