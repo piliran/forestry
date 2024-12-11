@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Team extends Model
+class Team1 extends Model
 {
     use SoftDeletes;
 
@@ -44,7 +44,7 @@ class Team extends Model
     {
         return $this->belongsTo(Station::class);
     }
-    
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
