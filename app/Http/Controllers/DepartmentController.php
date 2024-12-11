@@ -73,6 +73,14 @@ class DepartmentController extends Controller
         return response()->json($department, 200);
     }
 
+    public function show(Department $department)
+    {
+        $department->load('contactPerson');
+        return Inertia::render('Department/Show',[
+            'deparment' => $department
+        ]);
+    }
+
     /**
      * Soft delete the specified resource.
      */

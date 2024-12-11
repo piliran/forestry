@@ -112,26 +112,15 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        header="Type"
-                        field="type.name"
+                        field="operationType.name"
+                        header="Operation Type"
                         sortable
-                        style="min-width: 12rem"
+                        style="min-width: 10rem"
                     ></Column>
+
                     <Column
                         field="station.name"
                         header="Station"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="type_of_patrol"
-                        header="Patrol Type"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="date_of_operation"
-                        header="Operation Date"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -141,18 +130,7 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                    <Column
-                        field="date_time_of_deployment"
-                        header="Time of Deployment"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
-                    <Column
-                        field="date_time_of_withdraw"
-                        header="Time of Withdraw"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
+
                     <Column
                         field="funder.organization"
                         header="Funded By"
@@ -234,22 +212,22 @@
                             v-if="submitted && !operation.description"
                             class="text-red-500"
                         >
-                            Operation Type Description is required.
+                            Operation Description is required.
                         </small>
                     </div>
 
                     <!-- Operation Category -->
                     <div>
-                        <label for="category" class="block font-bold mb-3">
+                        <label for="operationType" class="block font-bold mb-3">
                             Type
                         </label>
                         <Select
-                            id="category"
+                            id="operationType"
                             v-model="operation.operation_type_id"
                             :options="types"
                             optionLabel="name"
                             optionValue="id"
-                            placeholder="Select a Category"
+                            placeholder="Select a Operation Type"
                             fluid
                             filter
                         />
@@ -273,8 +251,6 @@
 
 
 
-                    
-
                     <!-- Operation Route -->
                     <div>
                         <label for="route" class="block font-bold mb-3">
@@ -293,13 +269,14 @@
                     </div>
 
 
+
                     <div>
                         <label for="funder" class="block font-bold mb-3"
                             >Funded By</label
                         >
                         <Select
-                            id="funder"
-                            v-model="operation.funder_id"
+                            id="funded_by"
+                            v-model="operation.funded_by"
                             :options="funders"
                             optionLabel="organization"
                             optionValue="id"
@@ -308,7 +285,7 @@
                             filter
                         />
                         <small
-                            v-if="submitted && !operation.funder_id"
+                            v-if="submitted && !operation.funded_by"
                             class="text-red-500"
                         >
                             Funder is required.
@@ -511,7 +488,7 @@ const saveOperation = async () => {
                 operation_type_id: operation.value.operation_type_id,
                 station_id: operation.value.station_id,
                 route_id: operation.value.route_id,
-                funder_id: operation.value.funder_id,
+                funded_by: operation.value.funded_by,
 
 
             };
@@ -526,7 +503,7 @@ const saveOperation = async () => {
                         operation_type_id: operation.value.operation_type_id,
                         station_id: operation.value.station_id,
                         route_id: operation.value.route_id,
-                        funder_id: operation.value.funder_id,
+                        funded_by: operation.value.funded_by,
                     }
                 );
                 updateOperation(response.data);
@@ -702,12 +679,12 @@ const updateOperation = (updatedOperations) => {
     }
 };
 
-const updateRole = (updatedRole) => {
-    const index = roles.value.findIndex((r) => r.id === updatedRole.id);
-    if (index !== -1) {
-        roles.value[index] = updatedRole;
-    }
-};
+// const updateRole = (updatedRole) => {
+//     const index = roles.value.findIndex((r) => r.id === updatedRole.id);
+//     if (index !== -1) {
+//         roles.value[index] = updatedRole;
+//     }
+// };
 
 const exportCSV = () => {
     dt.value.exportCSV();

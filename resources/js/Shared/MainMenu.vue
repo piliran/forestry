@@ -189,6 +189,12 @@ const items = ref([
 
         items: [
             {
+                label: "Permissions",
+                icon: "dot",
+
+                route: "/permissions",
+            },
+            {
                 label: "Table Permissions",
                 icon: "dot",
 
@@ -197,7 +203,7 @@ const items = ref([
             {
                 label: "Privileges",
                 icon: "dot",
-                route: "/privilege",
+                route: "/privileges",
             },
         ],
     },

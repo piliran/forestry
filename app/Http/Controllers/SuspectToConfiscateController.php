@@ -55,6 +55,14 @@ class SuspectToConfiscateController extends Controller
         return response()->json($suspectToConfiscate, 200);
     }
 
+    public function show(SuspectToConfiscate $suspectToConfiscate)
+    {
+        $suspectToConfiscate->load(['suspect', 'confiscate']);
+        return Inertia::render('suspectToConfiscate/Show',[
+            'suspectToConfiscate' => $suspectToConfiscate
+        ]);
+    }
+
     public function destroy(SuspectToConfiscate $suspectToConfiscate)
     {
         Gate::authorize('delete', $suspectToConfiscate);

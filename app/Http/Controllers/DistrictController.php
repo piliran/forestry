@@ -61,6 +61,13 @@ class DistrictController extends Controller
         return response()->json($district, 200);
     }
 
+    public function show(District $district)
+    {
+        $district->load(['zone', 'country', 'user', 'suspect', 'contactPerson']);
+        return Inertia::render('District/Show', [
+            'district' => $district
+        ]);
+    }
     /**
      * Soft delete the specified resource.
      */

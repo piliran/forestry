@@ -57,6 +57,14 @@ class ScheduleController extends Controller
         return response()->json($schedule, 200);
     }
 
+    public function show(Schedule $schedule)
+    {
+        $schedule->load('schedule');
+        return Inertia::render('Schedule/Show',[
+            'schedule' => $schedule
+        ]);
+    }
+
     /**
      * Soft delete the specified resource.
      */

@@ -18,7 +18,6 @@ class UserToTeamController extends Controller
      */
     public function index()
     {
-
         $userId = auth()->id(); // Get the authenticated user's ID
 
         // Check if the user exists in Staff
@@ -41,17 +40,17 @@ class UserToTeamController extends Controller
             ]);
         }
 
+        // Fetch team members, teams, and staff list
         $teamMembers = UserToTeam::with(['staff.user', 'team'])
             ->whereNull('deleted_at')
             ->get();
 
-            $teams = Team::with('station')
+        $teams = Team::with('station')
             ->where('station_id', $staffToStation->station_id)
             ->whereNull('deleted_at')
             ->get();
 
-            $staffList = Staff::with(['level', 'user.roles', 'station'])
-
+        $staffList = Staff::with(['level', 'user.roles', 'station'])
             ->where('level_id', $staff->level_id)
             ->whereNull('deleted_at')
             ->get();
@@ -68,7 +67,7 @@ class UserToTeamController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('create', new UserToTeam());
+        Gate::authorize('create', UserToTeam::class);
 
         $validated = $request->validate([
             'staff_id' => 'required|exists:staff,id',
@@ -81,7 +80,7 @@ class UserToTeamController extends Controller
             $userToTeam = UserToTeam::create([
                 'staff_id' => $validated['staff_id'],
                 'team_id' => $validated['team_id'],
-                'is_team_lead' => $validated['is_team_lead'] ?? 0,
+                'is_team_lead' => $validated['is_team_lead'] ?? false,
             ]);
 
             DB::commit();
@@ -94,6 +93,14 @@ class UserToTeamController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function show(UserToTeam $userToTeam)
+    {
+        $userToTeam->load(['staff', 'team']);
+        return Inertia::render('UserToTeam/Show',[
+            'userToTeam' => $userToTeam
+        ]);
     }
 
     /**
@@ -154,8 +161,8 @@ class UserToTeamController extends Controller
      */
     public function bulkRestore(Request $request)
     {
-        $request->validate(['ids' => 'required|array']);
-        UserToTeam::withTrashed()->whereIn('id', $request->ids)->restore();
+        $validated = $request->validate(['ids' => 'required|array']);
+        UserToTeam::withTrashed()->whereIn('id', $validated['ids'])->restore();
 
         return response()->json(['message' => 'Selected associations restored successfully.'], 200);
     }

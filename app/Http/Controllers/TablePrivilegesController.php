@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\StaffToStation;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Inertia\Inertia;
 
-class StaffToStationController extends Controller
+use App\Models\Privilege;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate; // Preserved for future use
+
+
+class TablePrivilegesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,6 +17,10 @@ class StaffToStationController extends Controller
     public function index()
     {
         //
+        $tablePrivileges = Privilege::all();
+        return Inertia::render('User/Privileges', [
+            'tablePrivileges' => $tablePrivileges,
+        ]);
     }
 
     /**
@@ -36,19 +42,15 @@ class StaffToStationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(StaffToStation $staffToStation)
+    public function show(string $id)
     {
         //
-        $staffToStation->load(['staff', 'station']);
-        return Inertia::render('StaffToStation/Show',[
-            'staffToStation' => $staffToStation
-        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(StaffToStation $staffToStation)
+    public function edit(string $id)
     {
         //
     }
@@ -56,7 +58,7 @@ class StaffToStationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, StaffToStation $staffToStation)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -64,7 +66,7 @@ class StaffToStationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(StaffToStation $staffToStation)
+    public function destroy(string $id)
     {
         //
     }

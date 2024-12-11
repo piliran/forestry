@@ -151,7 +151,13 @@ class StaffController extends Controller
         }
     }
 
-
+    public function show(Staff $staff)
+    {
+        $staff->load(['level', 'user', 'station']);
+        return Inertia::render('Staff/Show', [
+            'staff' => $staff
+        ]);
+    }
 
     public function destroy(Staff $staff)
     {

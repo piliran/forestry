@@ -62,6 +62,14 @@ class FileController extends Controller
         }
     }
 
+    public function show(File $file)
+    {
+        $file->load(['suspectToConfiscate', 'creator']);
+        return Inertia::render('File/Show', [
+            'file' => $file
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      */

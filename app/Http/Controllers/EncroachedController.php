@@ -71,6 +71,14 @@ class EncroachedController extends Controller
         return response()->json($encroached, 200);
     }
 
+    public function show(Encroached $encroached)
+    {
+        $encroached->load('area');
+        return Inertia::render('Encroached/Show', [
+            'encroached' => $encroached
+        ]);
+    }
+
     /**
      * Soft delete the specified resource.
      */

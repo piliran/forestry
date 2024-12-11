@@ -49,7 +49,7 @@ class OperationToTeamController extends Controller
 
         ->whereNull('deleted_at')
         ->get();
-        $operations = Operation::with(['type', 'station','route',])->whereNull('deleted_at')->get();
+        $operations = Operation::with(['operationType', 'station','route',])->whereNull('deleted_at')->get();
 
         $operationToTeams = OperationToTeam::with(['operation', 'team'])
             ->whereNull('deleted_at')
@@ -101,6 +101,14 @@ class OperationToTeamController extends Controller
         $operationToTeam->update($validated);
 
         return response()->json($operationToTeam, 200);
+    }
+
+    public function show(OperationToTeam $operationToTeam)
+    {
+        $operationToTeam->load(['operation', 'team']);
+        return Inertia::render('OperationToTeam', [
+            'operationToTeam' => $operationToTeam
+        ]);
     }
 
     public function destroy(OperationToTeam $operationToTeam)

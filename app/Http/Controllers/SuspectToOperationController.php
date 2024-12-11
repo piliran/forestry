@@ -53,6 +53,10 @@ class SuspectToOperationController extends Controller
     public function show(SuspectToOperation $suspectToOperation)
     {
         //
+        $suspectToOperation->load(['suspect', 'operstion']);
+        return Inertia::render('SuspectToOperation',[
+            'suspectToOperation' => $suspectToOperation
+        ]);
     }
 
     /**

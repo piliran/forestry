@@ -9,6 +9,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SpeciesCategoryController;
 use App\Http\Controllers\SpeciesController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\TablePrivilegesController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\UserPermissionsController;
 
@@ -101,9 +102,15 @@ Route::post('/stations/bulk-delete', [StationController::class, 'batchDelete']);
 Route::resource('countries', CountryController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/countries/bulk-delete', [CountryController::class, 'batchDelete']);
 
-
 Route::resource('permissions', PermissionController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/permissions/bulk-delete', [PermissionController::class, 'batchDelete']);
+
+Route::resource('table-permissions', PermissionController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/table-permissions/bulk-delete', [PermissionController::class, 'batchDelete']);
+
+Route::resource('privileges', TablePrivilegesController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/privileges/bulk-delete', [TablePrivilegesController::class, 'batchDelete']);
+
 
 Route::resource('user-role', UserRoleController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/user-role/bulk-delete', [UserRoleController::class, 'batchDelete']);
@@ -170,9 +177,9 @@ Route::get('/', function () {
     ]);
 });
 
-// Route::get('/districts', function () {
-//     return Inertia::render('Department/Districts');
-// });
+Route::get('/convictions', function () {
+    return Inertia::render('Convictions/Index');
+});
 
 // Route::get('/crimes', function () {
 //     return Inertia::render('Department/Crimes');

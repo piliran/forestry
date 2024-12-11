@@ -59,6 +59,13 @@ class CrimeController extends Controller
         return response()->json($crime, 200);
     }
 
+    public function show(Crime $crime)
+    {
+        return Inertia::render('Crime/Show',[
+            'crime' => $crime
+        ]);
+    }
+
     /**
      * Soft delete the specified resource from storage.
      */

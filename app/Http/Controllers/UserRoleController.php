@@ -123,6 +123,14 @@ class UserRoleController extends Controller
 // }
 
 
+    public function show(UserRole $userRole)
+    {
+        $userRole->load(['user', 'role']);
+        return Inertia::render('UserRole/Show', [
+            'userRole' => $userRole
+        ]);
+    }
+
     /**
      * Update the specified user role in storage.
      */

@@ -63,6 +63,10 @@ class SpeciesController extends Controller
     public function show(Species $species)
     {
         //
+        $species->load('category');
+        return Inertia::render('Species/Show',[
+            'species' => $species
+        ]);
     }
 
     /**
