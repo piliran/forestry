@@ -55,7 +55,7 @@ class OperationController extends Controller
         // $operation->load('Type');
         // $operation->load('Station');
         // $operation->load('Route');
-        $operation->load(['station',]);
+        $operation->load(['operationType', 'station', 'funder']);
 
         return response()->json($operation, 201);
     }

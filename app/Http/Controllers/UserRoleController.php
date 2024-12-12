@@ -63,9 +63,13 @@ class UserRoleController extends Controller
 
             DB::commit();
 
-            $user->load('roles', 'privileges'); // Load roles and privileges for the response
+            $user->load(['privileges','roles']);
+            $users = User::with(['roles', 'district', 'privileges'])
+            ->whereNull('deleted_at')
+            ->get();
 
             return response()->json($user, 200);
+            // return response()->json(['user'=>$user,'users'=>$users], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 

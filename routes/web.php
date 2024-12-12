@@ -83,6 +83,7 @@ Route::resource('roles', RoleController::class)->middleware([HandlePrecognitiveR
 
 Route::resource('users', UserController::class)->middleware([HandlePrecognitiveRequests::class]);
 
+Route::get('get-users', [UserController::class, 'getUsers'])->middleware([HandlePrecognitiveRequests::class]);
 
 Route::resource('crimes', CrimeController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::post('/crimes/bulk-delete', [CrimeController::class, 'batchDelete']);

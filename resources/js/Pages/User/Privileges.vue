@@ -1,6 +1,6 @@
 <template>
     <AppLayout title="Privileges">
-        <div>
+        <div ref="formContainer">
             <!-- Breadcrumb -->
             <div class="-mt-6 inline-block bg-transparent">
                 <Breadcrumb :home="home" :model="breadCumbItems">
@@ -135,18 +135,18 @@
         </div>
         <div class="absolute bottom-4 right-8">
             <div>
-                <ProgressSpinner
+                <!-- <ProgressSpinner
                     v-if="loading"
                     style="width: 40px; height: 40px"
                     strokeWidth="4"
                     fill="transparent"
                     animationDuration=".5s"
                     aria-label="Custom ProgressSpinner"
-                />
+                /> -->
                 <Button
-                    v-else
                     label="Save"
                     icon="pi pi-check"
+                    :disabled="loading"
                     @click="saveTablePermission"
                 />
             </div>
@@ -170,11 +170,24 @@ import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
+import { useLoading } from "vue-loading-overlay";
+
+const fullPage = ref(false);
+const formContainer = ref(null);
+const $loading = useLoading({
+    container: fullPage.value ? null : formContainer.value,
+    loader: "spinner",
+    width: 64,
+    height: 64,
+    backgroundColor: "#ffffff",
+    opacity: 0.5,
+    zIndex: 999,
+    color: "#4caf50",
+});
 const toast = useToast();
 const loading = ref(false);
 const submitted = ref(false);
 
-// Data references
 const home = ref({
     icon: "pi pi-home",
     label: "Dashboard",
@@ -208,25 +221,6 @@ onMounted(() => {
     initializePermissions();
 });
 
-/**
- * Handle the change in checkbox state.
- */
-// const handleCheckboxChange = (table, permission) => {
-//     const tablePermissions = selectedPermissions.value[table.id] || [];
-//     if (isPermissionSelected(table, permission)) {
-
-//         selectedPermissions.value[table.id] = tablePermissions.filter(
-//             (id) => id !== permission.id
-//         );
-//     } else {
-
-//         selectedPermissions.value[table.id] = [
-//             ...tablePermissions,
-//             permission.id,
-//         ];
-//     }
-// };
-
 const handleCheckboxChange = (tableId, permissionId, isChecked) => {
     if (!selectedPermissions[tableId]) {
         // Initialize the array for the table if it doesn't exist
@@ -253,6 +247,10 @@ const handleCheckboxChange = (tableId, permissionId, isChecked) => {
 
 const saveTablePermission = async () => {
     submitted.value = true;
+    const loader = $loading.show({
+        // canCancel: true,
+        // onCancel,
+    });
 
     // Validate selectedPermissions
     if (Object.keys(selectedPermissions.value).length > 0) {
@@ -326,6 +324,7 @@ const saveTablePermission = async () => {
                 });
             }
         } finally {
+            loader.hide();
             loading.value = false;
         }
     } else {

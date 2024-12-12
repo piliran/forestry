@@ -22,7 +22,13 @@ class TablePrivilegesController extends Controller
         //
         $tablePrivileges = Privilege::with('tableToPermission')->get();
         $tablePermissions = TableToPermission::with(['table','permission'])->get();
-        $tables = Table::with('tableToPermissions.permission')->get();
+
+        $tables = Table::with('tableToPermissions.permission')
+    ->get()
+    ->map(function ($table) {
+        $table->name = ucfirst($table->name);
+        return $table;
+    });
         $permissions = Permission::all();
         return Inertia::render('User/Privileges', [
             'tablePrivileges' => $tablePrivileges,
@@ -46,6 +52,8 @@ class TablePrivilegesController extends Controller
 
 public function store(Request $request)
 {
+    Gate::authorize('create', new TableToPermission());
+
     $validated = $request->validate([
         'permissions' => 'required|array',
         'permissions.*' => 'array',
