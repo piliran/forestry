@@ -96,7 +96,7 @@ class AreaController extends Controller
 
         $area->update($request->all());
         $area->load('station');
-
+        
         return response()->json($area); // Return the updated area
     }
 
