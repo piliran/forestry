@@ -1137,11 +1137,7 @@ const assignAndEditRoles = (userData) => {
 
 const assignAndEditprivileges = (userData, allUserRoles, allPrivileges) => {
     user.value = { ...userData };
-
-    console.log(allUserRoles);
-    // const userRoles = props.userRoles.filter(
-    //     (role) => role.user_id === userData.id
-    // );
+    // userprivilege.value = [];
     const userRoles = allUserRoles.filter(
         (role) => role.user_id === userData.id
     );
@@ -1152,11 +1148,12 @@ const assignAndEditprivileges = (userData, allUserRoles, allPrivileges) => {
     //     );
     // });
 
-    const roleprivileges = allPrivileges.filter((privilege) => {
+    const roleprivileges = props.privileges.filter((privilege) => {
         return privilege.roles.some((role) =>
             userRoles.some((userRole) => userRole.role_id === role.id)
         );
     });
+    // console.log(roleprivileges);
 
     userprivilege.value = userData.privileges.map((p) => p.id);
 
