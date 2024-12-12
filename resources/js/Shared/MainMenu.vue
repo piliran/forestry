@@ -130,6 +130,51 @@ const items = ref([
         route: "/countries",
         allowedRoles: ["Admin", "User"],
     },
+
+    {
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        label: "Privileges",
+        icon: "permissions",
+        route: "/privileges",
+
+        allowedRoles: ["Admin", "User"],
+    },
+
+    {
+        label: "Roles",
+        icon: "roles",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
+        allowedRoles: ["Admin", "User"],
+
+        items: [
+            {
+                label: "Categories",
+                icon: "dot",
+
+                route: "/role-categories",
+            },
+            {
+                label: "Roles List",
+                icon: "dot",
+                route: "/roles",
+            },
+        ],
+    },
+
+    
+    {
+        label: "Users",
+        icon: "users",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/users",
+        allowedRoles: ["Admin", "User"],
+    },
+
+    
     {
         label: "Funders",
         icon: "funders",
@@ -181,100 +226,6 @@ const items = ref([
     },
 
     {
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
-
-        label: "Privileges",
-        icon: "permissions",
-        route: "/privileges",
-
-        allowedRoles: ["Admin", "User"],
-    },
-
-    {
-        label: "Roles",
-        icon: "roles",
-        class: "parent-link-with-sublinks",
-        forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
-
-        items: [
-            {
-                label: "Categories",
-                icon: "dot",
-
-                route: "/role-categories",
-            },
-            {
-                label: "Roles List",
-                icon: "dot",
-                route: "/roles",
-            },
-        ],
-    },
-    {
-        label: "Users",
-        icon: "users",
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
-        route: "/users",
-        allowedRoles: ["Admin", "User"],
-    },
-    {
-        label: "Suspects",
-        icon: "users",
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
-        route: "/suspects",
-        allowedRoles: ["Admin", "User"],
-    },
-    {
-        label: "Operations",
-        icon: "operations",
-        class: "parent-link-with-sublinks",
-        forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
-
-        items: [
-            {
-                label: "Types",
-                icon: "dot",
-                route: "/operations-types",
-            },
-            {
-                label: "List",
-                icon: "dot",
-                route: "/operations-list",
-            },
-        ],
-    },
-
-    {
-        label: "Teams",
-        icon: "team",
-        class: "parent-link-with-sublinks",
-        forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
-
-        items: [
-            {
-                label: "Team List",
-                icon: "dot",
-                route: "/teams",
-            },
-            {
-                label: "Team Members",
-                icon: "dot",
-                route: "/team-members",
-            },
-            {
-                label: "Team Operations",
-                icon: "dot",
-                route: "/team-operations",
-            },
-        ],
-    },
-    {
         label: "Offenses",
         icon: "crimes",
         forwardIcon: false,
@@ -283,24 +234,7 @@ const items = ref([
         route: "/offenses",
         allowedRoles: ["Admin", "User"],
     },
-    {
-        label: "Arrests",
-        icon: "arrests",
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
 
-        route: "/arrests",
-        allowedRoles: ["Admin", "User"],
-    },
-    {
-        label: "Convictions",
-        icon: "arrests",
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
-
-        route: "/convictions",
-        allowedRoles: ["Admin", "User"],
-    },
     {
         label: "Confiscates",
         icon: "confiscated-items",
@@ -312,13 +246,24 @@ const items = ref([
     },
 
     {
-        label: "Schedules",
-        icon: "scheduling",
-        class: "parent-link-with-no-sublinks",
-        forwardIcon: false,
-
-        route: "/schedules",
+        label: "Species",
+        icon: "road",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
         allowedRoles: ["Admin", "User"],
+
+        items: [
+            {
+                label: "Categories",
+                icon: "dot",
+                route: "/species-types",
+            },
+            {
+                label: "Species List",
+                icon: "dot",
+                route: "/species-list",
+            },
+        ],
     },
 
     {
@@ -363,25 +308,98 @@ const items = ref([
     },
 
     {
-        label: "Species",
-        icon: "road",
+        label: "Operations",
+        icon: "operations",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
         allowedRoles: ["Admin", "User"],
 
         items: [
             {
-                label: "Categories",
+                label: "Types",
                 icon: "dot",
-                route: "/species-types",
+                route: "/operations-types",
             },
             {
-                label: "Species List",
+                label: "List",
                 icon: "dot",
-                route: "/species-list",
+                route: "/operations-list",
             },
         ],
     },
+
+    {
+        label: "Schedules",
+        icon: "scheduling",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        route: "/schedules",
+        allowedRoles: ["Admin", "User"],
+    },
+
+
+    {
+        label: "Teams",
+        icon: "team",
+        class: "parent-link-with-sublinks",
+        forwardIcon: true,
+        allowedRoles: ["Admin", "User"],
+
+        items: [
+            {
+                label: "Team List",
+                icon: "dot",
+                route: "/teams",
+            },
+            {
+                label: "Team Members",
+                icon: "dot",
+                route: "/team-members",
+            },
+            {
+                label: "Team Operations",
+                icon: "dot",
+                route: "/team-operations",
+            },
+        ],
+    },
+    
+    {
+        label: "Suspects",
+        icon: "users",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+        route: "/suspects",
+        allowedRoles: ["Admin", "User"],
+    },
+
+    {
+        label: "Arrests",
+        icon: "arrests",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        route: "/arrests",
+        allowedRoles: ["Admin", "User"],
+    },
+
+    {
+        label: "Convictions",
+        icon: "arrests",
+        class: "parent-link-with-no-sublinks",
+        forwardIcon: false,
+
+        route: "/convictions",
+        allowedRoles: ["Admin", "User"],
+    },
+   
+
+    
+
+    
+
+    
 ]);
 
 const dropdownVisibility = ref([]);

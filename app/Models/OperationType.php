@@ -20,7 +20,7 @@ class OperationType extends Model
     /**
      * Get the operations associated with the operation type.
      */
-    public function operations()
+    public function operation()
     {
         return $this->hasMany(Operation::class, 'operation_type_id');
     }
