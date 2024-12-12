@@ -147,11 +147,19 @@
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
+                            <a :href="'/department/1'">
+                                <Button
+                                    icon="pi pi-eye"
+                                    outlined
+                                    rounded
+                                    severity="info"
+                                />
+                            </a>
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
                                 rounded
-                                class="mr-2"
+                                class="mx-2"
                                 @click="editDepartment(slotProps.data)"
                             />
                             <Button
