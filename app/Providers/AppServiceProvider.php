@@ -45,6 +45,9 @@ use App\Models\UserPrivilege;
 use App\Models\StationToOperation;
 use App\Models\UserPermission;
 use App\Models\Permission;
+use App\Models\Table;
+use App\Models\TableToPermission;
+
 
 
 
@@ -72,6 +75,8 @@ use App\Policies\DistrictPolicy;
 use App\Policies\EncroachedPolicy;
 use App\Policies\OperationPolicy;
 use App\Policies\OperationTypePolicy;
+use App\Policies\TableToPermissionPolicy;
+use App\Policies\TablePolicy;
 
 use App\Policies\SuspectPolicy;
 use App\Policies\PermissionPolicy;
@@ -128,6 +133,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Team::class, TeamPolicy::class);
         Gate::policy(UserPermission::class, UserPermissionPolicy::class);
         Gate::policy(UserRole::class, UserRolePolicy::class);
+        Gate::policy(Table::class, TablePolicy::class);
+        Gate::policy(TableToPermission::class, TableToPermissionPolicy::class);
 
         Gate::policy(City::class, CityPolicy::class);
         Gate::policy(Arrest::class, ArrestPolicy::class);

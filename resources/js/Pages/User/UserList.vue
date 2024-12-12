@@ -890,6 +890,11 @@ const hideDialog = () => {
     submitted.value = false;
 };
 
+const getUsers = async () => {
+    console.log("get users");
+    await axios.get("/users");
+};
+
 watch(
     () => user.value.DOB,
     (newVal) => {
@@ -915,6 +920,9 @@ async function saveUserRole() {
             }
 
             userRole.value = response.data.roles.map((role) => role.id);
+            // userprivilege.value = response.data.roles.privileges.map(
+            //     (role) => role.id
+            // );
 
             toast.add({
                 severity: "success",

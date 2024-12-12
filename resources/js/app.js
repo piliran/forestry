@@ -9,7 +9,8 @@ import HighchartsVue from "highcharts-vue";
 import PrimeVue from "primevue/config";
 import Lara from "@/primevue/presets/lara";
 import Aura from "@primevue/themes/aura";
-
+import {LoadingPlugin} from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/css/index.css'
 import ToastService from "primevue/toastservice";
 
 import "primeicons/primeicons.css";
@@ -28,6 +29,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(HighchartsVue)
+            .use(LoadingPlugin)
             .use(PrimeVue, {
                 theme: {
                     preset: Aura,

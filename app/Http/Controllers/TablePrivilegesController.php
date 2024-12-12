@@ -46,6 +46,8 @@ class TablePrivilegesController extends Controller
 
 public function store(Request $request)
 {
+    Gate::authorize('create', new TableToPermission());
+
     $validated = $request->validate([
         'permissions' => 'required|array',
         'permissions.*' => 'array',
