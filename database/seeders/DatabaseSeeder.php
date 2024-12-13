@@ -20,15 +20,22 @@ class DatabaseSeeder extends Seeder
             ZoneSeeder::class,
             DistrictSeeder::class,
             UserSeeder::class,
-
             StationSeeder::class,
-
             RoleCategorySeeder::class,
             PermissionSeeder::class,
             TableSeeder::class,
             TableToPermissionSeeder::class,
             PrivilegeSeeder::class,
             OffenseSeeder::class,
+
+            AreaSeeder::class,
+            RouteTypeSeeder::class,
+            RouteSeeder::class,
+            OperationTypeSeeder::class,
+            OperationSeeder::class,
+            SpecieCategorySeeder::class,
+            SpeciesSeeder::class,
+
 
         ]);
 

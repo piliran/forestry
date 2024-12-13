@@ -34,13 +34,25 @@ class StationSeeder extends Seeder
             [
                 'name' => 'Station 2',
                 'location' => 'Location 2',
-                'district_id' => District::skip(1)->first()->id, // Reference another district
+                'district_id' => District::skip(1)->first()->id,
                 'email' => 'station2@example.com',
-                'contact_person' => User::skip(1)->first()->id, // Reference another user
+                'contact_person' => User::skip(1)->first()->id,
                 'created_at' => now(),
                 'updated_at' => now(),
                 'deleted_at' => null,
             ]
+            ,
+            [
+                'name' => 'Station 3',
+                'location' => 'Location 3',
+                'district_id' => District::skip(2)->first()->id,
+                'email' => 'station2@example.com',
+                'contact_person' => User::skip(2)->first()->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'deleted_at' => null,
+            ]
+
         ]);
 
         // Insert random data using Faker for 10 more stations

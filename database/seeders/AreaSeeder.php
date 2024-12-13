@@ -35,6 +35,17 @@ class AreaSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'South Zone',
+                'station_id' => 3, // Replace with an actual station ID
+                'code' => 'SZ003',
+                'location' => 'Suburban',
+                'latitude' => -10.123456,
+                'longitude' => 35.654321,
+                'contact_person' => 3, // Replace with an actual user ID
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

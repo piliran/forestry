@@ -147,14 +147,17 @@
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
-                            <a :href="'/department/1'">
+                            <Link
+                                :href="'/department/' + slotProps.data.id"
+                                preserve-scroll
+                            >
                                 <Button
                                     icon="pi pi-eye"
                                     outlined
                                     rounded
                                     severity="info"
                                 />
-                            </a>
+                            </Link>
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
@@ -301,7 +304,10 @@
                     </div>
 
                     <div>
-                        <label for="contact_person" class="block font-bold mb-3">
+                        <label
+                            for="contact_person"
+                            class="block font-bold mb-3"
+                        >
                             Contact Person
                         </label>
                         <InputText
@@ -319,7 +325,6 @@
                             Department is required.
                         </small>
                     </div>
-                    
                 </div>
                 <template #footer>
                     <Button
@@ -484,7 +489,6 @@ const breadCumbItems = ref([{ label: "Department" }]);
 
 const departments = ref(props.departments);
 const users = ref(props.users);
-
 
 // CRUD Methods
 const openNew = () => {
