@@ -54,10 +54,7 @@ class UserController extends Controller
 
 
         $roles = Role::with('privileges')->get();
-        // $roles = Role::with('permissions')->get();
-
-
-        $permissions = Permission::with('roles')->get();
+          $permissions = Permission::with('roles')->get();
         $privileges = Privilege::with('roles')->get();
 
 
@@ -81,6 +78,23 @@ class UserController extends Controller
             // ],
         ]);
     }
+
+
+    public function getUsers()
+    {
+        $roles = Role::with('privileges')->get();
+
+      $privileges = Privilege::with('roles')->get();
+
+
+      $userRoles = UserRole::with(['user', 'role'])->get();
+        $users = User::with(['roles', 'district', 'privileges'])
+        ->whereNull('deleted_at')
+        ->get();
+        return response()->json(['roles'=>$roles,'privileges'=>$privileges,'users'=>$users,'userRoles'=>$userRoles], 201);
+
+    }
+
 
 
     /**

@@ -221,25 +221,6 @@ onMounted(() => {
     initializePermissions();
 });
 
-/**
- * Handle the change in checkbox state.
- */
-// const handleCheckboxChange = (table, permission) => {
-//     const tablePermissions = selectedPermissions.value[table.id] || [];
-//     if (isPermissionSelected(table, permission)) {
-
-//         selectedPermissions.value[table.id] = tablePermissions.filter(
-//             (id) => id !== permission.id
-//         );
-//     } else {
-
-//         selectedPermissions.value[table.id] = [
-//             ...tablePermissions,
-//             permission.id,
-//         ];
-//     }
-// };
-
 const handleCheckboxChange = (tableId, permissionId, isChecked) => {
     if (!selectedPermissions[tableId]) {
         // Initialize the array for the table if it doesn't exist

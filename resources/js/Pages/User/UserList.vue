@@ -170,7 +170,13 @@
                     >
                         <template #body="slotProps">
                             <Button
-                                @click="assignAndEditprivileges(slotProps.data)"
+                                @click="
+                                    assignAndEditprivileges(
+                                        slotProps.data,
+                                        userRoles,
+                                        privileges
+                                    )
+                                "
                                 icon="pi pi-eye"
                                 outlined
                                 severity="info"
@@ -852,6 +858,10 @@ const home = ref({
 });
 
 const breadCumbItems = ref([{ label: "Users" }]);
+// const users = ref([]);
+// const roles = ref([]);
+// const userRoles = ref([]);
+// const privileges = ref([]);
 
 const props = defineProps({
     users: Array,
@@ -863,20 +873,25 @@ const props = defineProps({
     privileges: Array,
     isAdmin: Boolean,
 });
+const districts = ref(props.districts);
 
-const roleOptions = ref([]);
 const users = ref(props.users);
 const roles = ref(props.roles);
-const districts = ref(props.districts);
 const userRoles = ref(props.userRoles);
-const can = ref(props.can);
 const privileges = ref(props.privileges);
 
-// console.log(can.value.editUser);
+// console.log(userRoles.value);
+// onMounted(() => {
+//     userRoles.value = props.userRoles;
+//     users.value = props.users;
+//     privileges.value = props.privileges;
+//     roles.value = props.roles;
+//     getUsers();
+// });
 
 const titleOptions = ["Mr.", "Mrs.", "Miss", "Dr.", "Prof."];
 const genderOptions = ["Male", "Female", "Other"];
-// CRUD Methods
+
 const openNew = () => {
     editDialog.value = false;
     user.value = {};
@@ -891,8 +906,11 @@ const hideDialog = () => {
 };
 
 const getUsers = async () => {
-    console.log("get users");
-    await axios.get("/users");
+    const response = await axios.get("/get-users");
+    users.value = response.data.users;
+    privileges.value = response.data.privileges;
+    userRoles.value = response.data.userRoles;
+    roles.value = response.data.roles;
 };
 
 watch(
@@ -905,6 +923,11 @@ watch(
     { immediate: true }
 );
 
+// watch(userprivilege, (newVal) => {
+//     userprivilege.value = newVal;
+//     console.log("Updated userprivilege:", newVal);
+// });
+
 async function saveUserRole() {
     loading.value = true;
     try {
@@ -916,14 +939,17 @@ async function saveUserRole() {
         if (response.status === 200) {
             const targetUser = users.value.find((u) => u.id === user.value.id);
             if (targetUser) {
-                targetUser.roles = response.data.roles; // Update roles in the users array
+                targetUser.roles = response.data.roles;
             }
 
             userRole.value = response.data.roles.map((role) => role.id);
-            // userprivilege.value = response.data.roles.privileges.map(
-            //     (role) => role.id
+            getUsers();
+            // userprivilege.value = response.data.privileges.map(
+            //     (privilege) => privilege.id
             // );
 
+            // userprivilege.value = response.data.privileges;
+            // userprivilege.value = [];
             toast.add({
                 severity: "success",
                 summary: "Success",
@@ -1109,31 +1135,26 @@ const assignAndEditRoles = (userData) => {
     roleAssignmentDialog.value = true;
 };
 
-// const assignAndEditprivileges = (userData) => {
-//     user.value = { ...userData };
-
-//     userprivilege.value = userData.privileges.map((p) => p.id);
-
-//     privilegeAssignmentDialog.value = true;
-// };
-
-const assignAndEditprivileges = (userData) => {
+const assignAndEditprivileges = (userData, allUserRoles, allPrivileges) => {
     user.value = { ...userData };
-
-    // Find the roles associated with the user
-    const userRoles = props.userRoles.filter(
+    // userprivilege.value = [];
+    const userRoles = allUserRoles.filter(
         (role) => role.user_id === userData.id
     );
 
-    // Filter privileges based on the roles assigned to the user
+    // const roleprivileges = props.privileges.filter((privilege) => {
+    //     return privilege.roles.some((role) =>
+    //         userRoles.some((userRole) => userRole.role_id === role.id)
+    //     );
+    // });
+
     const roleprivileges = props.privileges.filter((privilege) => {
-        // Check if any of the roles associated with the user have the privilege
         return privilege.roles.some((role) =>
             userRoles.some((userRole) => userRole.role_id === role.id)
         );
     });
+    // console.log(roleprivileges);
 
-    // Now, userprivilege will contain all privileges for the selected user
     userprivilege.value = userData.privileges.map((p) => p.id);
 
     // We can use the full privilege data to display the privileges in the template
