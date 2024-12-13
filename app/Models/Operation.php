@@ -62,4 +62,10 @@ class Operation extends Model
     {
         return $this->hasMany(OperationToTeam::class, 'operation_id');
     }
+
+    // Relationship with Schedule
+    public function schedule()
+    {
+        return $this->hasMany(Schedule::class, 'operation_id');
+    }
 }

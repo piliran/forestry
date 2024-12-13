@@ -1,6 +1,5 @@
 <template>
-    <AppLayout title="Schedule
-    ">
+    <AppLayout title="Schedules">
         <div>
             <div class="-mt-6 inline-block bg-transparent">
                 <Breadcrumb :home="home" :model="breadCumbItems">
@@ -30,6 +29,7 @@
                     </template>
                 </Breadcrumb>
             </div>
+
             <!-- Toolbar -->
             <div class="card">
                 <Toolbar class="mb-6">
@@ -46,10 +46,7 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="
-                                !selectedSchedules ||
-                                !selectedSchedules.length
-                            "
+                            :disabled="!selectedSchedules || !selectedSchedules.length"
                         />
                     </template>
                     <template #end>
@@ -77,7 +74,7 @@
                     :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} schedules"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Schedules"
                 >
                     <template #header>
                         <div
@@ -101,10 +98,10 @@
                         :exportable="false"
                     ></Column>
                     <Column
-                        field="name"
-                        header="Schedule Name"
+                        header="Operation"
+                        field="operation.name"
                         sortable
-                        style="min-width: 10rem"
+                        style="min-width: 12rem"
                     ></Column>
                     <Column
                         field="date_of_operation"
@@ -113,18 +110,17 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="deployment_date"
-                        header="Deployment Date"
+                        field="deployment_time"
+                        header="Deployment Time"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="withdraw_time"
+                        field="withdrawal_time"
                         header="Withdraw Time"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                    
                     <Column
                         header="Action"
                         :exportable="false"
@@ -162,32 +158,12 @@
             >
                 <div class="flex flex-col gap-6">
                     <div>
-                        <label for="name" class="block font-bold mb-3">
-                            Schedule Name
-                        </label>
-                        <InputText
-                            id="name"
-                            v-model.trim="schedule.name"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !schedule.name"
-                            fluid
-                            placeholder="Enter Schedule Name"
-                        />
-                        <small
-                            v-if="submitted && !schedule.name"
-                            class="text-red-500"
-                        >
-                            Schedule Name is required.
-                        </small>
-                    </div>
-                    <div>
                         <label for="operation" class="block font-bold mb-3">
                             Operation
                         </label>
                         <Select
                             id="operation"
-                            v-model="schedule.contact_person"
+                            v-model="schedule.operation_id"
                             :options="operations"
                             optionLabel="name"
                             optionValue="id"
@@ -195,80 +171,75 @@
                             fluid
                             filter
                         />
-                        <small
-                            v-if="submitted && !schedule.operation"
-                            class="text-red-500"
-                        >
-                            Schedule Name is required.
-                        </small>
                     </div>
                     <div>
-                        <label for="date_of_operation" class="block font-bold mb-3"
-                            >Date of Operation</label
-                        >
-                        <DatePicker 
+                        <label for="code" class="block font-bold mb-3">
+                            Operation Date
+                        </label>
+                        <DatePicker
                             id="date_of_operation"
-                            v-model.trim="schedule.date_of_operation"
+                            v-model="schedule.date_of_operation"
                             dateFormat="dd/mm/yy"
                             required="true"
                             autofocus
                             :invalid="submitted && !schedule.date_of_operation"
                             fluid
                             placeholder="Enter Time of Deployment"
-                            
+
                         />
                         <small
                             v-if="submitted && !schedule.date_of_operation"
                             class="text-red-500"
                         >
-                            Date of Operation is required.
+                            Operation Date is required.
                         </small>
                     </div>
                     <div>
-                        <label for="date_time_of_deployment" class="block font-bold mb-3"
-                            >Deployment Time</label
-                        >
-                        <DatePicker 
-                            id="date_time_of_deployment"
-                            v-model.trim="schedule.date_time_of_deployment"
+                        <label for="deployment_time" class="block font-bold mb-3">
+                            Deployment Time
+                        </label>
+                        <DatePicker
+                            id="deployment_time"
+                            v-model="schedule.deployment_time"
                             dateFormat="dd/mm/yy"
                             required="true"
                             autofocus
-                            :invalid="submitted && !schedule.date_time_of_deployment"
+                            :invalid="submitted && !schedule.deployment_time"
                             fluid
                             placeholder="Enter Time of Deployment"
-                            showTime hourFormat="24" 
+                            showTime hourFormat="24"
                         />
                         <small
-                            v-if="submitted && !schedule.date_time_of_deployment"
+                            v-if="submitted && !schedule.deployment_time"
                             class="text-red-500"
                         >
-                            Deployment Date is required.
+                            Deployment Time is required.
                         </small>
                     </div>
                     <div>
-                        <label for="date_time_of_withdrawal" class="block font-bold mb-3"
-                            >Withdraw Time</label
-                        >
-                        <DatePicker 
-                            id="date_time_of_withdrawal"
-                            v-model.trim="schedule.date_time_of_withdrawal"
+                        <label for="withdrawal_time" class="block font-bold mb-3">
+                            Withdrawal Time
+                        </label>
+                        <DatePicker
+                            id="withdrawal_time"
+                            v-model="schedule.withdrawal_time"
                             dateFormat="dd/mm/yy"
                             required="true"
                             autofocus
-                            :invalid="submitted && !schedule.date_time_of_withdrawal"
+                            :invalid="submitted && !schedule.withdrawal_time"
                             fluid
                             placeholder="Enter Time of Withdraw"
-                            showTime hourFormat="24" 
-                        
+                            showTime hourFormat="24"
+
                         />
                         <small
-                            v-if="submitted && !schedule.date_time_of_withdrawal"
+                            v-if="submitted && !schedule.withdrawal_time"
                             class="text-red-500"
                         >
-                            Withdraw Time is required.
+                            Withdrawal Time is required.
                         </small>
                     </div>
+
 
                 </div>
                 <template #footer>
@@ -307,8 +278,7 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span v-if="schedule">
-                        Are you sure you want to delete
-                        <b>{{ schedule.name }}</b
+                        Are you sure you want to delete <b>{{ schedule.name }}</b
                         >?
                     </span>
                 </div>
@@ -348,8 +318,7 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span>
-                        Are you sure you want to delete the selected
-                        Schedules?
+                        Are you sure you want to delete the selected Schedules?
                     </span>
                 </div>
                 <template #footer>
@@ -373,7 +342,7 @@
                             label="Yes"
                             icon="pi pi-check"
                             text
-                            @click="deleteSelectedSchedule"
+                            @click="deleteSelectedSchedules"
                         />
                     </div>
                 </template>
@@ -386,7 +355,7 @@ import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
-
+import DatePicker from 'primevue/datepicker';
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
@@ -394,11 +363,8 @@ import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
-import DatePicker from 'primevue/datepicker';
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
-
-
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
@@ -424,6 +390,7 @@ const filters = ref({
 
 const props = defineProps({
     schedules: Array,
+    operations: Array,
 });
 
 const home = ref({
@@ -432,13 +399,10 @@ const home = ref({
     route: "/dashboard",
 });
 
-const breadCumbItems = ref([{ label: "Schedule" }]);
-
-const datetime12h = ref();
-const datetime24h = ref();
-const time = ref();
+const breadCumbItems = ref([{ label: "Schedules" }]);
 
 const schedules = ref(props.schedules);
+const operations = ref(props.operations);
 
 // CRUD Methods
 const openNew = () => {
@@ -451,11 +415,11 @@ const openNew = () => {
 const hideDialog = () => {
     scheduleDialog.value = false;
     submitted.value = false;
-}; 
+};
 
 const saveSchedule = async () => {
     submitted.value = true;
-    if (schedule?.value?.name?.trim()) {
+    if (schedule?.value?.date_of_operation) {
         loading.value = true;
         try {
             if (schedule.value.id) {
@@ -463,6 +427,7 @@ const saveSchedule = async () => {
                     `/schedules/${schedule.value.id}`,
                     schedule.value
                 );
+
                 updateSchedule(response.data);
                 toast.add({
                     severity: "success",
@@ -471,10 +436,8 @@ const saveSchedule = async () => {
                     life: 3000,
                 });
             } else {
-                const response = await axios.post(
-                    "/schedules",
-                    schedule.value
-                );
+                const response = await axios.post("/schedules", schedule.value);
+
                 schedules.value.push(response.data);
                 toast.add({
                     severity: "success",
@@ -528,9 +491,7 @@ const deleteSchedule = async () => {
     loading.value = true;
     try {
         await axios.delete(`/schedules/${schedule.value.id}`);
-        schedules.value = schedules.value.filter(
-            (r) => r.id !== schedule.value.id
-        );
+        schedules.value = schedules.value.filter((r) => r.id !== schedule.value.id);
         toast.add({
             severity: "success",
             summary: "Successful",
@@ -576,18 +537,16 @@ const confirmDeleteSchedule = (scheduleData) => {
     deleteScheduleDialog.value = true;
 };
 
-const deleteSelectedSchedule = async () => {
+const deleteSelectedSchedules = async () => {
     const ids = selectedSchedules.value.map((schedule) => schedule.id);
     loading.value = true;
     try {
         await axios.post("/schedules/bulk-delete", { ids });
-        schedules.value = schedules.value.filter(
-            (r) => !ids.includes(r.id)
-        );
+        schedules.value = schedules.value.filter((r) => !ids.includes(r.id));
         toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "Selected Schedules Deleted",
+            detail: "Selected Schedule Deleted",
             life: 3000,
         });
     } catch (err) {
@@ -629,9 +588,7 @@ const confirmDeleteSelected = () => {
 };
 
 const updateSchedule = (updatedSchedule) => {
-    const index = schedules.value.findIndex(
-        (r) => r.id === updatedSchedule.id
-    );
+    const index = schedules.value.findIndex((r) => r.id === updatedSchedule.id);
     if (index !== -1) {
         schedules.value[index] = updatedSchedule;
     }
