@@ -21,15 +21,17 @@ class OperationController extends Controller
      */
     public function index()
     {
-        // Fetch non-deleted operations
-        $operations = Operation::with(['operationType', 'station', 'funder'])->whereNull('deleted_at')->get();
-        $types = OperationType::all();
+        $operations = Operation::with(['operationType', 'station', 'funder', 'route'])
+            ->whereNull('deleted_at')
+            ->get();
+        $operationTypes = OperationType::all();
         $stations = Station::all();
         $routes = Route::all();
         $funders = Funder::all();
+
         return Inertia::render('Operations/List', [
             'operations' => $operations,
-            'types' => $types,
+            'operationTypes' => $operationTypes,
             'stations' => $stations,
             'routes' => $routes,
             'funders' => $funders,
@@ -41,21 +43,21 @@ class OperationController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('create', new Operation());
+        Gate::authorize('create', Operation::class);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'operation_type_id' => 'required|exists:operation_types,id',
+            'operation_type_id' => 'nullable|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',
-            'created_by' => auth()->id(),
+            'route_id' => 'required|exists:routes,id',
+            'funded_by' => 'required|exists:funders,id',
         ]);
 
+        $validated['created_by'] = auth()->id();
+
         $operation = Operation::create($validated);
-        // $operation->load('Type');
-        // $operation->load('Station');
-        // $operation->load('Route');
-        $operation->load(['operationType', 'station', 'funder']);
+        $operation->load(['operationType', 'station', 'funder', 'route']);
 
         return response()->json($operation, 201);
     }
@@ -67,27 +69,30 @@ class OperationController extends Controller
     {
         Gate::authorize('update', $operation);
 
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'operation_type_id' => 'required|exists:operation_types,id',
             'station_id' => 'required|exists:stations,id',
+            'route_id' => 'required|exists:routes,id',
+            'funded_by' => 'required|exists:funders,id',
         ]);
 
         $operation->update($validated);
-        $operation->load(['operationType', 'station']);
-        // $operation->load('Station');
-        // $operation->load('Route');
+        $operation->load(['operationType', 'station', 'funder', 'route']);
 
         return response()->json($operation, 200);
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show(Operation $operation)
     {
         $operation->load(['station', 'operationType', 'funder', 'operationToTeam']);
-        return Inertia::render('Operation/Show',[
-            'operation' => $operation
+
+        return Inertia::render('Operation/Show', [
+            'operation' => $operation,
         ]);
     }
 
@@ -98,7 +103,7 @@ class OperationController extends Controller
     {
         Gate::authorize('delete', $operation);
 
-        $operation->delete(); // Soft delete
+        $operation->delete();
 
         return response()->json(['message' => 'Operation soft-deleted successfully'], 200);
     }
@@ -113,7 +118,7 @@ class OperationController extends Controller
             'ids.*' => 'exists:operations,id',
         ]);
 
-        Operation::whereIn('id', $validated['ids'])->delete(); // Soft delete
+        Operation::whereIn('id', $validated['ids'])->delete();
 
         return response()->json(['message' => 'Operations soft-deleted successfully'], 200);
     }
@@ -124,6 +129,8 @@ class OperationController extends Controller
     public function restore($id)
     {
         $operation = Operation::withTrashed()->findOrFail($id);
+        Gate::authorize('restore', $operation);
+
         $operation->restore();
 
         return response()->json(['message' => 'Operation restored successfully'], 200);
@@ -134,7 +141,11 @@ class OperationController extends Controller
      */
     public function bulkRestore(Request $request)
     {
-        $validated = $request->validate(['ids' => 'required|array']);
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:operations,id',
+        ]);
+
         Operation::withTrashed()->whereIn('id', $validated['ids'])->restore();
 
         return response()->json(['message' => 'Selected Operations restored successfully'], 200);

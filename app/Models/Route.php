@@ -25,6 +25,12 @@ class Route extends Model
         return $this->belongsTo(Area::class, 'area_id');
     }
 
+    // Relationship with OperationToTeam
+    public function operation()
+    {
+        return $this->hasMany(Operation::class, 'route_id');
+    }
+
     public function RouteType()
     {
         return $this->belongsTo(RouteType::class, 'route_type_id');

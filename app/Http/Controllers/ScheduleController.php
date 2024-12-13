@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
+use App\Models\Operation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate;
@@ -15,9 +16,11 @@ class ScheduleController extends Controller
     public function index()
     {
         // Fetch non-deleted schedules
-        $schedules = Schedule::whereNull('deleted_at')->get();
+        $schedules = Schedule::with('operation')->whereNull('deleted_at')->get();
 
+        $operations = Operation::all();
         return Inertia::render('Schedule/Index', [
+            'operations' => $operations,
             'schedules' => $schedules,
         ]);
     }
@@ -30,12 +33,16 @@ class ScheduleController extends Controller
         Gate::authorize('create', new Schedule());
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'time' => 'required|string|max:255', // Assuming time is stored as a string
+            'operation_id' => 'required|exists:operations,id',
+            'date_of_operation' => 'required|string|max:255',
+            'deployment_time' => 'required|string|max:255',
+            'withdrawal_time' => 'required|string|max:255',
         ]);
 
         $schedule = Schedule::create($validated);
+
+        $schedule->load('operation');
+
         return response()->json($schedule, 201);
     }
 
@@ -47,21 +54,28 @@ class ScheduleController extends Controller
         Gate::authorize('update', $schedule);
 
         $validated = $request->validate([
-            'name' => 'nullable|string|max:255',
-            'type' => 'nullable|string|max:255',
-            'time' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'operation_id' => 'required|exists:operations,id',
+            'date_of_operation' => 'required|string|max:255',
+            'deployment_time' => 'required|string|max:255',
+            'withdrawal_time' => 'required|string|max:255',
         ]);
 
         $schedule->update($validated);
 
+        $schedule->load('operation');
+
         return response()->json($schedule, 200);
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show(Schedule $schedule)
     {
-        $schedule->load('schedule');
-        return Inertia::render('Schedule/Show',[
-            'schedule' => $schedule
+        $schedule->load('operation'); // Corrected from 'schedule' to 'operation'
+        return Inertia::render('Schedule/Show', [
+            'schedule' => $schedule,
         ]);
     }
 

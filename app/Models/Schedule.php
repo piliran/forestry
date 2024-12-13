@@ -16,11 +16,11 @@ class Schedule extends Model
         'operation_id',
         'date_of_operation',
         'deployment_time',
-        'withdrawal_time'
+        'withdrawal_time',
     ];
 
     public function operation()
     {
-        $this->belongsTo(Operation::class, 'operation_id');
+        return $this->belongsTo(Operation::class); // Or any appropriate relationship
     }
 }

@@ -224,7 +224,7 @@
                         <Select
                             id="operationType"
                             v-model="operation.operation_type_id"
-                            :options="types"
+                            :options="operationTypes"
                             optionLabel="name"
                             optionValue="id"
                             placeholder="Select a Operation Type"
@@ -451,7 +451,7 @@ const breadCumbItems = ref([{ label: "Operations" }]);
 
 const props = defineProps({
     operations: Array,
-    types: Array,
+    operationTypes: Array,
     stations: Array,
     routes: Array,
     funders: Array,
@@ -459,7 +459,7 @@ const props = defineProps({
 
 const operations = ref(props.operations);
 const funders = ref(props.funders);
-const types = ref(props.types);
+const operationTypes = ref(props.operationTypes);
 const stations = ref(props.stations);
 const routes = ref(props.routes);
 
@@ -670,14 +670,24 @@ const deleteSelectedOperations = async () => {
     }
 };
 
-const updateOperation = (updatedOperations) => {
-    const index = operations.value.findIndex(
-        (r) => r.id === updatedOperations.id
-    );
+// const updateOperation = (updatedOperations) => {
+//     const index = operations.value.findIndex(
+//         (r) => r.id === updatedOperations.id
+//     );
+//     if (index !== -1) {
+//         operations.value[index] = updatedOperations;
+//     }
+// };
+
+
+const updateOperation = (updatedOperation) => {
+    const index = operations.value.findIndex((r) => r.id === updatedOperation.id);
     if (index !== -1) {
-        operations.value[index] = updatedOperations;
+        operations.value[index] = updatedOperation;
+        operations.value = [...operations.value]; // Ensure reactivity
     }
 };
+
 
 // const updateRole = (updatedRole) => {
 //     const index = roles.value.findIndex((r) => r.id === updatedRole.id);

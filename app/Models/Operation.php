@@ -15,7 +15,9 @@ class Operation extends Model
         'station_id',
         'description',
         'operation_type_id',
-        'created_by'
+        'route_id',
+        'funded_by',
+        'created_by',
     ];
 
     /**
@@ -39,7 +41,7 @@ class Operation extends Model
     // Relationship with Operation Type
     public function operationType()
     {
-        return $this->belongsTo(OperationType::class);
+        return $this->belongsTo(OperationType::class, 'operation_type_id');
     }
 
     // Relationship with Funder
@@ -48,9 +50,22 @@ class Operation extends Model
         return $this->belongsTo(Funder::class, 'funded_by');
     }
 
+
+    // Relationship with Funder
+    public function route()
+    {
+        return $this->belongsTo(Route::class, 'route_id');
+    }
+
     // Relationship with OperationToTeam
     public function operationToTeam()
     {
         return $this->hasMany(OperationToTeam::class, 'operation_id');
+    }
+
+    // Relationship with Schedule
+    public function schedule()
+    {
+        return $this->hasMany(Schedule::class, 'operation_id');
     }
 }
