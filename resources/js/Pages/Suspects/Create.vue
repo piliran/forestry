@@ -1063,8 +1063,6 @@ const saveSuspect = async () => {
                     life: 5000,
                 });
             } else {
-                const errors = err.response.data.errors;
-                console.log(errors);
                 toast.add({
                     severity: "error",
                     summary: "Error",
