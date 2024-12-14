@@ -33,12 +33,12 @@
             <div class="card">
                 <Toolbar class="mb-6">
                     <template #start>
-                        <Button
+                        <!-- <Button
                             label="New"
                             icon="pi pi-plus"
                             class="mr-2"
                             @click="router.visit('add-suspect')"
-                        />
+                        /> -->
 
                         <Button
                             label="Delete"
@@ -1028,7 +1028,7 @@ const selectedItems = ref([]);
 
 const handleCheckboxChange = (item) => {
     if (selectedItems.value[item.id]) {
-        delete selectedItems.value[item.id]; 
+        delete selectedItems.value[item.id];
     } else {
         selectedItems.value[item.id] = 1;
     }

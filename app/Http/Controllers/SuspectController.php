@@ -9,13 +9,17 @@ use App\Models\Crime;
 use App\Models\Offense;
 use App\Models\Confiscate;
 use App\Models\SuspectToConfiscate;
+use App\Models\SuspectToOperation;
 use App\Models\SuspectToOffense;
+use App\Models\OperationToTeam;
 use App\Models\File;
 use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class SuspectController extends Controller
 {
@@ -37,17 +41,22 @@ class SuspectController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($id)
     {
         $districts = District::whereNull('deleted_at')->get();
-        $crimes = Crime::whereNull('deleted_at')->get();
+
         $confiscates = Confiscate::whereNull('deleted_at')->get();
         $offenses = Offense::whereNull('deleted_at')->get();
+        $operationToTeams = OperationToTeam::with(['operation', 'team'])
+            ->whereNull('deleted_at')
+            ->get();
 
         return Inertia::render('Suspects/Create', [
             'districts' => $districts,
             'crimes' => $offenses,
             'confiscates' => $confiscates,
+            'teamOperations' => $operationToTeams,
+            'operationId' => number_format( $id),
         ]);
     }
 
@@ -59,11 +68,11 @@ class SuspectController extends Controller
         Gate::authorize('create', new Suspect());
 
 
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'national_id' => 'required|string|max:255|unique:suspects,national_id',
             'district_id' => 'required|exists:districts,id',
+            'operation_id' => 'required|exists:operations,id',
             'village' => 'required|string|max:255',
             'age' => 'nullable|string|max:255',
             'sex' => 'required|string|max:255',
@@ -78,62 +87,82 @@ class SuspectController extends Controller
         ]);
 
 
-        if ($request->hasFile('suspect_photo_path')) {
-            $validated['suspect_photo_path'] = $request
-                ->file('suspect_photo_path')
-                ->store('suspects/photos', 'public');
-        }
-
-        $suspect = Suspect::create([
-            'name' => $validated['name'],
-            'national_id' => $validated['national_id'],
-            'district_id' => $validated['district_id'],
-            'village' => $validated['village'],
-            'sex' => $validated['sex'],
-            // 'age' => $validated['age'],
-            'TA' => $validated['TA'],
-            'suspect_photo_path' => $validated['suspect_photo_path'] ?? null,
-            'created_by' => auth()->id(),
-        ]);
-
-
-        if ($request->input('offenses')) {
-            foreach ($validated['offenses'] as $offense) {
-
-                SuspectToOffense::create([
-                    'suspect_id' => $suspect->id,
-                    'offense_id' => $offense['id'],
-
-                ]);
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('suspect_photo_path')) {
+                $validated['suspect_photo_path'] = $request
+                    ->file('suspect_photo_path')
+                    ->store('suspects/photos', 'public');
             }
-        }
 
-       if ($request->input('confiscates')) {
-        foreach ($validated['confiscates'] as $confiscate) {
-
-            $suspectToConfiscate = SuspectToConfiscate::create([
-                'suspect_id' => $suspect->id,
-                'confiscate_id' => $confiscate['id'],
-                'quantity' => $confiscate['quantity'],
+            $suspect = Suspect::create([
+                'name' => $validated['name'],
+                'national_id' => $validated['national_id'],
+                'district_id' => $validated['district_id'],
+                'village' => $validated['village'],
+                'sex' => $validated['sex'],
+                // 'age' => $validated['age'],
+                'TA' => $validated['TA'],
+                'suspect_photo_path' => $validated['suspect_photo_path'] ?? null,
+                'created_by' => auth()->id(),
             ]);
 
-            if (!empty($confiscate['files'])) {
-                foreach ($confiscate['files'] as $file) {
-                    $path = $file->store('confiscates/files', 'public');
-                    File::create([
-                        'suspect_to_confiscates_id' => $suspectToConfiscate->id,
-                        'file' => $path,
-                         'created_by' => auth()->id(),
+
+            if ($request->input('offenses')) {
+                foreach ($validated['offenses'] as $offense) {
+
+                    SuspectToOffense::create([
+                        'suspect_id' => $suspect->id,
+                        'offense_id' => $offense['id'],
+
                     ]);
                 }
             }
-        }
-       }
 
+           if ($request->input('confiscates')) {
+            foreach ($validated['confiscates'] as $confiscate) {
 
+                $suspectToConfiscate = SuspectToConfiscate::create([
+                    'suspect_id' => $suspect->id,
+                    'confiscate_id' => $confiscate['id'],
+                    'quantity' => $confiscate['quantity'],
+                ]);
 
+                if (!empty($confiscate['files'])) {
+                    foreach ($confiscate['files'] as $file) {
+                        $path = $file->store('confiscates/files', 'public');
+                        File::create([
+                            'suspect_to_confiscates_id' => $suspectToConfiscate->id,
+                            'file' => $path,
+                             'created_by' => auth()->id(),
+                        ]);
+                    }
+                }
+            }
+           }
 
+           SuspectToOperation::create([
+            'suspect_id' => $suspect->id,
+            'operation_id' => $validated['operation_id']
+        ]);
+
+        DB::commit();
         return response()->json(['message' => 'Suspect created successfully'], 200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Failed to create record',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
+
+
+
+
+
+
 
     }
 

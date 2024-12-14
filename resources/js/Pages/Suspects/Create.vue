@@ -860,22 +860,13 @@ const home = ref({
 });
 
 const breadCumbItems = ref([
-    { label: "Suspects", route: "/suspects" },
+    { label: "Operations", route: "/operations-list" },
     { label: "Add Suspect" },
 ]);
 const genderOptions = ["Male", "Female", "Other"];
 
 const fileupload = ref();
 const suspectfileupload = ref();
-
-const onAdvancedUpload = () => {
-    toast.add({
-        severity: "info",
-        summary: "Success",
-        detail: "File Uploaded",
-        life: 3000,
-    });
-};
 
 const previewUrl = ref(null);
 const previewType = ref(null);
@@ -897,13 +888,18 @@ const props = defineProps({
     suspects: Array,
 
     districts: Array,
+    teamOperations: Array,
     crimes: Array,
     confiscates: Array,
+    operationId: String,
 });
 
 const suspects = ref(props.suspects);
+const operationId = ref(props.operationId);
+console.log(operationId.value);
 
 const confiscates = ref(props.confiscates);
+const teamOperations = ref(props.teamOperations);
 
 const onSuspectFileSelect = (event) => {
     const file = event.files[0];
@@ -1002,6 +998,7 @@ const saveSuspect = async () => {
             suspectPayload.append("TA", suspect.value.TA);
             suspectPayload.append("sex", suspect.value.gender);
             suspectPayload.append("age", suspect.value.DOB);
+            suspectPayload.append("operation_id", operationId.value);
 
             const file = suspectfileupload.value.files[0];
             if (file) {
@@ -1066,6 +1063,8 @@ const saveSuspect = async () => {
                     life: 5000,
                 });
             } else {
+                const errors = err.response.data.errors;
+                console.log(errors);
                 toast.add({
                     severity: "error",
                     summary: "Error",

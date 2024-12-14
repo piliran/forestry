@@ -132,6 +132,29 @@
                     ></Column>
 
                     <Column
+                        header="Add Suspect"
+                        :exportable="false"
+                        style="min-width: 12rem"
+                    >
+                        <template #body="slotProps">
+                            <Link
+                                :href="'/add-suspect/' + slotProps.data.id"
+                                preserve-scroll
+                            >
+                                <Button
+                                    label="Manage Suspect"
+                                    size="small"
+                                    style="
+                                        padding-left: 7px;
+                                        padding-right: 7px;
+                                        font-size: 12px;
+                                    "
+                                />
+                            </Link>
+                        </template>
+                    </Column>
+
+                    <Column
                         field="funder.organization"
                         header="Funded By"
                         sortable
@@ -249,8 +272,6 @@
                         />
                     </div>
 
-
-
                     <!-- Operation Route -->
                     <div>
                         <label for="route" class="block font-bold mb-3">
@@ -267,8 +288,6 @@
                             filter
                         />
                     </div>
-
-
 
                     <div>
                         <label for="funder" class="block font-bold mb-3"
@@ -291,7 +310,6 @@
                             Funder is required.
                         </small>
                     </div>
-
                 </div>
                 <template #footer>
                     <Button
@@ -415,14 +433,14 @@ import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
-import DatePicker from 'primevue/datepicker';
+import DatePicker from "primevue/datepicker";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 import Breadcrumb from "primevue/breadcrumb";
-import Textarea from 'primevue/textarea';
+import Textarea from "primevue/textarea";
 
 import { Link } from "@inertiajs/vue3";
 
@@ -463,7 +481,6 @@ const operationTypes = ref(props.operationTypes);
 const stations = ref(props.stations);
 const routes = ref(props.routes);
 
-
 // CRUD Methods
 const openNew = () => {
     editDialog.value = false;
@@ -489,8 +506,6 @@ const saveOperation = async () => {
                 station_id: operation.value.station_id,
                 route_id: operation.value.route_id,
                 funded_by: operation.value.funded_by,
-
-
             };
             console.log(operationPayload);
             if (operation.value.id) {
@@ -679,15 +694,15 @@ const deleteSelectedOperations = async () => {
 //     }
 // };
 
-
 const updateOperation = (updatedOperation) => {
-    const index = operations.value.findIndex((r) => r.id === updatedOperation.id);
+    const index = operations.value.findIndex(
+        (r) => r.id === updatedOperation.id
+    );
     if (index !== -1) {
         operations.value[index] = updatedOperation;
         operations.value = [...operations.value]; // Ensure reactivity
     }
 };
-
 
 // const updateRole = (updatedRole) => {
 //     const index = roles.value.findIndex((r) => r.id === updatedRole.id);

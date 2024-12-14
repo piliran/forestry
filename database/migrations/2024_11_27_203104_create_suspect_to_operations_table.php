@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('suspect_id');
             $table->foreign('suspect_id')->references('id')->on('suspects')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('operation_team_id');
-            $table->foreign('operation_team_id')->references('id')->on('operation_to_teams')->onDelete('cascade')->onUpdate('cascade');
-            $table->softDeletes(); 
+            $table->unsignedBigInteger('operation_id');
+            $table->foreign('operation_id')->references('id')->on('operations')->onDelete('cascade')->onUpdate('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
