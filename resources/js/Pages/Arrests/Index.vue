@@ -230,27 +230,6 @@
                         </small>
                     </div>
 
-                    <div class="col-12 md:col-6">
-                        <label for="crimes" class="block font-bold mb-2"
-                            >Crime</label
-                        >
-                        <Select
-                            id="id"
-                            v-model="arrest.crime_id"
-                            :options="crimes"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select Crime"
-                            fluid
-                            filter
-                        />
-                        <small
-                            v-if="submitted && !arrest.crime_id"
-                            class="text-red-500"
-                        >
-                            Crime is required.
-                        </small>
-                    </div>
                     <div>
                         <label for="date" class="block font-bold mb-3">
                             Date Arrested

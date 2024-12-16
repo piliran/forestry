@@ -142,6 +142,37 @@
                                 </li>
                             </ul>
                         </div>
+
+                        <div
+                            class="flex-1 bg-white rounded-lg shadow-xl p-8 mt-4"
+                        >
+                            <h4 class="text-xl text-gray-900 font-bold">
+                                Activity Progress
+                            </h4>
+                            <div class="relative mt-6">
+                                <!-- Progress Bar Background -->
+                                <div class="h-1 bg-gray-300 rounded-full">
+                                    <!-- Progress Bar Indicator -->
+                                    <div
+                                        class="h-1 bg-green-500 rounded-full"
+                                        :style="{
+                                            width: progressPercentage,
+                                        }"
+                                    ></div>
+                                </div>
+                                <!-- Status Labels -->
+                                <div
+                                    class="flex justify-between mt-4 text-sm text-gray-600"
+                                >
+                                    <span>Under Investigation</span>
+                                    <span>Arrested</span>
+                                    <span>Released</span>
+                                    <span>Court Pending</span>
+                                    <span>Acquitted</span>
+                                    <span>Convicted</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Offenses and Additional Information -->
@@ -188,6 +219,27 @@
                             </ul>
                         </div>
 
+                        <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
+                            <h4 class="text-xl text-gray-900 font-bold">
+                                Arrest Details
+                            </h4>
+                            <ul class="mt-4 space-y-3 text-gray-700">
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Case Number:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Date Arrested:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                            </ul>
+                        </div>
+
                         <!-- Court Details Card -->
                         <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
                             <h4 class="text-xl text-gray-900 font-bold">
@@ -198,65 +250,29 @@
                                     <span class="font-bold w-40"
                                         >Court Name:</span
                                     >
-                                    <span class="text-gray-700">{{
-                                        props.court?.name ||
-                                        "Central High Court"
-                                    }}</span>
+                                    <span class="text-gray-700">"N/A"</span>
                                 </li>
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-40"
                                         >Case Number:</span
                                     >
-                                    <span class="text-gray-700">{{
-                                        props.court?.case_number || "N/A"
-                                    }}</span>
+                                    <span class="text-gray-700">"N/A"</span>
                                 </li>
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-40">Judge:</span>
-                                    <span class="text-gray-700">{{
-                                        props.court?.judge || "Hon. Justice Doe"
-                                    }}</span>
+                                    <span class="text-gray-700">"N/A"</span>
                                 </li>
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-40"
                                         >Next Hearing Date:</span
                                     >
-                                    <span class="text-gray-700">{{
-                                        props.court?.next_hearing_date ||
-                                        "2024-12-25"
-                                    }}</span>
+                                    <span class="text-gray-700">"N/A"</span>
                                 </li>
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-40">Remarks:</span>
-                                    <span class="text-gray-700">{{
-                                        props.court?.remarks || "Under Review"
-                                    }}</span>
+                                    <span class="text-gray-700">"N/A"</span>
                                 </li>
                             </ul>
-                        </div>
-
-                        <!-- Activity Progress Tracking -->
-                        <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
-                            <h4 class="text-xl text-gray-900 font-bold">
-                                Activity Progress
-                            </h4>
-                            <div class="relative mt-6">
-                                <div class="h-1 bg-gray-300 rounded-full">
-                                    <div
-                                        class="h-1 bg-green-500 rounded-full"
-                                        :style="{
-                                            width: suspect.progress || '0%',
-                                        }"
-                                    ></div>
-                                </div>
-                                <div
-                                    class="flex justify-between mt-4 text-sm text-gray-600"
-                                >
-                                    <span>Arrested</span>
-                                    <span>Under Investigation</span>
-                                    <span>Charged</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -304,7 +320,7 @@
     </AppLayout>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
@@ -346,6 +362,21 @@ const props = defineProps({
     suspect: Object,
 });
 // console.log(props.suspect.age);
+
+const progressMap = {
+    "Under Investigation": "10%",
+    Arrested: "30%",
+    "Released Without Charge": "50%",
+    "Court Hearing Pending": "70%",
+    Acquitted: "90%",
+    Convicted: "100%",
+};
+
+// Compute progress percentage based on status
+const progressPercentage = computed(() => {
+    return progressMap[props.suspect.status] || "0%";
+});
+
 const home = ref({
     icon: "pi pi-home",
     label: "Dashboard",
