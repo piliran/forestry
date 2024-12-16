@@ -65,12 +65,39 @@
                                         suspect.national_id || "N/A"
                                     }}</span>
                                 </li>
-                                <li class="flex border-b py-2">
-                                    <span class="font-bold w-24">Age:</span>
-                                    <span class="text-gray-700">{{
-                                        suspect.age || "N/A"
-                                    }}</span>
+                                <li className="flex border-b py-2">
+                                    <span className="font-bold w-24">Age:</span>
+                                    <span className="text-gray-700">
+                                        {{
+                                            // Calculate age if `suspect.age` exists, otherwise display "N/A"
+                                            (() => {
+                                                if (!suspect.age) return "N/A";
+                                                const birthDate = new Date(
+                                                    suspect.age
+                                                );
+                                                const today = new Date();
+                                                let age =
+                                                    today.getFullYear() -
+                                                    birthDate.getFullYear();
+                                                const monthDifference =
+                                                    today.getMonth() -
+                                                    birthDate.getMonth();
+
+                                                // Adjust if the birthday hasn't occurred yet this year
+                                                if (
+                                                    monthDifference < 0 ||
+                                                    (monthDifference === 0 &&
+                                                        today.getDate() <
+                                                            birthDate.getDate())
+                                                ) {
+                                                    age--;
+                                                }
+                                                return age;
+                                            })()
+                                        }}
+                                    </span>
                                 </li>
+
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-24"
                                         >District:</span
@@ -318,7 +345,7 @@ const filters = ref({
 const props = defineProps({
     suspect: Object,
 });
-// console.log(props.suspect);
+console.log(props.suspect.age);
 const home = ref({
     icon: "pi pi-home",
     label: "Dashboard",

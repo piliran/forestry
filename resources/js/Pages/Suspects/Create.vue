@@ -978,7 +978,6 @@ const validateStep1 = () => {
 const saveSuspect = async () => {
     submitted.value = true;
 
-    // Validate required fields
     if (
         suspect?.value?.name?.trim() &&
         suspect?.value?.national_id?.trim() &&
@@ -989,7 +988,6 @@ const saveSuspect = async () => {
         loading.value = true;
 
         try {
-            // Prepare suspect payload
             const suspectPayload = new FormData();
             suspectPayload.append("name", suspect.value.name);
             suspectPayload.append("national_id", suspect.value.national_id);
@@ -1001,14 +999,14 @@ const saveSuspect = async () => {
             suspectPayload.append("operation_id", operationId.value);
 
             const file = suspectfileupload.value.files[0];
-            if (file) {
-                suspectPayload.append("suspect_photo_path", file);
-            }
+            if (file) suspectPayload.append("suspect_photo_path", file);
+
             if (selectedOffenses) {
                 Object.entries(selectedOffenses).forEach(([id, offense]) => {
                     suspectPayload.append(`offenses[${id}][id]`, offense.id);
                 });
             }
+
             if (selectedItems) {
                 Object.entries(selectedItems).forEach(([id, confiscate]) => {
                     suspectPayload.append(
@@ -1033,43 +1031,84 @@ const saveSuspect = async () => {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
+            console.log("Response:", response);
+
+            if (response.status === 200 && response.data.message) {
+                // Show success message
+                toast.add({
+                    severity: "success",
+                    summary: "Successful",
+                    detail: response.data.message || "Suspect Created",
+                    life: 3000,
+                });
+
+                // Reset form after success
+                selectedItems = {};
+                suspect = {};
+                checkedItem.value = null;
+
+                return;
+            }
+
+            // Handle unexpected response with no success message
             toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Suspect Created",
-                life: 3000,
+                severity: "error",
+                summary: "Error",
+                detail: "An unexpected response was received.",
+                life: 5000,
             });
-            selectedItems = {};
-            suspect = {};
-            checkedItem.value = null;
         } catch (err) {
-            if (err.response && err.response.status === 422) {
-                const errors = err.response.data.errors;
-                for (const [field, messages] of Object.entries(errors)) {
-                    messages.forEach((message) => {
-                        toast.add({
-                            severity: "error",
-                            summary: "Validation Error",
-                            detail: message,
-                            life: 5000,
+            loading.value = false;
+
+            if (err.response) {
+                // Handle HTTP errors
+                if (err.response.status === 422) {
+                    const errors = err.response.data.errors;
+                    for (const [field, messages] of Object.entries(errors)) {
+                        messages.forEach((message) => {
+                            toast.add({
+                                severity: "error",
+                                summary: "Validation Error",
+                                detail: message,
+                                life: 5000,
+                            });
                         });
+                    }
+                } else if (err.response.status === 403) {
+                    toast.add({
+                        severity: "error",
+                        summary: "Error",
+                        detail: "You are not allowed to perform this action.",
+                        life: 5000,
+                    });
+                } else {
+                    toast.add({
+                        severity: "error",
+                        summary: "Error",
+                        detail: "An unexpected error occurred.",
+                        life: 5000,
                     });
                 }
-            } else if (err.response && err.response.status === 403) {
-                toast.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "You are not allowed to perform this action",
-                    life: 5000,
-                });
-            } else {
-                toast.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "An unexpected error occurred.",
-                    life: 5000,
-                });
             }
+
+            // else if (err.request) {
+
+            //     toast.add({
+            //         severity: "error",
+            //         summary: "Error",
+            //         detail: "A network error occurred.",
+            //         life: 5000,
+            //     });
+            // } else {
+
+            //     console.error("Error details:", err);
+            //     toast.add({
+            //         severity: "error",
+            //         summary: "Error",
+            //         detail: "An error occurred while processing your request.",
+            //         life: 5000,
+            //     });
+            // }
         } finally {
             loading.value = false;
             suspectDialog.value = false;

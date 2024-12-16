@@ -64,64 +64,58 @@ class SuspectController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        Gate::authorize('create', new Suspect());
+{
+    Gate::authorize('create', new Suspect());
 
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'national_id' => 'required|string|max:255|unique:suspects,national_id',
+        'district_id' => 'required|exists:districts,id',
+        'operation_id' => 'required|exists:operations,id',
+        'village' => 'required|string|max:255',
+        'age' => 'nullable|string',
+        'sex' => 'required|string|max:255',
+        'TA' => 'required|string|max:255',
+        'suspect_photo_path' => 'nullable|image|max:2048',
+        'confiscates' => 'sometimes|array',
+        'offenses' => 'sometimes|array',
+        'confiscates.*.id' => 'exists:confiscates,id',
+        'confiscates.*.quantity' => 'nullable|string',
+        'confiscates.*.files' => 'array',
+        'confiscates.*.files.*' => 'file|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'national_id' => 'required|string|max:255|unique:suspects,national_id',
-            'district_id' => 'required|exists:districts,id',
-            'operation_id' => 'required|exists:operations,id',
-            'village' => 'required|string|max:255',
-            'age' => 'nullable|string|max:255',
-            'sex' => 'required|string|max:255',
-            'TA' => 'required|string|max:255',
-            'suspect_photo_path' => 'nullable|image|max:2048',
-            'confiscates' => 'required|array',
-            'offenses' => 'required|array',
-            'confiscates.*.id' => 'exists:confiscates,id',
-            'confiscates.*.quantity' => 'nullable|string',
-            'confiscates.*.files' => 'array',
-            'confiscates.*.files.*' => 'file|mimes:jpg,jpeg,png|max:2048',
+    DB::beginTransaction();
+    try {
+        if ($request->hasFile('suspect_photo_path')) {
+            $validated['suspect_photo_path'] = $request
+                ->file('suspect_photo_path')
+                ->store('suspects/photos', 'public');
+        }
+
+        $suspect = Suspect::create([
+            'name' => $validated['name'],
+            'national_id' => $validated['national_id'],
+            'district_id' => $validated['district_id'],
+            'village' => $validated['village'],
+            'sex' => $validated['sex'],
+            'age' => $validated['age'],
+            'TA' => $validated['TA'],
+            'suspect_photo_path' => $validated['suspect_photo_path'] ?? null,
+            'created_by' => auth()->id(),
         ]);
 
-
-        DB::beginTransaction();
-        try {
-            if ($request->hasFile('suspect_photo_path')) {
-                $validated['suspect_photo_path'] = $request
-                    ->file('suspect_photo_path')
-                    ->store('suspects/photos', 'public');
+        if ($request->has('offenses')) {
+            foreach ($validated['offenses'] as $offense) {
+                SuspectToOffense::create([
+                    'suspect_id' => $suspect->id,
+                    'offense_id' => $offense['id'],
+                ]);
             }
+        }
 
-            $suspect = Suspect::create([
-                'name' => $validated['name'],
-                'national_id' => $validated['national_id'],
-                'district_id' => $validated['district_id'],
-                'village' => $validated['village'],
-                'sex' => $validated['sex'],
-                // 'age' => $validated['age'],
-                'TA' => $validated['TA'],
-                'suspect_photo_path' => $validated['suspect_photo_path'] ?? null,
-                'created_by' => auth()->id(),
-            ]);
-
-
-            if ($request->input('offenses')) {
-                foreach ($validated['offenses'] as $offense) {
-
-                    SuspectToOffense::create([
-                        'suspect_id' => $suspect->id,
-                        'offense_id' => $offense['id'],
-
-                    ]);
-                }
-            }
-
-           if ($request->input('confiscates')) {
+        if ($request->has('confiscates')) {
             foreach ($validated['confiscates'] as $confiscate) {
-
                 $suspectToConfiscate = SuspectToConfiscate::create([
                     'suspect_id' => $suspect->id,
                     'confiscate_id' => $confiscate['id'],
@@ -134,37 +128,43 @@ class SuspectController extends Controller
                         File::create([
                             'suspect_to_confiscates_id' => $suspectToConfiscate->id,
                             'file' => $path,
-                             'created_by' => auth()->id(),
+                            'created_by' => auth()->id(),
                         ]);
                     }
                 }
             }
-           }
+        }
 
-           SuspectToOperation::create([
+        SuspectToOperation::create([
             'suspect_id' => $suspect->id,
-            'operation_id' => $validated['operation_id']
+            'operation_id' => $validated['operation_id'],
         ]);
 
         DB::commit();
-        return response()->json(['message' => 'Suspect created successfully'], 200);
 
-        } catch (\Throwable $th) {
-            DB::rollBack();
+        // Immediate return to ensure no further execution
+        return response()->json([
+            'message' => 'Suspect created successfully',
+            'suspect_id' => $suspect->id,
+        ], 200);
 
-            return response()->json([
-                'message' => 'Failed to create record',
-                'error' => $th->getMessage(),
-            ], 500);
-        }
+    } catch (\Throwable $th) {
+        DB::rollBack();
 
+        // Log the error for debugging purposes
+        Log::error('Error creating suspect', [
+            'error' => $th->getMessage(),
+            'trace' => $th->getTraceAsString(),
+        ]);
 
-
-
-
-
-
+        // Immediate return after handling the error
+        return response()->json([
+            'message' => 'Failed to create record',
+            'error' => $th->getMessage(), // Use a generic error in production
+        ], 500);
     }
+}
+
 
 
     /**

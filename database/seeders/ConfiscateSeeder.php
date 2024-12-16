@@ -15,61 +15,61 @@ class ConfiscateSeeder extends Seeder
     {
         DB::table('confiscates')->insert([
             [
-                'name' => 'Motor vehicle',
+                'item' => 'Motor vehicle',
 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Push bikes',
+                'item' => 'Push bikes',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Axes',
+                'item' => 'Axes',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Hoes',
+                'item' => 'Hoes',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Shovels',
+                'item' => 'Shovels',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Panga knives',
+                'item' => 'Panga knives',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Cross-cut saws',
+                'item' => 'Cross-cut saws',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Bow-saws',
+                'item' => 'Bow-saws',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Pit-saws',
+                'item' => 'Pit-saws',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Charcoal bags',
+                'item' => 'Charcoal bags',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Planks',
+                'item' => 'Planks',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Poles',
+                'item' => 'Poles',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Logs',
+                'item' => 'Logs',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],[
-                'name' => 'Fuel wood',
+                'item' => 'Fuel wood',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
