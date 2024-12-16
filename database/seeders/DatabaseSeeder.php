@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             OperationSeeder::class,
             SpecieCategorySeeder::class,
             SpeciesSeeder::class,
+            ConfiscateSeeder::class,
 
 
         ]);

@@ -14,4 +14,10 @@ class Offense extends Model
         'description',
         'penalty'
     ];
+
+    public function offenses()
+    {
+        return $this->belongsToMany(Offense::class, 'suspect_to_offenses', 'offense_id', 'suspect_id');
+    }
+
 }

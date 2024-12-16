@@ -151,7 +151,7 @@
                         sortable
                         style="min-width: 12rem"
                     ></Column>
-                    <Column
+                    <!-- <Column
                         header="Village"
                         field="village"
                         sortable
@@ -162,7 +162,7 @@
                         field="TA"
                         sortable
                         style="min-width: 12rem"
-                    ></Column>
+                    ></Column> -->
 
                     <Column
                         header="Status"
@@ -176,14 +176,20 @@
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
+
+                            <Link
+                                :href="'/suspect/' + slotProps.data.id"
+                                preserve-scroll
+                            >
                             <Button
                                 icon="pi pi-eye"
                                 outlined
                                 rounded
                                 class="mr-2"
                                 severity="info"
-                                @click="viewSuspect(slotProps.data)"
+
                             />
+                            </Link>
                             <Button
                                 icon="pi pi-pencil"
                                 outlined

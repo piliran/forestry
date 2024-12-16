@@ -63,6 +63,12 @@ class Operation extends Model
         return $this->hasMany(OperationToTeam::class, 'operation_id');
     }
 
+    public function suspects()
+{
+    return $this->belongsToMany(Suspect::class, 'suspect_to_operations', 'operation_id', 'suspect_id');
+}
+
+
     // Relationship with Schedule
     public function schedule()
     {

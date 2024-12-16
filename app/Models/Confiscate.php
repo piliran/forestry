@@ -16,8 +16,8 @@ class Confiscate extends Model
     // Define fillable fields
     protected $fillable = [
         'item',
-        // 'quantity',        
-        // 'suspect_id',   
+        // 'quantity',
+        // 'suspect_id',
         // 'proof',
     ];
 
@@ -28,10 +28,16 @@ class Confiscate extends Model
         return $this->belongsTo(District::class, 'district_id');
     }
 
-    public function Suspect()
-    {
-        return $this->belongsTo(Suspect::class, 'suspect_id');
-    }
+    public function suspect()
+{
+    return $this->belongsTo(Suspect::class, 'suspect_id');
+}
+
+public function suspects()
+{
+    return $this->belongsToMany(Suspect::class, 'suspect_to_confiscates', 'confiscate_id', 'suspect_id');
+}
+
 
     public function Encroached()
     {

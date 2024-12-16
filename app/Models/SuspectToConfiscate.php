@@ -23,13 +23,18 @@ class SuspectToConfiscate extends Model
 
     // Define the relationship with the Suspect model
     public function suspect()
-    {
-        return $this->belongsTo(Suspect::class, 'suspect_id');
-    }
+{
+    return $this->belongsTo(Suspect::class, 'suspect_id');
+}
 
-    // Define the relationship with the Confiscate model
-    public function confiscate()
+public function confiscate()
+{
+    return $this->belongsTo(Confiscate::class, 'confiscate_id');
+}
+
+
+    public function files()
     {
-        return $this->belongsTo(Confiscate::class, 'confiscate_id');
+        return $this->belongsToMany(File::class, 'files');
     }
 }

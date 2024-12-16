@@ -170,10 +170,12 @@ class SuspectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Suspect $suspect)
+    public function show($id)
     {
-        $suspect->load(['country', 'district']);
-        return Inertia::render('Admin/ShowSuspect', [
+        $suspect= Suspect::find($id);
+        Log::info( $suspect);
+        $suspect->load( ['district','confiscates','operations','offenses','files']);
+        return Inertia::render('Suspects/Show', [
             'suspect' => $suspect,
         ]);
     }

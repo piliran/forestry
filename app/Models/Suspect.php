@@ -75,7 +75,7 @@ class Suspect extends Model
     }
 
 
-   
+
     /**
      * Get the district associated with the suspect.
      */
@@ -97,4 +97,29 @@ class Suspect extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+
+    public function confiscates()
+    {
+        return $this->belongsToMany(Confiscate::class, 'suspect_to_confiscates', 'suspect_id', 'confiscate_id');
+    }
+
+
+    public function offenses()
+{
+    return $this->belongsToMany(Offense::class, 'suspect_to_offenses', 'suspect_id', 'offense_id');
+}
+
+
+public function operations()
+{
+    return $this->belongsToMany(Operation::class, 'suspect_to_operations', 'suspect_id', 'operation_id');
+}
+
+public function files()
+{
+    return $this->hasManyThrough(File::class, SuspectToConfiscate::class, 'suspect_id', 'suspect_to_confiscates_id');
+}
+
+
 }

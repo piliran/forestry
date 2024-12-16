@@ -133,7 +133,7 @@ Route::resource('suspects', SuspectController::class)->middleware([HandlePrecogn
 Route::post('/suspects/bulk-delete', [SuspectController::class, 'batchDelete']);
 Route::post('/update-suspect', [SuspectController::class, 'updateSuspect']);
 Route::get('/add-suspect/{id}', [SuspectController::class, 'create']);
-// Route::get('/add-suspect', [SuspectController::class, 'create']);
+Route::get('/suspect/{id}', [SuspectController::class, 'show']);
 
 
 
