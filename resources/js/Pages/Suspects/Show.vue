@@ -35,7 +35,7 @@
                     class="my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4"
                 >
                     <!-- Suspect Personal Information Card -->
-                    <div class="flex flex-col lg:w-1/2">
+                    <div class="flex flex-col lg:w-1/2 gap:8">
                         <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
                             <h4 class="text-xl text-gray-900 font-bold">
                                 Suspect Personal Information
@@ -93,12 +93,10 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
 
-                    <!-- Offenses and Additional Information -->
-                    <div class="flex flex-col lg:w-1/2 space-y-4">
-                        <!-- Offenses Card -->
-                        <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
+                        <div
+                            class="flex-1 bg-white rounded-lg shadow-xl p-8 mt-4"
+                        >
                             <h4 class="text-xl text-gray-900 font-bold">
                                 Offenses
                             </h4>
@@ -117,6 +115,11 @@
                                 </li>
                             </ul>
                         </div>
+                    </div>
+
+                    <!-- Offenses and Additional Information -->
+                    <div class="flex flex-col lg:w-1/2 space-y-4">
+                        <!-- Offenses Card -->
 
                         <!-- Station and Operation Details Card -->
                         <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
@@ -153,6 +156,53 @@
                                     >
                                     <span class="text-gray-700">{{
                                         props.suspect.arresting_officer || "N/A"
+                                    }}</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Court Details Card -->
+                        <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
+                            <h4 class="text-xl text-gray-900 font-bold">
+                                Court Details
+                            </h4>
+                            <ul class="mt-4 space-y-3 text-gray-700">
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Court Name:</span
+                                    >
+                                    <span class="text-gray-700">{{
+                                        props.court?.name ||
+                                        "Central High Court"
+                                    }}</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Case Number:</span
+                                    >
+                                    <span class="text-gray-700">{{
+                                        props.court?.case_number || "N/A"
+                                    }}</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40">Judge:</span>
+                                    <span class="text-gray-700">{{
+                                        props.court?.judge || "Hon. Justice Doe"
+                                    }}</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Next Hearing Date:</span
+                                    >
+                                    <span class="text-gray-700">{{
+                                        props.court?.next_hearing_date ||
+                                        "2024-12-25"
+                                    }}</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40">Remarks:</span>
+                                    <span class="text-gray-700">{{
+                                        props.court?.remarks || "Under Review"
                                     }}</span>
                                 </li>
                             </ul>
