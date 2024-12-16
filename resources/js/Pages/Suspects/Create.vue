@@ -896,7 +896,7 @@ const props = defineProps({
 
 const suspects = ref(props.suspects);
 const operationId = ref(props.operationId);
-console.log(operationId.value);
+// console.log(operationId.value);
 
 const confiscates = ref(props.confiscates);
 const teamOperations = ref(props.teamOperations);
@@ -913,7 +913,7 @@ const onSuspectFileSelect = (event) => {
         } else {
             previewSuspectType.value = null;
             previewSuspectUrl.value = null;
-            console.error("Unsupported file type");
+            // console.error("Unsupported file type");
             return;
         }
 
@@ -951,7 +951,7 @@ const handleOffenseCheckboxChange = (item) => {
     } else {
         selectedOffenses[item.id] = { id: item.id };
         offense.value = item;
-        console.log(selectedOffenses);
+        // console.log(selectedOffenses);
     }
 };
 
@@ -1031,7 +1031,7 @@ const saveSuspect = async () => {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
-            console.log("Response:", response);
+            // console.log("Response:", response);
 
             if (response.status === 200 && response.data.message) {
                 // Show success message

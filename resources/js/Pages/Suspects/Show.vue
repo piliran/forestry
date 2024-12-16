@@ -345,7 +345,7 @@ const filters = ref({
 const props = defineProps({
     suspect: Object,
 });
-console.log(props.suspect.age);
+// console.log(props.suspect.age);
 const home = ref({
     icon: "pi pi-home",
     label: "Dashboard",
