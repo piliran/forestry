@@ -303,26 +303,25 @@
                         </small>
                     </div>
 
-                    <div>
-                        <label
-                            for="contact_person"
-                            class="block font-bold mb-3"
+                    <div class="col-12 md:col-6">
+                        <label for="contact_person" class="block font-bold mb-2"
+                            >Contact Person</label
                         >
-                            Contact Person
-                        </label>
-                        <InputText
-                            id="contact_person"
-                            v-model.trim="department.contact_person"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !department.contact_person"
+                        <Select
+                            id="id"
+                            v-model="department.contact_person"
+                            :options="users"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Contact Person"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !department.contact_person"
                             class="text-red-500"
                         >
-                            Department is required.
+                            Contact person is required.
                         </small>
                     </div>
                 </div>
@@ -572,6 +571,9 @@ const saveDepartment = async () => {
 const editDepartment = (departmentData) => {
     editDialog.value = true;
     department.value = { ...departmentData };
+    // console.log(departmentData);
+    department.value.contact_person = departmentData.contact_person.id;
+
     departmentDialog.value = true;
 };
 

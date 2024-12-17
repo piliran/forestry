@@ -20,10 +20,12 @@ class DepartmentController extends Controller
         $departments = Department::with('contactPerson')->whereNull('deleted_at')->get();
        //$departments = Department::whereNull('deleted_at')->with('user')->get();
         //$users = User::all();
-
+        $users = User::with(['roles', 'district', 'privileges'])
+        ->whereNull('deleted_at')
+        ->get();
         return Inertia::render('Department/Index', [
             'departments' => $departments,
-            //'users' => $users,
+            'users' => $users,
 
         ]);
     }

@@ -100,8 +100,8 @@ const permissions = computed(() => page.props.can || {});
 const sidebarRef = ref(null);
 const savedScrollPosition = ref(0);
 
-// if (roles.value.includes("Admin")) {
-//     console.log("User is an Admin");
+// if (roles.value.includes("admin")) {
+//     console.log("User is an admin");
 // }
 
 // if (permissions.value.create_user) {
@@ -120,7 +120,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/dashboard",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
     {
         label: "Countries",
@@ -128,7 +128,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/countries",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
 
     {
@@ -139,7 +139,7 @@ const items = ref([
         icon: "permissions",
         route: "/privileges",
 
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
 
     {
@@ -147,7 +147,7 @@ const items = ref([
         icon: "roles",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
 
         items: [
             {
@@ -164,24 +164,22 @@ const items = ref([
         ],
     },
 
-    
     {
         label: "Users",
         icon: "users",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/users",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
 
-    
     {
         label: "Funders",
         icon: "funders",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/funders",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
     {
         label: "Department",
@@ -189,7 +187,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/department",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
     {
         label: "Zones",
@@ -197,7 +195,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/zones",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
     {
         label: "Districts",
@@ -206,7 +204,7 @@ const items = ref([
         forwardIcon: false,
 
         route: "/districts",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
     {
         label: "Stations",
@@ -214,7 +212,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/stations",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
     {
         label: "Staff",
@@ -222,7 +220,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/staff",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
 
     {
@@ -232,7 +230,7 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
 
         route: "/offenses",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
 
     {
@@ -242,7 +240,7 @@ const items = ref([
         forwardIcon: false,
 
         route: "/confiscates",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
 
     {
@@ -250,7 +248,7 @@ const items = ref([
         icon: "road",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
 
         items: [
             {
@@ -271,7 +269,7 @@ const items = ref([
         icon: "location",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
 
         items: [
             {
@@ -291,7 +289,7 @@ const items = ref([
         icon: "road",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
 
         items: [
             {
@@ -312,7 +310,7 @@ const items = ref([
         icon: "operations",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
 
         items: [
             {
@@ -335,16 +333,15 @@ const items = ref([
         forwardIcon: false,
 
         route: "/schedules",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
-
 
     {
         label: "Teams",
         icon: "team",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
 
         items: [
             {
@@ -364,14 +361,14 @@ const items = ref([
             },
         ],
     },
-    
+
     {
         label: "Suspects",
         icon: "users",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/suspects",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
 
     {
@@ -381,7 +378,7 @@ const items = ref([
         forwardIcon: false,
 
         route: "/arrests",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
 
     {
@@ -391,15 +388,8 @@ const items = ref([
         forwardIcon: false,
 
         route: "/convictions",
-        allowedRoles: ["Admin", "User"],
+        allowedRoles: ["admin", "User"],
     },
-   
-
-    
-
-    
-
-    
 ]);
 
 const dropdownVisibility = ref([]);

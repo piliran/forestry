@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
 
             StationSeeder::class,
             RoleCategorySeeder::class,
+            RoleSeeder::class,
+
             PermissionSeeder::class,
             TableSeeder::class,
             TableToPermissionSeeder::class,

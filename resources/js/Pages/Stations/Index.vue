@@ -124,7 +124,7 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="contact_person"
+                        field="contact_person.name"
                         header="Contact Person"
                         sortable
                         style="min-width: 10rem"
@@ -245,23 +245,26 @@
                             Email is required.
                         </small>
                     </div>
-                    <div>
-                        <label for="contact_person" class="block font-bold mb-3">
-                            Contact Person
-                        </label>
-                        <InputText
-                            id="contact_person"
-                            v-model.trim="station.contact_person"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !station.contact_person"
+
+                    <div class="col-12 md:col-6">
+                        <label for="contact_person" class="block font-bold mb-2"
+                            >Contact Person</label
+                        >
+                        <Select
+                            id="id"
+                            v-model="station.contact_person"
+                            :options="users"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select Contact Person"
                             fluid
+                            filter
                         />
                         <small
                             v-if="submitted && !station.contact_person"
                             class="text-red-500"
                         >
-                            Contact Person is required.
+                            Contact person is required.
                         </small>
                     </div>
                 </div>
@@ -421,14 +424,16 @@ const breadCumbItems = ref([{ label: "Stations" }]);
 const props = defineProps({
     stations: Array,
     districts: Array,
+    users: Array,
 });
 
 const stations = ref(props.stations);
 const districts = ref(props.districts);
+const users = ref(props.users);
 
-onMounted(async () => {
-    console.log(stations);
-});
+// onMounted(async () => {
+//     console.log(stations);
+// });
 
 // CRUD Methods
 const openNew = () => {
@@ -508,6 +513,8 @@ const saveStation = async () => {
 const editStation = (stationData) => {
     editDialog.value = true;
     station.value = { ...stationData };
+    station.value.contact_person = stationData.contact_person.id;
+
     stationDialog.value = true;
 };
 

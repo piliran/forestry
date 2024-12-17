@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Station;
 use App\Models\District;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
@@ -17,12 +18,17 @@ class StationController extends Controller
     public function index()
     {
         // Fetch non-deleted stations
-        $stations = Station::with('district')->whereNull('deleted_at')->get();
+        $stations = Station::with('district','contactPerson')->whereNull('deleted_at')->get();
         $districts = District::all();
+        $users = User::with(['roles', 'district', 'privileges'])
+        ->whereNull('deleted_at')
+        ->get();
+
 
         return Inertia::render('Stations/Index', [
             'stations' => $stations,
             'districts' => $districts,
+            'users' => $users,
         ]);
     }
 
