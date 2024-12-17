@@ -136,7 +136,7 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="contact_person"
+                        field="contact_person.name"
                         header="Contact Person"
                         sortable
                         style="min-width: 10rem"
@@ -488,6 +488,7 @@ const home = ref({
 const breadCumbItems = ref([{ label: "Department" }]);
 
 const departments = ref(props.departments);
+// console.log(departments)
 const users = ref(props.users);
 
 // CRUD Methods

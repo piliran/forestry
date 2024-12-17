@@ -575,19 +575,22 @@ const editOperation = (operationData) => {
     editDialog.value = true;
 
     operation.value = { ...operationData };
-    operation.value.route_id = operationData.route.id;
-    operation.value.operation_type_id = operationData.operation_type.id;
-    operation.value.funded_by = operationData.funder.id;
+    if (operationData.route != null) {
+        operation.value.route_id = operationData.route.id;
+    }
+    if (operationData.funder != null) {
+        operation.value.funded_by = operationData.funder.id;
+    }
+    // operation.value.route_id = operationData.route.id;
+    // operation.value.operation_type_id = operationData.operation_type.id;
+    // operation.value.funded_by = operationData.funder.id;
     // console.log(operationData);
-    // operation.value.districts = operationData.district.map((p) => p.id);
-    // operation.value.type = operationData.type.map((p) => p.id);
+
     if (Array.isArray(operationData.type)) {
-        operation.value.type = operationData.operation_type.map((p) => p.id); // Assuming districts are objects with 'id' and 'name'
+        operation.value.type = operationData.operation_type.map((p) => p.id);
     } else if (operationData.type && typeof operationData.type === "object") {
-        // Handle the case where operationData.district is a single object
         operation.value.type = [operationData.type.id];
     } else {
-        // Handle the case where operationData.district is null or undefined
         operation.value.type = [];
     }
 

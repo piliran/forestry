@@ -17,7 +17,7 @@ class DepartmentController extends Controller
     public function index()
     {
         // Fetch non-deleted departments
-        $departments = Department::whereNull('deleted_at')->get();
+        $departments = Department::with('contactPerson')->whereNull('deleted_at')->get();
        //$departments = Department::whereNull('deleted_at')->with('user')->get();
         //$users = User::all();
 
