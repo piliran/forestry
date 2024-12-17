@@ -44,6 +44,8 @@ class OperationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+
     public function store(Request $request)
     {
         Gate::authorize('create', Operation::class);
@@ -59,55 +61,89 @@ class OperationController extends Controller
 
         $validated['created_by'] = auth()->id();
 
-        $operation = Operation::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'],
-            'operation_type_id' => $validated['operation_type_id'],
-            'station_id' => $validated['station_id'],
-            'created_by' => auth()->id(),
-        ]);
+        DB::beginTransaction();
+        try {
+            $operation = Operation::create([
+                'name' => $validated['name'],
+                'description' => $validated['description'],
+                'operation_type_id' => $validated['operation_type_id'],
+                'station_id' => $validated['station_id'],
+                'created_by' => auth()->id(),
+            ]);
 
-       FunderToOperation::create([
-            'funded_by' => $validated['funded_by'],
-            'operation_id' => $operation->id,
+            FunderToOperation::create([
+                'funded_by' => $validated['funded_by'],
+                'operation_id' => $operation->id,
+            ]);
 
-        ]);
+            RouteToOperation::create([
+                'route_id' => $validated['route_id'],
+                'operation_id' => $operation->id,
+            ]);
 
-        RouteToOperation::create([
-            'route_id' => $validated['route_id'],
-            'operation_id' => $operation->id,
+            DB::commit();
 
-        ]);
+            $operation->load(['operationType', 'station', 'funder', 'route']);
 
-        $operation->load(['operationType', 'station', 'funder', 'route']);
-
-        return response()->json($operation, 201);
+            return response()->json($operation, 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Failed to create operation'], 500);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Operation $operation)
-    {
 
-        $operation = Operation::findOrFail($request->id);
 
-        Gate::authorize('update', $operation);
+public function update(Request $request, Operation $operation)
+{
+    $operation = Operation::findOrFail($request->id);
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'operation_type_id' => 'required|exists:operation_types,id',
-            'station_id' => 'required|exists:stations,id',
-            'route_id' => 'required|exists:routes,id',
-            'funded_by' => 'required|exists:funders,id',
+    Gate::authorize('update', $operation);
+
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'operation_type_id' => 'required|exists:operation_types,id',
+        'station_id' => 'required|exists:stations,id',
+        'route_id' => 'required|exists:routes,id',
+        'funded_by' => 'required|exists:funders,id',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        $operation->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'operation_type_id' => $validated['operation_type_id'],
+            'station_id' => $validated['station_id'],
         ]);
 
-        $operation->update($validated);
+        // Update related FunderToOperation
+        FunderToOperation::updateOrCreate(
+            ['operation_id' => $operation->id],
+            ['funded_by' => $validated['funded_by']]
+        );
+
+        // Update related RouteToOperation
+        RouteToOperation::updateOrCreate(
+            ['operation_id' => $operation->id],
+            ['route_id' => $validated['route_id']]
+        );
+
+        DB::commit();
+
         $operation->load(['operationType', 'station', 'funder', 'route']);
 
         return response()->json($operation, 200);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' => 'Failed to update operation'], 500);
     }
+}
+
 
     /**
      * Display the specified resource.

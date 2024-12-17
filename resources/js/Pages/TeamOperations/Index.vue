@@ -351,7 +351,7 @@ const operationToTeams = ref(props.operationToTeams);
 const operations = ref(props.operations);
 const teams = ref(props.teams);
 
-console.log(operationToTeams);
+// console.log(operationToTeams);
 
 const openNewOperationToTeam = () => {
     editDialog.value = false;
@@ -374,9 +374,14 @@ const saveOperationToTeam = async () => {
 
         try {
             const operationToTeamPayload = new FormData();
-            operationToTeamPayload.append("team_id", operationToTeam.value.team_id);
-            operationToTeamPayload.append("operation_id", operationToTeam.value.operation_id);
-
+            operationToTeamPayload.append(
+                "team_id",
+                operationToTeam.value.team_id
+            );
+            operationToTeamPayload.append(
+                "operation_id",
+                operationToTeam.value.operation_id
+            );
 
             if (operationToTeam.value.id) {
                 operationToTeamPayload.append("id", operationToTeam.value.id);
@@ -445,7 +450,6 @@ const saveOperationToTeam = async () => {
     }
 };
 
-
 const editOperationToTeam = (operationToTeamData) => {
     editDialog.value = true;
     operationToTeam.value = { ...operationToTeamData };
@@ -506,7 +510,9 @@ const confirmDeleteOperationToTeam = (operationToTeamData) => {
 };
 
 const deleteSelectedOperationToTeams = async () => {
-    const ids = selectedOperationToTeam.value.map((operationToTeam) => operationToTeam.id);
+    const ids = selectedOperationToTeam.value.map(
+        (operationToTeam) => operationToTeam.id
+    );
     loading.value = true;
     try {
         await axios.post("/team-operations/bulk-delete", { ids });

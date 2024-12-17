@@ -78,6 +78,8 @@ class OperationToTeamController extends Controller
 
             DB::commit();
 
+
+            $operationToTeam->load(['operation', 'team']);
             return response()->json($operationToTeam, 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -99,6 +101,9 @@ class OperationToTeamController extends Controller
         ]);
 
         $operationToTeam->update($validated);
+
+        $operationToTeam->load(['operation', 'team']);
+
 
         return response()->json($operationToTeam, 200);
     }

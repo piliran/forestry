@@ -112,7 +112,7 @@
                         style="min-width: 10rem"
                     ></Column>
                     <Column
-                        field="operationType.name"
+                        field="operation_type.name"
                         header="Operation Type"
                         sortable
                         style="min-width: 10rem"
@@ -480,7 +480,7 @@ const funders = ref(props.funders);
 const operationTypes = ref(props.operationTypes);
 const stations = ref(props.stations);
 const routes = ref(props.routes);
-
+// console.log(operations);
 // CRUD Methods
 const openNew = () => {
     editDialog.value = false;
@@ -526,6 +526,7 @@ const saveOperation = async () => {
                     severity: "success",
                     summary: "Success",
                     detail: "Operation updated successfully.",
+                    life: 5000,
                 });
             } else {
                 const response = await axios.post(
@@ -537,6 +538,7 @@ const saveOperation = async () => {
                     severity: "success",
                     summary: "Success",
                     detail: "Operation added successfully.",
+                    life: 5000,
                 });
             }
 
