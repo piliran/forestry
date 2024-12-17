@@ -182,7 +182,7 @@ public function isAdministrator(): bool
 
 protected function getUserRoles(): array
 {
-    return$this->roles()
+    return $this->roles()
         ->pluck('name')
         ->toArray();
 }

@@ -95,33 +95,29 @@ import { router } from "@inertiajs/vue3";
 
 const page = usePage();
 
-const roles = computed(() => page.props.roles || []);
+const roles = computed(() => {
+    const userRoles = page.props.userRoles || [];
+    return userRoles
+        .filter((item) => item?.role?.name)
+        .map((item) => item.role.name);
+});
+
 const permissions = computed(() => page.props.can || {});
+
 const sidebarRef = ref(null);
 const savedScrollPosition = ref(0);
 
-const userRoles = [
-    "Monitoring and Evaluation Officer",
-    "Natural Resources Management Team Leader",
-    "Forestry Assistant",
-    "District Forestry Officer",
-    "Forestry Specialist",
-    "admin",
-];
+if (roles.value.includes("admin")) {
+    console.log("User is an admin");
+}
 
-// if (roles.value.includes("admin")) {
-//     console.log("User is an admin");
-// }
-
-// if (permissions.value.create_user) {
-//     console.log("User can create users");
-// }
 onMounted(() => {
     const storedPosition = localStorage.getItem("sidebarScrollPosition");
     if (storedPosition && sidebarRef.value) {
         sidebarRef.value.scrollTop = parseInt(storedPosition, 10);
     }
 });
+
 const items = ref([
     {
         label: "Dashboard",
@@ -544,14 +540,7 @@ const items = ref([
         forwardIcon: false,
 
         route: "/convictions",
-        allowedRoles: [
-            "Monitoring and Evaluation Officer",
-            "Natural Resources Management Team Leader",
-            "Forestry Assistant",
-            "District Forestry Officer",
-            "Forestry Specialist",
-            "admin",
-        ],
+        allowedRoles: ["admin", "User"],
     },
 ]);
 

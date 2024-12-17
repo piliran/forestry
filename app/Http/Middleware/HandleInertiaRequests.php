@@ -73,10 +73,11 @@ class HandleInertiaRequests extends Middleware
      * @return array
      */
     protected function getUserRoles(): array
-    {
-        return auth()->user()
-            ->roles()
-            ->pluck('name') // Retrieve only the role names
-            ->toArray();
-    }
+{
+    return auth()->user()
+        ->roles() // The belongsToMany relationship already uses 'user_roles' pivot table
+        ->where('user_roles.user_id', auth()->id()) // Explicitly filter by the authenticated user
+        ->pluck('name')
+        ->toArray();
+}
 }
