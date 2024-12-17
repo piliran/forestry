@@ -35,7 +35,7 @@ class User extends Authenticatable
         'email',
         'gender',
         'DOB',
-        'district_id',
+        // 'district_id',
         'city',
         'country',
         'position',
@@ -84,10 +84,22 @@ class User extends Authenticatable
     }
 
 
+    // public function district()
+    // {
+    //     return $this->belongsTo(District::class,'district_id');
+    // }
+
     public function district()
-    {
-        return $this->belongsTo(District::class,'district_id');
-    }
+{
+    return $this->hasOneThrough(
+        District::class,           // Final Model (Route)
+        UserDistrict::class,// Intermediate Model
+        'user_id',         // Foreign key on RouteToOperation
+        'id',                   // Foreign key on Route
+        'id',                   // Local key on Operation
+        'district_id'              // Local key on RouteToOperation
+    );
+}
 
     public function roles()
     {

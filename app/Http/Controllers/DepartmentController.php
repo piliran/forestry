@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class DepartmentController extends Controller
 {
@@ -26,6 +27,7 @@ class DepartmentController extends Controller
 
         ]);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -76,8 +78,10 @@ class DepartmentController extends Controller
     public function show(Department $department)
     {
         $department->load('contactPerson');
+        Log::info($department);
+
         return Inertia::render('Department/Show',[
-            'deparment' => $department
+            'department' => $department
         ]);
     }
 

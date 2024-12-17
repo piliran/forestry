@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('code')->nullable();
             $table->string('location')->nullable();
-            $table->string('contact_person')->nullable();
+            $table->unsignedBigInteger('contact_person');
+            $table->foreign('contact_person')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('website')->nullable();

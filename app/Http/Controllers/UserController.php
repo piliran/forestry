@@ -11,6 +11,7 @@ use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\RoleToPermission;
+use App\Models\UserDistrict;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 
@@ -104,7 +105,7 @@ class UserController extends Controller
     {
         Gate::authorize('create', new User);
 
-        $request->validate([
+       $validated= $request->validate([
             'title' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
@@ -123,10 +124,18 @@ class UserController extends Controller
             'email' => $request->email,
             'gender' => $request->gender,
             'DOB' => $request->DOB,
-            'district_id' => $request->district_id,
+
             'national_id' => $request->national_id,
             'password' => bcrypt('12345678'),
         ]);
+
+       UserDistrict::create([
+            'district_id' => $validated['district_id'],
+            'user_id' => $user->id,
+
+        ]);
+
+
 
         $user->load(['roles', 'district', 'permissions']);
 

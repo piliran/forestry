@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 'email' => 'zpiliran@gmail.com',
                 'gender' => 'Male',
                 'DOB' => '19997-05-15',
-                'district_id' => District::first()->id, // Assuming a district exists
+                // 'district_id' => District::first()->id,
                 'age' => '39',
                 'position' => 'Manager',
                 'national_id' => '123456789',
@@ -48,7 +48,7 @@ class UserSeeder extends Seeder
                 'email' => 'wongani@gmail.com',
                 'gender' => 'Male',
                 'DOB' => '19994-05-15',
-                'district_id' => District::first()->id, // Assuming a district exists
+                // 'district_id' => District::first()->id,
                 'age' => '39',
                 'position' => 'Manager',
                 'national_id' => '123456789',
@@ -56,7 +56,7 @@ class UserSeeder extends Seeder
                 'account_status' => 'Active',
                 'marital_status' => 'Single',
                 'email_verified_at' => now(),
-                'password' => bcrypt('wongani@gmail.com'), // Example encrypted password
+                'password' => bcrypt('wongani@gmail.com'),
                 'remember_token' => null,
                 'current_team_id' => null,
                 'profile_photo_path' => null,
@@ -70,7 +70,7 @@ class UserSeeder extends Seeder
                 'email' => 'kwisongole@gmail.com',
                 'gender' => 'Female',
                 'DOB' => '1997-07-20',
-                'district_id' => District::skip(1)->first()->id, // Reference another district
+                // 'district_id' => District::skip(1)->first()->id,
                 'age' => '34',
                 'position' => 'Assistant',
                 'national_id' => '987654321',

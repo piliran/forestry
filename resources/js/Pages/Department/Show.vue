@@ -814,236 +814,20 @@ import axios from "axios";
 
 const toast = useToast();
 
-// Reactive State Variables
-const dt = ref();
-const departmentDialog = ref(false);
-const editDialog = ref(false);
-const loading = ref(false);
-const deleteDepartmentDialog = ref(false);
-const deleteDepartmentsDialog = ref(false);
-const department = ref({});
-const selectedDepartments = ref([]);
-const submitted = ref(false);
-const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
-const props = defineProps({
-    departments: Array,
-    users: Array,
-});
-
 const home = ref({
     icon: "pi pi-home",
     label: "Dashboard",
     route: "/dashboard",
 });
-
 const breadCumbItems = ref([{ label: "Department" }]);
 
-const departments = ref(props.departments);
-const users = ref(props.users);
+const props = defineProps({
+    department: Object,
+});
 
-// CRUD Methods
-const openNew = () => {
-    editDialog.value = false;
-    department.value = {};
-    submitted.value = false;
-    departmentDialog.value = true;
-};
+const department = ref(props.department);
 
-const hideDialog = () => {
-    departmentDialog.value = false;
-    submitted.value = false;
-};
-
-const saveDepartment = async () => {
-    submitted.value = true;
-    if (department?.value?.name?.trim()) {
-        loading.value = true;
-        try {
-            if (department.value.id) {
-                const response = await axios.put(
-                    `/department/${department.value.id}`,
-                    department.value
-                );
-                updateDepartment(response.data);
-                toast.add({
-                    severity: "success",
-                    summary: "Successful",
-                    detail: "Department Updated",
-                    life: 3000,
-                });
-            } else {
-                const response = await axios.post(
-                    "/department",
-                    department.value
-                );
-                departments.value.push(response.data);
-                toast.add({
-                    severity: "success",
-                    summary: "Successful",
-                    detail: "Department Created",
-                    life: 3000,
-                });
-            }
-        } catch (err) {
-            if (err.response && err.response.status === 422) {
-                const errors = err.response.data.errors;
-                for (const [field, messages] of Object.entries(errors)) {
-                    messages.forEach((message) => {
-                        toast.add({
-                            severity: "error",
-                            summary: "Validation Error",
-                            detail: message,
-                            life: 5000,
-                        });
-                    });
-                }
-            } else if (err.response && err.response.status === 403) {
-                toast.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "You are not allowed to perform this action",
-                    life: 5000,
-                });
-            } else {
-                toast.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: "An unexpected error occurred.",
-                    life: 5000,
-                });
-            }
-        } finally {
-            loading.value = false;
-            departmentDialog.value = false;
-        }
-    }
-};
-
-const editDepartment = (departmentData) => {
-    editDialog.value = true;
-    department.value = { ...departmentData };
-    departmentDialog.value = true;
-};
-
-const deleteDepartment = async () => {
-    loading.value = true;
-    try {
-        await axios.delete(`/department/${department.value.id}`);
-        departments.value = departments.value.filter(
-            (r) => r.id !== department.value.id
-        );
-        toast.add({
-            severity: "success",
-            summary: "Successful",
-            detail: "Department Deleted",
-            life: 3000,
-        });
-    } catch (err) {
-        if (err.response && err.response.status === 422) {
-            const errors = err.response.data.errors;
-            for (const [field, messages] of Object.entries(errors)) {
-                messages.forEach((message) => {
-                    toast.add({
-                        severity: "error",
-                        summary: "Validation Error",
-                        detail: message,
-                        life: 5000,
-                    });
-                });
-            }
-        } else if (err.response && err.response.status === 403) {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "You are not allowed to perform this action",
-                life: 5000,
-            });
-        } else {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "An unexpected error occurred.",
-                life: 5000,
-            });
-        }
-    } finally {
-        deleteDepartmentDialog.value = false;
-        loading.value = false;
-    }
-};
-
-const confirmDeleteDepartment = (departmentData) => {
-    department.value = departmentData;
-    deleteDepartmentDialog.value = true;
-};
-
-const deleteSelectedDepartment = async () => {
-    const ids = selectedDepartments.value.map((department) => department.id);
-    loading.value = true;
-    try {
-        await axios.post("/department/bulk-delete", { ids });
-        departments.value = departments.value.filter(
-            (r) => !ids.includes(r.id)
-        );
-        toast.add({
-            severity: "success",
-            summary: "Successful",
-            detail: "Selected Departments Deleted",
-            life: 3000,
-        });
-    } catch (err) {
-        if (err.response && err.response.status === 422) {
-            const errors = err.response.data.errors;
-            for (const [field, messages] of Object.entries(errors)) {
-                messages.forEach((message) => {
-                    toast.add({
-                        severity: "error",
-                        summary: "Validation Error",
-                        detail: message,
-                        life: 5000,
-                    });
-                });
-            }
-        } else if (err.response && err.response.status === 403) {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "You are not allowed to perform this action",
-                life: 5000,
-            });
-        } else {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "An unexpected error occurred.",
-                life: 5000,
-            });
-        }
-    } finally {
-        deleteDepartmentsDialog.value = false;
-        loading.value = false;
-    }
-};
-
-const confirmDeleteSelected = () => {
-    deleteDepartmentsDialog.value = true;
-};
-
-const updateDepartment = (updatedDepartment) => {
-    const index = departments.value.findIndex(
-        (r) => r.id === updatedDepartment.id
-    );
-    if (index !== -1) {
-        departments.value[index] = updatedDepartment;
-    }
-};
-
-const exportCSV = () => {
-    dt.value?.exportCSV();
-};
+console.log(department.value);
 </script>
 <style scoped>
 ::v-deep(.p-breadcrumb) {
@@ -1051,7 +835,3 @@ const exportCSV = () => {
     box-shadow: none !important;
 }
 </style>
-
-<!-- <script src="https://cdn.tailwindcss.com"></script> -->
-<!-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script> -->

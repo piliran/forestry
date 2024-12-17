@@ -17,16 +17,23 @@ class DepartmentSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        // Insert static data (optional)
+        $userIds = DB::table('users')->pluck('id'); // Fetch all user IDs
+
+        if ($userIds->isEmpty()) {
+            $this->command->info('No users found. Please seed the users table first.');
+            return;
+        }
+
+        // Insert static data
         DB::table('departments')->insert([
             [
                 'name' => 'Forestry',
-                'code' => 'HR001',
+                'code' => 'FOR001',
                 'location' => 'Main Building',
-                'contact_person' => 'test contact',
+                'contact_person' => $userIds->random(),
                 'phone' => '123-456-7890',
-                'email' => 'hr@example.com',
-                'website' => 'https://hr.example.com',
+                'email' => 'forestry@example.com',
+                'website' => 'https://forestry.example.com',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -34,7 +41,7 @@ class DepartmentSeeder extends Seeder
                 'name' => 'Finance',
                 'code' => 'FIN001',
                 'location' => 'Building B',
-                'contact_person' => 'sample contact',
+                'contact_person' => $userIds->random(),
                 'phone' => '234-567-8901',
                 'email' => 'finance@example.com',
                 'website' => 'https://finance.example.com',

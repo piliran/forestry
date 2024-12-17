@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('gender')->nullable();
             $table->string('DOB')->nullable();
-            $table->unsignedBigInteger('district_id')->nullable();
-            $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
+            // $table->unsignedBigInteger('district_id')->nullable();
+            // $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade')->onUpdate('cascade');
             $table->string('age')->nullable();
             $table->string('position')->nullable();
             $table->string('national_id')->nullable();
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
-            $table->softDeletes(); 
+            $table->softDeletes();
             $table->timestamps();
         });
 
