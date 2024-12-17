@@ -7,6 +7,9 @@ use App\Models\OperationType;
 use App\Models\Station;
 use App\Models\Route;
 use App\Models\Funder;
+use App\Models\FunderToOperation;
+use App\Models\RouteToOperation;
+
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -56,7 +59,26 @@ class OperationController extends Controller
 
         $validated['created_by'] = auth()->id();
 
-        $operation = Operation::create($validated);
+        $operation = Operation::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'operation_type_id' => $validated['operation_type_id'],
+            'station_id' => $validated['station_id'],
+            'created_by' => auth()->id(),
+        ]);
+
+       FunderToOperation::create([
+            'funded_by' => $validated['funded_by'],
+            'operation_id' => $operation->id,
+
+        ]);
+
+        RouteToOperation::create([
+            'route_id' => $validated['route_id'],
+            'operation_id' => $operation->id,
+
+        ]);
+
         $operation->load(['operationType', 'station', 'funder', 'route']);
 
         return response()->json($operation, 201);
@@ -67,6 +89,9 @@ class OperationController extends Controller
      */
     public function update(Request $request, Operation $operation)
     {
+
+        $operation = Operation::findOrFail($request->id);
+
         Gate::authorize('update', $operation);
 
         $validated = $request->validate([

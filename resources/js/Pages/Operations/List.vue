@@ -155,7 +155,7 @@
                     </Column>
 
                     <Column
-                        field="funder.organization"
+                        field="funder.name"
                         header="Funded By"
                         sortable
                         style="min-width: 10rem"
@@ -297,7 +297,7 @@
                             id="funded_by"
                             v-model="operation.funded_by"
                             :options="funders"
-                            optionLabel="organization"
+                            optionLabel="name"
                             optionValue="id"
                             placeholder="Select a Funder"
                             fluid
@@ -507,7 +507,7 @@ const saveOperation = async () => {
                 route_id: operation.value.route_id,
                 funded_by: operation.value.funded_by,
             };
-            console.log(operationPayload);
+            // console.log(operationPayload);
             if (operation.value.id) {
                 const response = await axios.put(
                     `/operations-list/${operation.value.id}`,

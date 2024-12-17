@@ -46,8 +46,7 @@
                             outlined
                             @click="confirmDeleteSelected"
                             :disabled="
-                                !selectedFunders ||
-                                !selectedFunders.length
+                                !selectedFunders || !selectedFunders.length
                             "
                         />
                     </template>
@@ -105,12 +104,7 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                    <Column
-                        field="organization"
-                        header="Organization"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
+
                     <Column
                         field="phone"
                         header="Phone"
@@ -164,7 +158,7 @@
                 :header="editDialog ? 'Edit Funder' : 'Add New Funder'"
                 :modal="true"
             >
-                <div class="flex flex-col gap-6">                    
+                <div class="flex flex-col gap-6">
                     <div>
                         <label for="name" class="block font-bold mb-3">
                             Name
@@ -184,25 +178,7 @@
                             Name is required.
                         </small>
                     </div>
-                    <div>
-                        <label for="organization" class="block font-bold mb-3">
-                            Organization
-                        </label>
-                        <InputText
-                            id="organization"
-                            v-model.trim="funder.organization"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !funder.organization"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !funder.organization"
-                            class="text-red-500"
-                        >
-                            Organization is required.
-                        </small>
-                    </div>
+
                     <div>
                         <label for="phone" class="block font-bold mb-3">
                             Phone
@@ -241,7 +217,7 @@
                             Email is required.
                         </small>
                     </div>
-                    
+
                     <div>
                         <label for="address" class="block font-bold mb-3">
                             Address
@@ -264,7 +240,6 @@
                             Address is required.
                         </small>
                     </div>
-                    
                 </div>
                 <template #footer>
                     <Button
@@ -343,8 +318,7 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span>
-                        Are you sure you want to delete the selected
-                        Funders?
+                        Are you sure you want to delete the selected Funders?
                     </span>
                 </div>
                 <template #footer>
@@ -391,7 +365,7 @@ import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
-import Textarea from 'primevue/textarea';
+import Textarea from "primevue/textarea";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
@@ -409,7 +383,7 @@ const loading = ref(false);
 const deleteFunderDialog = ref(false);
 const deleteFundersDialog = ref(false);
 const funder = ref({});
-const selectedFunders= ref([]);
+const selectedFunders = ref([]);
 const submitted = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -460,10 +434,7 @@ const saveFunder = async () => {
                     life: 3000,
                 });
             } else {
-                const response = await axios.post(
-                    "/funders",
-                    funder.value
-                );
+                const response = await axios.post("/funders", funder.value);
                 funders.value.push(response.data);
                 toast.add({
                     severity: "success",
@@ -517,9 +488,7 @@ const deleteFunder = async () => {
     loading.value = true;
     try {
         await axios.delete(`/funders/${funder.value.id}`);
-        funders.value = funders.value.filter(
-            (r) => r.id !== funder.value.id
-        );
+        funders.value = funders.value.filter((r) => r.id !== funder.value.id);
         toast.add({
             severity: "success",
             summary: "Successful",
@@ -570,9 +539,7 @@ const deleteSelectedFunder = async () => {
     loading.value = true;
     try {
         await axios.post("/funders/bulk-delete", { ids });
-        funders.value = funders.value.filter(
-            (r) => !ids.includes(r.id)
-        );
+        funders.value = funders.value.filter((r) => !ids.includes(r.id));
         toast.add({
             severity: "success",
             summary: "Successful",
@@ -618,9 +585,7 @@ const confirmDeleteSelected = () => {
 };
 
 const updateFunder = (updatedFunder) => {
-    const index = funders.value.findIndex(
-        (r) => r.id === updatedFunder.id
-    );
+    const index = funders.value.findIndex((r) => r.id === updatedFunder.id);
     if (index !== -1) {
         funders.value[index] = updatedFunder;
     }

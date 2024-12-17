@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             SpecieCategorySeeder::class,
             SpeciesSeeder::class,
             ConfiscateSeeder::class,
+            FunderSeeder::class,
 
 
         ]);

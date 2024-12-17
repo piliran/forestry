@@ -8,24 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Operation extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'name',
         'station_id',
         'description',
         'operation_type_id',
-        'route_id',
-        'funded_by',
         'created_by',
-    ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $casts = [
     ];
 
     /**
@@ -35,7 +25,7 @@ class Operation extends Model
     // Relationship with Station
     public function station()
     {
-        return $this->belongsTo(Station::class);
+        return $this->belongsTo(Station::class, 'station_id');
     }
 
     // Relationship with Operation Type
@@ -44,17 +34,16 @@ class Operation extends Model
         return $this->belongsTo(OperationType::class, 'operation_type_id');
     }
 
-    // Relationship with Funder
+    // Relationship with FunderToOperation
     public function funder()
     {
-        return $this->belongsTo(Funder::class, 'funded_by');
+        return $this->hasOne(FunderToOperation::class, 'operation_id');
     }
 
-
-    // Relationship with Funder
+    // Relationship with RouteToOperation
     public function route()
     {
-        return $this->belongsTo(Route::class, 'route_id');
+        return $this->hasOne(RouteToOperation::class, 'operation_id');
     }
 
     // Relationship with OperationToTeam
@@ -63,11 +52,11 @@ class Operation extends Model
         return $this->hasMany(OperationToTeam::class, 'operation_id');
     }
 
+    // Relationship with Suspects
     public function suspects()
-{
-    return $this->belongsToMany(Suspect::class, 'suspect_to_operations', 'operation_id', 'suspect_id');
-}
-
+    {
+        return $this->belongsToMany(Suspect::class, 'suspect_to_operations', 'operation_id', 'suspect_id');
+    }
 
     // Relationship with Schedule
     public function schedule()
