@@ -127,12 +127,7 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-                    <Column
-                        field="contact_person"
-                        header="Contact Person"
-                        sortable
-                        style="min-width: 10rem"
-                    ></Column>
+
                     <Column
                         header="Action"
                         :exportable="false"
@@ -280,25 +275,7 @@
                             Longitude is required.
                         </small>
                     </div>
-                    <div>
-                        <label for="contact_person" class="block font-bold mb-3">
-                            Contact Person
-                        </label>
-                        <InputText
-                            id="contact_person"
-                            v-model.trim="area.contact_person"
-                            required="true"
-                            autofocus
-                            :invalid="submitted && !area.contact_person"
-                            fluid
-                        />
-                        <small
-                            v-if="submitted && !area.contact_person"
-                            class="text-red-500"
-                        >
-                            Contact Person is required.
-                        </small>
-                    </div>
+
                 </div>
                 <template #footer>
                     <Button

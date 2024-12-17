@@ -21,13 +21,12 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
-            $table->unsignedBigInteger('contact_person');
-            $table->foreign('contact_person')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->softDeletes(); 
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }
-    
+
 
     /**
      * Reverse the migrations.

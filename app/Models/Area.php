@@ -20,7 +20,7 @@ class Area extends Model
         'coordinates',
         'latitude',
         'longitude',
-        'contact_person',
+
     ];
 
     public function station()
@@ -32,5 +32,5 @@ class Area extends Model
     {
         return $this->hasMany(Encroached::class);
     }
-    
+
 }

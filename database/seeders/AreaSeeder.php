@@ -20,7 +20,7 @@ class AreaSeeder extends Seeder
                 'location' => 'Downtown',
                 'latitude' => -13.963137,
                 'longitude' => 33.774119,
-                'contact_person' => 1, // Replace with an actual user ID
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -31,7 +31,7 @@ class AreaSeeder extends Seeder
                 'location' => 'Uptown',
                 'latitude' => -11.468867,
                 'longitude' => 34.020518,
-                'contact_person' => 2, // Replace with an actual user ID
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -42,7 +42,7 @@ class AreaSeeder extends Seeder
                 'location' => 'Suburban',
                 'latitude' => -10.123456,
                 'longitude' => 35.654321,
-                'contact_person' => 3, // Replace with an actual user ID
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

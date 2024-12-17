@@ -100,6 +100,15 @@ const permissions = computed(() => page.props.can || {});
 const sidebarRef = ref(null);
 const savedScrollPosition = ref(0);
 
+const userRoles = [
+    "Monitoring and Evaluation Officer",
+    "Natural Resources Management Team Leader",
+    "Forestry Assistant",
+    "District Forestry Officer",
+    "Forestry Specialist",
+    "admin",
+];
+
 // if (roles.value.includes("admin")) {
 //     console.log("User is an admin");
 // }
@@ -120,7 +129,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/dashboard",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
     {
         label: "Countries",
@@ -128,7 +144,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/countries",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 
     {
@@ -139,7 +162,14 @@ const items = ref([
         icon: "permissions",
         route: "/privileges",
 
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 
     {
@@ -147,7 +177,14 @@ const items = ref([
         icon: "roles",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
 
         items: [
             {
@@ -170,7 +207,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/users",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 
     {
@@ -179,7 +223,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/funders",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
     {
         label: "Department",
@@ -187,7 +238,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/department",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
     {
         label: "Zones",
@@ -195,7 +253,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/zones",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
     {
         label: "Districts",
@@ -204,7 +269,14 @@ const items = ref([
         forwardIcon: false,
 
         route: "/districts",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
     {
         label: "Stations",
@@ -212,7 +284,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/stations",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
     {
         label: "Staff",
@@ -220,7 +299,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/staff",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 
     {
@@ -230,7 +316,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
 
         route: "/offenses",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 
     {
@@ -240,7 +333,14 @@ const items = ref([
         forwardIcon: false,
 
         route: "/confiscates",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 
     {
@@ -248,7 +348,14 @@ const items = ref([
         icon: "road",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
 
         items: [
             {
@@ -269,7 +376,14 @@ const items = ref([
         icon: "location",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
 
         items: [
             {
@@ -289,7 +403,14 @@ const items = ref([
         icon: "road",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
 
         items: [
             {
@@ -310,7 +431,14 @@ const items = ref([
         icon: "operations",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
 
         items: [
             {
@@ -333,7 +461,14 @@ const items = ref([
         forwardIcon: false,
 
         route: "/schedules",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 
     {
@@ -341,7 +476,14 @@ const items = ref([
         icon: "team",
         class: "parent-link-with-sublinks",
         forwardIcon: true,
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
 
         items: [
             {
@@ -368,7 +510,14 @@ const items = ref([
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
         route: "/suspects",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 
     {
@@ -378,7 +527,14 @@ const items = ref([
         forwardIcon: false,
 
         route: "/arrests",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 
     {
@@ -388,7 +544,14 @@ const items = ref([
         forwardIcon: false,
 
         route: "/convictions",
-        allowedRoles: ["admin", "User"],
+        allowedRoles: [
+            "Monitoring and Evaluation Officer",
+            "Natural Resources Management Team Leader",
+            "Forestry Assistant",
+            "District Forestry Officer",
+            "Forestry Specialist",
+            "admin",
+        ],
     },
 ]);
 
