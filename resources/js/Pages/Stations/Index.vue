@@ -135,6 +135,17 @@
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
+                            <Link
+                                :href="'/stations/' + slotProps.data.id"
+                                preserve-scroll
+                            >
+                            <Button
+                                icon="pi pi-eye"
+                                outlined
+                                rounded
+                                severity="info"
+                            />
+                            </Link>
                             <Button
                                 icon="pi pi-pencil"
                                 outlined

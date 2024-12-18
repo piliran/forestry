@@ -77,8 +77,8 @@ class StationController extends Controller
     public function show(Station $station)
     {
         $station->load(['area', 'district', 'operations', 'contactPerson']);
-        return Inertia::render('Station/Show', [
-            'Station' => $station
+        return Inertia::render('Stations/Show', [
+            'station' => $station
         ]);
     }
 
