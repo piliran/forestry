@@ -258,7 +258,7 @@
                                 </li>
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-24">Mobile:</span>
-                                    
+
                                     <span class="text-gray-700">{{
                                         department.contact_person.phone || "N/A"
                                     }}</span>
@@ -834,9 +834,12 @@ const breadCumbItems = ref([{ label: "Department" }]);
 
 const props = defineProps({
     department: Object,
+    staffList: Array,
+
 });
 
 const department = ref(props.department);
+const staffList = ref(props.staffList);
 
 console.log(department.value);
 </script>

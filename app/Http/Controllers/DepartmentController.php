@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\User;
+use App\Models\Staff;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate;
@@ -18,14 +19,20 @@ class DepartmentController extends Controller
     {
         // Fetch non-deleted departments
         $departments = Department::with('contactPerson')->whereNull('deleted_at')->get();
-       //$departments = Department::whereNull('deleted_at')->with('user')->get();
-        //$users = User::all();
+        $staffList = Staff::with(['level', 'user.roles', 'station'])
+        ->whereNull('deleted_at')
+        ->whereHas('level', function ($query) {
+            $query->where('name', '!=', 'svtp');
+        })
+        ->get();
         $users = User::with(['roles', 'district', 'privileges'])
         ->whereNull('deleted_at')
         ->get();
         return Inertia::render('Department/Index', [
             'departments' => $departments,
             'users' => $users,
+        'staffList' => $staffList,
+
 
         ]);
     }
@@ -78,14 +85,23 @@ class DepartmentController extends Controller
     }
 
     public function show(Department $department)
-    {
-        $department->load('contactPerson');
-        Log::info($department);
+{
+    $department->load('contactPerson');
 
-        return Inertia::render('Department/Show',[
-            'department' => $department
-        ]);
-    }
+     $staffList = Staff::with(['level', 'user.roles', 'station'])
+     ->whereNull('deleted_at')
+     ->whereHas('level', function ($query) {
+         $query->where('name', '!=', 'svtp');
+     })
+     ->get();
+
+
+    return Inertia::render('Department/Show', [
+        'department' => $department,
+        'staffList' => $staffList,
+    ]);
+}
+
 
     /**
      * Soft delete the specified resource.

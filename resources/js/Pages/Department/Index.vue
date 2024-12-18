@@ -310,9 +310,9 @@
                         <Select
                             id="id"
                             v-model="department.contact_person"
-                            :options="users"
-                            optionLabel="name"
-                            optionValue="id"
+                            :options="staffList"
+                            optionLabel="user.name"
+                            optionValue="user.id"
                             placeholder="Select Contact Person"
                             fluid
                             filter
@@ -476,6 +476,7 @@ const filters = ref({
 const props = defineProps({
     departments: Array,
     users: Array,
+    staffList: Array,
 });
 
 const home = ref({
@@ -487,8 +488,8 @@ const home = ref({
 const breadCumbItems = ref([{ label: "Department" }]);
 
 const departments = ref(props.departments);
-// console.log(departments)
 const users = ref(props.users);
+const staffList = ref(props.staffList);
 
 // CRUD Methods
 const openNew = () => {
