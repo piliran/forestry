@@ -65,6 +65,12 @@
                                         suspect.national_id || "N/A"
                                     }}</span>
                                 </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-24">Phone:</span>
+                                    <span class="text-gray-700">{{
+                                        suspect.phone || "N/A"
+                                    }}</span>
+                                </li>
                                 <li className="flex border-b py-2">
                                     <span className="font-bold w-24">Age:</span>
                                     <span className="text-gray-700">
@@ -149,27 +155,33 @@
                             <h4 class="text-xl text-gray-900 font-bold">
                                 Activity Progress
                             </h4>
-                            <div class="relative mt-6">
-                                <!-- Progress Bar Background -->
-                                <div class="h-1 bg-gray-300 rounded-full">
-                                    <!-- Progress Bar Indicator -->
-                                    <div
-                                        class="h-1 bg-green-500 rounded-full"
-                                        :style="{
-                                            width: progressPercentage,
-                                        }"
-                                    ></div>
-                                </div>
-                                <!-- Status Labels -->
+                            <div class="relative px-4">
                                 <div
-                                    class="flex justify-between mt-4 text-sm text-gray-600"
+                                    class="absolute h-full border border-dashed border-opacity-20 border-secondary"
+                                ></div>
+
+                                <!-- Dynamic Timeline Items -->
+                                <div
+                                    v-for="(status, index) in progressSteps"
+                                    :key="index"
+                                    class="flex items-center w-full my-6 -ml-1.5"
                                 >
-                                    <span>Under Investigation</span>
-                                    <span>Arrested</span>
-                                    <span>Released</span>
-                                    <span>Court Pending</span>
-                                    <span>Acquitted</span>
-                                    <span>Convicted</span>
+                                    <!-- Dynamic Circle -->
+                                    <div class="w-1/12 z-10">
+                                        <div
+                                            class="w-3.5 h-3.5 rounded-full"
+                                            :class="{
+                                                'bg-green-500':
+                                                    index <= currentStep,
+                                                'bg-gray-300':
+                                                    index > currentStep,
+                                            }"
+                                        ></div>
+                                    </div>
+                                    <div class="w-11/12">
+                                        <p class="text-sm">{{ status }}</p>
+                                        <!-- <p class="text-xs text-gray-500">{{ getTimestamp(index) }}</p> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -177,8 +189,6 @@
 
                     <!-- Offenses and Additional Information -->
                     <div class="flex flex-col lg:w-1/2 space-y-4">
-                        <!-- Offenses Card -->
-
                         <!-- Station and Operation Details Card -->
                         <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
                             <h4 class="text-xl text-gray-900 font-bold">
@@ -188,7 +198,8 @@
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-40">Station:</span>
                                     <span class="text-gray-700">{{
-                                        props.suspect.station || "N/A"
+                                        props.suspect.operations[0]?.station
+                                            .name || "N/A"
                                     }}</span>
                                 </li>
                                 <li class="flex border-b py-2">
@@ -201,21 +212,28 @@
                                     }}</span>
                                 </li>
                                 <li class="flex border-b py-2">
+                                    <span class="font-bold w-40">Route:</span>
+                                    <span class="text-gray-700">{{
+                                        props.suspect.operations[0]?.route
+                                            .name || "N/A"
+                                    }}</span>
+                                </li>
+                                <li class="flex border-b py-2">
                                     <span class="font-bold w-40"
                                         >Date Caught:</span
                                     >
                                     <span class="text-gray-700">{{
-                                        props.suspect.created_at || "N/A"
+                                        formattedDate || "N/A"
                                     }}</span>
                                 </li>
-                                <li class="flex border-b py-2">
+                                <!-- <li class="flex border-b py-2">
                                     <span class="font-bold w-40"
                                         >Arresting Officer:</span
                                     >
                                     <span class="text-gray-700">{{
                                         props.suspect.arresting_officer || "N/A"
                                     }}</span>
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
 
@@ -230,13 +248,58 @@
                                     >
                                     <span class="text-gray-700">"N/A"</span>
                                 </li>
-
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-40"
                                         >Date Arrested:</span
                                     >
                                     <span class="text-gray-700">"N/A"</span>
                                 </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Arrest Location:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Arresting Officer:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40">Charges:</span>
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <!-- <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Bail Amount:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Arresting Agency:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Witnesses:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Time of Arrest:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Evidence Collected:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li> -->
                             </ul>
                         </div>
 
@@ -258,6 +321,24 @@
                                     >
                                     <span class="text-gray-700">"N/A"</span>
                                 </li>
+
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Prosecutor:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40">Verdict:</span>
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <!-- <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Case Status:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-40">Judge:</span>
                                     <span class="text-gray-700">"N/A"</span>
@@ -268,10 +349,55 @@
                                     >
                                     <span class="text-gray-700">"N/A"</span>
                                 </li>
+
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Hearing Type:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Defense Lawyer:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Courtroom Number:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Sentencing Date:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Fine or Penalty:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Case Timeline:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
+                                <li class="flex border-b py-2">
+                                    <span class="font-bold w-40"
+                                        >Appeal Status:</span
+                                    >
+                                    <span class="text-gray-700">"N/A"</span>
+                                </li>
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-40">Remarks:</span>
                                     <span class="text-gray-700">"N/A"</span>
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                     </div>
@@ -361,7 +487,7 @@ const filters = ref({
 const props = defineProps({
     suspect: Object,
 });
-// console.log(props.suspect.age);
+// console.log(props.suspect);
 
 const progressMap = {
     "Under Investigation": "10%",
@@ -376,6 +502,31 @@ const progressMap = {
 const progressPercentage = computed(() => {
     return progressMap[props.suspect.status] || "0%";
 });
+
+const progressSteps = [
+    "Under Investigation",
+    "Arrested",
+    "Released",
+    "Court Pending",
+    "Acquitted",
+    "Convicted",
+];
+
+// Compute the current step based on the suspect's status
+const currentStep = computed(() => progressSteps.indexOf(props.suspect.status));
+
+const formatDate = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    }).format(date);
+};
+
+// Computed property to get the formatted date
+const formattedDate = computed(() => formatDate(props.suspect.created_at));
 
 const home = ref({
     icon: "pi pi-home",

@@ -377,7 +377,10 @@
                                         Select confiscates
                                     </div>
 
-                                    <div class="flex gap-4 items-center">
+                                    <!-- Add flex-wrap to make items wrap to new lines -->
+                                    <div
+                                        class="flex flex-wrap gap-4 items-center"
+                                    >
                                         <div
                                             v-for="item in confiscates"
                                             :key="item.id"
@@ -400,28 +403,6 @@
                                             </label>
                                         </div>
                                     </div>
-
-                                    <!-- Display Selected Items and Quantities -->
-                                    <!-- <div
-                                        v-if="Object.keys(selectedItems).length"
-                                        class="mt-4"
-                                    >
-                                        <p class="font-bold text-lg">
-                                            Selected Items and Quantities:
-                                        </p>
-                                        <ul class="list-disc pl-6">
-                                            <li
-                                                v-for="(
-                                                    quantity, id
-                                                ) in selectedItems"
-                                                :key="id"
-                                                class="text-base"
-                                            >
-                                                {{ getItemNameById(id) }}:
-                                                {{ quantity }}
-                                            </li>
-                                        </ul>
-                                    </div> -->
                                 </div>
 
                                 <div class="flex pt-6 p-4 justify-between">

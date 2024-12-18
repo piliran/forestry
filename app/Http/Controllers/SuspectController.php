@@ -174,7 +174,7 @@ class SuspectController extends Controller
     {
         $suspect= Suspect::find($id);
         Log::info( $suspect);
-        $suspect->load( ['district','confiscates','operations','offenses','files']);
+        $suspect->load( ['district','confiscates','operations.station','operations.route', 'offenses','files']);
         return Inertia::render('Suspects/Show', [
             'suspect' => $suspect,
         ]);
