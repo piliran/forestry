@@ -229,10 +229,19 @@
                         <img src="https://vojislavd.com/ta-template-demo/assets/img/profile-background.jpg" class="w-full h-full rounded-tl-lg rounded-tr-lg">
                     </div> -->
                             <div class="flex flex-col items-center">
-                                <img
+                                <!-- <img
                                     src="https://vojislavd.com/ta-template-demo/assets/img/profile.jpg"
                                     class="mt-5 w-40 border-4 border-white rounded-full"
+                                /> -->
+                                <div class="flex flex-col items-center">
+                                <img
+                                    v-if="department.contact_person.profile_photo_url"
+                                    :src="department.contact_person.profile_photo_url"
+                                    alt="user Photo"
+                                    class="mt-5 h-40 w-40 border-4 border-white rounded-full"
                                 />
+
+                            </div>
 
                                 <!-- <p class="text-gray-700">Senior Software Engineer at Tailwind CSS</p>
                         <p class="text-sm text-gray-500">New York, USA</p> -->
@@ -242,21 +251,23 @@
                                     <span class="font-bold w-24"
                                         >Full name:</span
                                     >
-                                    <span class="text-gray-700"
-                                        >Amanda S. Ross</span
-                                    >
+                                    <span class="text-gray-700">{{
+                                        department.contact_person.name || "N/A"
+                                    }}</span>
+
                                 </li>
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-24">Mobile:</span>
-                                    <span class="text-gray-700"
-                                        >(123) 123-1234</span
-                                    >
+                                    
+                                    <span class="text-gray-700">{{
+                                        department.contact_person.phone || "N/A"
+                                    }}</span>
                                 </li>
                                 <li class="flex border-b py-2">
-                                    <span class="font-bold w-24">Email:</span>
-                                    <span class="text-gray-700"
-                                        >amandaross@example.com</span
-                                    >
+                                        <span class="font-bold w-24">Email:</span>
+                                        <span class="text-gray-700">{{
+                                            department.contact_person.email || "N/A"
+                                        }}</span>
                                 </li>
                                 <li
                                     class="flex items-center border-b py-2 space-x-2"
@@ -795,7 +806,7 @@ import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
-
+import Image from "primevue/image";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
