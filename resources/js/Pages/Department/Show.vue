@@ -519,10 +519,9 @@
 
                 <div class="bg-white rounded-lg shadow-xl p-8">
                     <div class="flex items-center justify-between">
-                        <p class="text-xl text-gray-900 font-bold">
-                           <Badge size="large" severity="contrast">{{ department.staff_count }}</Badge>  Members of Staff
-                        </p>
-
+                        <h4 class="text-xl text-gray-900 font-bold">
+                            <Badge size="large" severity="contrast">{{ department.staff_count }}</Badge>   Members of Staff 
+                        </h4>
                         <a href="#" title="View All">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -542,71 +541,37 @@
                     </div>
                     <div v-if="staffList.length > 0" class="p-2">
                         <div
-                            class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-8 mt-6"
+                            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8"
+                        >
+                        
+                        <div
+                            v-for="staff in paginatedStaffList"
+                            :key="staff.id"
+                            class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+
                         >
 
-                            <div
-                                v-for="staff in paginatedStaffList"
-                                :key="staff.id"
-                                class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
-
+                            <a
+                                href="#"
+                                class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
+                                title="View Profile"
                             >
-                                <!-- <a
-                                    href="#"
-                                    class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                                    title="View Profile"
-                                >
-                                    <img
-                                        src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                                        class="w-16 rounded-full"
-                                    />
-                                    <p class="text-center font-bold text-sm mt-1">
-                                        Joseph Marlatt
-                                    </p>
-                                    <p class="text-xs text-gray-500 text-center">
-                                        Team Lead at Facebook
-                                    </p>
-                                </a> -->
-                                <div
-                                    class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
-                                >
-
-                                    <Image
-                                        :src="`${staff.user.profile_photo_url}`"
-                                        :alt="staff.user.name"
-                                        preview
-                                    >
-                                        <template #image>
-                                            <img
-                                                :src="staff.user.profile_photo_url"
-                                                alt="Profile"
-                                                style="
-                                                    width: 100%;
-                                                    height: 100%;
-                                                    object-fit: cover;
-                                                "
-                                            />
-                                        </template>
-                                    </Image>
-                                </div>
-                                <h2 class="mt-4 font-bold text-xl">
+                                <img
+                                    src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
+                                    class="w-16 rounded-full"
+                                />
+                                <p class="text-center font-bold text-sm mt-1">
                                     {{ staff.user.name }}
-                                </h2>
-                                <h6 class="mt-2 text-sm font-medium">
+                                </p>
+                                <p class="text-xs text-gray-500 text-center">
                                     {{
                                         staff.user.roles
                                             .map((role) => role.name)
                                             .join(", ")
                                     }}
-                                </h6>
-                                <p class="text-xs text-gray-500 text-center mt-3">
-                                    {{ staff.user.email }}
                                 </p>
-                                <div
-                                    class="flex flex-row mt-4 space-x-2 justify-between"
-                                >
-                                </div>
-                            </div>
+                            </a>
+                        </div>
                         </div>
                         <!-- Paginator -->
                         <Paginator
@@ -618,11 +583,9 @@
                             class="mt-4"
                         />
                     </div>
-
                     <div v-else class="flex items-center justify-center">
-                        <h2>No staff members found</h2>
+                        <h2>No Staff Members Found</h2>
                     </div>
-
                 </div>
             </div>
         </div>

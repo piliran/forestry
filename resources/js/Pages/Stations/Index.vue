@@ -150,7 +150,7 @@
                                 icon="pi pi-pencil"
                                 outlined
                                 rounded
-                                class="mr-2"
+                                class="mx-2"
                                 @click="editStation(slotProps.data)"
                             />
                             <Button
