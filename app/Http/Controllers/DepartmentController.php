@@ -85,24 +85,34 @@ class DepartmentController extends Controller
     }
 
     public function show(Department $department)
-{
-    $department->load('contactPerson');
+    {
+        $department->load('contactPerson');
 
-     $staffList = Staff::with(['level', 'user.roles', 'station'])
-     ->whereNull('deleted_at')
-     ->whereHas('level', function ($query) {
-         $query->where('name', '!=', 'svtp');
-     })
-     ->get();
+        $staffList = Staff::with(['level', 'user.roles', 'station',])
+        ->whereNull('deleted_at')
+        ->whereHas('level', function ($query) {
+            $query->where('name', '!=', 'svtp');
+        })
+        ->get();
+
+    
+        // Add staff count to the department data
+        $department->staff_count = $staffList->count();
+
+        // Get unique station count by counting unique station IDs
+        $uniqueStations = $staffList->pluck('station.id')->unique()->count();
+        $department->station_count = $uniqueStations;
+
+        
 
 
-    return Inertia::render('Department/Show', [
-        'department' => $department,
-        'staffList' => $staffList,
-    ]);
-}
+        return Inertia::render('Department/Show', [
+            'department' => $department,
+            'staffList' => $staffList,
+        ]);
+    }
 
-
+    
     /**
      * Soft delete the specified resource.
      */

@@ -12,7 +12,7 @@
                         >
                             <div class="flex items-center justify-between">
                                 <span class="font-bold text-sm text-indigo-600"
-                                    >Total Revenue</span
+                                    >Staff</span
                                 >
                                 <span
                                     class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
@@ -40,8 +40,10 @@
                                     <div class="flex items-end">
                                         <span
                                             class="text-2xl 2xl:text-3xl font-bold"
-                                            >$8,141</span
                                         >
+                                        {{ department.staff_count }}
+                                        </span>
+                                        <span class="text-gray-700"></span>
                                         <div
                                             class="flex items-center ml-2 mb-1"
                                         >
@@ -73,7 +75,7 @@
                         >
                             <div class="flex items-center justify-between">
                                 <span class="font-bold text-sm text-green-600"
-                                    >New Orders</span
+                                    >Zones</span
                                 >
                                 <span
                                     class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
@@ -101,8 +103,9 @@
                                     <div class="flex items-end">
                                         <span
                                             class="text-2xl 2xl:text-3xl font-bold"
-                                            >217</span
                                         >
+                                        <!-- {{ department.zone_count }} -->90
+                                        </span>
                                         <div
                                             class="flex items-center ml-2 mb-1"
                                         >
@@ -134,7 +137,7 @@
                         >
                             <div class="flex items-center justify-between">
                                 <span class="font-bold text-sm text-blue-600"
-                                    >New Connections</span
+                                    >Stations</span
                                 >
                                 <span
                                     class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
@@ -160,10 +163,9 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <div class="flex items-end">
-                                        <span
-                                            class="text-2xl 2xl:text-3xl font-bold"
-                                            >54</span
-                                        >
+                                        <span class="text-2xl 2xl:text-3xl font-bold">
+                                            {{ department.station_count }}
+                                        </span>
                                         <div
                                             class="flex items-center ml-2 mb-1"
                                         >
@@ -193,8 +195,8 @@
                     </div>
 
                     <!-- <div class="mt-4">
-                <canvas id="verticalBarChart" style="display: block; box-sizing: border-box; height: 414px; width: 828px;" width="1656" height="828"></canvas>
-            </div> -->
+                        <canvas id="verticalBarChart" style="display: block; box-sizing: border-box; height: 414px; width: 828px;" width="1656" height="828"></canvas>
+                    </div> -->
                 </div>
 
                 <div
@@ -514,11 +516,13 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="bg-white rounded-lg shadow-xl p-8">
                     <div class="flex items-center justify-between">
-                        <h4 class="text-xl text-gray-900 font-bold">
-                            Members of Staff (532)
-                        </h4>
+                        <p class="text-xl text-gray-900 font-bold">
+                           <Badge size="large" severity="contrast">{{ department.staff_count }}</Badge>  Members of Staff
+                        </p>
+
                         <a href="#" title="View All">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -536,278 +540,105 @@
                             </svg>
                         </a>
                     </div>
-                    <div
-                        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8"
-                    >
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
+                    <div v-if="staffList.length > 0" class="p-2">
+                        <div
+                            class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-8 mt-6"
                         >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection1.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Diane Aguilar
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                UI/UX Design at Upwork
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection2.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Frances Mather
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Software Engineer at Facebook
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection3.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Carlos Friedrich
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Front-End Developer at Tailwind CSS
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection4.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Donna Serrano
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                System Engineer at Tesla
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection5.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Randall Tabron
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Software Developer at Upwork
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection6.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                John McCleary
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Software Engineer at Laravel
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection7.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Amanda Noble
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Graphic Designer at Tailwind CSS
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection8.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Christine Drew
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Senior Android Developer at Google
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection9.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Lucas Bell
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Creative Writer at Upwork
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection10.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Debra Herring
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Co-Founder at Alpine.js
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection11.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Benjamin Farrior
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Software Engineer Lead at Microsoft
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection12.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Maria Heal
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Linux System Administrator at Twitter
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection13.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Edward Ice
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Customer Support at Instagram
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection14.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Jeffery Silver
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Software Engineer at Twitter
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection15.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Jennifer Schultz
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Project Manager at Google
-                            </p>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Joseph Marlatt
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Team Lead at Facebook
-                            </p>
-                        </a>
+
+                            <div
+                                v-for="staff in paginatedStaffList"
+                                :key="staff.id"
+                                class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+
+                            >
+                                <!-- <a
+                                    href="#"
+                                    class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
+                                    title="View Profile"
+                                >
+                                    <img
+                                        src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
+                                        class="w-16 rounded-full"
+                                    />
+                                    <p class="text-center font-bold text-sm mt-1">
+                                        Joseph Marlatt
+                                    </p>
+                                    <p class="text-xs text-gray-500 text-center">
+                                        Team Lead at Facebook
+                                    </p>
+                                </a> -->
+                                <div
+                                    class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
+                                >
+
+                                    <Image
+                                        :src="`${staff.user.profile_photo_url}`"
+                                        :alt="staff.user.name"
+                                        preview
+                                    >
+                                        <template #image>
+                                            <img
+                                                :src="staff.user.profile_photo_url"
+                                                alt="Profile"
+                                                style="
+                                                    width: 100%;
+                                                    height: 100%;
+                                                    object-fit: cover;
+                                                "
+                                            />
+                                        </template>
+                                    </Image>
+                                </div>
+                                <h2 class="mt-4 font-bold text-xl">
+                                    {{ staff.user.name }}
+                                </h2>
+                                <h6 class="mt-2 text-sm font-medium">
+                                    {{
+                                        staff.user.roles
+                                            .map((role) => role.name)
+                                            .join(", ")
+                                    }}
+                                </h6>
+                                <p class="text-xs text-gray-500 text-center mt-3">
+                                    {{ staff.user.email }}
+                                </p>
+                                <div
+                                    class="flex flex-row mt-4 space-x-2 justify-between"
+                                >
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Paginator -->
+                        <Paginator
+                            :rows="rowsPerPage"
+                            :totalRecords="staffList.length"
+                            :rowsPerPageOptions="[4, 8, 16]"
+                            :currentPage="currentPage"
+                            @page="onPageChange"
+                            class="mt-4"
+                        />
                     </div>
+
+                    <div v-else class="flex items-center justify-center">
+                        <h2>No staff members found</h2>
+                    </div>
+
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 import Image from "primevue/image";
 import DataTable from "primevue/datatable";
+
+import Paginator from 'primevue/paginator';
+import Badge from 'primevue/badge';
+import OverlayBadge from 'primevue/overlaybadge';
 import Column from "primevue/column";
 import Button from "primevue/button";
 import Toolbar from "primevue/toolbar";
@@ -824,7 +655,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
 const toast = useToast();
-
+const staff = ref({});
 const home = ref({
     icon: "pi pi-home",
     label: "Dashboard",
@@ -840,8 +671,25 @@ const props = defineProps({
 
 const department = ref(props.department);
 const staffList = ref(props.staffList);
-
 console.log(department.value);
+
+const rowsPerPage = ref(8);
+const currentPage = ref(0);
+
+const paginatedStaffList = computed(() => {
+    const start = (currentPage.value || 0) * (rowsPerPage.value || 10);
+    const end = start + (rowsPerPage.value || 10);
+    return Array.isArray(staffList.value) ? staffList.value.slice(start, end) : [];
+});
+
+const start = Number(currentPage.value) * Number(rowsPerPage.value);
+const end = start + Number(rowsPerPage.value);
+
+
+// Handle Page Change
+const onPageChange = (event) => {
+    currentPage.value = event.page;
+};
 </script>
 <style scoped>
 ::v-deep(.p-breadcrumb) {
