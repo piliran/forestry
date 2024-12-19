@@ -556,10 +556,27 @@
                                 class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
                                 title="View Profile"
                             >
-                                <img
-                                    src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                                    class="w-16 rounded-full"
-                                />
+                                <Image
+                                    :src="`${staff.user.profile_photo_url}`"
+                                    :alt="staff.user.name"
+                                    class="border-white rounded-full"
+                                    preview
+                                >
+                                    <template #image>
+                                        <img
+                                            :src="staff.user.profile_photo_url"
+                                            alt="Profile"
+                                            style="
+                                                width: 100%;
+                                                height: 100%;
+                                                object-fit: cover;
+                                            "
+                                            class="border-white rounded-full"
+
+                                        />
+                                    </template>
+                                </Image>
+                                
                                 <p class="text-center font-bold text-sm mt-1">
                                     {{ staff.user.name }}
                                 </p>
