@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Station;
 use App\Models\District;
+use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -76,6 +77,11 @@ class StationController extends Controller
 
     public function show(Station $station)
     {
+
+         $staffList = Staff::with(['level', 'user.roles', 'station',])
+        ->whereNull('deleted_at')
+        ->where('station_id', $station->id)
+        ->get();
         $station->load(['area', 'district', 'operations', 'contactPerson']);
         return Inertia::render('Stations/Show', [
             'station' => $station
