@@ -40,7 +40,7 @@
                                     <div class="flex items-end">
                                         <span
                                             class="text-2xl 2xl:text-3xl font-bold"
-                                            >$8,141</span
+                                            >{{ station.staff_count }}</span
                                         >
                                         <div
                                             class="flex items-center ml-2 mb-1"
@@ -101,7 +101,7 @@
                                     <div class="flex items-end">
                                         <span
                                             class="text-2xl 2xl:text-3xl font-bold"
-                                            >217</span
+                                            >{{ station.areas_count }}</span
                                         >
                                         <div
                                             class="flex items-center ml-2 mb-1"
@@ -162,7 +162,7 @@
                                     <div class="flex items-end">
                                         <span
                                             class="text-2xl 2xl:text-3xl font-bold"
-                                            >54</span
+                                            >{{ station.operations_count }}</span
                                         >
                                         <div
                                             class="flex items-center ml-2 mb-1"
@@ -223,7 +223,7 @@
                                     <div class="flex items-end">
                                         <span
                                             class="text-2xl 2xl:text-3xl font-bold"
-                                            >54</span
+                                            >90</span
                                         >
                                         <div
                                             class="flex items-center ml-2 mb-1"
@@ -575,7 +575,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg shadow-xl p-8">
+                <!-- <div class="bg-white rounded-lg shadow-xl p-8">
                     <div class="flex items-center justify-between">
                         <h4 class="text-xl text-gray-900 font-bold">
                             Members of Staff (532)
@@ -618,13 +618,100 @@
                             </p>
                         </a>
                     </div>
+                </div> -->
+                <div class="bg-white rounded-lg shadow-xl p-8">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xl text-gray-900 font-bold">
+                            <Badge size="large" severity="contrast">{{ station.staff_count }}</Badge>   Members of Staff 
+                        </h4>
+                        <a href="#" title="View All">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-6 w-6 text-gray-500 hover:text-gray-700"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                                ></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <div v-if="staffList.length > 0" class="p-2">
+                        <div
+                            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8"
+                        >
+                        
+                        <div
+                            v-for="staff in paginatedStaffList"
+                            :key="staff.id"
+                            class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+
+                        >
+
+                            <a
+                                href="#"
+                                class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
+                                title="View Profile"
+                            >
+                                <Image
+                                    :src="`${staff.user.profile_photo_url}`"
+                                    :alt="staff.user.name"
+                                    class="border-white rounded-full"
+                                    preview
+                                >
+                                    <template #image>
+                                        <img
+                                            :src="staff.user.profile_photo_url"
+                                            alt="Profile"
+                                            style="
+                                                width: 100%;
+                                                height: 100%;
+                                                object-fit: cover;
+                                            "
+                                            class="border-white rounded-full"
+
+                                        />
+                                    </template>
+                                </Image>
+                                
+                                <p class="text-center font-bold text-sm mt-1">
+                                    {{ staff.user.name }}
+                                </p>
+                                <p class="text-xs text-gray-500 text-center">
+                                    {{
+                                        staff.user.roles
+                                            .map((role) => role.name)
+                                            .join(", ")
+                                    }}
+                                </p>
+                            </a>
+                        </div>
+                        </div>
+                        <!-- Paginator -->
+                        <Paginator
+                            :rows="rowsPerPage"
+                            :totalRecords="staffList.length"
+                            :rowsPerPageOptions="[4, 8, 16]"
+                            :currentPage="currentPage"
+                            @page="onPageChange"
+                            class="mt-4"
+                        />
+                    </div>
+                    <div v-else class="flex items-center justify-center">
+                        <h2>No Staff Members Found</h2>
+                    </div>
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
@@ -656,11 +743,30 @@ const breadCumbItems = ref([{ label: "Station" }]);
 
 const props = defineProps({
     station: Object,
+    staffList: Array,
 });
 
 const station = ref(props.station);
+const staffList = ref(props.staffList);
 
 console.log(station.value);
+const rowsPerPage = ref(8);
+const currentPage = ref(0);
+
+const paginatedStaffList = computed(() => {
+    const start = (currentPage.value || 0) * (rowsPerPage.value || 10);
+    const end = start + (rowsPerPage.value || 10);
+    return Array.isArray(staffList.value) ? staffList.value.slice(start, end) : [];
+});
+
+const start = Number(currentPage.value) * Number(rowsPerPage.value);
+const end = start + Number(rowsPerPage.value);
+
+
+// Handle Page Change
+const onPageChange = (event) => {
+    currentPage.value = event.page;
+};
 </script>
 <style scoped>
 ::v-deep(.p-breadcrumb) {

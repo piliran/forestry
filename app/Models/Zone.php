@@ -16,6 +16,7 @@ class Zone extends Model
         'department_id',
         'location',
         'website',
+        'contact_person'
     
     ];
 
@@ -23,4 +24,9 @@ class Zone extends Model
     {
         return $this->belongsTo(Department::class, 'department_id');
     }
+    public function contactPerson()
+    {
+        return $this->belongsTo(User::class, 'contact_person');
+    }
+
 }

@@ -52,8 +52,8 @@ class DepartmentController extends Controller
             'location' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'website' => 'required|string|max:255',
-            //'contact_person' => 'required|exists:users,id',
-            'contact_person' => 'nullable|string|max:255',
+            'contact_person' => 'required|exists:users,id',
+            // 'contact_person' => 'nullable|string|max:255',
         ]);
 
         $department = Department::create($validated);
@@ -95,7 +95,7 @@ class DepartmentController extends Controller
         })
         ->get();
 
-    
+
         // Add staff count to the department data
         $department->staff_count = $staffList->count();
 
@@ -103,7 +103,7 @@ class DepartmentController extends Controller
         $uniqueStations = $staffList->pluck('station.id')->unique()->count();
         $department->station_count = $uniqueStations;
 
-        
+
 
 
         return Inertia::render('Department/Show', [
@@ -112,7 +112,7 @@ class DepartmentController extends Controller
         ]);
     }
 
-    
+
     /**
      * Soft delete the specified resource.
      */
