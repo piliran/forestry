@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('arrests', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
-            $table->string('date');
-            $table->string('location')->nullable();
+            $table->string('case_number')->nullable();
+            $table->date('date_arrested')->nullable();
+            $table->string('arrest_location')->nullable();
+            $table->string('arresting_officer')->nullable();
+            $table->string('charges')->nullable();
+            $table->string('description')->nullable();
             $table->string('proof')->nullable();
             $table->unsignedBigInteger('suspect_id');
             $table->foreign('suspect_id')->references('id')->on('suspects')->onDelete('cascade')->onUpdate('cascade');

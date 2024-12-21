@@ -164,7 +164,6 @@ const toggleSidebar = () => {
                         style="background-color: #007e4e"
                     >
                         <div class="mr-4 my-2">
-                            <!-- Icon for toggling sidebar on medium and large devices -->
                             <button
                                 class="hidden md:block fill-white text-white px-1"
                                 @click="toggleSidebar"
