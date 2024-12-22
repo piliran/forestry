@@ -107,6 +107,7 @@ class StationController extends Controller
         $station->staff_count = $staffList->count();
         $station->operations_count = $station->operations()->count();
         $station->areas_count = $station->area()->count();
+        $station->teams_count = $station->teams()->count();
 
         return Inertia::render('Stations/Show', [
             'station' => $station,

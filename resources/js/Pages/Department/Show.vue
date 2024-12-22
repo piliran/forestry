@@ -1,202 +1,114 @@
 <!-- component -->
 <template>
-    <AppLayout title="departments">
+    <AppLayout title="Department Details">
         <div>
-            <div class="h-full bg-gray-200">
-                <div class="flex-1 bg-white rounded-lg shadow-xl mt-4 p-8">
-                    <h4 class="text-xl text-gray-900 font-bold">Statistics</h4>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
-                        <div
-                            class="px-6 py-6 bg-gray-100 border border-gray-300 rounded-lg shadow-xl"
+            <div class="-mt-6 inline-block bg-transparent">
+                <Breadcrumb :home="home" :model="breadCumbItems">
+                    <template #item="{ item, props }">
+                        <Link
+                            v-if="item.route"
+                            :href="item.route"
+                            preserve-scroll
+                            v-bind="props.action"
                         >
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-sm text-indigo-600"
-                                    >Staff</span
-                                >
-                                <span
-                                    class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
-                                    >7 days</span
-                                >
-                            </div>
-                            <div class="flex items-center justify-between mt-6">
-                                <div>
-                                    <svg
-                                        class="w-12 h-12 p-2.5 bg-indigo-400 bg-opacity-20 rounded-full text-indigo-600 border border-indigo-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                <div class="flex flex-col">
-                                    <div class="flex items-end">
-                                        <span
-                                            class="text-2xl 2xl:text-3xl font-bold"
-                                        >
-                                        {{ department.staff_count }}
-                                        </span>
-                                        <span class="text-gray-700"></span>
-                                        <div
-                                            class="flex items-center ml-2 mb-1"
-                                        >
-                                            <svg
-                                                class="w-5 h-5 text-green-500"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                                ></path>
-                                            </svg>
-                                            <span
-                                                class="font-bold text-sm text-gray-500 ml-0.5"
-                                                >3%</span
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            class="px-6 py-6 bg-gray-100 border border-gray-300 rounded-lg shadow-xl"
+                            <span :class="[item.icon, 'text-color']" />
+                            <span class="text-primary font-semibold">{{
+                                item.label
+                            }}</span>
+                        </Link>
+                        <a
+                            v-else
+                            :href="item.url"
+                            :target="item.target"
+                            v-bind="props.action"
                         >
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-sm text-green-600"
-                                    >Zones</span
+                            <span
+                                class="text-surface-700 dark:text-surface-0"
+                                >{{ item.label }}</span
+                            >
+                        </a>
+                    </template>
+                </Breadcrumb>
+            </div>
+            <div class="h-full">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
+                    <!-- Staff Card -->
+                    <div
+                        class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-indigo-100 p-3 rounded-full">
+                                <svg
+                                    class="w-8 h-8 text-indigo-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
                                 >
-                                <span
-                                    class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
-                                    >7 days</span
-                                >
+                                    <path
+                                        d="M10 2a4 4 0 100 8 4 4 0 000-8zM4 10a6 6 0 0112 0v2a3 3 0 11-6 0v-2H4zm12 0v2a5 5 0 01-10 0v-2H4a4 4 0 108 0h4z"
+                                    ></path>
+                                </svg>
                             </div>
-                            <div class="flex items-center justify-between mt-6">
-                                <div>
-                                    <svg
-                                        class="w-12 h-12 p-2.5 bg-green-400 bg-opacity-20 rounded-full text-green-600 border border-green-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                <div class="flex flex-col">
-                                    <div class="flex items-end">
-                                        <span
-                                            class="text-2xl 2xl:text-3xl font-bold"
-                                        >
-                                        <!-- {{ department.zone_count }} -->90
-                                        </span>
-                                        <div
-                                            class="flex items-center ml-2 mb-1"
-                                        >
-                                            <svg
-                                                class="w-5 h-5 text-green-500"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                                ></path>
-                                            </svg>
-                                            <span
-                                                class="font-bold text-sm text-gray-500 ml-0.5"
-                                                >5%</span
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <span class="text-lg font-semibold text-gray-800"
+                                >Staff</span
+                            >
                         </div>
-                        <div
-                            class="px-6 py-6 bg-gray-100 border border-gray-300 rounded-lg shadow-xl"
-                        >
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-sm text-blue-600"
-                                    >Stations</span
-                                >
-                                <span
-                                    class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
-                                    >7 days</span
-                                >
-                            </div>
-                            <div class="flex items-center justify-between mt-6">
-                                <div>
-                                    <svg
-                                        class="w-12 h-12 p-2.5 bg-blue-400 bg-opacity-20 rounded-full text-blue-600 border border-blue-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                <div class="flex flex-col">
-                                    <div class="flex items-end">
-                                        <span class="text-2xl 2xl:text-3xl font-bold">
-                                            {{ department.station_count }}
-                                        </span>
-                                        <div
-                                            class="flex items-center ml-2 mb-1"
-                                        >
-                                            <svg
-                                                class="w-5 h-5 text-green-500"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                                ></path>
-                                            </svg>
-                                            <span
-                                                class="font-bold text-sm text-gray-500 ml-0.5"
-                                                >7%</span
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <span class="text-4xl font-extrabold text-indigo-600">
+                            {{ department.staff_count }}
+                        </span>
                     </div>
 
-                    <!-- <div class="mt-4">
-                        <canvas id="verticalBarChart" style="display: block; box-sizing: border-box; height: 414px; width: 828px;" width="1656" height="828"></canvas>
-                    </div> -->
+                    <!-- Zones Card -->
+                    <div
+                        class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <svg
+                                    class="w-8 h-8 text-green-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-semibold text-gray-800"
+                                >Zones</span
+                            >
+                        </div>
+                        <span class="text-4xl font-extrabold text-green-600">
+                            {{ department.zone_count }}
+                        </span>
+                    </div>
+
+                    <!-- Stations Card -->
+                    <div
+                        class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <svg
+                                    class="w-8 h-8 text-blue-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-semibold text-gray-800"
+                                >Stations</span
+                            >
+                        </div>
+                        <span class="text-4xl font-extrabold text-blue-600">
+                            {{ department.station_count }}
+                        </span>
+                    </div>
                 </div>
 
                 <div
@@ -236,14 +148,19 @@
                                     class="mt-5 w-40 border-4 border-white rounded-full"
                                 /> -->
                                 <div class="flex flex-col items-center">
-                                <img
-                                    v-if="department.contact_person.profile_photo_url"
-                                    :src="department.contact_person.profile_photo_url"
-                                    alt="user Photo"
-                                    class="mt-5 h-40 w-40 border-4 border-white rounded-full"
-                                />
-
-                            </div>
+                                    <img
+                                        v-if="
+                                            department.contact_person
+                                                .profile_photo_url
+                                        "
+                                        :src="
+                                            department.contact_person
+                                                .profile_photo_url
+                                        "
+                                        alt="user Photo"
+                                        class="mt-5 h-40 w-40 border-4 border-white rounded-full"
+                                    />
+                                </div>
 
                                 <!-- <p class="text-gray-700">Senior Software Engineer at Tailwind CSS</p>
                         <p class="text-sm text-gray-500">New York, USA</p> -->
@@ -256,7 +173,6 @@
                                     <span class="text-gray-700">{{
                                         department.contact_person.name || "N/A"
                                     }}</span>
-
                                 </li>
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-24">Mobile:</span>
@@ -266,10 +182,10 @@
                                     }}</span>
                                 </li>
                                 <li class="flex border-b py-2">
-                                        <span class="font-bold w-24">Email:</span>
-                                        <span class="text-gray-700">{{
-                                            department.contact_person.email || "N/A"
-                                        }}</span>
+                                    <span class="font-bold w-24">Email:</span>
+                                    <span class="text-gray-700">{{
+                                        department.contact_person.email || "N/A"
+                                    }}</span>
                                 </li>
                                 <li
                                     class="flex items-center border-b py-2 space-x-2"
@@ -520,7 +436,10 @@
                 <div class="bg-white rounded-lg shadow-xl p-8">
                     <div class="flex items-center justify-between">
                         <h4 class="text-xl text-gray-900 font-bold">
-                            <Badge size="large" severity="contrast">{{ department.staff_count }}</Badge>   Members of Staff 
+                            <Badge size="large" severity="contrast">{{
+                                department.staff_count
+                            }}</Badge>
+                            Members of Staff
                         </h4>
                         <a href="#" title="View All">
                             <svg
@@ -543,52 +462,54 @@
                         <div
                             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8"
                         >
-                        
-                        <div
-                            v-for="staff in paginatedStaffList"
-                            :key="staff.id"
-                            class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
-
-                        >
-
-                            <a
-                                href="#"
-                                class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                                title="View Profile"
+                            <div
+                                v-for="staff in paginatedStaffList"
+                                :key="staff.id"
+                                class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
                             >
-                                <Image
-                                    :src="`${staff.user.profile_photo_url}`"
-                                    :alt="staff.user.name"
-                                    class="border-white rounded-full"
-                                    preview
+                                <a
+                                    href="#"
+                                    class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
+                                    title="View Profile"
                                 >
-                                    <template #image>
-                                        <img
-                                            :src="staff.user.profile_photo_url"
-                                            alt="Profile"
-                                            style="
-                                                width: 100%;
-                                                height: 100%;
-                                                object-fit: cover;
-                                            "
-                                            class="border-white rounded-full"
+                                    <Image
+                                        :src="`${staff.user.profile_photo_url}`"
+                                        :alt="staff.user.name"
+                                        class="border-white rounded-full"
+                                        preview
+                                    >
+                                        <template #image>
+                                            <img
+                                                :src="
+                                                    staff.user.profile_photo_url
+                                                "
+                                                alt="Profile"
+                                                style="
+                                                    width: 100%;
+                                                    height: 100%;
+                                                    object-fit: cover;
+                                                "
+                                                class="border-white rounded-full"
+                                            />
+                                        </template>
+                                    </Image>
 
-                                        />
-                                    </template>
-                                </Image>
-                                
-                                <p class="text-center font-bold text-sm mt-1">
-                                    {{ staff.user.name }}
-                                </p>
-                                <p class="text-xs text-gray-500 text-center">
-                                    {{
-                                        staff.user.roles
-                                            .map((role) => role.name)
-                                            .join(", ")
-                                    }}
-                                </p>
-                            </a>
-                        </div>
+                                    <p
+                                        class="text-center font-bold text-sm mt-1"
+                                    >
+                                        {{ staff.user.name }}
+                                    </p>
+                                    <p
+                                        class="text-xs text-gray-500 text-center"
+                                    >
+                                        {{
+                                            staff.user.roles
+                                                .map((role) => role.name)
+                                                .join(", ")
+                                        }}
+                                    </p>
+                                </a>
+                            </div>
                         </div>
                         <!-- Paginator -->
                         <Paginator
@@ -616,9 +537,9 @@ import { useToast } from "primevue/usetoast";
 import Image from "primevue/image";
 import DataTable from "primevue/datatable";
 
-import Paginator from 'primevue/paginator';
-import Badge from 'primevue/badge';
-import OverlayBadge from 'primevue/overlaybadge';
+import Paginator from "primevue/paginator";
+import Badge from "primevue/badge";
+import OverlayBadge from "primevue/overlaybadge";
 import Column from "primevue/column";
 import Button from "primevue/button";
 import Toolbar from "primevue/toolbar";
@@ -629,7 +550,7 @@ import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
@@ -641,12 +562,15 @@ const home = ref({
     label: "Dashboard",
     route: "/dashboard",
 });
-const breadCumbItems = ref([{ label: "Department" }]);
+
+const breadCumbItems = ref([
+    { label: "Departments", route: "/departments" },
+    { label: router.page.url.slice(1) },
+]);
 
 const props = defineProps({
     department: Object,
     staffList: Array,
-
 });
 
 const department = ref(props.department);
@@ -659,12 +583,13 @@ const currentPage = ref(0);
 const paginatedStaffList = computed(() => {
     const start = (currentPage.value || 0) * (rowsPerPage.value || 10);
     const end = start + (rowsPerPage.value || 10);
-    return Array.isArray(staffList.value) ? staffList.value.slice(start, end) : [];
+    return Array.isArray(staffList.value)
+        ? staffList.value.slice(start, end)
+        : [];
 });
 
 const start = Number(currentPage.value) * Number(rowsPerPage.value);
 const end = start + Number(rowsPerPage.value);
-
 
 // Handle Page Change
 const onPageChange = (event) => {

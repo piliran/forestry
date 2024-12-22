@@ -11,7 +11,7 @@ class Department extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        
+
         'name',
         'phone',
         'location',
@@ -19,12 +19,17 @@ class Department extends Model
         'website',
         'code',
         'contact_person',
-    
+
     ];
 
     public function contactPerson()
     {
         return $this->belongsTo(User::class, 'contact_person');
+    }
+
+    public function zones()
+    {
+        return $this->hasMany(Zone::class);
     }
 
 

@@ -45,5 +45,11 @@ class Station extends Model
         return $this->belongsTo(User::class, 'contact_person');
     }
 
+    public function teams()
+{
+    return $this->hasMany(Team::class, 'station_id');
+}
+
+
 
 }

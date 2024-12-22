@@ -102,6 +102,8 @@ class DepartmentController extends Controller
         // Get unique station count by counting unique station IDs
         $uniqueStations = $staffList->pluck('station.id')->unique()->count();
         $department->station_count = $uniqueStations;
+        $department->zone_count = $department->zones()->count();
+
 
 
 

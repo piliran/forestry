@@ -1,263 +1,147 @@
 <!-- component -->
 <template>
-    <AppLayout title="stations">
+    <AppLayout title="Station Details">
         <div>
-            <div class="h-full bg-gray-200">
-                <div class="flex-1 bg-white rounded-lg shadow-xl mt-4 p-8">
-                    <h4 class="text-xl text-gray-900 font-bold">Statistics</h4>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mt-4">
-                        <div
-                            class="px-6 py-6 bg-gray-100 border border-gray-300 rounded-lg shadow-xl"
+            <div class="-mt-6 inline-block bg-transparent">
+                <Breadcrumb :home="home" :model="breadCumbItems">
+                    <template #item="{ item, props }">
+                        <Link
+                            v-if="item.route"
+                            :href="item.route"
+                            preserve-scroll
+                            v-bind="props.action"
                         >
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-sm text-indigo-600"
-                                    >Staff</span
-                                >
-                                <span
-                                    class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
-                                    >7 days</span
-                                >
-                            </div>
-                            <div class="flex items-center justify-between mt-6">
-                                <div>
-                                    <svg
-                                        class="w-12 h-12 p-2.5 bg-indigo-400 bg-opacity-20 rounded-full text-indigo-600 border border-indigo-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                <div class="flex flex-col">
-                                    <div class="flex items-end">
-                                        <span
-                                            class="text-2xl 2xl:text-3xl font-bold"
-                                            >{{ station.staff_count }}</span
-                                        >
-                                        <div
-                                            class="flex items-center ml-2 mb-1"
-                                        >
-                                            <svg
-                                                class="w-5 h-5 text-green-500"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                                ></path>
-                                            </svg>
-                                            <span
-                                                class="font-bold text-sm text-gray-500 ml-0.5"
-                                                >3%</span
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            class="px-6 py-6 bg-gray-100 border border-gray-300 rounded-lg shadow-xl"
+                            <span :class="[item.icon, 'text-color']" />
+                            <span class="text-primary font-semibold">{{
+                                item.label
+                            }}</span>
+                        </Link>
+                        <a
+                            v-else
+                            :href="item.url"
+                            :target="item.target"
+                            v-bind="props.action"
                         >
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-sm text-green-600"
-                                    >Areas</span
+                            <span
+                                class="text-surface-700 dark:text-surface-0"
+                                >{{ item.label }}</span
+                            >
+                        </a>
+                    </template>
+                </Breadcrumb>
+            </div>
+            <div class="h-full">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mt-4">
+                    <!-- Staff Card -->
+                    <div
+                        class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-indigo-100 p-3 rounded-full">
+                                <svg
+                                    class="w-8 h-8 text-indigo-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
                                 >
-                                <span
-                                    class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
-                                    >7 days</span
-                                >
+                                    <path
+                                        d="M10 2a4 4 0 100 8 4 4 0 000-8zM4 10a6 6 0 0112 0v2a3 3 0 11-6 0v-2H4zm12 0v2a5 5 0 01-10 0v-2H4a4 4 0 108 0h4z"
+                                    ></path>
+                                </svg>
                             </div>
-                            <div class="flex items-center justify-between mt-6">
-                                <div>
-                                    <svg
-                                        class="w-12 h-12 p-2.5 bg-green-400 bg-opacity-20 rounded-full text-green-600 border border-green-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                <div class="flex flex-col">
-                                    <div class="flex items-end">
-                                        <span
-                                            class="text-2xl 2xl:text-3xl font-bold"
-                                            >{{ station.areas_count }}</span
-                                        >
-                                        <div
-                                            class="flex items-center ml-2 mb-1"
-                                        >
-                                            <svg
-                                                class="w-5 h-5 text-green-500"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                                ></path>
-                                            </svg>
-                                            <span
-                                                class="font-bold text-sm text-gray-500 ml-0.5"
-                                                >5%</span
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <span class="text-lg font-semibold text-gray-800"
+                                >Staff</span
+                            >
                         </div>
-                        <div
-                            class="px-6 py-6 bg-gray-100 border border-gray-300 rounded-lg shadow-xl"
-                        >
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-sm text-blue-600"
-                                    >Operations</span
-                                >
-                                <span
-                                    class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
-                                    >7 days</span
-                                >
-                            </div>
-                            <div class="flex items-center justify-between mt-6">
-                                <div>
-                                    <svg
-                                        class="w-12 h-12 p-2.5 bg-blue-400 bg-opacity-20 rounded-full text-blue-600 border border-blue-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                <div class="flex flex-col">
-                                    <div class="flex items-end">
-                                        <span
-                                            class="text-2xl 2xl:text-3xl font-bold"
-                                            >{{
-                                                station.operations_count
-                                            }}</span
-                                        >
-                                        <div
-                                            class="flex items-center ml-2 mb-1"
-                                        >
-                                            <svg
-                                                class="w-5 h-5 text-green-500"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                                ></path>
-                                            </svg>
-                                            <span
-                                                class="font-bold text-sm text-gray-500 ml-0.5"
-                                                >7%</span
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            class="px-6 py-6 bg-gray-100 border border-gray-300 rounded-lg shadow-xl"
-                        >
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-sm text-blue-600"
-                                    >Teams</span
-                                >
-                                <span
-                                    class="text-xs bg-gray-200 hover:bg-gray-500 text-gray-500 hover:text-gray-200 px-2 py-1 rounded-lg transition duration-200 cursor-default"
-                                    >7 days</span
-                                >
-                            </div>
-                            <div class="flex items-center justify-between mt-6">
-                                <div>
-                                    <svg
-                                        class="w-12 h-12 p-2.5 bg-blue-400 bg-opacity-20 rounded-full text-blue-600 border border-blue-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                <div class="flex flex-col">
-                                    <div class="flex items-end">
-                                        <span
-                                            class="text-2xl 2xl:text-3xl font-bold"
-                                            >90</span
-                                        >
-                                        <div
-                                            class="flex items-center ml-2 mb-1"
-                                        >
-                                            <svg
-                                                class="w-5 h-5 text-green-500"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                                ></path>
-                                            </svg>
-                                            <span
-                                                class="font-bold text-sm text-gray-500 ml-0.5"
-                                                >7%</span
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <span class="text-4xl font-extrabold text-indigo-600">{{
+                            station.staff_count
+                        }}</span>
                     </div>
 
-                    <!-- <div class="mt-4">
-                <canvas id="verticalBarChart" style="display: block; box-sizing: border-box; height: 414px; width: 828px;" width="1656" height="828"></canvas>
-            </div> -->
+                    <!-- Teams Card -->
+                    <div
+                        class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-yellow-100 p-3 rounded-full">
+                                <svg
+                                    class="w-8 h-8 text-yellow-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M13 7a4 4 0 11-8 0 4 4 0 018 0zm3 6a4 4 0 10-8 0v1a3 3 0 006 0v-1zm-5 0a4 4 0 10-8 0v1a3 3 0 006 0v-1z"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-semibold text-gray-800"
+                                >Teams</span
+                            >
+                        </div>
+                        <span class="text-4xl font-extrabold text-yellow-600">{{
+                            station.teams_count
+                        }}</span>
+                    </div>
+
+                    <!-- Areas Card -->
+                    <div
+                        class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <svg
+                                    class="w-8 h-8 text-green-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M2.166 10a8 8 0 1115.668 0 8 8 0 01-15.668 0zM10 4a6 6 0 100 12 6 6 0 000-12z"
+                                        clip-rule="evenodd"
+                                    ></path>
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M10 8a2 2 0 100 4 2 2 0 000-4z"
+                                        clip-rule="evenodd"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-semibold text-gray-800"
+                                >Areas</span
+                            >
+                        </div>
+                        <span class="text-4xl font-extrabold text-green-600">{{
+                            station.areas_count
+                        }}</span>
+                    </div>
+
+                    <!-- Operations Card -->
+                    <div
+                        class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <svg
+                                    class="w-8 h-8 text-blue-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M4 4a1 1 0 011-1h10a1 1 0 011 1v1h1.5a1.5 1.5 0 110 3H16v4h1.5a1.5 1.5 0 010 3H16v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1H2.5a1.5 1.5 0 010-3H4v-4H2.5a1.5 1.5 0 010-3H4V4zm12 2H4v4h12V6zm0 6H4v4h12v-4z"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-semibold text-gray-800"
+                                >Operations</span
+                            >
+                        </div>
+                        <span class="text-4xl font-extrabold text-blue-600">{{
+                            station.operations_count
+                        }}</span>
+                    </div>
                 </div>
 
                 <div
@@ -738,7 +622,8 @@ import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
-import { Link } from "@inertiajs/vue3";
+
+import { Head, Link, router } from "@inertiajs/vue3";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
@@ -750,8 +635,11 @@ const home = ref({
     label: "Dashboard",
     route: "/dashboard",
 });
-const breadCumbItems = ref([{ label: "Station" }]);
 
+const breadCumbItems = ref([
+    { label: "Stations", route: "/stations" },
+    { label: router.page.url.slice(1) },
+]);
 const props = defineProps({
     station: Object,
     staffList: Array,
@@ -760,7 +648,6 @@ const props = defineProps({
 const station = ref(props.station);
 const staffList = ref(props.staffList);
 
-console.log(station.value);
 const rowsPerPage = ref(8);
 const currentPage = ref(0);
 
