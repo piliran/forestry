@@ -17,7 +17,7 @@ class ZoneController extends Controller
     public function index()
     {
         // Fetch non-deleted zones, including related departments
-        $zones = Zone::with('department')->whereNull('deleted_at')->get();
+        $zones = Zone::with('department','contactPerson')->whereNull('deleted_at')->get();
         $departments = Department::all();
 
         return Inertia::render('Zone/Index', [
@@ -47,6 +47,7 @@ class ZoneController extends Controller
             'website' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'department_id' => 'nullable|integer',
+            'contact_person' => 'required|exists:users,id',
         ]);
 
         // Create a new zone and associate the department
@@ -91,6 +92,7 @@ class ZoneController extends Controller
             'website' => 'nullable|string|max:255',
             'department_id' => 'nullable|integer',
             'location' => 'nullable|string|max:255',
+            'contact_person' => 'required|exists:users,id',
         ]);
 
         // Update the zone data

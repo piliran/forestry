@@ -18,11 +18,19 @@ class ZoneSeeder extends Seeder
     {
         $faker = Faker::create();
 
+        $userIds = DB::table('users')->pluck('id'); // Fetch all user IDs
+
+        if ($userIds->isEmpty()) {
+            $this->command->info('No users found. Please seed the users table first.');
+            return;
+        }
+
         // Insert static data (optional)
         DB::table('zones')->insert([
             [
                 'name' => 'Zone 1',
                 'department_id' => Department::first()->id, // Assuming a department exists
+                'contact_person' => $userIds->random(),
                 'phone' => '123-456-7890',
                 'location' => 'Blantyre',
                 'website' => 'https://zone1.com',
@@ -33,6 +41,7 @@ class ZoneSeeder extends Seeder
             [
                 'name' => 'Zone 2',
                 'department_id' => Department::skip(1)->first()->id, // Reference another department
+                'contact_person' => $userIds->random(),
                 'phone' => '987-654-3210',
                 'location' => 'Nsanje',
                 'website' => 'https://zone2.com',
@@ -44,6 +53,7 @@ class ZoneSeeder extends Seeder
             [
                 'name' => 'Zone 3',
                 'department_id' => Department::skip(1)->first()->id, // Reference another department
+                'contact_person' => $userIds->random(),
                 'phone' => '987-654-3210',
                 'location' => 'Blantyre',
                 'website' => 'https://zone2.com',

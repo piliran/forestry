@@ -16,11 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->unsignedBigInteger('department_id')->nullable();
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade')->onUpdate('cascade');
-           
+            $table->unsignedBigInteger('contact_person');
+            $table->foreign('contact_person')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->string('phone')->nullable();
             $table->string('location')->nullable();
             $table->string('website')->nullable();
-            $table->softDeletes(); 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

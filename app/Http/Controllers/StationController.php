@@ -6,6 +6,10 @@ use App\Models\Station;
 use App\Models\District;
 use App\Models\Staff;
 use App\Models\User;
+
+use App\Models\Operation;
+use App\Models\Area;
+use App\Models\StaffToStation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
@@ -75,18 +79,51 @@ class StationController extends Controller
         return response()->json($station, 200);
     }
 
+    // public function show(Station $station)
+    // {
+    //     $station->load(['area', 'district', 'operations', 'contactPerson']);
+    //     return Inertia::render('Stations/Show', [
+    //         'station' => $station
+    //     ]);
+    // }
+
     public function show(Station $station)
     {
+        // Load the necessary relationships along with counts
 
-         $staffList = Staff::with(['level', 'user.roles', 'station',])
+
+        $station->load([
+            'area',
+            'district',
+            'operations',
+            'contactPerson'
+        ]);
+
+        // // Append counts for staff, operations, and areas
+        // $station->staff_count = $station->staff()->count();
+        // $station->operations_count = $station->operations()->count();
+        // $station->areas_count = $station->area()->count();
+
+        $staffList = Staff::with(['level', 'user.roles', 'station',])
         ->whereNull('deleted_at')
         ->where('station_id', $station->id)
         ->get();
-        $station->load(['area', 'district', 'operations', 'contactPerson']);
+        // $staffList = Staff::with(['level', 'user.roles', 'station'])
+        // ->whereNull('deleted_at')
+        // ->where('station.id',$station->id)
+        // ->get();
+
+
+        // Add staff count to the department data
+        $station->staff_count = $staffList->count();
+        $station->operations_count = $station->operations()->count();
+        $station->areas_count = $station->area()->count();
         return Inertia::render('Stations/Show', [
-            'station' => $station
+            'station' => $station,
+            'staffList' => $staffList,
         ]);
     }
+
 
     /**
      * Soft delete the specified resource from storage.
