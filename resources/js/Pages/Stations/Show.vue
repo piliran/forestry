@@ -162,7 +162,9 @@
                                     <div class="flex items-end">
                                         <span
                                             class="text-2xl 2xl:text-3xl font-bold"
-                                            >{{ station.operations_count }}</span
+                                            >{{
+                                                station.operations_count
+                                            }}</span
                                         >
                                         <div
                                             class="flex items-center ml-2 mb-1"
@@ -295,14 +297,19 @@
                                     class="mt-5 w-40 border-4 border-white rounded-full"
                                 /> -->
                                 <div class="flex flex-col items-center">
-                                <img
-                                    v-if="station.contact_person.profile_photo_url"
-                                    :src="station.contact_person.profile_photo_url"
-                                    alt="user Photo"
-                                    class="mt-5 h-40 w-40 border-4 border-white rounded-full"
-                                />
-
-                            </div>
+                                    <img
+                                        v-if="
+                                            station.contact_person
+                                                .profile_photo_url
+                                        "
+                                        :src="
+                                            station.contact_person
+                                                .profile_photo_url
+                                        "
+                                        alt="user Photo"
+                                        class="mt-5 h-40 w-40 border-4 border-white rounded-full"
+                                    />
+                                </div>
 
                                 <!-- <p class="text-gray-700">Senior Software Engineer at Tailwind CSS</p>
                         <p class="text-sm text-gray-500">New York, USA</p> -->
@@ -315,20 +322,19 @@
                                     <span class="text-gray-700">{{
                                         station.contact_person.name || "N/A"
                                     }}</span>
-
                                 </li>
                                 <li class="flex border-b py-2">
                                     <span class="font-bold w-24">Mobile:</span>
-                                    
+
                                     <span class="text-gray-700">{{
                                         station.contact_person.phone || "N/A"
                                     }}</span>
                                 </li>
                                 <li class="flex border-b py-2">
-                                        <span class="font-bold w-24">Email:</span>
-                                        <span class="text-gray-700">{{
-                                            station.contact_person.email || "N/A"
-                                        }}</span>
+                                    <span class="font-bold w-24">Email:</span>
+                                    <span class="text-gray-700">{{
+                                        station.contact_person.email || "N/A"
+                                    }}</span>
                                 </li>
                                 <li
                                     class="flex items-center border-b py-2 space-x-2"
@@ -600,7 +606,7 @@
                     <div
                         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8"
                     >
-                       
+
                         <a
                             href="#"
                             class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
@@ -622,7 +628,10 @@
                 <div class="bg-white rounded-lg shadow-xl p-8">
                     <div class="flex items-center justify-between">
                         <h4 class="text-xl text-gray-900 font-bold">
-                            <Badge size="large" severity="contrast">{{ station.staff_count }}</Badge>   Members of Staff 
+                            <Badge size="large" severity="contrast">{{
+                                station.staff_count
+                            }}</Badge>
+                            Members of Staff
                         </h4>
                         <a href="#" title="View All">
                             <svg
@@ -645,52 +654,54 @@
                         <div
                             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8"
                         >
-                        
-                        <div
-                            v-for="staff in paginatedStaffList"
-                            :key="staff.id"
-                            class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
-
-                        >
-
-                            <a
-                                href="#"
-                                class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                                title="View Profile"
+                            <div
+                                v-for="staff in paginatedStaffList"
+                                :key="staff.id"
+                                class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
                             >
-                                <Image
-                                    :src="`${staff.user.profile_photo_url}`"
-                                    :alt="staff.user.name"
-                                    class="border-white rounded-full"
-                                    preview
+                                <a
+                                    href="#"
+                                    class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
+                                    title="View Profile"
                                 >
-                                    <template #image>
-                                        <img
-                                            :src="staff.user.profile_photo_url"
-                                            alt="Profile"
-                                            style="
-                                                width: 100%;
-                                                height: 100%;
-                                                object-fit: cover;
-                                            "
-                                            class="border-white rounded-full"
+                                    <Image
+                                        :src="`${staff.user.profile_photo_url}`"
+                                        :alt="staff.user.name"
+                                        class="border-white rounded-full"
+                                        preview
+                                    >
+                                        <template #image>
+                                            <img
+                                                :src="
+                                                    staff.user.profile_photo_url
+                                                "
+                                                alt="Profile"
+                                                style="
+                                                    width: 100%;
+                                                    height: 100%;
+                                                    object-fit: cover;
+                                                "
+                                                class="border-white rounded-full"
+                                            />
+                                        </template>
+                                    </Image>
 
-                                        />
-                                    </template>
-                                </Image>
-                                
-                                <p class="text-center font-bold text-sm mt-1">
-                                    {{ staff.user.name }}
-                                </p>
-                                <p class="text-xs text-gray-500 text-center">
-                                    {{
-                                        staff.user.roles
-                                            .map((role) => role.name)
-                                            .join(", ")
-                                    }}
-                                </p>
-                            </a>
-                        </div>
+                                    <p
+                                        class="text-center font-bold text-sm mt-1"
+                                    >
+                                        {{ staff.user.name }}
+                                    </p>
+                                    <p
+                                        class="text-xs text-gray-500 text-center"
+                                    >
+                                        {{
+                                            staff.user.roles
+                                                .map((role) => role.name)
+                                                .join(", ")
+                                        }}
+                                    </p>
+                                </a>
+                            </div>
                         </div>
                         <!-- Paginator -->
                         <Paginator
@@ -718,8 +729,8 @@ import { useToast } from "primevue/usetoast";
 import Image from "primevue/image";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-import Button from "primevue/button";
-import Toolbar from "primevue/toolbar";
+import Badge from "primevue/badge";
+import Paginator from "primevue/paginator";
 import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
@@ -756,12 +767,13 @@ const currentPage = ref(0);
 const paginatedStaffList = computed(() => {
     const start = (currentPage.value || 0) * (rowsPerPage.value || 10);
     const end = start + (rowsPerPage.value || 10);
-    return Array.isArray(staffList.value) ? staffList.value.slice(start, end) : [];
+    return Array.isArray(staffList.value)
+        ? staffList.value.slice(start, end)
+        : [];
 });
 
 const start = Number(currentPage.value) * Number(rowsPerPage.value);
 const end = start + Number(rowsPerPage.value);
-
 
 // Handle Page Change
 const onPageChange = (event) => {
