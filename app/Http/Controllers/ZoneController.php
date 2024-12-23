@@ -2,6 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Station;
+use App\Models\District;
+use App\Models\Staff;
+use App\Models\Area;
+use App\Models\Operation;
+
+
 use App\Models\Zone;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -64,12 +71,44 @@ class ZoneController extends Controller
      */
     public function show(Zone $zone)
     {
-        // Implementation if necessary
-        $zone->load('department');
-        return Inertia::render('Zone/Show',[
-            'department' => $zone,
+        // Load the zone along with its related data
+        $zone->load(['department', 'contactPerson']);
+
+        // Calculate the station count for all districts within the zone
+        $stationCount = Station::whereHas('district', function ($query) use ($zone) {
+            $query->where('zone_id', $zone->id); // Match districts to the zone
+        });
+
+        // Calculate the total operations count for all stations in the zone
+        $operationsCount = Operation::whereHas('station.district', function ($query) use ($zone) {
+            $query->where('zone_id', $zone->id);
+        });
+
+        // Calculate the total areas count for all stations in the zone
+        $areasCount = Area::whereHas('station.district', function ($query) use ($zone) {
+            $query->where('zone_id', $zone->id);
+        });
+
+        // Fetch staff list related to the zone via stations
+        $staffList = Staff::with(['level', 'user.roles'])
+            ->whereHas('station.district', function ($query) use ($zone) {
+                $query->where('zone_id', $zone->id);
+            })
+            ->whereNull('deleted_at')
+            ->get();
+
+        // Add staff count
+        $zone->staff_count = $staffList->count();
+        $zone->station_count = $stationCount->count();
+        $zone->operations_count = $operationsCount->count();
+        $zone->areas_count = $areasCount->count();
+
+        return Inertia::render('Zone/Show', [
+            'zone' => $zone,
+            'staffList' => $staffList,
         ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.

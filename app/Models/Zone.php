@@ -30,4 +30,10 @@ class Zone extends Model
         return $this->belongsTo(User::class, 'contact_person');
     }
 
+    public function districts()
+{
+    return $this->hasMany(District::class, 'zone_id');
+}
+
+
 }

@@ -31,7 +31,7 @@ class Station extends Model
     {
         return $this->belongsTo(District::class, 'district_id');
     }
-
+    
     /**
      * Get the operations associated with the station.
      */

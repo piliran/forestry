@@ -28,6 +28,7 @@ class District extends Model
         return $this->belongsTo(Zone::class, 'zone_id');
     }
 
+
     public function country()
     {
         return $this->belongsTo(Country::class, 'country_id');
@@ -46,5 +47,10 @@ class District extends Model
     public function contactPerson()
     {
         return $this->belongsTo(User::class, 'contact_person');
+    }
+    
+    public function stations()
+    {
+        return $this->hasMany(Station::class, 'district_id');
     }
 }
