@@ -171,7 +171,7 @@
                             Crime Name is required.
                         </small>
                     </div>
-                    
+
                     <div class="col-12">
                         <label for="description" class="block font-bold mb-3"
                             >Description</label
@@ -336,7 +336,7 @@ import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
-import Textarea from 'primevue/textarea';
+import Textarea from "primevue/textarea";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
@@ -573,5 +573,10 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>

@@ -75,6 +75,7 @@
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} suspects"
+                    @row-click="onRowClick"
                 >
                     <template #header>
                         <div
@@ -93,6 +94,7 @@
                             </IconField>
                         </div>
                     </template>
+
                     <Column
                         selectionMode="multiple"
                         style="width: 3rem"
@@ -134,7 +136,7 @@
                     </Column>
                     <Column
                         field="name"
-                        header="suspect Name"
+                        header="Suspect Name"
                         sortable
                         style="min-width: 10rem"
                     ></Column>
@@ -144,52 +146,37 @@
                         sortable
                         style="min-width: 10rem"
                     ></Column>
-
                     <Column
                         header="District"
                         field="district.name"
                         sortable
                         style="min-width: 12rem"
                     ></Column>
-                    <!-- <Column
-                        header="Village"
-                        field="village"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column>
-                    <Column
-                        header="T/A"
-                        field="TA"
-                        sortable
-                        style="min-width: 12rem"
-                    ></Column> -->
-
                     <Column
                         header="Status"
                         field="status"
                         sortable
                         style="min-width: 12rem"
                     ></Column>
+
                     <Column
                         header="Action"
                         :exportable="false"
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
-
-                            <Link
+                            <!-- <Link
                                 :href="'/suspect/' + slotProps.data.id"
                                 preserve-scroll
                             >
-                            <Button
-                                icon="pi pi-eye"
-                                outlined
-                                rounded
-                                class="mr-2"
-                                severity="info"
-
-                            />
-                            </Link>
+                                <Button
+                                    icon="pi pi-eye"
+                                    outlined
+                                    rounded
+                                    class="mr-2"
+                                    severity="info"
+                                />
+                            </Link> -->
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
@@ -207,6 +194,7 @@
                         </template>
                     </Column>
                 </DataTable>
+
                 <div v-else class="flex items-center justify-center">
                     <h2>No suspects found</h2>
                 </div>
@@ -1013,6 +1001,10 @@ const onFileSelect = (event) => {
         reader.readAsDataURL(file);
     }
 };
+const onRowClick = (rowData) => {
+    const suspectId = rowData.data.id;
+    router.visit(`${router.page.url}/${suspectId}`);
+};
 
 const forestryCrimes = ref([
     { label: "Illegal Logging", value: false },
@@ -1337,5 +1329,11 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>

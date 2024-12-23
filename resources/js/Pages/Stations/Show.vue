@@ -638,7 +638,7 @@ const home = ref({
 
 const breadCumbItems = ref([
     { label: "Stations", route: "/stations" },
-    { label: router.page.url.slice(1) },
+    { label: router.page.url.split("/").pop() },
 ]);
 const props = defineProps({
     station: Object,

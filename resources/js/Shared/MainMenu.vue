@@ -233,7 +233,7 @@ const items = ref([
         icon: "department",
         class: "parent-link-with-no-sublinks",
         forwardIcon: false,
-        route: "/department",
+        route: "/departments",
         allowedRoles: [
             "Monitoring and Evaluation Officer",
             "Natural Resources Management Team Leader",

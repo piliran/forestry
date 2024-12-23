@@ -325,7 +325,6 @@ import {
     IconField,
     ProgressSpinner,
     Textarea,
-
 } from "primevue";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
@@ -547,5 +546,10 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>

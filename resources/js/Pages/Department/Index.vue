@@ -77,6 +77,7 @@
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Departments"
+                    @row-click="onRowClick"
                 >
                     <template #header>
                         <div
@@ -147,17 +148,6 @@
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
-                            <Link
-                                :href="'/department/' + slotProps.data.id"
-                                preserve-scroll
-                            >
-                                <Button
-                                    icon="pi pi-eye"
-                                    outlined
-                                    rounded
-                                    severity="info"
-                                />
-                            </Link>
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
@@ -452,7 +442,7 @@ import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
@@ -485,8 +475,11 @@ const home = ref({
     route: "/dashboard",
 });
 
-const breadCumbItems = ref([{ label: "Department" }]);
-
+const breadCumbItems = ref([{ label: "Departments" }]);
+const onRowClick = (rowData) => {
+    const departmentId = rowData.data.id;
+    router.visit(`${router.page.url}/${departmentId}`);
+};
 const departments = ref(props.departments);
 const users = ref(props.users);
 const staffList = ref(props.staffList);
@@ -511,7 +504,7 @@ const saveDepartment = async () => {
         try {
             if (department.value.id) {
                 const response = await axios.put(
-                    `/department/${department.value.id}`,
+                    `/departments/${department.value.id}`,
                     department.value
                 );
                 updateDepartment(response.data);
@@ -523,7 +516,7 @@ const saveDepartment = async () => {
                 });
             } else {
                 const response = await axios.post(
-                    "/department",
+                    "/departments",
                     department.value
                 );
                 departments.value.push(response.data);
@@ -581,7 +574,7 @@ const editDepartment = (departmentData) => {
 const deleteDepartment = async () => {
     loading.value = true;
     try {
-        await axios.delete(`/department/${department.value.id}`);
+        await axios.delete(`/departments/${department.value.id}`);
         departments.value = departments.value.filter(
             (r) => r.id !== department.value.id
         );
@@ -634,7 +627,7 @@ const deleteSelectedDepartment = async () => {
     const ids = selectedDepartments.value.map((department) => department.id);
     loading.value = true;
     try {
-        await axios.post("/department/bulk-delete", { ids });
+        await axios.post("/departments/bulk-delete", { ids });
         departments.value = departments.value.filter(
             (r) => !ids.includes(r.id)
         );
@@ -699,5 +692,10 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>

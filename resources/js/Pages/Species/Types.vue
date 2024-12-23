@@ -168,7 +168,9 @@
                 </div>
                 <div class="flex flex-col gap-6">
                     <div>
-                        <label for="description" class="block font-bold mb-3 mt-3"
+                        <label
+                            for="description"
+                            class="block font-bold mb-3 mt-3"
                             >Description</label
                         >
                         <Textarea
@@ -571,5 +573,10 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>

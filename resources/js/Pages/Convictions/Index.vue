@@ -174,7 +174,10 @@
                         </small>
                     </div>
                     <div>
-                        <label for="conviction_date" class="block font-bold mb-3">
+                        <label
+                            for="conviction_date"
+                            class="block font-bold mb-3"
+                        >
                             Conviction Date
                         </label>
                         <DatePicker
@@ -250,7 +253,8 @@
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span v-if="conviction">
                         Are you sure you want to delete
-                        <b>{{ conviction.offender_name }}</b>?
+                        <b>{{ conviction.offender_name }}</b
+                        >?
                     </span>
                 </div>
                 <template #footer>
@@ -289,7 +293,8 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span>
-                        Are you sure you want to delete the selected Convictions?
+                        Are you sure you want to delete the selected
+                        Convictions?
                     </span>
                 </div>
                 <template #footer>
@@ -333,10 +338,9 @@ import Button from "primevue/button";
 import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import InputText from "primevue/inputtext";
-import DatePicker from 'primevue/datepicker';
+import DatePicker from "primevue/datepicker";
 import IconField from "primevue/iconfield";
 import { Link } from "@inertiajs/vue3";
-
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
@@ -528,5 +532,10 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>

@@ -46,7 +46,9 @@
                             severity="danger"
                             outlined
                             @click="confirmDeleteSelected"
-                            :disabled="!selectedSchedules || !selectedSchedules.length"
+                            :disabled="
+                                !selectedSchedules || !selectedSchedules.length
+                            "
                         />
                     </template>
                     <template #end>
@@ -185,7 +187,6 @@
                             :invalid="submitted && !schedule.date_of_operation"
                             fluid
                             placeholder="Enter Time of Deployment"
-
                         />
                         <small
                             v-if="submitted && !schedule.date_of_operation"
@@ -195,7 +196,10 @@
                         </small>
                     </div>
                     <div>
-                        <label for="deployment_time" class="block font-bold mb-3">
+                        <label
+                            for="deployment_time"
+                            class="block font-bold mb-3"
+                        >
                             Deployment Time
                         </label>
                         <DatePicker
@@ -207,7 +211,8 @@
                             :invalid="submitted && !schedule.deployment_time"
                             fluid
                             placeholder="Enter Time of Deployment"
-                            showTime hourFormat="24"
+                            showTime
+                            hourFormat="24"
                         />
                         <small
                             v-if="submitted && !schedule.deployment_time"
@@ -217,7 +222,10 @@
                         </small>
                     </div>
                     <div>
-                        <label for="withdrawal_time" class="block font-bold mb-3">
+                        <label
+                            for="withdrawal_time"
+                            class="block font-bold mb-3"
+                        >
                             Withdrawal Time
                         </label>
                         <DatePicker
@@ -229,8 +237,8 @@
                             :invalid="submitted && !schedule.withdrawal_time"
                             fluid
                             placeholder="Enter Time of Withdraw"
-                            showTime hourFormat="24"
-
+                            showTime
+                            hourFormat="24"
                         />
                         <small
                             v-if="submitted && !schedule.withdrawal_time"
@@ -239,8 +247,6 @@
                             Withdrawal Time is required.
                         </small>
                     </div>
-
-
                 </div>
                 <template #footer>
                     <Button
@@ -278,7 +284,8 @@
                 <div class="flex items-center gap-4">
                     <i class="pi pi-exclamation-triangle !text-3xl" />
                     <span v-if="schedule">
-                        Are you sure you want to delete <b>{{ schedule.name }}</b
+                        Are you sure you want to delete
+                        <b>{{ schedule.name }}</b
                         >?
                     </span>
                 </div>
@@ -355,7 +362,7 @@ import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
-import DatePicker from 'primevue/datepicker';
+import DatePicker from "primevue/datepicker";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
@@ -491,7 +498,9 @@ const deleteSchedule = async () => {
     loading.value = true;
     try {
         await axios.delete(`/schedules/${schedule.value.id}`);
-        schedules.value = schedules.value.filter((r) => r.id !== schedule.value.id);
+        schedules.value = schedules.value.filter(
+            (r) => r.id !== schedule.value.id
+        );
         toast.add({
             severity: "success",
             summary: "Successful",
@@ -602,5 +611,10 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>

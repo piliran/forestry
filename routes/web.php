@@ -48,8 +48,8 @@ use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 Route::post('/zones/bulk-delete', [ZoneController::class, 'batchDelete']);
 Route::resource('zones', ZoneController::class)->middleware([HandlePrecognitiveRequests::class]);
 
-Route::resource('department', DepartmentController::class)->middleware([HandlePrecognitiveRequests::class]);
-Route::post('/department/bulk-delete', [DepartmentController::class, 'batchDelete']);
+Route::resource('departments', DepartmentController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/departments/bulk-delete', [DepartmentController::class, 'batchDelete']);
 
 
 Route::post('/countries/bulk-delete', [CountryController::class, 'batchDelete']);
@@ -133,7 +133,7 @@ Route::resource('suspects', SuspectController::class)->middleware([HandlePrecogn
 Route::post('/suspects/bulk-delete', [SuspectController::class, 'batchDelete']);
 Route::post('/update-suspect', [SuspectController::class, 'updateSuspect']);
 Route::get('/add-suspect/{id}', [SuspectController::class, 'create']);
-Route::get('/suspect/{id}', [SuspectController::class, 'show']);
+
 
 
 

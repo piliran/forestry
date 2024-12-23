@@ -76,6 +76,7 @@
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} stations"
+                    @row-click="onRowClick"
                 >
                     <template #header>
                         <div
@@ -139,12 +140,12 @@
                                 :href="'/stations/' + slotProps.data.id"
                                 preserve-scroll
                             >
-                            <Button
-                                icon="pi pi-eye"
-                                outlined
-                                rounded
-                                severity="info"
-                            />
+                                <Button
+                                    icon="pi pi-eye"
+                                    outlined
+                                    rounded
+                                    severity="info"
+                                />
                             </Link>
                             <Button
                                 icon="pi pi-pencil"
@@ -404,7 +405,7 @@ import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 
@@ -442,11 +443,10 @@ const stations = ref(props.stations);
 const districts = ref(props.districts);
 const users = ref(props.users);
 
-// onMounted(async () => {
-//     console.log(stations);
-// });
-
-// CRUD Methods
+const onRowClick = (rowData) => {
+    const stationId = rowData.data.id;
+    router.visit(`${router.page.url}/${stationId}`);
+};
 const openNew = () => {
     editDialog.value = false;
     station.value = {};
@@ -646,5 +646,10 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>

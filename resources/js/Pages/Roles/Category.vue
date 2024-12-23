@@ -501,3 +501,14 @@ const exportCSV = () => {
     dt.value.exportCSV();
 };
 </script>
+<style scoped>
+::v-deep(.p-breadcrumb) {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+</style>

@@ -565,7 +565,7 @@ const home = ref({
 
 const breadCumbItems = ref([
     { label: "Departments", route: "/departments" },
-    { label: router.page.url.slice(1) },
+    { label: router.page.url.split("/").pop() },
 ]);
 
 const props = defineProps({
@@ -575,7 +575,7 @@ const props = defineProps({
 
 const department = ref(props.department);
 const staffList = ref(props.staffList);
-console.log(department.value);
+// console.log(department.value);
 
 const rowsPerPage = ref(8);
 const currentPage = ref(0);

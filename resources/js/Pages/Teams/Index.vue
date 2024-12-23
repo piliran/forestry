@@ -101,7 +101,7 @@
                         header="Team Name"
                         sortable
                         style="min-width: 10rem"
-                    ></Column>                    
+                    ></Column>
                     <Column
                         field="description"
                         header="Description"
@@ -185,7 +185,6 @@
                             Team Description is required.
                         </small>
                     </div>
-
                 </div>
                 <template #footer>
                     <Button
@@ -311,7 +310,7 @@ import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import Select from "primevue/select";
-import Textarea from 'primevue/textarea';
+import Textarea from "primevue/textarea";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import { Link } from "@inertiajs/vue3";
@@ -545,5 +544,10 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>

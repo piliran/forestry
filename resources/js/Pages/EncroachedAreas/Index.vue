@@ -199,7 +199,10 @@
                         </small>
                     </div>
                     <div>
-                        <label for="encroachment_type" class="block font-bold mb-3">
+                        <label
+                            for="encroachment_type"
+                            class="block font-bold mb-3"
+                        >
                             Encroachment Type
                         </label>
                         <InputText
@@ -207,7 +210,9 @@
                             v-model.trim="encroached.encroachment_type"
                             required="true"
                             autofocus
-                            :invalid="submitted && !encroached.encroachment_type"
+                            :invalid="
+                                submitted && !encroached.encroachment_type
+                            "
                             fluid
                         />
                         <small
@@ -218,7 +223,10 @@
                         </small>
                     </div>
                     <div>
-                        <label for="estimated_area" class="block font-bold mb-3">
+                        <label
+                            for="estimated_area"
+                            class="block font-bold mb-3"
+                        >
                             Estimated Area
                         </label>
                         <InputText
@@ -274,7 +282,7 @@
                             Longitude is required.
                         </small>
                     </div>
-                
+
                     <div class="col-12">
                         <label for="remarks" class="block font-bold mb-3"
                             >Remarks</label
@@ -296,7 +304,6 @@
                             Remarks is required.
                         </small>
                     </div>
-                    
                 </div>
                 <template #footer>
                     <Button
@@ -427,7 +434,7 @@ import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 
-import Textarea from 'primevue/textarea';
+import Textarea from "primevue/textarea";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
@@ -688,5 +695,10 @@ const exportCSV = () => {
 ::v-deep(.p-breadcrumb) {
     background: transparent !important;
     box-shadow: none !important;
+}
+::v-deep(.p-datatable-tbody > tr:hover) {
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 </style>
