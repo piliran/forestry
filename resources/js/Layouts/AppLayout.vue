@@ -41,10 +41,15 @@ const handleLinkClick = () => {
 
 // Restore the scroll position after navigation
 onMounted(() => {
-    const storedPosition = localStorage.getItem("sidebarScrollPosition");
-    if (storedPosition && sidebarRef.value) {
-        sidebarRef.value.scrollTop = parseInt(storedPosition, 10);
-    }
+    console.log(page.props.auth.user.profile_photo_url);
+
+    // if (page.auth) {
+
+    // }
+    // const storedPosition = localStorage.getItem("sidebarScrollPosition");
+    // if (storedPosition && sidebarRef.value) {
+    //     sidebarRef.value.scrollTop = parseInt(storedPosition, 10);
+    // }
 });
 
 const switchToTeam = (team) => {
