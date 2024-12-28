@@ -74,6 +74,7 @@
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Zones"
+                    @row-click="onRowClick"
                 >
                     <template #header>
                         <div
@@ -139,7 +140,7 @@
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
-                            <Link
+                            <!-- <Link
                                 :href="'/zones/' + slotProps.data.id"
                                 preserve-scroll
                             >
@@ -149,7 +150,7 @@
                                     rounded
                                     severity="info"
                                 />
-                            </Link>
+                            </Link> -->
                             <Button
                                 icon="pi pi-pencil"
                                 outlined
@@ -427,7 +428,7 @@ import IconField from "primevue/iconfield";
 import Select from "primevue/select";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
@@ -441,6 +442,11 @@ const home = ref({
 });
 
 const breadCumbItems = ref([{ label: "Zones" }]);
+
+const onRowClick = (rowData) => {
+    const zoneId = rowData.data.id;
+    router.visit(`${router.page.url}/${zoneId}`);
+};
 
 // Reactive State Variables
 const dt = ref();

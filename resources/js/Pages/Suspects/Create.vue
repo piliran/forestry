@@ -365,7 +365,12 @@
                                         label="Next"
                                         icon="pi pi-arrow-right"
                                         iconPos="right"
-                                        @click="activateCallback('3')"
+                                        @click="
+                                            () => {
+                                                if (validateStep2())
+                                                    activateCallback('3');
+                                            }
+                                        "
                                     />
                                 </div>
                             </StepPanel>
@@ -944,6 +949,7 @@ const getItemNameById = (id) => {
 
 const validateStep1 = () => {
     submitFirst.value = true;
+
     if (
         !suspect.value.name ||
         !suspect.value.national_id ||
@@ -951,8 +957,30 @@ const validateStep1 = () => {
         !suspect.value.village ||
         !suspect.value.TA
     ) {
-        return true;
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Please fill out all required fields.",
+            life: 3000,
+        });
+        return false;
     }
+    return true;
+};
+
+const validateStep2 = () => {
+    submitFirst.value = true;
+
+    if (Object.keys(selectedOffenses).length === 0) {
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Please select at least one offense.",
+            life: 3000,
+        });
+        return false;
+    }
+
     return true;
 };
 

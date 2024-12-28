@@ -137,20 +137,21 @@
                         style="min-width: 12rem"
                     >
                         <template #body="slotProps">
-                            <Link
+                            <!-- <Link
                                 :href="'/add-suspect/' + slotProps.data.id"
                                 preserve-scroll
-                            >
-                                <Button
-                                    label="Manage Suspect"
-                                    size="small"
-                                    style="
-                                        padding-left: 7px;
-                                        padding-right: 7px;
-                                        font-size: 12px;
-                                    "
-                                />
-                            </Link>
+                            > -->
+                            <Button
+                                label="Manage Suspect"
+                                size="small"
+                                style="
+                                    padding-left: 7px;
+                                    padding-right: 7px;
+                                    font-size: 12px;
+                                "
+                                @click="manageSuspect(slotProps.data)"
+                            />
+                            <!-- </Link> -->
                         </template>
                     </Column>
 
@@ -442,7 +443,7 @@ import axios from "axios";
 import Breadcrumb from "primevue/breadcrumb";
 import Textarea from "primevue/textarea";
 
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 
 const toast = useToast();
 const dt = ref();
@@ -470,6 +471,7 @@ const breadCumbItems = ref([{ label: "Operations" }]);
 const props = defineProps({
     operations: Array,
     operationTypes: Array,
+    operationToTeams: Array,
     stations: Array,
     routes: Array,
     funders: Array,
@@ -478,9 +480,10 @@ const props = defineProps({
 const operations = ref(props.operations);
 const funders = ref(props.funders);
 const operationTypes = ref(props.operationTypes);
+const operationToTeams = ref(props.operationToTeams);
 const stations = ref(props.stations);
 const routes = ref(props.routes);
-// console.log(operations);
+// console.log(operationToTeams);
 // CRUD Methods
 const openNew = () => {
     editDialog.value = false;
@@ -595,6 +598,23 @@ const editOperation = (operationData) => {
     }
 
     operationDialog.value = true;
+};
+
+const manageSuspect = (operation) => {
+    const index = operationToTeams.value.map(
+        (r) => r.operation_id === operation.id
+    );
+
+    if (index[1] == true || index[0] == true) {
+        router.visit(`/add-suspect/${operation.id}`);
+    } else {
+        toast.add({
+            severity: "error",
+            summary: "Not Allowed",
+            detail: "The operation is not assigned to a Team.",
+            life: 5000,
+        });
+    }
 };
 
 const confirmDeleteOperation = (op) => {

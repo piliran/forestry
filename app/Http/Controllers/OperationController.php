@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Operation;
 use App\Models\OperationType;
+use App\Models\OperationToTeam;
 use App\Models\Station;
 use App\Models\Route;
 use App\Models\Funder;
@@ -31,10 +32,13 @@ class OperationController extends Controller
         $stations = Station::all();
         $routes = Route::all();
         $funders = Funder::all();
+        $operationToTeams = OperationToTeam::whereNull('deleted_at')
+        ->get();
 
         return Inertia::render('Operations/List', [
             'operations' => $operations,
             'operationTypes' => $operationTypes,
+            'operationToTeams' => $operationToTeams,
             'stations' => $stations,
             'routes' => $routes,
             'funders' => $funders,
