@@ -30,36 +30,106 @@
                     </template>
                 </Breadcrumb>
             </div>
+
             <div class="h-full">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
+                <div class="grid grid-cols-1 gap-8 mt-4">
                     <!-- Staff Card -->
                     <div
-                        class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                        class="p-6 bg-white border border-gray-200 rounded-xl flex shadow-lg items-center justify-between"
                     >
-                        <div class="flex items-center space-x-3">
-                            <div class="bg-indigo-100 p-3 rounded-full">
-                                <svg
-                                    class="w-8 h-8 text-indigo-600"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
+                    <div class="flex">
+                        <!-- <img src="https://fqjltiegiezfetthbags.supabase.co/storage/v1/render/image/public/block.images/blocks/avatars/circle/avatar-f-1@2x.png" class="h2LaRR VHNBYF g4bUIA Sn8OgC 9RGNe2"> -->
+                        
+                        <div class="ml-4">
+                            <h1 class=" text-3xl font-bold">Department Of Forestry</h1>
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
+                                <!-- Staff Card -->
+                                <div
+                                    class="p-2 px-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
                                 >
-                                    <path
-                                        d="M10 2a4 4 0 100 8 4 4 0 000-8zM4 10a6 6 0 0112 0v2a3 3 0 11-6 0v-2H4zm12 0v2a5 5 0 01-10 0v-2H4a4 4 0 108 0h4z"
-                                    ></path>
-                                </svg>
+                                    <div class="flex items-center space-x-3">
+                                        <!-- <div class="bg-indigo-100 p-3 rounded-full">
+                                            <svg
+                                                class="w-8 h-8 text-indigo-600"
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    d="M10 2a4 4 0 100 8 4 4 0 000-8zM4 10a6 6 0 0112 0v2a3 3 0 11-6 0v-2H4zm12 0v2a5 5 0 01-10 0v-2H4a4 4 0 108 0h4z"
+                                                ></path>
+                                            </svg>
+                                        </div> -->
+                                        <span class="text-lg font-semibold text-gray-800"
+                                            >Staff</span
+                                        >
+                                    </div>
+                                    <span class="text-3xl lg:ml-6 font-extrabold text-indigo-600">
+                                        {{ department.staff_count }}
+                                    </span>
+                                </div>
+
+                                <!-- Zones Card -->
+                                <div
+                                    class="p-2 px-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                                >
+                                    <div class="flex items-center">
+                                        <!-- <div class="bg-green-100 p-3 rounded-full">
+                                            <svg
+                                                class="w-8 h-8 text-green-600"
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                                                ></path>
+                                            </svg>
+                                        </div> -->
+                                        <span class="text-lg font-semibold text-gray-800"
+                                            >Zones</span
+                                        >
+                                    </div>
+                                    <span class="text-3xl font-extrabold text-green-600 ml-6">
+                                        {{ department.zone_count }}
+                                    </span>
+                                </div>
+
+                                <!-- Stations Card -->
+                                <div
+                                    class="p-2 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                                >
+                                    <div class="flex items-center space-x-3">
+                                        <!-- <div class="bg-blue-100 p-3 rounded-full">
+                                            <svg
+                                                class="w-8 h-8 text-blue-600"
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                                ></path>
+                                            </svg>
+                                        </div> -->
+                                        <span class="text-lg font-semibold text-gray-800"
+                                            >Stations</span
+                                        >
+                                    </div>
+                                    <span class="text-3xl font-extrabold text-blue-600">
+                                        {{ department.station_count }}
+                                    </span>
+                                </div>
                             </div>
-                            <span class="text-lg font-semibold text-gray-800"
-                                >Staff</span
-                            >
                         </div>
-                        <span class="text-4xl font-extrabold text-indigo-600">
-                            {{ department.staff_count }}
-                        </span>
+
+                    </div>
+                    
+                        
                     </div>
 
                     <!-- Zones Card -->
-                    <div
+                    <!-- <div
                         class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
                     >
                         <div class="flex items-center space-x-3">
@@ -82,10 +152,10 @@
                         <span class="text-4xl font-extrabold text-green-600">
                             {{ department.zone_count }}
                         </span>
-                    </div>
+                    </div> -->
 
                     <!-- Stations Card -->
-                    <div
+                    <!-- <div
                         class="p-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
                     >
                         <div class="flex items-center space-x-3">
@@ -108,7 +178,7 @@
                         <span class="text-4xl font-extrabold text-blue-600">
                             {{ department.station_count }}
                         </span>
-                    </div>
+                    </div> -->
                 </div>
 
                 <div
