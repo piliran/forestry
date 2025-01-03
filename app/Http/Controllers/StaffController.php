@@ -18,26 +18,31 @@ class StaffController extends Controller
 {
     public function index()
     {
-        $authUserId = auth()->id(); // Get the authenticated user's ID
+        $authUserId = auth()->id();
         $staffList = [];
         $stations = Station::with('district')->whereNull('deleted_at')->get();
 
         $staff = Staff::where('user_id', $authUserId)->first();
 
-    if ($staff) {
-        // Retrieve the staff list including the station the user belongs to
-        $staffList = Staff::with(['level', 'user.roles', 'station.district'])
-            ->where('id', $staff->id)
+    // if ($staff) {
+
+    //     $staffList = Staff::with(['level', 'user.roles', 'station.district'])
+    //         ->where('id', $staff->id)
+    //         ->whereNull('deleted_at')
+    //         ->get();
+    // }
+
+    $staffList = Staff::with(['level', 'user.roles', 'station.district'])
+
             ->whereNull('deleted_at')
             ->get();
-    }
         $users = User::with(['roles', 'district'])
             ->whereNull('deleted_at')
             ->get();
 
         $roleCategories = RoleCategory::whereNull('deleted_at')->get();
 
-        // Return the data to the view
+
         return Inertia::render('Staff/Index', [
             'staffList' => $staffList,
             'users' => $users,
@@ -74,6 +79,12 @@ class StaffController extends Controller
                     'staff_id' => $staff->id,
                     'station_id' => $request->input('station_id'),
                 ]);
+
+                $staff->load(['level', 'user.roles','station.district']);
+
+                DB::commit();
+
+                return response()->json($staff, 200);
             }
 
             // Load related data

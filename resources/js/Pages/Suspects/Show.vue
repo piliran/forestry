@@ -487,7 +487,8 @@ const filters = ref({
 const props = defineProps({
     suspect: Object,
 });
-// console.log(props.suspect);
+const suspect = ref(props.suspect);
+console.log(suspect);
 
 const progressMap = {
     "Under Investigation": "10%",
