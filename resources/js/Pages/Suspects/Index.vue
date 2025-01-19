@@ -94,7 +94,11 @@
                             </IconField>
                         </div>
                     </template>
-
+                    <Column header="#" headerStyle="width:3rem">
+                        <template #body="slotProps">
+                            {{ slotProps.index + 1 }}
+                        </template>
+                    </Column>
                     <Column
                         selectionMode="multiple"
                         style="width: 3rem"

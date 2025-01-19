@@ -22,6 +22,10 @@ defineProps({
     title: String,
 });
 
+if (page.props.auth.user == null) {
+    router.replace("login");
+}
+
 const showingNavigationDropdown = ref(false);
 const isSidebarVisible = ref(true); // State to track sidebar visibility
 
@@ -41,10 +45,7 @@ const handleLinkClick = () => {
 
 // Restore the scroll position after navigation
 onMounted(() => {
-    console.log(page.props.auth.user.profile_photo_url);
-
     // if (page.auth) {
-
     // }
     // const storedPosition = localStorage.getItem("sidebarScrollPosition");
     // if (storedPosition && sidebarRef.value) {

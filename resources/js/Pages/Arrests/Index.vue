@@ -588,6 +588,7 @@ const breadCumbItems = ref([{ label: "Arrests" }]);
 
 // CRUD Methods
 const openNew = () => {
+    selectedSuspect.value = {};
     editDialog.value = false;
     arrest.value = {};
     submitted.value = false;
@@ -621,6 +622,7 @@ watch(
             const suspect = suspects.value.find((r) => r.id === newVal);
 
             selectedSuspect.value = suspect;
+            selectedSuspect;
         }
     },
     { immediate: true }

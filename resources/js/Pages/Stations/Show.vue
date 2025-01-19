@@ -147,39 +147,13 @@
                 <div
                     class="my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4"
                 >
-                    <div class="flex flex-col w-full lg:w-1/2 2xl:w-1/3">
-                        <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
-                            <h4 class="text-xl text-gray-900 font-bold">
-                                About Station
-                            </h4>
-                            <p class="mt-2 text-gray-700">
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Nesciunt voluptates obcaecati
-                                numquam error et ut fugiat asperiores. Sunt
-                                nulla ad incidunt laboriosam, laudantium est
-                                unde natus cum numquam, neque facere. Lorem
-                                ipsum dolor sit amet consectetur adipisicing
-                                elit. Ut, magni odio magnam commodi sunt ipsum
-                                eum! Voluptas eveniet aperiam at maxime, iste id
-                                dicta autem odio laudantium eligendi commodi
-                                distinctio!
-                            </p>
-                        </div>
-                    </div>
                     <div class="flex flex-col lg:w-1/2 2xl:w-1/3">
                         <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
                             <h4 class="text-xl text-gray-900 font-bold">
                                 Contact Person
                             </h4>
 
-                            <!-- <div class="w-full h-[50px]">
-                        <img src="https://vojislavd.com/ta-template-demo/assets/img/profile-background.jpg" class="w-full h-full rounded-tl-lg rounded-tr-lg">
-                    </div> -->
                             <div class="flex flex-col items-center">
-                                <!-- <img
-                                    src="https://vojislavd.com/ta-template-demo/assets/img/profile.jpg"
-                                    class="mt-5 w-40 border-4 border-white rounded-full"
-                                /> -->
                                 <div class="flex flex-col items-center">
                                     <img
                                         v-if="
@@ -194,9 +168,6 @@
                                         class="mt-5 h-40 w-40 border-4 border-white rounded-full"
                                     />
                                 </div>
-
-                                <!-- <p class="text-gray-700">Senior Software Engineer at Tailwind CSS</p>
-                        <p class="text-sm text-gray-500">New York, USA</p> -->
                             </div>
                             <ul class="mt-2 text-gray-700">
                                 <li class="flex border-y py-2">
@@ -305,300 +276,83 @@
                     </div>
 
                     <div
-                        class="flex flex-col lg:hidden 2xl:block lg:w-full xl:w-1/3"
+                        class="bg-white rounded-lg shadow-xl p-8 flex flex-col lg:w-2/3 2xl:w-2/3"
                     >
-                        <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
+                        <div class="flex items-center justify-between">
                             <h4 class="text-xl text-gray-900 font-bold">
-                                Activity log
+                                <Badge size="large" severity="contrast">{{
+                                    station.staff_count
+                                }}</Badge>
+                                Members of Staff
                             </h4>
-                            <div class="relative px-4">
-                                <div
-                                    class="absolute h-full border border-dashed border-opacity-20 border-secondary"
-                                ></div>
-
-                                <!-- start::Timeline item -->
-                                <div
-                                    class="flex items-center w-full my-6 -ml-1.5"
-                                >
-                                    <div class="w-1/12 z-10">
-                                        <div
-                                            class="w-3.5 h-3.5 bg-blue-600 rounded-full"
-                                        ></div>
-                                    </div>
-                                    <div class="w-11/12">
-                                        <p class="text-sm">
-                                            Profile informations changed.
-                                        </p>
-                                        <p class="text-xs text-gray-500">
-                                            3 min ago
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- end::Timeline item -->
-
-                                <!-- start::Timeline item -->
-                                <div
-                                    class="flex items-center w-full my-6 -ml-1.5"
-                                >
-                                    <div class="w-1/12 z-10">
-                                        <div
-                                            class="w-3.5 h-3.5 bg-blue-600 rounded-full"
-                                        ></div>
-                                    </div>
-                                    <div class="w-11/12">
-                                        <p class="text-sm">
-                                            Connected with
-                                            <a
-                                                href="#"
-                                                class="text-blue-600 font-bold"
-                                                >Colby Covington</a
-                                            >.
-                                        </p>
-                                        <p class="text-xs text-gray-500">
-                                            15 min ago
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- end::Timeline item -->
-
-                                <!-- start::Timeline item -->
-                                <div
-                                    class="flex items-center w-full my-6 -ml-1.5"
-                                >
-                                    <div class="w-1/12 z-10">
-                                        <div
-                                            class="w-3.5 h-3.5 bg-blue-600 rounded-full"
-                                        ></div>
-                                    </div>
-                                    <div class="w-11/12">
-                                        <p class="text-sm">
-                                            Invoice
-                                            <a
-                                                href="#"
-                                                class="text-blue-600 font-bold"
-                                                >#4563</a
-                                            >
-                                            was created.
-                                        </p>
-                                        <p class="text-xs text-gray-500">
-                                            57 min ago
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- end::Timeline item -->
-
-                                <!-- start::Timeline item -->
-                                <div
-                                    class="flex items-center w-full my-6 -ml-1.5"
-                                >
-                                    <div class="w-1/12 z-10">
-                                        <div
-                                            class="w-3.5 h-3.5 bg-blue-600 rounded-full"
-                                        ></div>
-                                    </div>
-                                    <div class="w-11/12">
-                                        <p class="text-sm">
-                                            Message received from
-                                            <a
-                                                href="#"
-                                                class="text-blue-600 font-bold"
-                                                >Cecilia Hendric</a
-                                            >.
-                                        </p>
-                                        <p class="text-xs text-gray-500">
-                                            1 hour ago
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- end::Timeline item -->
-
-                                <!-- start::Timeline item -->
-                                <div
-                                    class="flex items-center w-full my-6 -ml-1.5"
-                                >
-                                    <div class="w-1/12 z-10">
-                                        <div
-                                            class="w-3.5 h-3.5 bg-blue-600 rounded-full"
-                                        ></div>
-                                    </div>
-                                    <div class="w-11/12">
-                                        <p class="text-sm">
-                                            New order received
-                                            <a
-                                                href="#"
-                                                class="text-blue-600 font-bold"
-                                                >#OR9653</a
-                                            >.
-                                        </p>
-                                        <p class="text-xs text-gray-500">
-                                            2 hours ago
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- end::Timeline item -->
-
-                                <!-- start::Timeline item -->
-                                <div
-                                    class="flex items-center w-full my-6 -ml-1.5"
-                                >
-                                    <div class="w-1/12 z-10">
-                                        <div
-                                            class="w-3.5 h-3.5 bg-blue-600 rounded-full"
-                                        ></div>
-                                    </div>
-                                    <div class="w-11/12">
-                                        <p class="text-sm">
-                                            Message received from
-                                            <a
-                                                href="#"
-                                                class="text-blue-600 font-bold"
-                                                >Jane Stillman</a
-                                            >.
-                                        </p>
-                                        <p class="text-xs text-gray-500">
-                                            2 hours ago
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- end::Timeline item -->
-                            </div>
                         </div>
-                    </div>
-                </div>
-                <!-- <div class="bg-white rounded-lg shadow-xl p-8">
-                    <div class="flex items-center justify-between">
-                        <h4 class="text-xl text-gray-900 font-bold">
-                            Members of Staff (532)
-                        </h4>
-                        <a href="#" title="View All">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-6 w-6 text-gray-500 hover:text-gray-700"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                                ></path>
-                            </svg>
-                        </a>
-                    </div>
-                    <div
-                        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8"
-                    >
-
-                        <a
-                            href="#"
-                            class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                            title="View Profile"
-                        >
-                            <img
-                                src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                                class="w-16 rounded-full"
-                            />
-                            <p class="text-center font-bold text-sm mt-1">
-                                Joseph Marlatt
-                            </p>
-                            <p class="text-xs text-gray-500 text-center">
-                                Team Lead at Facebook
-                            </p>
-                        </a>
-                    </div>
-                </div> -->
-                <div class="bg-white rounded-lg shadow-xl p-8">
-                    <div class="flex items-center justify-between">
-                        <h4 class="text-xl text-gray-900 font-bold">
-                            <Badge size="large" severity="contrast">{{
-                                station.staff_count
-                            }}</Badge>
-                            Members of Staff
-                        </h4>
-                        <a href="#" title="View All">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-6 w-6 text-gray-500 hover:text-gray-700"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                                ></path>
-                            </svg>
-                        </a>
-                    </div>
-                    <div v-if="staffList.length > 0" class="p-2">
-                        <div
-                            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8"
-                        >
+                        <div v-if="staffList.length > 0" class="p-2">
                             <div
-                                v-for="staff in paginatedStaffList"
-                                :key="staff.id"
-                                class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+                                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8 mt-8"
                             >
-                                <a
-                                    href="#"
-                                    class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-                                    title="View Profile"
+                                <div
+                                    v-for="staff in paginatedStaffList"
+                                    :key="staff.id"
+                                    class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
                                 >
-                                    <Image
-                                        :src="`${staff.user.profile_photo_url}`"
-                                        :alt="staff.user.name"
-                                        class="border-white rounded-full"
-                                        preview
+                                    <a
+                                        href="#"
+                                        class="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
+                                        title="View Profile"
                                     >
-                                        <template #image>
-                                            <img
-                                                :src="
-                                                    staff.user.profile_photo_url
-                                                "
-                                                alt="Profile"
-                                                style="
-                                                    width: 100%;
-                                                    height: 100%;
-                                                    object-fit: cover;
-                                                "
-                                                class="border-white rounded-full"
-                                            />
-                                        </template>
-                                    </Image>
+                                        <Image
+                                            :src="`${staff.user.profile_photo_url}`"
+                                            :alt="staff.user.name"
+                                            class="border-white rounded-full"
+                                            preview
+                                        >
+                                            <template #image>
+                                                <img
+                                                    :src="
+                                                        staff.user
+                                                            .profile_photo_url
+                                                    "
+                                                    alt="Profile"
+                                                    style="
+                                                        width: 100%;
+                                                        height: 100%;
+                                                        object-fit: cover;
+                                                    "
+                                                    class="border-white rounded-full"
+                                                />
+                                            </template>
+                                        </Image>
 
-                                    <p
-                                        class="text-center font-bold text-sm mt-1"
-                                    >
-                                        {{ staff.user.name }}
-                                    </p>
-                                    <p
-                                        class="text-xs text-gray-500 text-center"
-                                    >
-                                        {{
-                                            staff.user.roles
-                                                .map((role) => role.name)
-                                                .join(", ")
-                                        }}
-                                    </p>
-                                </a>
+                                        <p
+                                            class="text-center font-bold text-sm mt-1"
+                                        >
+                                            {{ staff.user.name }}
+                                        </p>
+                                        <p
+                                            class="text-xs text-gray-500 text-center"
+                                        >
+                                            {{
+                                                staff.user.roles
+                                                    .map((role) => role.name)
+                                                    .join(", ")
+                                            }}
+                                        </p>
+                                    </a>
+                                </div>
                             </div>
+                            <!-- Paginator -->
+                            <Paginator
+                                :rows="rowsPerPage"
+                                :totalRecords="staffList.length"
+                                :rowsPerPageOptions="[4, 8, 16]"
+                                :currentPage="currentPage"
+                                @page="onPageChange"
+                                class="mt-4"
+                            />
                         </div>
-                        <!-- Paginator -->
-                        <Paginator
-                            :rows="rowsPerPage"
-                            :totalRecords="staffList.length"
-                            :rowsPerPageOptions="[4, 8, 16]"
-                            :currentPage="currentPage"
-                            @page="onPageChange"
-                            class="mt-4"
-                        />
-                    </div>
-                    <div v-else class="flex items-center justify-center">
-                        <h2>No Staff Members Found</h2>
+                        <div v-else class="flex items-center justify-center">
+                            <h2>No Staff Members Found</h2>
+                        </div>
                     </div>
                 </div>
             </div>

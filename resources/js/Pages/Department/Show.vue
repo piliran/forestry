@@ -37,63 +37,78 @@
                     <div
                         class="p-6 bg-white border border-gray-200 rounded-xl flex shadow-lg items-center justify-between"
                     >
-                    <div class="flex">
-                        
-                        <div class="ml-4">
-                            <h1 class=" text-3xl font-semibold text-gray-800">Department Of {{department.name}}</h1>
-                            <span class=" text-lg text-gray-800"><span class="font-semibold">Email:</span> {{department.email}}</span>
-                            <h1 class=" text-lg text-gray-800"><span class="font-semibold">Website:</span> {{department.website}}</h1>
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
-                                <!-- Staff Card -->
-                                <div
-                                    class="p-2 px-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                        <div class="flex">
+                            <div class="ml-4">
+                                <h1
+                                    class="text-3xl font-semibold text-gray-800"
                                 >
-                                    <div class="flex items-center space-x-3">
-                                      
-                                        <span class="text-lg text-gray-800"
-                                            >Staff</span
+                                    Department Of {{ department.name }}
+                                </h1>
+                                <span class="text-lg text-gray-800"
+                                    ><span class="font-semibold">Email:</span>
+                                    {{ department.email }}</span
+                                >
+                                <h1 class="text-lg text-gray-800">
+                                    <span class="font-semibold">Website:</span>
+                                    {{ department.website }}
+                                </h1>
+                                <div
+                                    class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4"
+                                >
+                                    <!-- Staff Card -->
+                                    <div
+                                        class="p-2 px-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                                    >
+                                        <div
+                                            class="flex items-center space-x-3"
                                         >
+                                            <span class="text-lg text-gray-800"
+                                                >Staff</span
+                                            >
+                                        </div>
+                                        <span
+                                            class="text-2xl text-indigo-600 ml-3"
+                                        >
+                                            {{ department.staff_count }}
+                                        </span>
                                     </div>
-                                    <span class="text-2xl text-indigo-600 ml-3">
-                                        {{ department.staff_count }}
-                                    </span>
-                                </div>
 
-                                <!-- Zones Card -->
-                                <div
-                                    class="p-2 px-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
-                                >
-                                    <div class="flex items-center">
-                                       
-                                        <span class="text-lg text-gray-800"
-                                            >Zones</span
+                                    <!-- Zones Card -->
+                                    <div
+                                        class="p-2 px-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                                    >
+                                        <div class="flex items-center">
+                                            <span class="text-lg text-gray-800"
+                                                >Zones</span
+                                            >
+                                        </div>
+                                        <span
+                                            class="text-2xl text-green-600 ml-3"
                                         >
+                                            {{ department.zone_count }}
+                                        </span>
                                     </div>
-                                    <span class="text-2xl text-green-600 ml-3">
-                                        {{ department.zone_count }}
-                                    </span>
-                                </div>
 
-                                <!-- Stations Card -->
-                                <div
-                                    class="p-2 px-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
-                                >
-                                    <div class="flex items-center space-x-3">
-                                       
-                                        <span class="text-lg text-gray-800"
-                                            >Stations</span
+                                    <!-- Stations Card -->
+                                    <div
+                                        class="p-2 px-6 bg-white border border-gray-200 rounded-xl shadow-lg flex items-center justify-between"
+                                    >
+                                        <div
+                                            class="flex items-center space-x-3"
                                         >
+                                            <span class="text-lg text-gray-800"
+                                                >Stations</span
+                                            >
+                                        </div>
+                                        <span
+                                            class="text-2xl text-blue-600 ml-3"
+                                        >
+                                            {{ department.station_count }}
+                                        </span>
                                     </div>
-                                    <span class="text-2xl text-blue-600 ml-3">
-                                        {{ department.station_count }}
-                                    </span>
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-                    
-                        
                     </div>
 
                     <!-- Zones Card -->
@@ -177,9 +192,7 @@
                                 Contact Person
                             </h4>
 
-                            
                             <div class="flex flex-col items-center">
-                               
                                 <div class="flex flex-col items-center">
                                     <img
                                         v-if="
@@ -194,7 +207,6 @@
                                         class="mt-5 h-40 w-40 border-4 border-white rounded-full"
                                     />
                                 </div>
-
                             </div>
                             <ul class="mt-2 text-gray-700">
                                 <li class="flex border-y py-2">
@@ -301,7 +313,9 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-xl p-8 flex flex-col lg:w-2/3 2xl:w-2/3">
+                    <div
+                        class="bg-white rounded-lg shadow-xl p-8 flex flex-col lg:w-2/3 2xl:w-2/3"
+                    >
                         <div class="flex items-center justify-between">
                             <h4 class="text-xl text-gray-900 font-bold">
                                 <Badge size="large" severity="contrast">{{
@@ -333,7 +347,8 @@
                                             <template #image>
                                                 <img
                                                     :src="
-                                                        staff.user.profile_photo_url
+                                                        staff.user
+                                                            .profile_photo_url
                                                     "
                                                     alt="Profile"
                                                     style="
@@ -377,10 +392,7 @@
                             <h2>No Staff Members Found</h2>
                         </div>
                     </div>
-                   
                 </div>
-
-               
             </div>
         </div>
     </AppLayout>
@@ -410,6 +422,9 @@ import { Link, router } from "@inertiajs/vue3";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
+import { usePage } from "@inertiajs/vue3";
+
+const page = usePage();
 
 const toast = useToast();
 const staff = ref({});
@@ -428,6 +443,11 @@ const props = defineProps({
     department: Object,
     staffList: Array,
 });
+
+if (page.props.auth.user == null) {
+    console.log("no user");
+    router.replace("login");
+}
 
 const department = ref(props.department);
 const staffList = ref(props.staffList);
