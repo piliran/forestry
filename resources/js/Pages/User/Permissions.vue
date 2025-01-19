@@ -94,6 +94,11 @@
                             </IconField>
                         </div>
                     </template>
+                    <Column header="#" headerStyle="width:3rem">
+                        <template #body="slotProps">
+                            {{ slotProps.index + 1 }}
+                        </template>
+                    </Column>
                     <Column
                         selectionMode="multiple"
                         style="width: 3rem"
@@ -312,7 +317,7 @@ import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import InputIcon from "primevue/inputicon";
 
-import Textarea from 'primevue/textarea';
+import Textarea from "primevue/textarea";
 
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
