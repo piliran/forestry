@@ -41,9 +41,15 @@ const submit = () => {
     <Head title="Log in" />
 
     <AuthenticationCard>
-        <!-- <template #logo>
-            <AuthenticationCardLogo />
-        </template> -->
+        <template #logo>
+            <img
+                class=""
+                width="130"
+                height="100"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Coat_of_arms_of_Malawi.svg/1200px-Coat_of_arms_of_Malawi.svg.png"
+                alt="Image"
+            />
+        </template>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
